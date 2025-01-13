@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  background: white;
+}
+
+input:focus {
+  @apply outline-none focus:border-primary;
+}

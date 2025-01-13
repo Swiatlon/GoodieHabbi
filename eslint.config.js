@@ -81,6 +81,7 @@ module.exports = tseslint.config(
           },
         },
       ],
+      '@typescript-eslint/no-dynamic-delete': 'off',
       '@typescript-eslint/unbound-method': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
       'react/no-multi-comp': 'off',

@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { useFonts } from 'expo-font';
 import { Slot } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
 import * as SplashScreen from 'expo-splash-screen';
-import ProfileConfig from '@/components/drawer/routesConfig/ProfileConfig';
-import Header from '@/components/Header';
 import '@/assets/styles/global.css';
+import { CustomDrawerContent } from '@/components/shared/drawer/Drawer';
+import Header from '@/components/shared/header/Header';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -27,16 +26,15 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView className="flex-1 bg-white">
       <Drawer
         screenOptions={{
           header: () => <Header />,
+          sceneStyle: {
+            backgroundColor: 'white',
+          },
         }}
-        drawerContent={props => (
-          <DrawerContentScrollView {...props}>
-            <ProfileConfig />
-          </DrawerContentScrollView>
-        )}
+        drawerContent={props => <CustomDrawerContent {...props} />}
       >
         <Slot />
       </Drawer>

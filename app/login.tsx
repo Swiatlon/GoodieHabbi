@@ -4,14 +4,14 @@ import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import { useNavigation } from 'expo-router';
 import userLogo from '@/assets/images/exampleUserIconLogin.png';
 
-const Register = () => {
+const Login = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   return (
     <View className="flex-1 justify-center px-4">
       <View className="place-self-center place-items-center gap-6 px-8">
         <Image source={userLogo} style={{ width: 80, height: 80 }} resizeMode="contain" />
-        <Text className="text-2xl font-bold text-primary">Register Form</Text>
+        <Text className="text-2xl font-bold text-primary">Login Form</Text>
         <TextInput
           className="w-full h-10 border border-gray-300 rounded bg-white px-3"
           placeholder="Login"
@@ -26,17 +26,17 @@ const Register = () => {
         <Text
           className="text-sm text-blue-300"
           onPress={() => {
-            navigation.navigate('login');
+            navigation.navigate('register');
           }}
         >
-          Do you have an account?
+          You don't have account?
         </Text>
         <Pressable onPress={() => alert('Register button pressed')} className="bg-blue-500 w-full py-2 rounded">
-          <Text className="text-white font-bold text-center">Register</Text>
+          <Text className="text-white font-bold text-center">Login</Text>
         </Pressable>
       </View>
     </View>
   );
 };
 
-export default Register;
+export default Login;

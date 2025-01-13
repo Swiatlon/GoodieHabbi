@@ -13,6 +13,12 @@ module.exports = {
       fontFamily: {
         rubik: ["Rubik_400Regular", "sans-serif"],
       },
+      ringWidth: {
+        DEFAULT: '2px',
+      },
+      ringColor: {
+        primary: '#1987EE',
+      },
     },
   },
   plugins: [],
