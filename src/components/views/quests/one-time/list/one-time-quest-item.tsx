@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Quest } from '../../../constants/QuestsConstants';
+import { IOneTimeQuest } from '@/contract/quest';
 
-interface QuestItemProps {
-  quest: Quest;
-  setQuests: React.Dispatch<React.SetStateAction<Quest[]>>;
+interface OneTimeQuestItemProps {
+  quest: IOneTimeQuest;
+  setQuests: React.Dispatch<React.SetStateAction<IOneTimeQuest[]>>;
 }
 
-const QuestItem: React.FC<QuestItemProps> = ({ quest, setQuests }) => {
+const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest, setQuests }) => {
   const toggleComplete = (id: number): void => {
     setQuests(prev => prev.map(quest => (quest.id === id ? { ...quest, completed: !quest.completed } : quest)));
   };
@@ -42,4 +42,4 @@ const QuestItem: React.FC<QuestItemProps> = ({ quest, setQuests }) => {
   );
 };
 
-export default QuestItem;
+export default OneTimeQuestItem;

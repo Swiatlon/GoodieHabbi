@@ -2,9 +2,9 @@ import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { DrawerContentComponentProps, DrawerContentScrollView } from '@react-navigation/drawer';
-import LoginConfig from '@/components/shared/drawer/routes-configs/LoginConfig';
-import QuestConfig from '@/components/shared/drawer/routes-configs/QuestConfig';
-import RegisterConfig from '@/components/shared/drawer/routes-configs/RegisterConfig';
+import LoginConfig from '@/components/shared/drawer/routes-configs/login-config';
+import QuestConfig from '@/components/shared/drawer/routes-configs/quest-config';
+import RegisterConfig from '@/components/shared/drawer/routes-configs/register-config';
 
 export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props => {
   return (

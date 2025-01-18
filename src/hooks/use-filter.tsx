@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 
 export type FilterValueType = string | number | null | boolean;
+
 export interface ActualFilterData {
   key: string;
   value: FilterValueType;

@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import exampleUserIcon from '@/assets/images/exampleUserIcon.png';
 import logoHeader from '@/assets/images/logoheader.png';
 
-const Header = () => {
+const AppBar = () => {
   const navigation = useNavigation();
 
   return (
@@ -21,4 +21,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default AppBar;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Animated, TouchableOpacity } from 'react-native';
 import { Portal } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
-import { SnackbarContext, SnackbarOptions, SnackbarVariantEnum } from './SnackbarContext';
+import { SnackbarContext, SnackbarOptions, SnackbarVariantEnum } from './snackbar-context';
 
 export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [snackbar, setSnackbar] = useState<SnackbarOptions | null>(null);

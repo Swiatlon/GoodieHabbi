@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { IconButton } from '@/components/shared/icon-button/IconButton';
+import { IconButton } from '@/components/shared/icon-button/icon-button';
 
 interface HeaderProps {
   title: string;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { AntDesign } from '@expo/vector-icons';
-import CustomDrawerItem from '../elements/CustomDrawerItem';
+import CustomDrawerItem from '../elements/custom-drawer-item';
 
 
 const LoginConfig = () => {

@@ -4,16 +4,16 @@ import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
 import { QuestFilterMap } from '@/components/views/quests/constants/quest-constants';
 import AddQuestModal from '@/components/views/quests/one-time/add-quest-modal/add-quest-modal';
+import OneTimeQuestItem from '@/components/views/quests/one-time/list/one-time-quest-item';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
 import Header from '@/components/views/quests/reusable/header';
-import OneTimeQuestItem from '@/components/views/quests/one-time/list/one-time-quest-item';
-import { exampleOneTimeQuests, IOneTimeQuest } from '@/contract/quest';
+import { exampleSeasonalQuests, ISeasonalQuest } from '@/contract/quest';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
 import { SortOrderEnum, useSort } from '@/hooks/use-sort';
 
-const OneTimeQuests: React.FC = () => {
-  const [quests, setQuests] = useState<IOneTimeQuest[]>(exampleOneTimeQuests);
+const SeasonalQuests: React.FC = () => {
+  const [quests, setQuests] = useState<ISeasonalQuest[]>(exampleSeasonalQuests);
   const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
 
@@ -60,7 +60,7 @@ const OneTimeQuests: React.FC = () => {
   return (
     <View className="flex-1 p-4">
       <Header
-        title="One Time Quests"
+        title="Seasonal Quests"
         isSearchVisible={isSearchVisible}
         searchQuery={searchQuery}
         setIsSearchVisible={setIsSearchVisible}
@@ -82,7 +82,7 @@ const OneTimeQuests: React.FC = () => {
         className="py-3 mx-auto"
       />
 
-      <ConfigModal<IOneTimeQuest>
+      <ConfigModal<ISeasonalQuest>
         isModalVisible={isConfigModalVisible}
         actualFilterData={actualFilterData}
         actualSortKey={actualSortKey}
@@ -98,4 +98,4 @@ const OneTimeQuests: React.FC = () => {
   );
 };
 
-export default OneTimeQuests;
+export default SeasonalQuests;

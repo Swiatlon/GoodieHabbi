@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { Modal } from 'react-native-paper';
-import EmojiPickerComponent from './elements/EmojiPicker';
-import MarkAsImportant from './elements/MarkAsImportant';
-import Button from '@/components/shared/button/Button';
-import Input from '@/components/shared/input/Input';
-import TextArea from '@/components/shared/text-area/TextArea';
-import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/SnackbarContext';
+import EmojiPickerComponent from '../../reusable/add-quest-modal/emoji-picker';
+import MarkAsImportant from '../../reusable/add-quest-modal/mark-as-important';
+import Button from '@/components/shared/button/button';
+import Input from '@/components/shared/input/input';
+import TextArea from '@/components/shared/text-area/text-area';
+import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 
 interface AddQuestModalProps {
   isModalVisible: boolean;

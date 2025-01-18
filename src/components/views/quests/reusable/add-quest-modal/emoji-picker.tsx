@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import EmojiPicker, { EmojiType } from 'rn-emoji-keyboard';
-import Select from '@/components/shared/select/Select';
+import Select from '@/components/shared/select/select';
 
 interface EmojiPickerComponentProps {
   selectedEmoji: string | null;

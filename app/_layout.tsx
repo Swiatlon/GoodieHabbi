@@ -6,9 +6,9 @@ import { Slot } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
 import * as SplashScreen from 'expo-splash-screen';
 import '@/assets/styles/global.css';
-import { CustomDrawerContent } from '@/components/shared/drawer/Drawer';
-import Header from '@/components/shared/header/Header';
-import SnackbarProvider from '@/providers/snackbar/SnackbarProvider';
+import { CustomDrawerContent } from '@/components/shared/drawer/drawer';
+import Header from '@/components/shared/app-bar/app-bar';
+import SnackbarProvider from '@/providers/snackbar/snackbar-provider';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {

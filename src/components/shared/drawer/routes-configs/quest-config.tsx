@@ -1,6 +1,6 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import CustomDrawerItem from '../elements/CustomDrawerItem';
+import CustomDrawerItem from '../elements/custom-drawer-item';
 
 const QuestConfig = () => {
   return (

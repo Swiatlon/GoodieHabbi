@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { IconButton } from '@/components/shared/icon-button/IconButton';
-import { SortOrderEnum } from '@/hooks/useSort';
+import { IconButton } from '@/components/shared/icon-button/icon-button';
+import { SortOrderEnum } from '@/hooks/use-sort';
 
 interface SortOrderSectionProps {
   actualSortOrder: SortOrderEnum;
@@ -11,8 +11,8 @@ interface SortOrderSectionProps {
 
 const SortOrderSection: React.FC<SortOrderSectionProps> = ({ actualSortOrder, setSortOrder }) => {
   return (
-    <View>
-      <Text className="text-lg font-semibold mb-4">Sort Order:</Text>
+    <View className="flex gap-4">
+      <Text className="text-lg font-semibold text-center">Sort Order:</Text>
       <View className="flex-row justify-around">
         {[SortOrderEnum.ASC, SortOrderEnum.DESC].map(order => (
           <IconButton key={order} onPress={() => setSortOrder(order)} className="flex items-center p-2">
