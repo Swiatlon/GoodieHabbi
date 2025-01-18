@@ -9,6 +9,7 @@ module.exports = {
         secondary: "#4b465d",
         accent: "#47B64E",
         success: "#47B64E",
+        error: '#d32f2f',
       },
       fontFamily: {
         rubik: ["Rubik_400Regular", "sans-serif"],

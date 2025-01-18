@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { IconButton } from '@/components/shared/icon-button/IconButton';
 
 interface HeaderProps {
   title: string;
@@ -21,13 +22,15 @@ const Header: React.FC<HeaderProps> = ({
 }) => (
   <>
     <View className="flex-row justify-between items-center mb-4">
-      <TouchableOpacity onPress={() => setIsConfigModalVisible(true)}>
-        <Ionicons name="settings-outline" size={24} color="#1987EE" />
-      </TouchableOpacity>
+      <IconButton
+        onPress={() => setIsConfigModalVisible(true)}
+        icon={<Ionicons name="settings-outline" size={24} color="#1987EE" />}
+      />
       <Text className="text-2xl font-bold text-primary">{title}</Text>
-      <TouchableOpacity onPress={() => setIsSearchVisible(prev => !prev)}>
-        <Ionicons name={isSearchVisible ? 'close' : 'search-outline'} size={24} color="#1987EE" />
-      </TouchableOpacity>
+      <IconButton
+        onPress={() => setIsSearchVisible(prev => !prev)}
+        icon={<Ionicons name={isSearchVisible ? 'close' : 'search-outline'} size={24} color="#1987EE" />}
+      />
     </View>
 
     {isSearchVisible && (

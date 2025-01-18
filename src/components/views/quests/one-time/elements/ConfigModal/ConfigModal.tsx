@@ -1,25 +1,27 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Modal } from 'react-native';
+import { Quest } from '../../constants/QuestsConstants';
 import FilterSection from './elements/FilterSection';
 import SortKeySection from './elements/SortKeySection';
 import SortOrderSection from './elements/SortOrderSection';
-import { FilterValueType } from '@/hooks/useFilter';
+import Button from '@/components/shared/button/Button';
+import Modal from '@/components/shared/modal/Modal';
+import { ActualFilterData, FilterValueType } from '@/hooks/useFilter';
 import { SortOrderEnum } from '@/hooks/useSort';
 
 interface ConfigModalProps {
   isModalVisible: boolean;
   actualSortOrder: SortOrderEnum;
-  actualFilterValue: FilterValueType;
+  actualFilterData: ActualFilterData;
   actualSortKey: string | null;
   setisModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  setFilter: (key: string, value: FilterValueType) => void;
+  setFilter: (key: keyof Quest, value: FilterValueType) => void;
   setSortKey: (key: string | null) => void;
   setSortOrder: (order: SortOrderEnum) => void;
 }
 
 const ConfigModal: React.FC<ConfigModalProps> = ({
   isModalVisible,
-  actualFilterValue,
+  actualFilterData,
   actualSortKey,
   actualSortOrder,
   setisModalVisible,
@@ -28,20 +30,11 @@ const ConfigModal: React.FC<ConfigModalProps> = ({
   setFilter,
 }) => {
   return (
-    <Modal transparent visible={isModalVisible} animationType="fade">
-      <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-        <View className="bg-white w-4/5 rounded-lg p-6">
-          <FilterSection actualFilterValue={actualFilterValue} setFilter={setFilter} />
-          <SortOrderSection actualSortOrder={actualSortOrder} setSortOrder={setSortOrder} />
-          <SortKeySection actualSortKey={actualSortKey} setSortKey={setSortKey} />
-          <TouchableOpacity
-            onPress={() => setisModalVisible(false)}
-            className="mt-6 bg-gray-300 py-3 px-6 rounded-lg self-center"
-          >
-            <Text className="text-lg text-black">Close</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+    <Modal isVisible={isModalVisible} onClose={() => setisModalVisible(false)}>
+      <FilterSection actualFilterData={actualFilterData} setFilter={setFilter} />
+      <SortOrderSection actualSortOrder={actualSortOrder} setSortOrder={setSortOrder} />
+      <SortKeySection actualSortKey={actualSortKey} setSortKey={setSortKey} />
+      <Button label="Close" onPress={() => setisModalVisible(false)} className="mx-auto mt-4 px-6" />
     </Modal>
   );
 };

@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Quest } from '@/components/views/quests/one-time/constants/QuestsConstants';
+import { View, Text } from 'react-native';
+import { Modal } from 'react-native-paper';
+import EmojiPickerComponent from './elements/EmojiPicker';
+import MarkAsImportant from './elements/MarkAsImportant';
+import Button from '@/components/shared/button/Button';
+import Input from '@/components/shared/input/Input';
+import TextArea from '@/components/shared/text-area/TextArea';
+import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/SnackbarContext';
 
 interface AddQuestModalProps {
   isModalVisible: boolean;
@@ -11,76 +16,50 @@ interface AddQuestModalProps {
 const AddQuestModal: React.FC<AddQuestModalProps> = ({ isModalVisible, setIsModalVisible }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [emoji, setEmoji] = useState('🌟');
+  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
+  const [isImportant, setIsImportant] = useState(false);
   const [date, setDate] = useState(new Date());
+
+  const { showSnackbar } = useSnackbar();
 
   const handleAddQuest = () => {
     if (!title.trim() || !description.trim()) {
+      showSnackbar({ text: 'Please fill in all fields!', variant: SnackbarVariantEnum.INFO });
       return;
     }
 
-    const newQuest: Quest = {
-      id: Date.now(),
+    console.log({
       title,
       description,
-      completed: false,
-      emoji,
-      date: date.toISOString(),
-    };
+      emoji: selectedEmoji,
+      important: isImportant,
+      date,
+    });
 
+    showSnackbar({ text: 'Quest added successfully!', variant: SnackbarVariantEnum.SUCCESS });
     setIsModalVisible(false);
     setTitle('');
     setDescription('');
-    setEmoji('🌟');
+    setSelectedEmoji('🌟');
+    setIsImportant(false);
     setDate(new Date());
   };
 
+  const handleToggle = () => {
+    setIsImportant(!isImportant);
+  };
+
   return (
-    <Modal visible={isModalVisible} transparent animationType="slide" onRequestClose={() => setIsModalVisible(false)}>
-      <View className="flex-1 bg-black/50 justify-center items-center">
-        <View className="bg-white w-11/12 rounded-lg p-6">
-          <Text className="text-lg font-bold text-center mb-4">Add New Quest</Text>
-          <TextInput
-            className="border border-gray-300 rounded-md p-3 mb-4"
-            placeholder="Quest Title"
-            value={title}
-            onChangeText={setTitle}
-          />
-          <TextInput
-            className="border border-gray-300 rounded-md p-3 mb-4 h-24 text-base"
-            placeholder="Quest Description"
-            value={description}
-            onChangeText={setDescription}
-            multiline
-          />
-
-          <View className="flex-row items-center justify-between mb-4">
-            <Text className="text-base font-semibold">Emoji:</Text>
-            <TouchableOpacity
-              className="flex-row items-center bg-blue-500 px-3 py-2 rounded-md"
-              onPress={() => setEmoji(emoji === '🌟' ? '🔥' : '🌟')}
-            >
-              <Text className="text-white text-lg mr-2">{emoji}</Text>
-              <Text className="text-white font-semibold">Change</Text>
-            </TouchableOpacity>
-          </View>
-          <View className="flex-row justify-between mt-4">
-            <TouchableOpacity
-              className="flex-row items-center bg-red-500 py-2 px-4 rounded-md"
-              onPress={() => setIsModalVisible(false)}
-            >
-              <Ionicons name="close" size={20} color="#fff" />
-              <Text className="text-white font-semibold ml-2">Cancel</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              className="flex-row items-center bg-green-500 py-2 px-4 rounded-md"
-              onPress={handleAddQuest}
-            >
-              <Ionicons name="checkmark" size={20} color="#fff" />
-              <Text className="text-white font-semibold ml-2">Add</Text>
-            </TouchableOpacity>
-          </View>
+    <Modal visible={isModalVisible} onDismiss={() => setIsModalVisible(false)}>
+      <View className="p-6 w-11/12 mx-auto bg-white rounded-lg flex gap-6">
+        <Text className="text-lg font-bold text-center">Add New Quest</Text>
+        <Input placeholder="Title*" value={title} onChangeText={setTitle} />
+        <TextArea placeholder="Description" value={description} onChangeText={setDescription} />
+        <EmojiPickerComponent selectedEmoji={selectedEmoji} onEmojiSelected={emoji => setSelectedEmoji(emoji)} />
+        <MarkAsImportant isImportant={isImportant} onToggle={handleToggle} />
+        <View className="flex-row justify-between">
+          <Button label="Cancel" onPress={() => setIsModalVisible(false)} className="rounded-lg" variant="outlined" />
+          <Button label="Add Quest" onPress={handleAddQuest} className="rounded-lg" />
         </View>
       </View>
     </Modal>

@@ -10,9 +10,11 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props 
   return (
     <DrawerContentScrollView {...props}>
       <View className="px-2 py-4">
-        <TouchableOpacity onPress={() => props.navigation.closeDrawer()} className="ml-auto">
-          <Ionicons name="close" size={22} color="black" />
-        </TouchableOpacity>
+        <View className="flex items-end">
+          <TouchableOpacity onPress={() => props.navigation.closeDrawer()} className="p-[0.1] ml-auto">
+            <Ionicons name="close" size={22} color="black" />
+          </TouchableOpacity>
+        </View>
 
         <View className="flex gap-4">
           <RegisterConfig />

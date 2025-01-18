@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Text, FlatList } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Button from '@/components/shared/button/Button';
 import { exampleQuests, Quest, QuestFilterMap } from '@/components/views/quests/one-time/constants/QuestsConstants';
 import AddQuestModal from '@/components/views/quests/one-time/elements/AddQuestModal/AddQuestModal';
 import ConfigModal from '@/components/views/quests/one-time/elements/ConfigModal/ConfigModal';
@@ -31,13 +32,13 @@ const OneTimeQuests: React.FC = () => {
 
   const {
     data: filteredQuests,
-    actualFilterValue,
+    actualFilterData,
     setFilter,
   } = useFilter({
     data: searchedData,
     initialFilter: {
       key: 'completed',
-      value: QuestFilterMap.get('ALL')!,
+      value: QuestFilterMap.get('ALL')!.value,
     },
   });
 
@@ -73,17 +74,16 @@ const OneTimeQuests: React.FC = () => {
         ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
       />
 
-      <TouchableOpacity
-        className="bg-blue-500 p-3 rounded-full shadow-lg flex-row items-center w-max self-center mt-4"
+      <Button
+        label="Add new Quest"
         onPress={() => setIsAddQuestModalVisible(true)}
-      >
-        <Ionicons name="add-circle-outline" size={20} color="#fff" />
-        <Text className="text-white ml-2 font-semibold">Add New Quest</Text>
-      </TouchableOpacity>
+        startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
+        className="py-3 mx-auto"
+      />
 
       <ConfigModal
         isModalVisible={isConfigModalVisible}
-        actualFilterValue={actualFilterValue}
+        actualFilterData={actualFilterData}
         actualSortKey={actualSortKey}
         actualSortOrder={actualSortOrder}
         setisModalVisible={setIsConfigModalVisible}

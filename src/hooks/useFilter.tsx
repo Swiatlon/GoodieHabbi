@@ -1,11 +1,15 @@
 import { useState, useMemo } from 'react';
 
 export type FilterValueType = string | number | null | boolean;
+export interface ActualFilterData {
+  key: string;
+  value: FilterValueType;
+}
 
 interface FilterOptions<T> {
   data: T[];
   initialFilter: {
-    key: string;
+    key: keyof T;
     value: FilterValueType;
   };
 }
@@ -13,8 +17,12 @@ interface FilterOptions<T> {
 export const useFilter = <T,>({ data, initialFilter }: FilterOptions<T>) => {
   const [actualFilter, setActualFilter] = useState(initialFilter);
 
-  const setFilter = (key: string, value: FilterValueType) => {
+  const setFilter = (key: keyof T, value: FilterValueType) => {
     setActualFilter({ key, value });
+  };
+
+  const setActualFilterKey = (key: keyof T) => {
+    setActualFilter(prev => ({ ...prev, key }));
   };
 
   const filteredData = useMemo(() => {
@@ -24,12 +32,16 @@ export const useFilter = <T,>({ data, initialFilter }: FilterOptions<T>) => {
       return data;
     }
 
-    return data.filter(item => item[key as keyof T] === value);
+    return data.filter(item => item[key] === value);
   }, [data, actualFilter]);
 
   return {
     data: filteredData,
-    actualFilterValue: actualFilter.value,
+    actualFilterData: {
+      key: actualFilter.key,
+      value: actualFilter.value,
+    },
     setFilter,
+    setActualFilterKey,
   };
 };

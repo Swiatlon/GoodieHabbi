@@ -6,12 +6,13 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "userInterfaceStyle": "light",
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/images/icon.png",
         "backgroundColor": "#316AC9"
@@ -33,6 +34,10 @@
           "imageWidth": 600,
           "resizeMode": "cover"
         }
+      ],
+      [
+        "./src/plugins/withDisabledForcedDarkModeAndroid.js",
+        {}
       ]
     ],
     "experiments": {
