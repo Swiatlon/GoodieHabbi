@@ -3,10 +3,10 @@ import { View, Text, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
 import { QuestFilterMap } from '@/components/views/quests/constants/quest-constants';
-import AddQuestModal from '@/components/views/quests/one-time/add-quest-modal/add-quest-modal';
-import OneTimeQuestItem from '@/components/views/quests/one-time/list/one-time-quest-item';
+import AddQuestModal from '@/components/views/quests/one-time/add-quest-modal/add-one-time-quest-modal';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
 import Header from '@/components/views/quests/reusable/header';
+import SeasonalQuestItem from '@/components/views/quests/seasonal/list/seasonal-quest-item';
 import { exampleSeasonalQuests, ISeasonalQuest } from '@/contract/quest';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
@@ -71,7 +71,7 @@ const SeasonalQuests: React.FC = () => {
       <FlatList
         data={sortedData}
         keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => <OneTimeQuestItem quest={item} setQuests={setQuests} />}
+        renderItem={({ item }) => <SeasonalQuestItem quest={item} setQuests={setQuests} />}
         ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
       />
 

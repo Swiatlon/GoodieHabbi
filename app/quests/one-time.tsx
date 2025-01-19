@@ -3,10 +3,10 @@ import { View, Text, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
 import { QuestFilterMap } from '@/components/views/quests/constants/quest-constants';
-import AddQuestModal from '@/components/views/quests/one-time/add-quest-modal/add-quest-modal';
+import AddQuestModal from '@/components/views/quests/one-time/add-quest-modal/add-one-time-quest-modal';
+import OneTimeQuestItem from '@/components/views/quests/one-time/list/one-time-quest-item';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
 import Header from '@/components/views/quests/reusable/header';
-import OneTimeQuestItem from '@/components/views/quests/one-time/list/one-time-quest-item';
 import { exampleOneTimeQuests, IOneTimeQuest } from '@/contract/quest';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
@@ -79,7 +79,7 @@ const OneTimeQuests: React.FC = () => {
         label="Add new Quest"
         onPress={() => setIsAddQuestModalVisible(true)}
         startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
-        className="py-3 mx-auto"
+        className="mx-auto py-2 mt-4"
       />
 
       <ConfigModal<IOneTimeQuest>

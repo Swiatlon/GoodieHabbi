@@ -8,12 +8,12 @@ import Input from '@/components/shared/input/input';
 import TextArea from '@/components/shared/text-area/text-area';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 
-interface AddQuestModalProps {
+interface AddOneTimeQuestModalProps {
   isModalVisible: boolean;
   setIsModalVisible: (visible: boolean) => void;
 }
 
-const AddQuestModal: React.FC<AddQuestModalProps> = ({ isModalVisible, setIsModalVisible }) => {
+const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isModalVisible, setIsModalVisible }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
@@ -66,4 +66,4 @@ const AddQuestModal: React.FC<AddQuestModalProps> = ({ isModalVisible, setIsModa
   );
 };
 
-export default AddQuestModal;
+export default AddOneTimeQuestModal;

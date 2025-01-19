@@ -1,6 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View } from 'react-native';
+import QuestItemCheckmark from '../../reusable/quest-item/quest-item-checkmark';
+import QuestItemContainer from '../../reusable/quest-item/quest-item-container';
+import QuestItemDate from '../../reusable/quest-item/quest-item-date';
+import QuestItemEmoji from '../../reusable/quest-item/quest-item-emoji';
+import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
+import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
 import { IOneTimeQuest } from '@/contract/quest';
 
 interface OneTimeQuestItemProps {
@@ -9,36 +14,21 @@ interface OneTimeQuestItemProps {
 }
 
 const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest, setQuests }) => {
-  const toggleComplete = (id: number): void => {
-    setQuests(prev => prev.map(quest => (quest.id === id ? { ...quest, completed: !quest.completed } : quest)));
+  const toggleComplete = (): void => {
+    setQuests(prev => prev.map(q => (q.id === quest.id ? { ...q, completed: !q.completed } : q)));
   };
-
   return (
-    <View
-      className={`flex flex-row items-center justify-between py-5 px-4 border-b border-gray-300 ${
-        quest.completed ? 'bg-gray-100' : ''
-      }`}
-    >
+    <QuestItemContainer completed={quest.completed}>
       <View className="flex-1 flex-row items-center">
-        {quest.emoji && <Text className="mr-4 text-2xl">{quest.emoji}</Text>}
-        <View>
-          <Text
-            className={`text-lg ${quest.completed ? 'line-through [text-decoration-thickness:3px] text-gray-500' : ''}`}
-          >
-            {quest.title}
-          </Text>
-          <Text className="text-sm text-gray-500">{quest.description}</Text>
-          <Text className="text-xs text-gray-400 mt-1">{new Date(quest.date).toLocaleDateString()}</Text>
+        <QuestItemEmoji emoji={quest.emoji} />
+        <View className="flex-1 gap-1">
+          <QuestItemTitle title={quest.title} description={quest.description} completed={quest.completed} />
+          <QuestItemPriority priority={quest.priority} />
+          <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
         </View>
       </View>
-      <TouchableOpacity onPress={() => toggleComplete(quest.id)}>
-        <Ionicons
-          name={quest.completed ? 'checkmark-circle' : 'ellipse-outline'}
-          size={24}
-          color={quest.completed ? '#4caf50' : '#9e9e9e'}
-        />
-      </TouchableOpacity>
-    </View>
+      <QuestItemCheckmark completed={quest.completed} onToggle={toggleComplete} />
+    </QuestItemContainer>
   );
 };
 

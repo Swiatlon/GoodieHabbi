@@ -2,11 +2,14 @@ export const exampleOneTimeQuests: IOneTimeQuest[] = [
   {
     id: 1,
     title: 'Buy Groceries',
-    description: 'Buy vegetables.',
+    description:
+      'To show the priority of a quest in your React Native component, you can add a new UI element to display the priority property if it exists. Heres how you can modify the OneTimeQuestItem component:',
     completed: false,
     emoji: '🛒',
-    date: '2025-01-01',
+    startDate: '2025-01-01',
+    endDate: '2025-01-20',
     isImportant: true,
+    priority: 'high',
   },
   {
     id: 2,
@@ -14,8 +17,10 @@ export const exampleOneTimeQuests: IOneTimeQuest[] = [
     description: 'Clean thoroughly.',
     completed: false,
     emoji: '🧹',
-    date: '2025-01-02',
+    startDate: '2025-01-02',
+    endDate: '2025-01-20',
     isImportant: false,
+    priority: 'medium',
   },
   {
     id: 3,
@@ -23,7 +28,17 @@ export const exampleOneTimeQuests: IOneTimeQuest[] = [
     description: 'Submit the report.',
     completed: true,
     emoji: '📄',
-    date: '2025-01-03',
+    endDate: '2025-05-20',
+    isImportant: false,
+    priority: 'low',
+  },
+  {
+    id: 4,
+    title: 'Call Mom',
+    description: 'Check in and see how she’s doing.',
+    completed: false,
+    emoji: '📞',
+    startDate: '2025-01-15',
     isImportant: false,
   },
 ];
@@ -68,6 +83,7 @@ interface IQuest {
   completed: boolean;
   isImportant: boolean;
   emoji?: string;
+  priority?: 'low' | 'medium' | 'high';
 }
 
 export interface ISeasonalQuest extends IQuest {
@@ -76,5 +92,6 @@ export interface ISeasonalQuest extends IQuest {
 }
 
 export interface IOneTimeQuest extends IQuest {
-  date: string;
+  startDate?: string;
+  endDate?: string;
 }
