@@ -8,7 +8,6 @@ export const exampleOneTimeQuests: IOneTimeQuest[] = [
     emoji: '🛒',
     startDate: '2025-01-01',
     endDate: '2025-01-20',
-    isImportant: true,
     priority: 'high',
   },
   {
@@ -19,7 +18,6 @@ export const exampleOneTimeQuests: IOneTimeQuest[] = [
     emoji: '🧹',
     startDate: '2025-01-02',
     endDate: '2025-01-20',
-    isImportant: false,
     priority: 'medium',
   },
   {
@@ -29,7 +27,6 @@ export const exampleOneTimeQuests: IOneTimeQuest[] = [
     completed: true,
     emoji: '📄',
     endDate: '2025-05-20',
-    isImportant: false,
     priority: 'low',
   },
   {
@@ -39,7 +36,6 @@ export const exampleOneTimeQuests: IOneTimeQuest[] = [
     completed: false,
     emoji: '📞',
     startDate: '2025-01-15',
-    isImportant: false,
   },
 ];
 
@@ -52,7 +48,6 @@ export const exampleSeasonalQuests: ISeasonalQuest[] = [
     emoji: '🛒',
     startDate: '2025-01-01',
     endDate: '2025-01-05',
-    isImportant: true,
   },
   {
     id: 2,
@@ -62,7 +57,6 @@ export const exampleSeasonalQuests: ISeasonalQuest[] = [
     emoji: '🧹',
     startDate: '2025-01-02',
     endDate: '2025-01-07',
-    isImportant: false,
   },
   {
     id: 3,
@@ -72,7 +66,6 @@ export const exampleSeasonalQuests: ISeasonalQuest[] = [
     emoji: '📄',
     startDate: '2025-01-03',
     endDate: '2025-01-10',
-    isImportant: false,
   },
 ];
 
@@ -81,7 +74,6 @@ interface IQuest {
   title: string;
   description: string;
   completed: boolean;
-  isImportant: boolean;
   emoji?: string;
   priority?: 'low' | 'medium' | 'high';
 }

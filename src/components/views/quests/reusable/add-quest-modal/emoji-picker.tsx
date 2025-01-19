@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import EmojiPicker, { EmojiType } from 'rn-emoji-keyboard';
 import Select from '@/components/shared/select/select';
 
 interface EmojiPickerComponentProps {
   selectedEmoji: string | null;
   onEmojiSelected: (emoji: string | null) => void;
+  formVersion?: boolean;
+  label?: string;
 }
 
-const EmojiPickerComponent: React.FC<EmojiPickerComponentProps> = ({ selectedEmoji, onEmojiSelected }) => {
+const EmojiPickerComponent: React.FC<EmojiPickerComponentProps> = ({
+  selectedEmoji,
+  onEmojiSelected,
+  formVersion,
+  label,
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handlePick = (emojiObject: EmojiType) => {
@@ -17,10 +24,11 @@ const EmojiPickerComponent: React.FC<EmojiPickerComponentProps> = ({ selectedEmo
   };
 
   return (
-    <View>
+    <View className="flex gap-2">
+      {formVersion && label && <Text className="text-sm font-semibold text-gray-500">{label}:</Text>}
       <Select
         placeholder="Tap to pick emoji for quest"
-        placeholderWhenSelected="Emoji"
+        placeholderWhenSelected=" "
         value={selectedEmoji}
         onPress={() => setIsOpen(true)}
         onClear={() => onEmojiSelected(null)}

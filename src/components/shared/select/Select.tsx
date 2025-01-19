@@ -25,7 +25,7 @@ const Select: React.FC<SelectProps> = ({
       <TouchableOpacity onPress={onPress} className="flex-1">
         <TextInput
           placeholder={placeholder}
-          value={value ? `${placeholderWhenSelected || 'Selected'}: ${value}` : undefined}
+          value={value ? `${placeholderWhenSelected || 'Selected'} ${value}` : undefined}
           editable={false}
           className="text-base text-black"
         />

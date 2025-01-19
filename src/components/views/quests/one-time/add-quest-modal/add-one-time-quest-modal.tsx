@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { Modal } from 'react-native-paper';
 import EmojiPickerComponent from '../../reusable/add-quest-modal/emoji-picker';
-import MarkAsImportant from '../../reusable/add-quest-modal/mark-as-important';
+import PriorityPicker from '../../reusable/add-quest-modal/priority-picker';
 import Button from '@/components/shared/button/button';
 import Input from '@/components/shared/input/input';
 import TextArea from '@/components/shared/text-area/text-area';
@@ -16,14 +16,14 @@ interface AddOneTimeQuestModalProps {
 const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isModalVisible, setIsModalVisible }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
-  const [isImportant, setIsImportant] = useState(false);
+  const [selectedEmoji, setSelectedEmoji] = useState<string | null>('🌟');
+  const [priority, setPriority] = useState<'low' | 'medium' | 'high' | null>(null);
   const [date, setDate] = useState(new Date());
 
   const { showSnackbar } = useSnackbar();
 
   const handleAddQuest = () => {
-    if (!title.trim() || !description.trim()) {
+    if (!title.trim() || !description.trim() || !priority) {
       showSnackbar({ text: 'Please fill in all fields!', variant: SnackbarVariantEnum.INFO });
       return;
     }
@@ -32,7 +32,7 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isModalVisi
       title,
       description,
       emoji: selectedEmoji,
-      important: isImportant,
+      priority,
       date,
     });
 
@@ -41,22 +41,29 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isModalVisi
     setTitle('');
     setDescription('');
     setSelectedEmoji('🌟');
-    setIsImportant(false);
+    setPriority(null);
     setDate(new Date());
-  };
-
-  const handleToggle = () => {
-    setIsImportant(!isImportant);
   };
 
   return (
     <Modal visible={isModalVisible} onDismiss={() => setIsModalVisible(false)}>
       <View className="p-6 w-11/12 mx-auto bg-white rounded-lg flex gap-6">
         <Text className="text-lg font-bold text-center">Add New Quest</Text>
-        <Input placeholder="Title*" value={title} onChangeText={setTitle} />
-        <TextArea placeholder="Description" value={description} onChangeText={setDescription} />
-        <EmojiPickerComponent selectedEmoji={selectedEmoji} onEmojiSelected={emoji => setSelectedEmoji(emoji)} />
-        <MarkAsImportant isImportant={isImportant} onToggle={handleToggle} />
+        <Input placeholder="Enter the title" value={title} onChangeText={setTitle} formVersion label="Title" />
+        <TextArea
+          placeholder="Enter the description"
+          value={description}
+          onChangeText={setDescription}
+          formVersion
+          label="Description"
+        />
+        <EmojiPickerComponent
+          selectedEmoji={selectedEmoji}
+          onEmojiSelected={emoji => setSelectedEmoji(emoji)}
+          formVersion
+          label="Emoji"
+        />
+        <PriorityPicker priority={priority} setPriority={setPriority} />
         <View className="flex-row justify-between">
           <Button label="Cancel" onPress={() => setIsModalVisible(false)} className="rounded-lg" variant="outlined" />
           <Button label="Add Quest" onPress={handleAddQuest} className="rounded-lg" />
