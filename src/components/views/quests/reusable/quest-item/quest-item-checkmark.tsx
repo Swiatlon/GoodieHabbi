@@ -9,7 +9,7 @@ interface QuestItemCheckmarkProps {
 
 const QuestItemCheckmark: React.FC<QuestItemCheckmarkProps> = ({ completed, onToggle }) => {
   return (
-    <TouchableOpacity onPress={onToggle}>
+    <TouchableOpacity onPress={onToggle} className="ml-4">
       <Ionicons
         name={completed ? 'checkmark-circle' : 'ellipse-outline'}
         size={24}
