@@ -10,7 +10,7 @@ interface InputProps extends TextInputProps {
 const Input: React.FC<InputProps> = ({ className = '', formVersion, label, ...props }) => {
   return (
     <View className="flex gap-2">
-      {formVersion && label && <Text className="text-sm font-semibold text-gray-500">{label}:</Text>}
+      {formVersion && label && <Text className="text-sm font-semibold text-gray-500">{label}</Text>}
       <TextInput className={`border border-gray-300 rounded-md p-3 ${className}`} {...props} />
     </View>
   );

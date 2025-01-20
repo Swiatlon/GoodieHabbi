@@ -21,7 +21,7 @@ const Select: React.FC<SelectProps> = ({
   className,
 }) => {
   return (
-    <View className={`flex-row items-center border border-gray-300 rounded-lg px-3 py-2 ${className}`}>
+    <View className={`flex-row items-center border border-gray-300 rounded-lg pl-1 py-2 ${className}`}>
       <TouchableOpacity onPress={onPress} className="flex-1">
         <TextInput
           placeholder={placeholder}
@@ -31,7 +31,7 @@ const Select: React.FC<SelectProps> = ({
         />
       </TouchableOpacity>
       {value && onClear && (
-        <TouchableOpacity onPress={onClear} className="ml-2">
+        <TouchableOpacity onPress={onClear} className="pr-2">
           <Ionicons name="close-circle" size={20} color="#888" />
         </TouchableOpacity>
       )}

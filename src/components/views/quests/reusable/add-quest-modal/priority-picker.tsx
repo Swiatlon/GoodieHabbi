@@ -24,7 +24,7 @@ const PriorityPicker: React.FC<PriorityPickerProps> = ({ priority, setPriority }
   return (
     <View className="flex gap-2">
       <Text className="text-sm font-semibold text-gray-500">Priority:</Text>
-      <View className={`rounded-lg border  border-gray-300`}>
+      <View className={`rounded-lg border border-gray-300`}>
         <RNPickerSelect
           onValueChange={setPriority}
           items={[
@@ -35,7 +35,7 @@ const PriorityPicker: React.FC<PriorityPickerProps> = ({ priority, setPriority }
           value={priority}
           placeholder={{
             label: 'Select Priority',
-            value: null,
+            value: '',
             color: '#6b7280',
           }}
           style={{
