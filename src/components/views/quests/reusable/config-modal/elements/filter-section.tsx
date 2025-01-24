@@ -17,22 +17,21 @@ const FilterSection = <T extends QuestType>({ actualFilterData, setFilter }: Fil
     <View className="flex gap-4">
       <Text className="text-lg font-semibold text-center">Filter Quests:</Text>
       <View className="flex-row flex-wrap justify-around">
-        {filters.map(([key, { key: filterKey, value, icon, color }]) => {
+        {filters.map(([key, { key: filterKey, value, icon, color, label }]) => {
           const isActive = actualFilterData.key === filterKey && actualFilterData.value === value;
 
           return (
-            <IconButton
-              key={key}
-              onPress={() => {
-                setFilter(filterKey, value);
-              }}
-              className="flex items-center p-2"
-            >
-              <Ionicons name={icon} size={28} color={color} />
-              <Text className={`text-sm ${isActive && `font-bold text-primary`}`}>
-                {key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()}
-              </Text>
-            </IconButton>
+            <View key={key} className="flex items-center p-2 w-1/3">
+              <IconButton
+                onPress={() => {
+                  setFilter(filterKey, value);
+                }}
+                className="flex items-center"
+              >
+                <Ionicons name={icon} size={28} color={color} />
+                <Text className={`text-sm text-center ${isActive && `font-bold text-primary`}`}>{label}</Text>
+              </IconButton>
+            </View>
           );
         })}
       </View>
