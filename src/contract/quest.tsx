@@ -69,6 +69,57 @@ export const exampleSeasonalQuests: ISeasonalQuest[] = [
   },
 ];
 
+export const exampleDailyQuests: IQuest[] = [
+  {
+    id: 1,
+    title: 'Buy Fresh Groceries',
+    description: 'Pick up fresh produce, milk, or bread for the day.',
+    completed: false,
+    emoji: '🛒',
+    priority: 'high',
+  },
+  {
+    id: 2,
+    title: 'Quick Clean-Up',
+    description: 'Spend 15 minutes tidying up the most cluttered area.',
+    completed: false,
+    emoji: '🧹',
+    priority: 'medium',
+  },
+  {
+    id: 3,
+    title: 'Daily Report Notes',
+    description: 'Write a brief summary of your day or any pending tasks.',
+    completed: false,
+    emoji: '📄',
+    priority: 'low',
+  },
+  {
+    id: 4,
+    title: 'Check in with Mom',
+    description: 'Send a quick message or call to ask how she’s doing.',
+    completed: false,
+    emoji: '📞',
+    priority: 'high',
+  },
+  {
+    id: 5,
+    title: 'Stay Hydrated',
+    description: 'Drink at least 8 glasses of water today.',
+    completed: false,
+    emoji: '💧',
+    priority: 'medium',
+  },
+  {
+    id: 6,
+    title: 'Stretch or Exercise',
+    description: 'Do 10 minutes of stretching or light exercise.',
+    completed: false,
+    emoji: '🏋️',
+    priority: 'medium',
+  },
+];
+
 interface IQuest {
   id: number;
   title: string;
@@ -87,3 +138,5 @@ export interface IOneTimeQuest extends IQuest {
   startDate?: string;
   endDate?: string;
 }
+
+export interface IDailyQuests extends IQuest {}
