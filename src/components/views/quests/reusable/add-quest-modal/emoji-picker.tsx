@@ -30,6 +30,7 @@ const EmojiPickerComponent: React.FC<EmojiPickerComponentProps> = ({
         placeholder="Tap to pick emoji for quest"
         placeholderWhenSelected=" "
         value={selectedEmoji}
+        isEditable={false}
         onPress={() => setIsOpen(true)}
         onClear={() => onEmojiSelected(null)}
       />

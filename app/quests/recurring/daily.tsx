@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
-import { QuestFilterMap } from '@/components/views/quests/constants/quest-constants';
-import AddDailyQuestModal from '@/components/views/quests/one-time/add-quest-modal/add-daily-quest-modal';
+import AddDailyQuestModal from '@/components/views/quests/daily/add-quest-modal/add-daily-quest-modal';
+import { DailyQuestFilterMap } from '@/components/views/quests/daily/constants/constants';
 import OneTimeQuestItem from '@/components/views/quests/one-time/list/one-time-quest-item';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
 import Header from '@/components/views/quests/reusable/header';
@@ -39,7 +39,7 @@ const DailyQuests: React.FC = () => {
     data: searchedData,
     initialFilter: {
       key: 'completed',
-      value: QuestFilterMap.get('ALL')!.value,
+      value: DailyQuestFilterMap.get('ALL')!.value,
     },
   });
 
@@ -87,11 +87,12 @@ const DailyQuests: React.FC = () => {
         actualFilterData={actualFilterData}
         actualSortKey={actualSortKey}
         actualSortOrder={actualSortOrder}
+        filtersMap={DailyQuestFilterMap}
         setisModalVisible={setIsConfigModalVisible}
         setSortOrder={setSortOrder}
         setSortKey={setSortKey}
         setFilter={setFilter}
-        isDailyModal={true}
+        wihoutDate
       />
 
       <AddDailyQuestModal isModalVisible={isAddQuestModalVisible} setIsModalVisible={setIsAddQuestModalVisible} />

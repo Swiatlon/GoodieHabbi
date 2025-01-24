@@ -13,6 +13,7 @@ interface DatePickerModalProps {
   maxDate?: Date | null;
   label?: string;
   formVersion?: boolean;
+  isDisabled?: boolean;
 }
 
 const DatePickerModal: React.FC<DatePickerModalProps> = ({
@@ -22,6 +23,7 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({
   maxDate,
   label,
   formVersion,
+  isDisabled,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -42,6 +44,7 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({
   };
 
   const momentDate = moment(selectedDate);
+
   return (
     <View className="flex gap-2">
       {formVersion && label && <Text className="text-sm font-semibold text-gray-500">{label}:</Text>}
@@ -51,6 +54,8 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({
         value={momentDate.isValid() ? momentDate.format('DD.MM.YYYY') : null}
         onPress={handleOpen}
         onClear={handleClear}
+        isEditable={false}
+        isDisabled={isDisabled}
       />
 
       <Modal isVisible={isVisible} onClose={handleClose}>

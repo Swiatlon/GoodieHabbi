@@ -10,6 +10,8 @@ interface SelectProps {
   onClear?: () => void;
   children?: ReactNode;
   className?: string;
+  isEditable?: boolean;
+  isDisabled?: boolean;
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -19,18 +21,24 @@ const Select: React.FC<SelectProps> = ({
   onPress,
   onClear,
   className,
+  isEditable,
+  isDisabled,
 }) => {
   return (
-    <View className={`flex-row items-center border border-gray-300 rounded-lg pl-1 py-2 ${className}`}>
-      <TouchableOpacity onPress={onPress} className="flex-1">
+    <View
+      className={`flex-row items-center border rounded-lg pl-1 py-2 ${
+        isDisabled ? 'border-gray-200 bg-gray-100' : 'border-gray-300'
+      } ${className}`}
+    >
+      <TouchableOpacity onPress={!isDisabled ? onPress : undefined} className="flex-1">
         <TextInput
           placeholder={placeholder}
           value={value ? `${placeholderWhenSelected || 'Selected'} ${value}` : undefined}
-          editable={false}
-          className="text-base text-black"
+          editable={isEditable && !isDisabled}
+          className={`text-base ${isDisabled ? 'text-gray-400' : 'text-black'}`}
         />
       </TouchableOpacity>
-      {value && onClear && (
+      {value && onClear && !isDisabled && (
         <TouchableOpacity onPress={onClear} className="pr-2">
           <Ionicons name="close-circle" size={20} color="#888" />
         </TouchableOpacity>

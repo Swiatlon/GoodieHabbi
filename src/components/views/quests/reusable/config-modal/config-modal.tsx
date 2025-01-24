@@ -1,4 +1,4 @@
-import { QuestType, QuestKeyType } from '../../constants/quest-constants';
+import { QuestType, QuestKeyType, IFilterMapValues } from '../../constants/quest-constants';
 import FilterSection from './elements/filter-section';
 import SortKeySection from './elements/sort-key-section';
 import SortOrderSection from './elements/sort-order-section';
@@ -12,7 +12,8 @@ interface ConfigModalProps<T extends QuestType> {
   actualSortOrder: SortOrderEnum;
   actualFilterData: ActualFilterData;
   actualSortKey: string | null;
-  isDailyModal?: boolean;
+  wihoutDate?: boolean;
+  filtersMap: Map<string, IFilterMapValues<T>>;
   setisModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setFilter: (key: QuestKeyType<T>, value: FilterValueType) => void;
   setSortKey: (key: string | null) => void;
@@ -24,7 +25,8 @@ const ConfigModal = <T extends QuestType>({
   actualFilterData,
   actualSortKey,
   actualSortOrder,
-  isDailyModal,
+  wihoutDate,
+  filtersMap,
   setisModalVisible,
   setSortOrder,
   setSortKey,
@@ -32,10 +34,10 @@ const ConfigModal = <T extends QuestType>({
 }: ConfigModalProps<T>) => {
   return (
     <Modal isVisible={isModalVisible} onClose={() => setisModalVisible(false)} className="flex gap-6">
-      <FilterSection<T> actualFilterData={actualFilterData} setFilter={setFilter} />
+      <FilterSection<T> actualFilterData={actualFilterData} setFilter={setFilter} filtersMap={filtersMap} />
       <SortOrderSection actualSortOrder={actualSortOrder} setSortOrder={setSortOrder} />
-      <SortKeySection actualSortKey={actualSortKey} setSortKey={setSortKey} withoutDate={isDailyModal} />
-      <Button label="Close" onPress={() => setisModalVisible(false)} className="mx-auto px-6" />
+      <SortKeySection actualSortKey={actualSortKey} setSortKey={setSortKey} withoutDate={wihoutDate} />
+      <Button label="Close" onPress={() => setisModalVisible(false)} className="mx-auto px-6 mt-4" />
     </Modal>
   );
 };

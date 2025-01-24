@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
-import { QuestFilterMap } from '@/components/views/quests/constants/quest-constants';
-import AddQuestModal from '@/components/views/quests/one-time/add-quest-modal/add-one-time-quest-modal';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
 import Header from '@/components/views/quests/reusable/header';
+import AddSeasonalQuestModal from '@/components/views/quests/seasonal/add-quest-modal/add-seasonal-quest-modal';
+import { SeasonalQuestsFilterMap } from '@/components/views/quests/seasonal/constants/constants';
 import SeasonalQuestItem from '@/components/views/quests/seasonal/list/seasonal-quest-item';
 import { exampleSeasonalQuests, ISeasonalQuest } from '@/contract/quest';
 import { useFilter } from '@/hooks/use-filter';
@@ -39,7 +39,7 @@ const SeasonalQuests: React.FC = () => {
     data: searchedData,
     initialFilter: {
       key: 'completed',
-      value: QuestFilterMap.get('ALL')!.value,
+      value: SeasonalQuestsFilterMap.get('ALL')!.value,
     },
   });
 
@@ -79,7 +79,7 @@ const SeasonalQuests: React.FC = () => {
         label="Add new Quest"
         onPress={() => setIsAddQuestModalVisible(true)}
         startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
-        className="py-3 mx-auto"
+        className="mx-auto py-2 mt-4"
       />
 
       <ConfigModal<ISeasonalQuest>
@@ -87,13 +87,15 @@ const SeasonalQuests: React.FC = () => {
         actualFilterData={actualFilterData}
         actualSortKey={actualSortKey}
         actualSortOrder={actualSortOrder}
+        filtersMap={SeasonalQuestsFilterMap}
         setisModalVisible={setIsConfigModalVisible}
         setSortOrder={setSortOrder}
         setSortKey={setSortKey}
         setFilter={setFilter}
+        wihoutDate
       />
 
-      <AddQuestModal isModalVisible={isAddQuestModalVisible} setIsModalVisible={setIsAddQuestModalVisible} />
+      <AddSeasonalQuestModal isModalVisible={isAddQuestModalVisible} setIsModalVisible={setIsAddQuestModalVisible} />
     </View>
   );
 };

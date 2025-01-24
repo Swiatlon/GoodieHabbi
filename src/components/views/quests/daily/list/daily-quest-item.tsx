@@ -5,16 +5,15 @@ import QuestItemContainer from '../../reusable/quest-item/quest-item-container';
 import QuestItemEmoji from '../../reusable/quest-item/quest-item-emoji';
 import QuestItemModal from '../../reusable/quest-item/quest-item-modal';
 import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
-import QuestItemSeason from '../../reusable/quest-item/quest-item-season';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
-import { ISeasonalQuest } from '@/contract/quest';
+import { IDailyQuests, IOneTimeQuest } from '@/contract/quest';
 
-interface SeasonalQuestItemProps {
-  quest: ISeasonalQuest;
-  setQuests: React.Dispatch<React.SetStateAction<ISeasonalQuest[]>>;
+interface DailyQuestItemProps {
+  quest: IOneTimeQuest;
+  setQuests: React.Dispatch<React.SetStateAction<IDailyQuests[]>>;
 }
 
-const SeasonalQuestItem: React.FC<SeasonalQuestItemProps> = ({ quest, setQuests }) => {
+const DailyQuestItem: React.FC<DailyQuestItemProps> = ({ quest, setQuests }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const toggleComplete = (): void => {
@@ -34,7 +33,6 @@ const SeasonalQuestItem: React.FC<SeasonalQuestItemProps> = ({ quest, setQuests 
               <View className="flex-1 gap-1">
                 <QuestItemTitle title={quest.title} description={quest.description} completed={quest.completed} />
                 <QuestItemPriority priority={quest.priority} />
-                <QuestItemSeason season={quest.season} />
               </View>
             </View>
           </TouchableOpacity>
@@ -45,4 +43,5 @@ const SeasonalQuestItem: React.FC<SeasonalQuestItemProps> = ({ quest, setQuests 
     </>
   );
 };
-export default SeasonalQuestItem;
+
+export default DailyQuestItem;

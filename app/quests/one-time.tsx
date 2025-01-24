@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
-import { QuestFilterMap } from '@/components/views/quests/constants/quest-constants';
 import AddQuestModal from '@/components/views/quests/one-time/add-quest-modal/add-one-time-quest-modal';
+import { OneTimeQuestsFilterMap } from '@/components/views/quests/one-time/constants/constants';
 import OneTimeQuestItem from '@/components/views/quests/one-time/list/one-time-quest-item';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
 import Header from '@/components/views/quests/reusable/header';
@@ -39,7 +39,7 @@ const OneTimeQuests: React.FC = () => {
     data: searchedData,
     initialFilter: {
       key: 'completed',
-      value: QuestFilterMap.get('ALL')!.value,
+      value: OneTimeQuestsFilterMap.get('ALL')!.value,
     },
   });
 
@@ -87,6 +87,7 @@ const OneTimeQuests: React.FC = () => {
         actualFilterData={actualFilterData}
         actualSortKey={actualSortKey}
         actualSortOrder={actualSortOrder}
+        filtersMap={OneTimeQuestsFilterMap}
         setisModalVisible={setIsConfigModalVisible}
         setSortOrder={setSortOrder}
         setSortKey={setSortKey}
