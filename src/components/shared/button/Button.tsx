@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, TouchableOpacity, GestureResponderEvent } from 'react-native';
 
-type StyleType = 'primary' | 'secondary' | 'danger';
+type StyleType = 'primary' | 'secondary' | 'danger' | 'accent';
 type Variant = 'contained' | 'outlined';
 
 interface ButtonProps {
@@ -29,6 +29,10 @@ const styleTypeColors: Record<StyleType, { contained: string; outlined: string }
     contained: 'bg-red-500',
     outlined: 'border border-red-500 bg-transparent',
   },
+  accent: {
+    contained: 'bg-purple-600',
+    outlined: 'border border-purple-600 bg-transparent',
+  },
 };
 
 const Button: React.FC<ButtonProps> = ({
@@ -46,7 +50,7 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <TouchableOpacity onPress={onPress} className={`${baseStyles} ${buttonStyles} ${className}`}>
       {startIcon}
-      {label && <Text className={`font-semibold ${textColor}`}>{label}</Text>}
+      {label && <Text className={`font-semibold  ${textColor}`}>{label}</Text>}
       {endIcon}
     </TouchableOpacity>
   );

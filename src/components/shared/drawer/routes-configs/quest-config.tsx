@@ -14,6 +14,11 @@ const QuestConfig = () => {
           route: 'quests/all',
         },
         {
+          label: 'Today Quests',
+          route: 'quests/today',
+          icon: <Ionicons name="today-outline" />,
+        },
+        {
           label: 'Seasonal Quests',
           route: 'quests/seasonal',
           icon: <Ionicons name="calendar-outline" />,

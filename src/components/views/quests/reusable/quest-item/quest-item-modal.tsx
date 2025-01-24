@@ -29,7 +29,11 @@ const QuestItemModal: React.FC<QuestItemModalProps> = ({ quest, isVisible, onClo
           <QuestItemPriority priority={quest.priority} />
           <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
         </View>
-        <Button label="Close" onPress={onClose} className="mx-auto px-4" />
+        <View className="flex-row justify-between mt-4">
+          <Button label="Delete" styleType="danger" onPress={onClose} />
+          <Button label="Close" onPress={onClose} />
+          <Button label="Edit" styleType="accent" onPress={onClose} />
+        </View>
       </View>
     </Modal>
   );

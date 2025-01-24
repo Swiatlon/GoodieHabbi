@@ -114,13 +114,16 @@ export const exampleSeasonalQuests: ISeasonalQuest[] = [
   },
 ];
 
-export const exampleDailyQuests: IQuest[] = [
+export const exampleDailyQuests: ITodayQuest[] = [
   {
     id: 1,
-    title: 'Buy Fresh Groceries',
-    description: 'Pick up fresh produce, milk, or bread for the day.',
+    title: 'Buy Groceries',
+    description:
+      'To show the priority of a quest in your React Native component, you can add a new UI element to display the priority property if it exists. Heres how you can modify the OneTimeQuestItem component:',
     completed: false,
     emoji: '🛒',
+    startDate: '2025-01-01',
+    endDate: '2025-01-20',
     priority: 'high',
   },
   {
@@ -186,3 +189,8 @@ export interface IOneTimeQuest extends IQuest {
 }
 
 export interface IDailyQuests extends IQuest {}
+
+export interface ITodayQuest extends IQuest {
+  startDate?: string;
+  endDate?: string;
+}
