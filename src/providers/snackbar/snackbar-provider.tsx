@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, Animated, TouchableOpacity } from 'react-native';
-import { Portal } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { SnackbarContext, SnackbarOptions, SnackbarVariantEnum } from './snackbar-context';
 
@@ -58,18 +57,16 @@ export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     <SnackbarContext.Provider value={{ showSnackbar }}>
       {children}
       {isVisible && snackbar && (
-        <Portal>
-          <Animated.View className={`z-99999 flex items-center`} style={{ opacity: fadeAnim }}>
-            <View
-              className={`fixed top-0 left-0 right-0 rounded-lg p-4 shadow-md w-11/12 m-4 flex-row items-center justify-between ${getSnackbarStyle()}`}
-            >
-              <Text className="text-white font-bold flex-1">{snackbar.text}</Text>
-              <TouchableOpacity onPress={handleCloseSnackbar}>
-                <Ionicons name="close" size={20} color="white" />
-              </TouchableOpacity>
-            </View>
-          </Animated.View>
-        </Portal>
+        <Animated.View className={`z-99999 flex items-center`} style={{ opacity: fadeAnim }}>
+          <View
+            className={`fixed top-0 left-0 right-0 rounded-lg p-4 shadow-md w-11/12 m-4 flex-row items-center justify-between ${getSnackbarStyle()}`}
+          >
+            <Text className="text-white font-bold flex-1">{snackbar.text}</Text>
+            <TouchableOpacity onPress={handleCloseSnackbar}>
+              <Ionicons name="close" size={20} color="white" />
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
       )}
     </SnackbarContext.Provider>
   );
