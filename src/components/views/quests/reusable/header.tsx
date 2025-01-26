@@ -26,7 +26,7 @@ const Header: React.FC<HeaderProps> = ({
         onPress={() => setIsConfigModalVisible(true)}
         icon={<Ionicons name="settings-outline" size={24} color="#1987EE" />}
       />
-      <Text className="text-2xl font-bold text-primary">{title}</Text>
+      <Text className="text-2xl font-bold text-primary text-center">{title}</Text>
       <IconButton
         onPress={() => setIsSearchVisible(prev => !prev)}
         icon={<Ionicons name={isSearchVisible ? 'close' : 'search-outline'} size={24} color="#1987EE" />}

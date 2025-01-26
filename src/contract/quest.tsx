@@ -168,6 +168,59 @@ export const exampleDailyQuests: ITodayQuest[] = [
   },
 ];
 
+export const exampleRepeatableQuests: IRepeatableQuest[] = [
+  {
+    id: 1,
+    title: 'Workout',
+    description: 'Go to the gym.',
+    completed: false,
+    emoji: '🏋️',
+    repeatType: 'weekly',
+    repeatDaysOfWeek: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
+    priority: 'high',
+  },
+  {
+    id: 2,
+    title: 'Water Plants',
+    description: 'Water the plants in the garden.',
+    completed: false,
+    emoji: '🌱',
+    repeatType: 'weekly',
+    repeatDaysOfWeek: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
+    priority: 'medium',
+  },
+  {
+    id: 3,
+    title: 'Monthly Report',
+    description: 'Prepare the monthly report.',
+    completed: false,
+    emoji: '📊',
+    repeatType: 'monthly',
+    repeatDateRange: { startDay: 7, endDay: 10 },
+    priority: 'high',
+  },
+  {
+    id: 4,
+    title: 'Pay Rent',
+    description: 'Ensure the rent is paid.',
+    completed: false,
+    emoji: '🏠',
+    repeatType: 'monthly',
+    repeatDateRange: { startDay: 1, endDay: 1 },
+    priority: 'high',
+  },
+  {
+    id: 5,
+    title: 'Pay Rent',
+    description: 'Ensure the rent is paid.',
+    completed: false,
+    emoji: '🏠',
+    repeatType: 'weekly',
+    repeatDaysOfWeek: ['monday', 'tuesday'],
+    priority: 'high',
+  },
+];
+
 interface IQuest {
   id: number;
   title: string;
@@ -191,6 +244,14 @@ export interface IOneTimeQuest extends IQuest {
 export interface IDailyQuests extends IQuest {}
 
 export interface ITodayQuest extends IQuest {
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface IRepeatableQuest extends IQuest {
+  repeatType: 'weekly' | 'monthly';
+  repeatDaysOfWeek?: ('monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday')[];
+  repeatDateRange?: { startDay: number; endDay: number };
   startDate?: string;
   endDate?: string;
 }
