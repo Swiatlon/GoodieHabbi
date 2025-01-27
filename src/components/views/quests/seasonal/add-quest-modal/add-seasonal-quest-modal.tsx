@@ -9,6 +9,7 @@ import Button from '@/components/shared/button/button';
 import Input from '@/components/shared/input/input';
 import Modal from '@/components/shared/modal/modal';
 import TextArea from '@/components/shared/text-area/text-area';
+import { PriorityEnum, SeasonEnum } from '@/contract/quest';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 
 interface AddSeasonalQuestModalProps {
@@ -20,27 +21,23 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isModalVi
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
-  const [priority, setPriority] = useState<'low' | 'medium' | 'high' | null>(null);
+  const [priority, setPriority] = useState<PriorityEnum | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [season, setSeason] = useState<'winter' | 'spring' | 'summer' | 'autumn' | null>(null);
+  const [season, setSeason] = useState<SeasonEnum | null>(null);
 
   const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (season) {
       const { startDate: seasonStart, endDate: seasonEnd } = seasonDates[season];
+
       setStartDate(new Date(seasonStart));
       setEndDate(new Date(seasonEnd));
     }
   }, [season]);
 
   const handleAddQuest = () => {
-    if (!title.trim() || !description.trim() || !priority || !season) {
-      showSnackbar({ text: 'Please fill in all required fields!', variant: SnackbarVariantEnum.INFO });
-      return;
-    }
-
     showSnackbar({ text: 'Quest added successfully!', variant: SnackbarVariantEnum.SUCCESS });
     setIsModalVisible(false);
     setTitle('');
@@ -56,7 +53,14 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isModalVi
     <Modal isVisible={isModalVisible} onClose={() => setIsModalVisible(false)}>
       <View className="bg-white rounded-lg px-0 gap-4">
         <Text className="text-lg font-bold text-center">Add New Quest</Text>
-        <Input placeholder="Enter the title*" value={title} onChangeText={setTitle} formVersion label="Title" />
+        <Input
+          placeholder="Enter the title"
+          value={title}
+          onChangeText={setTitle}
+          formVersion
+          label="Title:"
+          isRequired
+        />
         <TextArea
           placeholder="Enter the description"
           value={description}

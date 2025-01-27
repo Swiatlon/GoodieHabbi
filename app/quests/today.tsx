@@ -9,7 +9,7 @@ import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
 import { SortOrderEnum, useSort } from '@/hooks/use-sort';
 
-const OneTimeQuests: React.FC = () => {
+const TodayQuests: React.FC = () => {
   const [quests, setQuests] = useState<ITodayQuest[]>(exampleDailyQuests);
   const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
 
@@ -86,4 +86,4 @@ const OneTimeQuests: React.FC = () => {
   );
 };
 
-export default OneTimeQuests;
+export default TodayQuests;

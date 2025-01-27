@@ -1,3 +1,66 @@
+export enum PriorityEnum {
+  Low = 'low',
+  Medium = 'medium',
+  High = 'high',
+}
+
+export enum SeasonEnum {
+  Winter = 'winter',
+  Spring = 'spring',
+  Summer = 'summer',
+  Autumn = 'autumn',
+}
+
+export enum RepeatTypeEnum {
+  Weekly = 'weekly',
+  Monthly = 'monthly',
+}
+
+export enum WeekdayEnum {
+  Monday = 'monday',
+  Tuesday = 'tuesday',
+  Wednesday = 'wednesday',
+  Thursday = 'thursday',
+  Friday = 'friday',
+  Saturday = 'saturday',
+  Sunday = 'sunday',
+}
+
+interface IQuest {
+  id: number;
+  title: string;
+  description: string;
+  completed: boolean;
+  emoji?: string;
+  priority?: PriorityEnum;
+}
+
+export interface ISeasonalQuest extends IQuest {
+  startDate: string;
+  endDate: string;
+  season: SeasonEnum;
+}
+
+export interface IOneTimeQuest extends IQuest {
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface IDailyQuests extends IQuest {}
+
+export interface ITodayQuest extends IQuest {
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface IRepeatableQuest extends IQuest {
+  repeatType: RepeatTypeEnum;
+  repeatDaysOfWeek?: WeekdayEnum[];
+  repeatDateRange?: { startDay: number; endDay: number };
+  startDate?: string;
+  endDate?: string;
+}
+
 export const exampleOneTimeQuests: IOneTimeQuest[] = [
   {
     id: 1,
@@ -8,7 +71,7 @@ export const exampleOneTimeQuests: IOneTimeQuest[] = [
     emoji: '🛒',
     startDate: '2025-01-01',
     endDate: '2025-01-20',
-    priority: 'high',
+    priority: PriorityEnum.High,
   },
   {
     id: 2,
@@ -18,7 +81,7 @@ export const exampleOneTimeQuests: IOneTimeQuest[] = [
     emoji: '🧹',
     startDate: '2025-01-02',
     endDate: '2025-01-20',
-    priority: 'medium',
+    priority: PriorityEnum.Medium,
   },
   {
     id: 3,
@@ -27,7 +90,7 @@ export const exampleOneTimeQuests: IOneTimeQuest[] = [
     completed: true,
     emoji: '📄',
     endDate: '2025-05-20',
-    priority: 'low',
+    priority: PriorityEnum.Low,
   },
   {
     id: 4,
@@ -48,8 +111,8 @@ export const exampleSeasonalQuests: ISeasonalQuest[] = [
     emoji: '🛒',
     startDate: '2025-12-21',
     endDate: '2025-03-19',
-    season: 'winter',
-    priority: 'low',
+    season: SeasonEnum.Winter,
+    priority: PriorityEnum.Low,
   },
   {
     id: 4,
@@ -59,8 +122,8 @@ export const exampleSeasonalQuests: ISeasonalQuest[] = [
     emoji: '🌸',
     startDate: '2025-03-20',
     endDate: '2025-06-20',
-    season: 'spring',
-    priority: 'medium',
+    season: SeasonEnum.Spring,
+    priority: PriorityEnum.Medium,
   },
   {
     id: 5,
@@ -70,7 +133,7 @@ export const exampleSeasonalQuests: ISeasonalQuest[] = [
     emoji: '🌷',
     startDate: '2025-03-20',
     endDate: '2025-06-20',
-    season: 'spring',
+    season: SeasonEnum.Spring,
   },
   {
     id: 6,
@@ -80,7 +143,7 @@ export const exampleSeasonalQuests: ISeasonalQuest[] = [
     emoji: '🏖️',
     startDate: '2025-06-21',
     endDate: '2025-09-22',
-    season: 'summer',
+    season: SeasonEnum.Summer,
   },
   {
     id: 7,
@@ -90,7 +153,7 @@ export const exampleSeasonalQuests: ISeasonalQuest[] = [
     emoji: '🥾',
     startDate: '2025-06-21',
     endDate: '2025-09-22',
-    season: 'summer',
+    season: SeasonEnum.Summer,
   },
   {
     id: 8,
@@ -100,7 +163,7 @@ export const exampleSeasonalQuests: ISeasonalQuest[] = [
     emoji: '🍂',
     startDate: '2025-09-23',
     endDate: '2025-12-20',
-    season: 'autumn',
+    season: SeasonEnum.Autumn,
   },
   {
     id: 9,
@@ -110,7 +173,7 @@ export const exampleSeasonalQuests: ISeasonalQuest[] = [
     emoji: '🥧',
     startDate: '2025-09-23',
     endDate: '2025-12-20',
-    season: 'autumn',
+    season: SeasonEnum.Autumn,
   },
 ];
 
@@ -124,7 +187,7 @@ export const exampleDailyQuests: ITodayQuest[] = [
     emoji: '🛒',
     startDate: '2025-01-01',
     endDate: '2025-01-20',
-    priority: 'high',
+    priority: PriorityEnum.High,
   },
   {
     id: 2,
@@ -132,7 +195,7 @@ export const exampleDailyQuests: ITodayQuest[] = [
     description: 'Spend 15 minutes tidying up the most cluttered area.',
     completed: false,
     emoji: '🧹',
-    priority: 'medium',
+    priority: PriorityEnum.Medium,
   },
   {
     id: 3,
@@ -140,7 +203,7 @@ export const exampleDailyQuests: ITodayQuest[] = [
     description: 'Write a brief summary of your day or any pending tasks.',
     completed: false,
     emoji: '📄',
-    priority: 'low',
+    priority: PriorityEnum.Low,
   },
   {
     id: 4,
@@ -148,7 +211,7 @@ export const exampleDailyQuests: ITodayQuest[] = [
     description: 'Send a quick message or call to ask how she’s doing.',
     completed: false,
     emoji: '📞',
-    priority: 'high',
+    priority: PriorityEnum.High,
   },
   {
     id: 5,
@@ -156,7 +219,7 @@ export const exampleDailyQuests: ITodayQuest[] = [
     description: 'Drink at least 8 glasses of water today.',
     completed: false,
     emoji: '💧',
-    priority: 'medium',
+    priority: PriorityEnum.Medium,
   },
   {
     id: 6,
@@ -164,7 +227,7 @@ export const exampleDailyQuests: ITodayQuest[] = [
     description: 'Do 10 minutes of stretching or light exercise.',
     completed: false,
     emoji: '🏋️',
-    priority: 'medium',
+    priority: PriorityEnum.Medium,
   },
 ];
 
@@ -175,9 +238,17 @@ export const exampleRepeatableQuests: IRepeatableQuest[] = [
     description: 'Go to the gym.',
     completed: false,
     emoji: '🏋️',
-    repeatType: 'weekly',
-    repeatDaysOfWeek: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
-    priority: 'high',
+    repeatType: RepeatTypeEnum.Weekly,
+    repeatDaysOfWeek: [
+      WeekdayEnum.Monday,
+      WeekdayEnum.Tuesday,
+      WeekdayEnum.Wednesday,
+      WeekdayEnum.Thursday,
+      WeekdayEnum.Friday,
+      WeekdayEnum.Saturday,
+      WeekdayEnum.Sunday,
+    ],
+    priority: PriorityEnum.High,
   },
   {
     id: 2,
@@ -185,9 +256,16 @@ export const exampleRepeatableQuests: IRepeatableQuest[] = [
     description: 'Water the plants in the garden.',
     completed: false,
     emoji: '🌱',
-    repeatType: 'weekly',
-    repeatDaysOfWeek: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
-    priority: 'medium',
+    repeatType: RepeatTypeEnum.Weekly,
+    repeatDaysOfWeek: [
+      WeekdayEnum.Monday,
+      WeekdayEnum.Tuesday,
+      WeekdayEnum.Wednesday,
+      WeekdayEnum.Thursday,
+      WeekdayEnum.Friday,
+      WeekdayEnum.Saturday,
+    ],
+    priority: PriorityEnum.Medium,
   },
   {
     id: 3,
@@ -195,9 +273,9 @@ export const exampleRepeatableQuests: IRepeatableQuest[] = [
     description: 'Prepare the monthly report.',
     completed: false,
     emoji: '📊',
-    repeatType: 'monthly',
+    repeatType: RepeatTypeEnum.Monthly,
     repeatDateRange: { startDay: 7, endDay: 10 },
-    priority: 'high',
+    priority: PriorityEnum.High,
   },
   {
     id: 4,
@@ -205,9 +283,9 @@ export const exampleRepeatableQuests: IRepeatableQuest[] = [
     description: 'Ensure the rent is paid.',
     completed: false,
     emoji: '🏠',
-    repeatType: 'monthly',
+    repeatType: RepeatTypeEnum.Monthly,
     repeatDateRange: { startDay: 1, endDay: 1 },
-    priority: 'high',
+    priority: PriorityEnum.High,
   },
   {
     id: 5,
@@ -215,43 +293,8 @@ export const exampleRepeatableQuests: IRepeatableQuest[] = [
     description: 'Ensure the rent is paid.',
     completed: false,
     emoji: '🏠',
-    repeatType: 'weekly',
-    repeatDaysOfWeek: ['monday', 'tuesday'],
-    priority: 'high',
+    repeatType: RepeatTypeEnum.Weekly,
+    repeatDaysOfWeek: [WeekdayEnum.Monday, WeekdayEnum.Tuesday],
+    priority: PriorityEnum.High,
   },
 ];
-
-interface IQuest {
-  id: number;
-  title: string;
-  description: string;
-  completed: boolean;
-  emoji?: string;
-  priority?: 'low' | 'medium' | 'high';
-}
-
-export interface ISeasonalQuest extends IQuest {
-  startDate: string;
-  endDate: string;
-  season: 'winter' | 'spring' | 'summer' | 'autumn';
-}
-
-export interface IOneTimeQuest extends IQuest {
-  startDate?: string;
-  endDate?: string;
-}
-
-export interface IDailyQuests extends IQuest {}
-
-export interface ITodayQuest extends IQuest {
-  startDate?: string;
-  endDate?: string;
-}
-
-export interface IRepeatableQuest extends IQuest {
-  repeatType: 'weekly' | 'monthly';
-  repeatDaysOfWeek?: ('monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday')[];
-  repeatDateRange?: { startDay: number; endDay: number };
-  startDate?: string;
-  endDate?: string;
-}

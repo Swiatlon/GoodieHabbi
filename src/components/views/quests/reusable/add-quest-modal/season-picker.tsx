@@ -1,13 +1,14 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
+import { SeasonEnum } from '@/contract/quest';
 
 interface SeasonPickerProps {
-  season: 'winter' | 'spring' | 'summer' | 'autumn' | null;
-  setSeason: (value: 'winter' | 'spring' | 'summer' | 'autumn' | null) => void;
+  season: SeasonEnum | null;
+  setSeason: (value: SeasonEnum | null) => void;
 }
 
-const getSeasonStyle = (season: 'winter' | 'spring' | 'summer' | 'autumn' | null) => {
+const getSeasonStyle = (season: SeasonEnum | null) => {
   switch (season) {
     case 'winter':
       return '#00bcd4';

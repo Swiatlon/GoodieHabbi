@@ -1,13 +1,14 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
+import { PriorityEnum } from '@/contract/quest';
 
 interface PriorityPickerProps {
-  priority: 'low' | 'medium' | 'high' | null;
-  setPriority: (value: 'low' | 'medium' | 'high' | null) => void;
+  priority: PriorityEnum | null;
+  setPriority: (value: PriorityEnum | null) => void;
 }
 
-const getPriorityStyle = (priority: 'low' | 'medium' | 'high' | null) => {
+const getPriorityStyle = (priority: PriorityEnum | null) => {
   switch (priority) {
     case 'high':
       return '#f56565';

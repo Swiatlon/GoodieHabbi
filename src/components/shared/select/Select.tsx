@@ -35,11 +35,11 @@ const Select: React.FC<SelectProps> = ({
           placeholder={placeholder}
           value={value ? `${placeholderWhenSelected || 'Selected'} ${value}` : undefined}
           editable={isEditable && !isDisabled}
-          className={`text-base ${isDisabled ? 'text-gray-400' : 'text-black'}`}
+          className={`text-base ${isDisabled ? 'text-gray-400' : 'text-black'} px-2`}
         />
       </TouchableOpacity>
       {value && onClear && !isDisabled && (
-        <TouchableOpacity onPress={onClear} className="pr-2">
+        <TouchableOpacity onPress={onClear} className="pr-4">
           <Ionicons name="close-circle" size={20} color="#888" />
         </TouchableOpacity>
       )}

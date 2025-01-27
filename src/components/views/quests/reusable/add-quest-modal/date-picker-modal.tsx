@@ -8,6 +8,7 @@ import Select from '@/components/shared/select/select';
 
 interface DatePickerModalProps {
   onConfirm: (date: Date | null) => void;
+  onClearInput?: () => void;
   selectedDate: Date | null;
   minDate?: Date | null;
   maxDate?: Date | null;
@@ -18,6 +19,7 @@ interface DatePickerModalProps {
 
 const DatePickerModal: React.FC<DatePickerModalProps> = ({
   onConfirm,
+  onClearInput,
   selectedDate,
   minDate,
   maxDate,
@@ -40,6 +42,7 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({
   };
 
   const handleClear = () => {
+    onClearInput?.();
     onConfirm(null);
   };
 
@@ -49,7 +52,7 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({
     <View className="flex gap-2">
       {formVersion && label && <Text className="text-sm font-semibold text-gray-500">{label}:</Text>}
       <Select
-        placeholder="Select date (optional)"
+        placeholder="Select date"
         placeholderWhenSelected=" "
         value={momentDate.isValid() ? momentDate.format('DD.MM.YYYY') : null}
         onPress={handleOpen}
