@@ -61,47 +61,6 @@ export interface IRepeatableQuest extends IQuest {
   endDate?: string;
 }
 
-export const exampleOneTimeQuests: IOneTimeQuest[] = [
-  {
-    id: 1,
-    title: 'Buy Groceries',
-    description:
-      'To show the priority of a quest in your React Native component, you can add a new UI element to display the priority property if it exists. Heres how you can modify the OneTimeQuestItem component:',
-    completed: false,
-    emoji: '🛒',
-    startDate: '2025-01-01',
-    endDate: '2025-01-20',
-    priority: PriorityEnum.High,
-  },
-  {
-    id: 2,
-    title: 'Clean the House',
-    description: 'Clean thoroughly.',
-    completed: false,
-    emoji: '🧹',
-    startDate: '2025-01-02',
-    endDate: '2025-01-20',
-    priority: PriorityEnum.Medium,
-  },
-  {
-    id: 3,
-    title: 'Finish Report',
-    description: 'Submit the report.',
-    completed: true,
-    emoji: '📄',
-    endDate: '2025-05-20',
-    priority: PriorityEnum.Low,
-  },
-  {
-    id: 4,
-    title: 'Call Mom',
-    description: 'Check in and see how she’s doing.',
-    completed: false,
-    emoji: '📞',
-    startDate: '2025-01-15',
-  },
-];
-
 export const exampleSeasonalQuests: ISeasonalQuest[] = [
   {
     id: 1,

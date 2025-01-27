@@ -7,14 +7,13 @@ import QuestItemEmoji from '../../reusable/quest-item/quest-item-emoji';
 import QuestItemModal from '../../reusable/quest-item/quest-item-modal';
 import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
-import { IOneTimeQuest } from '@/contract/quest';
+import { IGetOneTimeQuestsResponse } from '@/contract/one-time-quests';
 
 interface OneTimeQuestItemProps {
-  quest: IOneTimeQuest;
-  setQuests: React.Dispatch<React.SetStateAction<IOneTimeQuest[]>>;
+  quest: IGetOneTimeQuestsResponse;
 }
 
-const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest, setQuests }) => {
+const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const toggleComplete = (): void => {
@@ -26,19 +25,19 @@ const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest, setQuests })
 
   return (
     <>
-      <QuestItemContainer completed={quest.completed}>
+      <QuestItemContainer completed={quest.isCompleted}>
         <View className="flex-1 flex-row items-center">
           <TouchableOpacity onPress={openModal} className="flex-1">
             <View className="flex-row items-center gap-2">
               <QuestItemEmoji emoji={quest.emoji} />
               <View className="flex-1 gap-1">
-                <QuestItemTitle title={quest.title} description={quest.description} completed={quest.completed} />
-                <QuestItemPriority priority={quest.priority} />
+                <QuestItemTitle title={quest.title} description={quest.description} completed={quest.isCompleted} />
+                <QuestItemPriority priority={quest.priorityLevel} />
                 <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
               </View>
             </View>
           </TouchableOpacity>
-          <QuestItemCheckmark completed={quest.completed} onToggle={toggleComplete} />
+          <QuestItemCheckmark completed={quest.isCompleted} onToggle={toggleComplete} />
         </View>
       </QuestItemContainer>
       <QuestItemModal quest={quest} isVisible={isModalVisible} onClose={closeModal} />

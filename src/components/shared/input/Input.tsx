@@ -6,18 +6,25 @@ interface InputProps extends TextInputProps {
   formVersion?: boolean;
   label?: string;
   isRequired?: boolean;
+  error?: string;
 }
 
-const Input: React.FC<InputProps> = ({ className = '', formVersion, label, isRequired, ...props }) => {
+const Input: React.FC<InputProps> = ({ className = '', label, isRequired, error, ...props }) => {
   return (
     <View className="flex gap-2">
-      {formVersion && label && (
+      {label && (
         <Text className="text-sm font-semibold text-gray-500">
           {label}
           {isRequired && <Text className="text-red-500">*</Text>}
         </Text>
       )}
-      <TextInput className={`border border-gray-300 rounded-md p-3 ${className}`} {...props} />
+      <View className="flex gap-1">
+        <TextInput
+          className={`border ${error ? 'border-red-500' : 'border-gray-300'} rounded-md p-3 ${className}`}
+          {...props}
+        />
+        {error && <Text className="text-red-500 text-sm mt-1">{error}</Text>}
+      </View>
     </View>
   );
 };
