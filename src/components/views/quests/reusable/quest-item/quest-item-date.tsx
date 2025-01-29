@@ -1,17 +1,14 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import moment from 'moment';
+import { NullableString } from '@/types/global-types';
+import { safeDateFormat } from '@/utils/utils';
 
 interface QuestItemDateProps {
-  startDate?: string;
-  endDate?: string;
+  startDate: NullableString;
+  endDate: NullableString;
 }
 
-const formatDate = (date?: string): string | null => {
-  return date ? moment(date).format('DD.MM.YYYY') : null;
-};
-
-const getDateLabel = (startDate: string | null, endDate: string | null): string | null => {
+const getDateLabel = (startDate: NullableString, endDate: NullableString): NullableString => {
   if (startDate && endDate) {
     return `${startDate} - ${endDate}`;
   }
@@ -28,9 +25,8 @@ const getDateLabel = (startDate: string | null, endDate: string | null): string 
 };
 
 const QuestItemDate: React.FC<QuestItemDateProps> = ({ startDate, endDate }) => {
-  const formattedStartDate = formatDate(startDate);
-  const formattedEndDate = formatDate(endDate);
-
+  const formattedStartDate = safeDateFormat(startDate);
+  const formattedEndDate = safeDateFormat(endDate);
   const dateLabel = getDateLabel(formattedStartDate, formattedEndDate);
 
   if (!dateLabel) {

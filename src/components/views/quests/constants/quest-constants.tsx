@@ -1,5 +1,6 @@
 import React from 'react';
-import { IOneTimeQuest, ISeasonalQuest } from '@/contract/quest';
+import { IOneTimeQuest } from '@/contract/one-time-quests';
+import { ISeasonalQuest } from '@/contract/quest';
 import { FilterValueType } from '@/hooks/use-filter';
 
 export type QuestType = IOneTimeQuest | ISeasonalQuest;

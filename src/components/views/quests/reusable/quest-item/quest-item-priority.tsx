@@ -1,17 +1,18 @@
 import React from 'react';
 import { Text } from 'react-native';
+import { PriorityEnum, PriorityEnumType } from '@/contract/quest';
 
 interface QuestItemPriorityProps {
-  priority?: 'low' | 'medium' | 'high';
+  priority: PriorityEnumType | null;
 }
 
-const getPriorityStyle = (priority: 'low' | 'medium' | 'high') => {
+const getPriorityStyle = (priority: PriorityEnumType) => {
   switch (priority) {
-    case 'high':
+    case PriorityEnum.HIGH:
       return 'text-red-500';
-    case 'medium':
+    case PriorityEnum.MEDIUM:
       return 'text-yellow-500';
-    case 'low':
+    case PriorityEnum.LOW:
       return 'text-green-500';
     default:
       return 'text-gray-500';
@@ -19,7 +20,10 @@ const getPriorityStyle = (priority: 'low' | 'medium' | 'high') => {
 };
 
 const QuestItemPriority: React.FC<QuestItemPriorityProps> = ({ priority }) => {
-  if (!priority) return null;
+  if (!priority) {
+    return null;
+  }
+
   return (
     <Text className={`text-sm font-bold ${getPriorityStyle(priority)}`}>
       Priority: {priority.charAt(0).toUpperCase() + priority.slice(1)}

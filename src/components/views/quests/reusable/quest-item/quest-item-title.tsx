@@ -3,16 +3,16 @@ import { View, Text } from 'react-native';
 
 interface QuestItemTitleProps {
   title: string;
-  description: string;
-  completed: boolean;
+  description: string | null;
+  isCompleted: boolean;
 }
 
-const QuestItemTitle: React.FC<QuestItemTitleProps> = ({ title, description, completed }) => {
+const QuestItemTitle: React.FC<QuestItemTitleProps> = ({ title, description, isCompleted }) => {
   return (
     <View className="flex pr-2">
       <View>
         <Text
-          className={`text-lg ${completed ? 'line-through [text-decoration-thickness:3px] text-gray-500' : ''}`}
+          className={`text-lg ${isCompleted ? 'line-through [text-decoration-thickness:3px] text-gray-500' : ''}`}
           numberOfLines={2}
         >
           {title}

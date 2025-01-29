@@ -25,9 +25,7 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children, className =
             <View className={`w-11/12 bg-white rounded-lg shadow-lg ${className} max-h-[90vh]`}>
               <View className="absolute top-3 right-2 z-40">
                 <IconButton
-                  onPress={() => {
-                    onClose();
-                  }}
+                  onPress={() => onClose()}
                   icon={<Ionicons name="close-outline" size={24} color="#1987EE" />}
                 />
               </View>

@@ -4,10 +4,11 @@ import QuestItemDate from './quest-item-date';
 import QuestItemPriority from './quest-item-priority';
 import Button from '@/components/shared/button/button';
 import Modal from '@/components/shared/modal/modal';
-import { IOneTimeQuest, ISeasonalQuest } from '@/contract/quest';
+import { IGetOneTimeQuestsResponse } from '@/contract/one-time-quests';
+import { ISeasonalQuest } from '@/contract/quest';
 
 interface QuestItemModalProps {
-  quest: IOneTimeQuest | null | ISeasonalQuest;
+  quest: IGetOneTimeQuestsResponse | null | ISeasonalQuest;
   isVisible: boolean;
   onClose: () => void;
 }

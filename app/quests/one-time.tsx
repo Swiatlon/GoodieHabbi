@@ -2,20 +2,22 @@ import React, { useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
+import Loader from '@/components/shared/loader/loader';
 import AddQuestModal from '@/components/views/quests/one-time/add-quest-modal/add-one-time-quest-modal';
 import { OneTimeQuestsFilterMap } from '@/components/views/quests/one-time/constants/constants';
 import OneTimeQuestItem from '@/components/views/quests/one-time/list/one-time-quest-item';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
 import Header from '@/components/views/quests/reusable/header';
-import { exampleOneTimeQuests, IOneTimeQuest } from '@/contract/quest';
+import { IOneTimeQuest } from '@/contract/one-time-quests';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
 import { SortOrderEnum, useSort } from '@/hooks/use-sort';
+import { useGetAllOneTimeQuestsQuery } from '@/redux/api/one-time-quests-api';
 
 const OneTimeQuests: React.FC = () => {
-  const [quests, setQuests] = useState<IOneTimeQuest[]>(exampleOneTimeQuests);
   const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
+  const { data: fetchedQuests = [], isLoading } = useGetAllOneTimeQuestsQuery();
 
   const {
     data: searchedData,
@@ -24,7 +26,7 @@ const OneTimeQuests: React.FC = () => {
     setSearchQuery,
     setIsSearchVisible,
   } = useSearch({
-    data: quests,
+    data: fetchedQuests,
     initialSearch: {
       key: 'title',
       value: '',
@@ -38,7 +40,7 @@ const OneTimeQuests: React.FC = () => {
   } = useFilter({
     data: searchedData,
     initialFilter: {
-      key: 'completed',
+      key: 'isCompleted',
       value: OneTimeQuestsFilterMap.get('ALL')!.value,
     },
   });
@@ -57,6 +59,10 @@ const OneTimeQuests: React.FC = () => {
     },
   });
 
+  if (isLoading) {
+    return <Loader message="Fetching quests..." />;
+  }
+
   return (
     <View className="flex-1 p-4">
       <Header
@@ -71,7 +77,7 @@ const OneTimeQuests: React.FC = () => {
       <FlatList
         data={sortedData}
         keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => <OneTimeQuestItem quest={item} setQuests={setQuests} />}
+        renderItem={({ item }) => <OneTimeQuestItem quest={item} />}
         ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
       />
 

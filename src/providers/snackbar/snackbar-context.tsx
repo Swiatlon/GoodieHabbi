@@ -1,14 +1,16 @@
 import { createContext, useContext } from 'react';
 
-export enum SnackbarVariantEnum {
-  SUCCESS = 'success',
-  INFO = 'info',
-  ERROR = 'error',
-}
+export const SnackbarVariantEnum = {
+  SUCCESS: 'success',
+  INFO: 'info',
+  ERROR: 'error',
+} as const;
+
+export type SnackbarVariantEnumType = (typeof SnackbarVariantEnum)[keyof typeof SnackbarVariantEnum];
 
 export interface SnackbarOptions {
   text: string;
-  variant?: SnackbarVariantEnum;
+  variant?: SnackbarVariantEnumType;
 }
 
 interface SnackbarContextProps {

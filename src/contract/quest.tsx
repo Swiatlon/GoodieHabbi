@@ -1,8 +1,10 @@
-export enum PriorityEnum {
-  Low = 'low',
-  Medium = 'medium',
-  High = 'high',
-}
+export const PriorityEnum = {
+  LOW: 'Low',
+  MEDIUM: 'Medium',
+  HIGH: 'High',
+} as const;
+
+export type PriorityEnumType = (typeof PriorityEnum)[keyof typeof PriorityEnum];
 
 export enum SeasonEnum {
   Winter = 'winter',
@@ -32,18 +34,13 @@ interface IQuest {
   description: string;
   completed: boolean;
   emoji?: string;
-  priority?: PriorityEnum;
+  priority?: PriorityEnumType;
 }
 
 export interface ISeasonalQuest extends IQuest {
   startDate: string;
   endDate: string;
   season: SeasonEnum;
-}
-
-export interface IOneTimeQuest extends IQuest {
-  startDate?: string;
-  endDate?: string;
 }
 
 export interface IDailyQuests extends IQuest {}
@@ -60,47 +57,6 @@ export interface IRepeatableQuest extends IQuest {
   startDate?: string;
   endDate?: string;
 }
-
-export const exampleOneTimeQuests: IOneTimeQuest[] = [
-  {
-    id: 1,
-    title: 'Buy Groceries',
-    description:
-      'To show the priority of a quest in your React Native component, you can add a new UI element to display the priority property if it exists. Heres how you can modify the OneTimeQuestItem component:',
-    completed: false,
-    emoji: '🛒',
-    startDate: '2025-01-01',
-    endDate: '2025-01-20',
-    priority: PriorityEnum.High,
-  },
-  {
-    id: 2,
-    title: 'Clean the House',
-    description: 'Clean thoroughly.',
-    completed: false,
-    emoji: '🧹',
-    startDate: '2025-01-02',
-    endDate: '2025-01-20',
-    priority: PriorityEnum.Medium,
-  },
-  {
-    id: 3,
-    title: 'Finish Report',
-    description: 'Submit the report.',
-    completed: true,
-    emoji: '📄',
-    endDate: '2025-05-20',
-    priority: PriorityEnum.Low,
-  },
-  {
-    id: 4,
-    title: 'Call Mom',
-    description: 'Check in and see how she’s doing.',
-    completed: false,
-    emoji: '📞',
-    startDate: '2025-01-15',
-  },
-];
 
 export const exampleSeasonalQuests: ISeasonalQuest[] = [
   {

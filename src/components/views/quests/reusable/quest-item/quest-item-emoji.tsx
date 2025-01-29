@@ -2,7 +2,7 @@ import React from 'react';
 import { Text } from 'react-native';
 
 interface QuestItemEmojiProps {
-  emoji?: string;
+  emoji: string | null;
 }
 
 const QuestItemEmoji: React.FC<QuestItemEmojiProps> = ({ emoji }) => {

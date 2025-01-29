@@ -5,11 +5,11 @@ import SortOrderSection from './elements/sort-order-section';
 import Button from '@/components/shared/button/button';
 import Modal from '@/components/shared/modal/modal';
 import { ActualFilterData, FilterValueType } from '@/hooks/use-filter';
-import { SortOrderEnum } from '@/hooks/use-sort';
+import { SortOrderEnumType } from '@/hooks/use-sort';
 
 interface ConfigModalProps<T extends QuestType> {
   isModalVisible: boolean;
-  actualSortOrder: SortOrderEnum;
+  actualSortOrder: SortOrderEnumType;
   actualFilterData: ActualFilterData;
   actualSortKey: string | null;
   wihoutDate?: boolean;
@@ -17,7 +17,7 @@ interface ConfigModalProps<T extends QuestType> {
   setisModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setFilter: (key: QuestKeyType<T>, value: FilterValueType) => void;
   setSortKey: (key: string | null) => void;
-  setSortOrder: (order: SortOrderEnum) => void;
+  setSortOrder: (order: SortOrderEnumType) => void;
 }
 
 const ConfigModal = <T extends QuestType>({

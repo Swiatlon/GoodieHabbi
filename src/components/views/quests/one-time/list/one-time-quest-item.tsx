@@ -7,38 +7,60 @@ import QuestItemEmoji from '../../reusable/quest-item/quest-item-emoji';
 import QuestItemModal from '../../reusable/quest-item/quest-item-modal';
 import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
-import { IOneTimeQuest } from '@/contract/quest';
+import { IOneTimeQuest } from '@/contract/one-time-quests';
+import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
+import { usePatchQuestMutation } from '@/redux/api/one-time-quests-api';
 
 interface OneTimeQuestItemProps {
   quest: IOneTimeQuest;
-  setQuests: React.Dispatch<React.SetStateAction<IOneTimeQuest[]>>;
 }
 
-const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest, setQuests }) => {
+const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest }) => {
+  const [patchQuest] = usePatchQuestMutation();
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const toggleComplete = (): void => {
-    setQuests(prev => prev.map(q => (q.id === quest.id ? { ...q, completed: !q.completed } : q)));
-  };
-
   const openModal = () => setIsModalVisible(true);
   const closeModal = () => setIsModalVisible(false);
 
+  const { showSnackbar } = useSnackbar();
+
+  const toggleComplete = () => {
+    if (quest.isCompleted) {
+      return;
+    }
+
+    patchQuest({
+      id: quest.id,
+      isCompleted: !quest.isCompleted,
+    })
+      .unwrap()
+      .then(() => {
+        showSnackbar({
+          text: `Quest marked as ${!quest.isCompleted ? 'completed' : 'incomplete'}.`,
+          variant: SnackbarVariantEnum.SUCCESS,
+        });
+      })
+      .catch(() => {
+        showSnackbar({
+          text: 'Failed to update quest. Please try again.',
+          variant: SnackbarVariantEnum.ERROR,
+        });
+      });
+  };
   return (
     <>
-      <QuestItemContainer completed={quest.completed}>
+      <QuestItemContainer completed={quest.isCompleted}>
         <View className="flex-1 flex-row items-center">
           <TouchableOpacity onPress={openModal} className="flex-1">
             <View className="flex-row items-center gap-2">
               <QuestItemEmoji emoji={quest.emoji} />
               <View className="flex-1 gap-1">
-                <QuestItemTitle title={quest.title} description={quest.description} completed={quest.completed} />
+                <QuestItemTitle title={quest.title} description={quest.description} isCompleted={quest.isCompleted} />
                 <QuestItemPriority priority={quest.priority} />
                 <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
               </View>
             </View>
           </TouchableOpacity>
-          <QuestItemCheckmark completed={quest.completed} onToggle={toggleComplete} />
+          <QuestItemCheckmark completed={quest.isCompleted} onToggle={toggleComplete} />
         </View>
       </QuestItemContainer>
       <QuestItemModal quest={quest} isVisible={isModalVisible} onClose={closeModal} />
