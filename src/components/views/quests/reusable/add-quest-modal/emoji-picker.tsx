@@ -1,38 +1,32 @@
 import React, { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 import { Text, View } from 'react-native';
 import EmojiPicker, { EmojiType } from 'rn-emoji-keyboard';
-import Select from '@/components/shared/select/select';
+import ControlledSelect from '@/components/shared/select/controlled-select';
 
 interface EmojiPickerComponentProps {
-  selectedEmoji: string | null;
-  onEmojiSelected: (emoji: string | null) => void;
   formVersion?: boolean;
   label?: string;
+  name: string;
 }
 
-const EmojiPickerComponent: React.FC<EmojiPickerComponentProps> = ({
-  selectedEmoji,
-  onEmojiSelected,
-  formVersion,
-  label,
-}) => {
+const EmojiPickerComponent: React.FC<EmojiPickerComponentProps> = ({ name, formVersion, label }) => {
+  const { setValue } = useFormContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handlePick = (emojiObject: EmojiType) => {
-    onEmojiSelected(emojiObject.emoji);
+    setValue(name, emojiObject.emoji);
     setIsOpen(false);
   };
 
   return (
     <View className="flex gap-2">
       {formVersion && label && <Text className="text-sm font-semibold text-gray-500">{label}:</Text>}
-      <Select
+      <ControlledSelect
+        name={name}
         placeholder="Tap to pick emoji for quest"
-        placeholderWhenSelected=" "
-        value={selectedEmoji}
         isEditable={false}
         onPress={() => setIsOpen(true)}
-        onClear={() => onEmojiSelected(null)}
       />
 
       <EmojiPicker

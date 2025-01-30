@@ -32,7 +32,7 @@ interface IQuest {
   id: number;
   title: string;
   description: string;
-  completed: boolean;
+  isCompleted: boolean;
   emoji?: string;
   priority?: PriorityEnumType;
 }

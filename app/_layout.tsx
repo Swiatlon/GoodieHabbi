@@ -10,6 +10,7 @@ import Header from '@/components/shared/app-bar/app-bar';
 import { CustomDrawerContent } from '@/components/shared/drawer/drawer';
 import SnackbarProvider from '@/providers/snackbar/snackbar-provider';
 import { store } from '@/redux/config/store';
+import '@/configs/day-js-config';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {

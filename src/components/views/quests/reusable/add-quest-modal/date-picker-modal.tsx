@@ -1,73 +1,47 @@
 import React, { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 import { View, Text } from 'react-native';
 import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
-import moment from 'moment';
 import Button from '@/components/shared/button/button';
 import Modal from '@/components/shared/modal/modal';
-import Select from '@/components/shared/select/select';
+import ControlledSelect from '@/components/shared/select/controlled-select';
+import { NullableString } from '@/types/global-types';
+import { toUTCISOString } from '@/utils/utils';
 
 interface DatePickerModalProps {
-  onConfirm: (date: Date | null) => void;
-  onClearInput?: () => void;
-  selectedDate: Date | null;
-  minDate?: Date | null;
-  maxDate?: Date | null;
-  label?: string;
+  minDate?: string;
+  maxDate?: string;
+  label: string;
   formVersion?: boolean;
-  isDisabled?: boolean;
+  name: string;
+  placeholderWhenSelected: string;
 }
 
-const DatePickerModal: React.FC<DatePickerModalProps> = ({
-  onConfirm,
-  onClearInput,
-  selectedDate,
-  minDate,
-  maxDate,
-  label,
-  formVersion,
-  isDisabled,
-}) => {
+const DatePickerModal: React.FC<DatePickerModalProps> = ({ minDate, maxDate, label, formVersion, name }) => {
+  const { setValue, watch } = useFormContext();
   const [isVisible, setIsVisible] = useState(false);
 
   const handleOpen = () => setIsVisible(true);
   const handleClose = () => setIsVisible(false);
 
   const handleDateChange = (date: DateType) => {
-    if (date) {
-      const parsedDate = moment(date.toLocaleString()).toDate();
-      onConfirm(parsedDate);
-    } else {
-      onConfirm(null);
-    }
+    setValue(name, toUTCISOString(date));
   };
 
-  const handleClear = () => {
-    onClearInput?.();
-    onConfirm(null);
-  };
-
-  const momentDate = moment(selectedDate);
+  const selectedDate = watch(name) as NullableString;
 
   return (
     <View className="flex gap-2">
-      {formVersion && label && <Text className="text-sm font-semibold text-gray-500">{label}:</Text>}
-      <Select
-        placeholder="Select date"
-        placeholderWhenSelected=" "
-        value={momentDate.isValid() ? momentDate.format('DD.MM.YYYY') : null}
-        onPress={handleOpen}
-        onClear={handleClear}
-        isEditable={false}
-        isDisabled={isDisabled}
-      />
+      {formVersion && <Text className="text-sm font-semibold text-gray-500">{label}:</Text>}
+      <ControlledSelect name={name} placeholder={label} onPress={handleOpen} isDate />
 
       <Modal isVisible={isVisible} onClose={handleClose}>
         <Text className="text-lg font-bold text-center mb-4">Select Date:</Text>
         <DateTimePicker
           mode="single"
           date={selectedDate}
-          minDate={minDate ? moment(minDate).toLocaleString() : null}
-          maxDate={maxDate ? moment(maxDate).toLocaleString() : null}
+          minDate={minDate}
+          maxDate={maxDate}
           onChange={({ date }) => handleDateChange(date)}
         />
         <View className="flex-row justify-between">

@@ -16,7 +16,7 @@ interface OneTimeQuestItemProps {
 }
 
 const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest }) => {
-  const [patchQuest] = usePatchQuestMutation();
+  const [patchQuest, { isLoading }] = usePatchQuestMutation();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const openModal = () => setIsModalVisible(true);
   const closeModal = () => setIsModalVisible(false);
@@ -24,7 +24,7 @@ const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest }) => {
   const { showSnackbar } = useSnackbar();
 
   const toggleComplete = () => {
-    if (quest.isCompleted) {
+    if (isLoading) {
       return;
     }
 

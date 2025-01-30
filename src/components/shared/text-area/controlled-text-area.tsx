@@ -3,7 +3,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { TextInputProps } from 'react-native';
 import TextArea from './text-area';
 
-interface ControlledTextAreaProps extends Omit<TextInputProps, 'name'> {
+interface ControlledTextAreaProps extends TextInputProps {
   name: string;
   shouldValidate?: boolean;
   label?: string;
@@ -27,6 +27,7 @@ const ControlledTextArea = ({
         <TextArea
           {...field}
           {...otherProps}
+          onChange={field.onChange}
           label={label}
           isRequired={isRequired}
           error={shouldValidate && error ? error.message : undefined}

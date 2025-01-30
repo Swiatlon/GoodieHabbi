@@ -12,7 +12,7 @@ interface ConfigModalProps<T extends QuestType> {
   actualSortOrder: SortOrderEnumType;
   actualFilterData: ActualFilterData;
   actualSortKey: string | null;
-  wihoutDate?: boolean;
+  withoutDate?: boolean;
   filtersMap: Map<string, IFilterMapValues<T>>;
   setisModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setFilter: (key: QuestKeyType<T>, value: FilterValueType) => void;
@@ -25,7 +25,7 @@ const ConfigModal = <T extends QuestType>({
   actualFilterData,
   actualSortKey,
   actualSortOrder,
-  wihoutDate,
+  withoutDate,
   filtersMap,
   setisModalVisible,
   setSortOrder,
@@ -36,7 +36,7 @@ const ConfigModal = <T extends QuestType>({
     <Modal isVisible={isModalVisible} onClose={() => setisModalVisible(false)} className="flex gap-6">
       <FilterSection<T> actualFilterData={actualFilterData} setFilter={setFilter} filtersMap={filtersMap} />
       <SortOrderSection actualSortOrder={actualSortOrder} setSortOrder={setSortOrder} />
-      <SortKeySection actualSortKey={actualSortKey} setSortKey={setSortKey} withoutDate={wihoutDate} />
+      <SortKeySection actualSortKey={actualSortKey} setSortKey={setSortKey} withoutDate={withoutDate} />
       <Button label="Close" onPress={() => setisModalVisible(false)} className="mx-auto px-6 mt-4" />
     </Modal>
   );

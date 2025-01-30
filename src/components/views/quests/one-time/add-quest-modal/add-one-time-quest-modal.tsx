@@ -2,6 +2,9 @@ import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { View, Text } from 'react-native';
 import { yupResolver } from '@hookform/resolvers/yup';
+import DatePickerModal from '../../reusable/add-quest-modal/date-picker-modal';
+import EmojiPickerComponent from '../../reusable/add-quest-modal/emoji-picker';
+import PriorityPicker from '../../reusable/add-quest-modal/priority-picker';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Loader from '@/components/shared/loader/loader';
@@ -13,6 +16,7 @@ import {
 } from '@/components/views/quests/one-time/add-quest-modal/schema';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateQuestMutation } from '@/redux/api/one-time-quests-api';
+import { toUTCISOString } from '@/utils/utils';
 
 interface AddOneTimeQuestModalProps {
   isModalVisible: boolean;
@@ -27,10 +31,9 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isModalVisi
     resolver: yupResolver(oneTimeQuestValidationSchema),
     defaultValues: {
       title: '',
-      description: null,
-      selectedEmoji: null,
-      priority: null,
+      description: '',
       startDate: null,
+      priority: null,
       endDate: null,
       isCompleted: false,
       emoji: null,
@@ -59,62 +62,23 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isModalVisi
         <View className="bg-white rounded-lg px-4 py-6 gap-4">
           <Text className="text-lg font-bold text-center">Add New Quest</Text>
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
-          <ControlledTextArea name="description" label="Description" placeholder="Enter description" />
-
-          {/*
-
-          <Controller
+          <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
+          <DatePickerModal
             name="startDate"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <DatePickerModal
-                onConfirm={onChange}
-                onClearInput={() => onChange(null)}
-                selectedDate={value}
-                label="Start Date"
-                formVersion
-                minDate={new Date()}
-                // error={errors.startDate?.message}
-              />
-            )}
+            formVersion
+            minDate={toUTCISOString(new Date())}
+            label="Start Date"
+            placeholderWhenSelected="Start Date:"
           />
-
-          <Controller
+          <DatePickerModal
             name="endDate"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <DatePickerModal
-                onConfirm={onChange}
-                onClearInput={() => onChange(null)}
-                selectedDate={value}
-                label="End Date"
-                formVersion
-                minDate={startDate}
-                // error={errors.endDate?.message}
-              />
-            )}
+            formVersion
+            minDate={toUTCISOString(startDate)}
+            label="End Date"
+            placeholderWhenSelected="End Date:"
           />
-
-          <Controller
-            name="selectedEmoji"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <EmojiPickerComponent selectedEmoji={value} onEmojiSelected={onChange} formVersion label="Emoji" />
-            )}
-          />
-
-          <Controller
-            name="priority"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <PriorityPicker
-                priority={value}
-                setPriority={onChange}
-                //  error={errors.priority?.message}
-              />
-            )}
-          /> */}
-
+          <EmojiPickerComponent name="emoji" formVersion label="Emoji" />
+          <PriorityPicker label="Priority:" name="priority" />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"

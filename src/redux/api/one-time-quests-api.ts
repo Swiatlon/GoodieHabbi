@@ -11,7 +11,7 @@ export const questSlice = Api.injectEndpoints({
     getOneTimeQuestById: builder.query<IOneTimeQuest, { id: number }>({
       query: ({ id }) => ({
         method: 'GET',
-        url: `/one-time-quest/${id}`,
+        url: `/one-time-quests/${id}`,
       }),
       providesTags: ['questsGet'],
     }),
@@ -26,7 +26,7 @@ export const questSlice = Api.injectEndpoints({
 
     createQuest: builder.mutation<void, IPostOneTimeQuestRequest>({
       query: newQuest => ({
-        url: '/one-time-quest',
+        url: '/one-time-quests',
         method: 'POST',
         body: newQuest,
       }),
@@ -35,7 +35,7 @@ export const questSlice = Api.injectEndpoints({
 
     updateQuest: builder.mutation<void, IPutOneTimeQuestRequest>({
       query: updatedQuest => ({
-        url: `/one-time-quest/${updatedQuest.id}`,
+        url: `/one-time-quests/${updatedQuest.id}`,
         method: 'PUT',
         body: updatedQuest,
       }),
@@ -44,7 +44,7 @@ export const questSlice = Api.injectEndpoints({
 
     patchQuest: builder.mutation<void, IPatchQuestRequest>({
       query: patchData => ({
-        url: `/one-time-quest/${patchData.id}`,
+        url: `/one-time-quests/${patchData.id}`,
         method: 'PATCH',
         body: patchData,
       }),
@@ -53,7 +53,7 @@ export const questSlice = Api.injectEndpoints({
 
     deleteQuest: builder.mutation<void, { id: number }>({
       query: ({ id }) => ({
-        url: `/one-time-quest/${id}`,
+        url: `/one-time-quests/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['questsGet'],

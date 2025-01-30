@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { IFilterMapValues } from '../../constants/quest-constants';
+import { PriorityEnum } from '@/contract/quest';
 
 export const OneTimeQuestsFilterMap = new Map<string, IFilterMapValues>([
   [
     'ALL',
     {
-      key: 'completed',
+      key: 'isCompleted',
       value: null,
       icon: <Ionicons name="list" size={28} color="#1987EE" />,
       color: '#1987EE',
@@ -15,7 +16,7 @@ export const OneTimeQuestsFilterMap = new Map<string, IFilterMapValues>([
   [
     'COMPLETED',
     {
-      key: 'completed',
+      key: 'isCompleted',
       value: true,
       icon: <Ionicons name="checkmark-circle" size={28} color="#4caf50" />,
       color: '#4caf50',
@@ -25,7 +26,7 @@ export const OneTimeQuestsFilterMap = new Map<string, IFilterMapValues>([
   [
     'INCOMPLETED',
     {
-      key: 'completed',
+      key: 'isCompleted',
       value: false,
       icon: <Ionicons name="alert-circle" size={28} color="#ffc107" />,
       color: '#ffc107',
@@ -36,7 +37,7 @@ export const OneTimeQuestsFilterMap = new Map<string, IFilterMapValues>([
     'LOW_PRIORITY',
     {
       key: 'priority',
-      value: 'low',
+      value: PriorityEnum.LOW,
       icon: <Ionicons name="arrow-down-circle" size={28} color="#4caf50" />,
       color: '#4caf50',
       label: 'Low priority',
@@ -46,7 +47,7 @@ export const OneTimeQuestsFilterMap = new Map<string, IFilterMapValues>([
     'MEDIUM_PRIORITY',
     {
       key: 'priority',
-      value: 'medium',
+      value: PriorityEnum.MEDIUM,
       icon: <Ionicons name="arrow-forward-circle" size={28} color="#ff9800" />,
       color: '#ff9800',
       label: 'Medium priority',
@@ -56,7 +57,7 @@ export const OneTimeQuestsFilterMap = new Map<string, IFilterMapValues>([
     'HIGH_PRIORITY',
     {
       key: 'priority',
-      value: 'high',
+      value: PriorityEnum.HIGH,
       icon: <Ionicons name="arrow-up-circle" size={28} color="#f44336" />,
       color: '#f44336',
       label: 'High priority',

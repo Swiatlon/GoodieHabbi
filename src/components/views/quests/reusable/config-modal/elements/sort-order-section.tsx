@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { IconButton } from '@/components/shared/icon-button/icon-button';
-import { SortOrderEnum } from '@/hooks/use-sort';
+import { SortOrderEnum, SortOrderEnumType } from '@/hooks/use-sort';
 
 interface SortOrderSectionProps {
-  actualSortOrder: SortOrderEnum;
-  setSortOrder: (order: SortOrderEnum) => void;
+  actualSortOrder: SortOrderEnumType;
+  setSortOrder: (order: SortOrderEnumType) => void;
 }
 
 const SortOrderSection: React.FC<SortOrderSectionProps> = ({ actualSortOrder, setSortOrder }) => {
