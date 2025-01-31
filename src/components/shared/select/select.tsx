@@ -32,7 +32,7 @@ const Select = forwardRef<TextInput, SelectProps>(
             placeholder={placeholder}
             value={formattedValue ?? ''}
             editable={!isDate && isEditable && !isDisabled}
-            className={`text-base ${isDisabled ? 'text-gray-400' : 'text-black'} px-2`}
+            className={`${isDisabled ? 'text-gray-400' : 'text-black'} px-2`}
             pointerEvents={isDate ? 'none' : 'auto'}
             showSoftInputOnFocus={!isDate}
           />

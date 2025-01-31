@@ -13,7 +13,7 @@ import ControlledTextArea from '@/components/shared/text-area/controlled-text-ar
 import {
   OneTimeQuestFormValues,
   oneTimeQuestValidationSchema,
-} from '@/components/views/quests/one-time/add-quest-modal/schema';
+} from '@/components/views/quests/one-time/quest-modals/schema';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateQuestMutation } from '@/redux/api/one-time-quests-api';
 import { toUTCISOString } from '@/utils/utils';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { TextInputProps } from 'react-native';
+import { Text, TextInputProps, View } from 'react-native';
 import Input from './input';
 
 interface ControlledInputProps extends TextInputProps {
@@ -10,7 +10,7 @@ interface ControlledInputProps extends TextInputProps {
   isRequired?: boolean;
 }
 
-const ControlledInput = ({ name, shouldValidate = true, label, isRequired, ...otherProps }: ControlledInputProps) => {
+const ControlledInput = ({ name, label, isRequired, ...otherProps }: ControlledInputProps) => {
   const { control } = useFormContext();
 
   return (
@@ -18,14 +18,18 @@ const ControlledInput = ({ name, shouldValidate = true, label, isRequired, ...ot
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (
-        <Input
-          {...field}
-          {...otherProps}
-          onChange={field.onChange}
-          label={label}
-          isRequired={isRequired}
-          error={shouldValidate && error ? error.message : undefined}
-        />
+        <View className="flex gap-1">
+          <Input
+            {...field}
+            {...otherProps}
+            onChange={field.onChange}
+            onClear={() => field.onChange('')}
+            label={label}
+            isRequired={isRequired}
+            error={error ? error.message : undefined}
+          />
+          {error && <Text className="text-red-500 text-sm mt-1">{error.message}</Text>}
+        </View>
       )}
     />
   );

@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react';
-import { Text, TextInput, TextInputProps, View } from 'react-native';
+import { Text, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 interface TextAreaProps extends Omit<TextInputProps, 'onChange'> {
   className?: string;
@@ -7,10 +8,11 @@ interface TextAreaProps extends Omit<TextInputProps, 'onChange'> {
   isRequired?: boolean;
   error?: string;
   onChange: (e: string) => void;
+  onClear?: () => void;
 }
 
 const TextArea = forwardRef<TextInput, TextAreaProps>(
-  ({ className = '', onChange, label, isRequired, error, ...props }, ref) => {
+  ({ className = '', onChange, label, isRequired, error, value, onClear, ...props }, ref) => {
     return (
       <View className="flex gap-2">
         {label && (
@@ -19,17 +21,22 @@ const TextArea = forwardRef<TextInput, TextAreaProps>(
             {isRequired && <Text className="text-red-500">*</Text>}
           </Text>
         )}
-        <View className="flex gap-1">
+        <View
+          className={`py-2 pl-1 flex-row items-center border rounded-md ${error ? 'border-red-500' : 'border-gray-300'}`}
+        >
           <TextInput
-            ref={ref}
             multiline
-            className={`border ${error ? 'border-red-500' : 'border-gray-300'} rounded-md p-3 ${className}`}
+            ref={ref}
+            className={`flex-1 px-2 ${className}`}
+            value={value ?? ''}
+            onChangeText={text => onChange(text)}
             {...props}
-            onChangeText={text => {
-              onChange(text);
-            }}
           />
-          {error && <Text className="text-red-500 text-sm mt-1">{error}</Text>}
+          {value && onClear && (
+            <TouchableOpacity onPress={onClear} className="pr-4">
+              <Ionicons name="close-circle" size={20} color="#888" />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     );

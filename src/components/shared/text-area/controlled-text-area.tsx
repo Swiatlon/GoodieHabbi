@@ -1,22 +1,15 @@
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { TextInputProps } from 'react-native';
+import { TextInputProps, View, Text } from 'react-native';
 import TextArea from './text-area';
 
 interface ControlledTextAreaProps extends TextInputProps {
   name: string;
-  shouldValidate?: boolean;
   label?: string;
   isRequired?: boolean;
 }
 
-const ControlledTextArea = ({
-  name,
-  shouldValidate = true,
-  label,
-  isRequired,
-  ...otherProps
-}: ControlledTextAreaProps) => {
+const ControlledTextArea = ({ name, label, isRequired, ...otherProps }: ControlledTextAreaProps) => {
   const { control } = useFormContext();
 
   return (
@@ -24,14 +17,17 @@ const ControlledTextArea = ({
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (
-        <TextArea
-          {...field}
-          {...otherProps}
-          onChange={field.onChange}
-          label={label}
-          isRequired={isRequired}
-          error={shouldValidate && error ? error.message : undefined}
-        />
+        <View className="flex gap-1">
+          <TextArea
+            {...field}
+            {...otherProps}
+            onChange={field.onChange}
+            onClear={() => field.onChange('')}
+            label={label}
+            isRequired={isRequired}
+          />
+          {error && <Text className="text-red-500 text-sm mt-1">{error.message}</Text>}
+        </View>
       )}
     />
   );

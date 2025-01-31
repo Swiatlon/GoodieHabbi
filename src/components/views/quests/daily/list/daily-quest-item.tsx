@@ -3,7 +3,7 @@ import { View, TouchableOpacity } from 'react-native';
 import QuestItemCheckmark from '../../reusable/quest-item/quest-item-checkmark';
 import QuestItemContainer from '../../reusable/quest-item/quest-item-container';
 import QuestItemEmoji from '../../reusable/quest-item/quest-item-emoji';
-import QuestItemModal from '../../reusable/quest-item/quest-item-modal';
+import QuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
 import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
 import { IDailyQuests, IOneTimeQuest } from '@/contract/quest';
