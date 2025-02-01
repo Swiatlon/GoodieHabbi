@@ -21,7 +21,7 @@ const EmojiPickerComponent: React.FC<EmojiPickerComponentProps> = ({ name, formV
 
   return (
     <View className="flex gap-2">
-      {formVersion && label && <Text className="text-sm font-semibold text-gray-500">{label}:</Text>}
+      {formVersion && label && <Text className="text-sm font-semibold text-gray-500">{label}</Text>}
       <ControlledSelect
         name={name}
         placeholder="Tap to pick emoji for quest"

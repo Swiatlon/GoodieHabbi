@@ -1,48 +1,42 @@
 import { useState, useMemo } from 'react';
 
-export type FilterValueType = string | number | null | boolean;
-
-export interface ActualFilterData {
-  key: string;
-  value: FilterValueType;
-}
-
 interface FilterOptions<T> {
   data: T[];
-  initialFilter: {
-    key: keyof T;
-    value: FilterValueType;
-  };
+  initialFilter: Partial<Record<keyof T, unknown>>;
 }
 
-export const useFilter = <T,>({ data, initialFilter }: FilterOptions<T>) => {
-  const [actualFilter, setActualFilter] = useState(initialFilter);
+export type ActualFilterData = Record<string, unknown>;
+export type FilterValueType = string | number | boolean | null;
 
-  const setFilter = (key: keyof T, value: FilterValueType) => {
-    setActualFilter({ key, value });
+const matchesFilter = <T,>(item: T, filter: ActualFilterData): boolean => {
+  return Object.entries(filter).every(([key, value]) => {
+    if (value === null) return true;
+    return item[key as keyof T] === value;
+  });
+};
+
+export const useFilter = <T,>({ data, initialFilter }: FilterOptions<T>) => {
+  const [actualFilter, setActualFilter] = useState<ActualFilterData>(initialFilter);
+
+  const setFilter = (key: string, value: FilterValueType) => {
+    setActualFilter(prevFilter => ({
+      ...prevFilter,
+      [key]: value,
+    }));
   };
 
-  const setActualFilterKey = (key: keyof T) => {
-    setActualFilter(prev => ({ ...prev, key }));
+  const resetFilter = () => {
+    setActualFilter(initialFilter);
   };
 
   const filteredData = useMemo(() => {
-    const { key, value } = actualFilter;
-
-    if (!key || value === null) {
-      return data;
-    }
-
-    return data.filter(item => item[key] === value);
+    return data.filter(item => matchesFilter(item, actualFilter));
   }, [data, actualFilter]);
 
   return {
     data: filteredData,
-    actualFilterData: {
-      key: actualFilter.key,
-      value: actualFilter.value,
-    },
     setFilter,
-    setActualFilterKey,
+    resetFilter,
+    actualFilter,
   };
 };

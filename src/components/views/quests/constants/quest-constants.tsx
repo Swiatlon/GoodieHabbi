@@ -7,7 +7,7 @@ export type QuestType = IOneTimeQuest | ISeasonalQuest;
 export type QuestKeyType<T extends QuestType = QuestType> = keyof T;
 
 export interface IFilterMapValues<T extends QuestType = QuestType> {
-  key: QuestKeyType<T>;
+  filterMainKey: QuestKeyType<T>;
   value: FilterValueType;
   icon: React.ReactNode;
   color: string;

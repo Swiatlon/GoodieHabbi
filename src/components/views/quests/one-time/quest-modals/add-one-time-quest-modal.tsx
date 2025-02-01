@@ -19,11 +19,11 @@ import { useCreateQuestMutation } from '@/redux/api/one-time-quests-api';
 import { toUTCISOString } from '@/utils/utils';
 
 interface AddOneTimeQuestModalProps {
-  isModalVisible: boolean;
-  setIsModalVisible: (visible: boolean) => void;
+  isVisible: boolean;
+  onClose: () => void;
 }
 
-const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isModalVisible, setIsModalVisible }) => {
+const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, onClose }) => {
   const { showSnackbar } = useSnackbar();
   const [createQuest, { isLoading }] = useCreateQuestMutation();
 
@@ -45,9 +45,9 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isModalVisi
   const onSubmit = async (data: OneTimeQuestFormValues) => {
     try {
       await createQuest(data).unwrap();
-      showSnackbar({ text: 'Quest added successfully!', variant: SnackbarVariantEnum.SUCCESS });
-      setIsModalVisible(false);
+      onClose();
       reset();
+      showSnackbar({ text: 'Quest added successfully!', variant: SnackbarVariantEnum.SUCCESS });
     } catch {
       showSnackbar({ text: 'Failed to add quest. Please try again.', variant: SnackbarVariantEnum.ERROR });
     }
@@ -56,7 +56,7 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isModalVisi
   const startDate = watch('startDate');
 
   return (
-    <Modal isVisible={isModalVisible} onClose={() => setIsModalVisible(false)}>
+    <Modal isVisible={isVisible} onClose={onClose}>
       {isLoading && <Loader size="large" message="Adding quest..." fullscreen />}
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 py-6 gap-4">
@@ -77,13 +77,13 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isModalVisi
             label="End Date"
             placeholderWhenSelected="End Date:"
           />
-          <EmojiPickerComponent name="emoji" formVersion label="Emoji" />
+          <EmojiPickerComponent name="emoji" formVersion label="Emoji:" />
           <PriorityPicker label="Priority:" name="priority" />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"
               onPress={() => {
-                setIsModalVisible(false);
+                onClose();
                 reset();
               }}
               className="bg-gray-200 text-gray-700 rounded-lg"

@@ -19,6 +19,8 @@ const OneTimeQuests: React.FC = () => {
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
   const { data: fetchedQuests = [], isLoading } = useGetAllOneTimeQuestsQuery();
 
+  const handleCloseModal = () => setIsAddQuestModalVisible(false);
+
   const {
     data: searchedData,
     searchQuery,
@@ -35,13 +37,13 @@ const OneTimeQuests: React.FC = () => {
 
   const {
     data: filteredQuests,
-    actualFilterData,
     setFilter,
-  } = useFilter({
+    actualFilter,
+  } = useFilter<IOneTimeQuest>({
     data: searchedData,
     initialFilter: {
-      key: 'isCompleted',
-      value: OneTimeQuestsFilterMap.get('ALL')!.value,
+      isCompleted: null,
+      priority: null,
     },
   });
 
@@ -90,17 +92,16 @@ const OneTimeQuests: React.FC = () => {
 
       <ConfigModal<IOneTimeQuest>
         isModalVisible={isConfigModalVisible}
-        actualFilterData={actualFilterData}
         actualSortKey={actualSortKey}
         actualSortOrder={actualSortOrder}
-        filtersMap={OneTimeQuestsFilterMap}
         setisModalVisible={setIsConfigModalVisible}
         setSortOrder={setSortOrder}
         setSortKey={setSortKey}
         setFilter={setFilter}
+        actualFilterData={actualFilter}
+        filterCategories={OneTimeQuestsFilterMap}
       />
-
-      <AddQuestModal isModalVisible={isAddQuestModalVisible} setIsModalVisible={setIsAddQuestModalVisible} />
+      <AddQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
     </View>
   );
 };

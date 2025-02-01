@@ -13,7 +13,7 @@ const sortKeys = ['title', 'date'];
 
 const SortKeySection: React.FC<SortKeySectionProps> = ({ actualSortKey, withoutDate, setSortKey }) => {
   return (
-    <View className="flex gap-4">
+    <View className="flex gap-2">
       <Text className="text-lg font-semibold text-center">Sort By:</Text>
       <View className="flex-row justify-around">
         {sortKeys.map(key => {

@@ -30,9 +30,11 @@ const ShowQuestItemModal: React.FC<QuestShowItemModalProps> = ({ quest, isVisibl
           </View>
         )}
         <View className="flex-row justify-between mt-4">
-          <Button label="Delete" styleType="danger" onPress={onDelete} />
+          <View className="flex-row gap-2">
+            <Button label="Delete" styleType="danger" onPress={onDelete} />
+            <Button label="Edit" styleType="accent" onPress={onUpdate} />
+          </View>
           <Button label="Close" onPress={onClose} />
-          <Button label="Edit" styleType="accent" onPress={onUpdate} />
         </View>
       </View>
     </Modal>
