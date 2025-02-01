@@ -2,20 +2,27 @@ import React, { useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
-import AddDailyQuestModal from '@/components/views/quests/daily/add-quest-modal/add-daily-quest-modal';
+import Loader from '@/components/shared/loader/loader';
 import { DailyQuestFilterMap } from '@/components/views/quests/daily/constants/constants';
-import OneTimeQuestItem from '@/components/views/quests/one-time/list/one-time-quest-item';
+import DailyQuestItem from '@/components/views/quests/daily/list/daily-quest-item';
+import AddDailyQuestModal from '@/components/views/quests/daily/quest-modals/add-daily-quest-modal';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
 import Header from '@/components/views/quests/reusable/header';
-import { exampleDailyQuests, IDailyQuests, IOneTimeQuest } from '@/contract/quest';
+import { RepeatIntervalEnum } from '@/contract/quest';
+import { IRepeatableQuest } from '@/contract/repeatable-quests';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
 import { SortOrderEnum, useSort } from '@/hooks/use-sort';
+import { useGetRepeatableQuestsByTypesQuery } from '@/redux/api/repeatable-quests-api';
 
 const DailyQuests: React.FC = () => {
-  const [quests, setQuests] = useState<IOneTimeQuest[]>(exampleDailyQuests);
   const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
+  const { data: fetchedQuests = [], isLoading } = useGetRepeatableQuestsByTypesQuery({
+    types: [RepeatIntervalEnum.DAILY],
+  });
+
+  const handleCloseModal = () => setIsAddQuestModalVisible(false);
 
   const {
     data: searchedData,
@@ -24,7 +31,7 @@ const DailyQuests: React.FC = () => {
     setSearchQuery,
     setIsSearchVisible,
   } = useSearch({
-    data: quests,
+    data: fetchedQuests,
     initialSearch: {
       key: 'title',
       value: '',
@@ -33,13 +40,13 @@ const DailyQuests: React.FC = () => {
 
   const {
     data: filteredQuests,
-    actualFilterData,
     setFilter,
-  } = useFilter({
+    actualFilter,
+  } = useFilter<IRepeatableQuest>({
     data: searchedData,
     initialFilter: {
-      key: 'completed',
-      value: DailyQuestFilterMap.get('ALL')!.value,
+      isCompleted: null,
+      priority: null,
     },
   });
 
@@ -57,6 +64,10 @@ const DailyQuests: React.FC = () => {
     },
   });
 
+  if (isLoading) {
+    return <Loader message="Fetching quests..." />;
+  }
+
   return (
     <View className="flex-1 p-4">
       <Header
@@ -71,7 +82,7 @@ const DailyQuests: React.FC = () => {
       <FlatList
         data={sortedData}
         keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => <OneTimeQuestItem quest={item} setQuests={setQuests} />}
+        renderItem={({ item }) => <DailyQuestItem quest={item} />}
         ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
       />
 
@@ -82,20 +93,18 @@ const DailyQuests: React.FC = () => {
         className="mx-auto py-2 mt-4"
       />
 
-      <ConfigModal<IDailyQuests>
+      <ConfigModal<IRepeatableQuest>
         isModalVisible={isConfigModalVisible}
-        actualFilterData={actualFilterData}
         actualSortKey={actualSortKey}
         actualSortOrder={actualSortOrder}
-        filtersMap={DailyQuestFilterMap}
         setisModalVisible={setIsConfigModalVisible}
         setSortOrder={setSortOrder}
         setSortKey={setSortKey}
         setFilter={setFilter}
-        wihoutDate
+        actualFilterData={actualFilter}
+        filterCategories={DailyQuestFilterMap}
       />
-
-      <AddDailyQuestModal isModalVisible={isAddQuestModalVisible} setIsModalVisible={setIsAddQuestModalVisible} />
+      <AddDailyQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
     </View>
   );
 };

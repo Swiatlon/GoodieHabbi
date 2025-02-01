@@ -6,6 +6,14 @@ export const PriorityEnum = {
 
 export type PriorityEnumType = (typeof PriorityEnum)[keyof typeof PriorityEnum];
 
+export const RepeatIntervalEnum = {
+  DAILY: 'Daily',
+  WEEKLY: 'Weekly',
+  MONTHLY: 'Monthly',
+} as const;
+
+export type RepeatIntervalEnumType = (typeof RepeatIntervalEnum)[keyof typeof RepeatIntervalEnum];
+
 export enum SeasonEnum {
   Winter = 'winter',
   Spring = 'spring',
@@ -43,20 +51,7 @@ export interface ISeasonalQuest extends IQuest {
   season: SeasonEnum;
 }
 
-export interface IDailyQuests extends IQuest {}
 
-export interface ITodayQuest extends IQuest {
-  startDate?: string;
-  endDate?: string;
-}
-
-export interface IRepeatableQuest extends IQuest {
-  repeatType: RepeatTypeEnum;
-  repeatDaysOfWeek?: WeekdayEnum[];
-  repeatDateRange?: { startDay: number; endDay: number };
-  startDate?: string;
-  endDate?: string;
-}
 
 export const exampleSeasonalQuests: ISeasonalQuest[] = [
   {

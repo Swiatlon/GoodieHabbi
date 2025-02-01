@@ -5,16 +5,43 @@ import QuestItemPriority from './quest-item-priority';
 import Button from '@/components/shared/button/button';
 import Modal from '@/components/shared/modal/modal';
 import { IOneTimeQuest } from '@/contract/one-time-quests';
+import { IRepeatableQuest } from '@/contract/repeatable-quests';
+import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 
 interface QuestShowItemModalProps {
-  quest: IOneTimeQuest;
+  quest: IOneTimeQuest | IRepeatableQuest;
   isVisible: boolean;
   onClose: () => void;
-  onDelete: () => void;
+  deleteQuest: (payload: { id: number }) => Promise<unknown>;
   onUpdate: () => void;
 }
 
-const ShowQuestItemModal: React.FC<QuestShowItemModalProps> = ({ quest, isVisible, onClose, onDelete, onUpdate }) => {
+const ShowQuestItemModal: React.FC<QuestShowItemModalProps> = ({
+  quest,
+  isVisible,
+  onClose,
+  deleteQuest,
+  onUpdate,
+}) => {
+  const { showSnackbar } = useSnackbar();
+
+  const handleDelete = () => {
+    deleteQuest({ id: quest.id })
+      .then(() => {
+        showSnackbar({
+          text: 'Quest deleted successfully.',
+          variant: SnackbarVariantEnum.SUCCESS,
+        });
+        onClose();
+      })
+      .catch(() => {
+        showSnackbar({
+          text: 'Failed to delete quest. Please try again.',
+          variant: SnackbarVariantEnum.ERROR,
+        });
+      });
+  };
+
   return (
     <Modal isVisible={isVisible} onClose={onClose}>
       <View className="flex gap-4">
@@ -31,7 +58,7 @@ const ShowQuestItemModal: React.FC<QuestShowItemModalProps> = ({ quest, isVisibl
         )}
         <View className="flex-row justify-between mt-4">
           <View className="flex-row gap-2">
-            <Button label="Delete" styleType="danger" onPress={onDelete} />
+            <Button label="Delete" styleType="danger" onPress={handleDelete} />
             <Button label="Edit" styleType="accent" onPress={onUpdate} />
           </View>
           <Button label="Close" onPress={onClose} />

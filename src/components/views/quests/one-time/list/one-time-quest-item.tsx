@@ -9,7 +9,6 @@ import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
 import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
 import UpdateOneTimeQuestModal from '../quest-modals/update-one-time-quest-modal';
 import { IOneTimeQuest } from '@/contract/one-time-quests';
-import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { usePatchQuestMutation, useDeleteQuestMutation } from '@/redux/api/one-time-quests-api';
 
 interface OneTimeQuestItemProps {
@@ -17,7 +16,6 @@ interface OneTimeQuestItemProps {
 }
 
 const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest }) => {
-  const { showSnackbar } = useSnackbar();
   const [patchQuest, { isLoading }] = usePatchQuestMutation();
   const [deleteQuest] = useDeleteQuestMutation();
 
@@ -29,48 +27,6 @@ const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest }) => {
 
   const closeShowModal = () => setIsShowQuestModalVisible(false);
   const closeUpdateModal = () => setIsUpdateQuestModalVisible(false);
-
-  const handlePatch = () => {
-    if (isLoading) return;
-
-    patchQuest({
-      id: quest.id,
-      isCompleted: !quest.isCompleted,
-    })
-      .unwrap()
-      .then(() => {
-        showSnackbar({
-          text: `Quest marked as ${!quest.isCompleted ? 'completed' : 'incomplete'}.`,
-          variant: SnackbarVariantEnum.SUCCESS,
-        });
-      })
-      .catch(() => {
-        showSnackbar({
-          text: 'Failed to update quest. Please try again.',
-          variant: SnackbarVariantEnum.ERROR,
-        });
-      })
-      .finally(() => closeShowModal());
-  };
-
-  const handleDelete = () => {
-    deleteQuest({ id: quest.id })
-      .unwrap()
-      .then(() => {
-        showSnackbar({
-          text: 'Quest deleted successfully.',
-          variant: SnackbarVariantEnum.SUCCESS,
-        });
-        closeShowModal();
-      })
-      .catch(() => {
-        showSnackbar({
-          text: 'Failed to delete quest. Please try again.',
-          variant: SnackbarVariantEnum.ERROR,
-        });
-      })
-      .finally(() => closeShowModal());
-  };
 
   return (
     <>
@@ -86,14 +42,19 @@ const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest }) => {
               </View>
             </View>
           </TouchableOpacity>
-          <QuestItemCheckmark completed={quest.isCompleted} onToggle={handlePatch} />
+          <QuestItemCheckmark
+            completed={quest.isCompleted}
+            questId={quest.id}
+            patchQuest={patchQuest}
+            isLoading={isLoading}
+          />
         </View>
       </QuestItemContainer>
       <ShowQuestItemModal
         quest={quest}
         isVisible={isShowQuestModalVisible}
         onClose={closeShowModal}
-        onDelete={handleDelete}
+        deleteQuest={deleteQuest}
         onUpdate={() => {
           closeShowModal();
           openUpdateModal();
