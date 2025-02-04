@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, FlatList, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
+import Loader from '@/components/shared/loader/loader';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
-import Header from '@/components/views/quests/reusable/header';
-import AddSeasonalQuestModal from '@/components/views/quests/seasonal/add-quest-modal/add-seasonal-quest-modal';
 import { SeasonalQuestsFilterMap } from '@/components/views/quests/seasonal/constants/constants';
 import SeasonalQuestItem from '@/components/views/quests/seasonal/list/seasonal-quest-item';
-import { exampleSeasonalQuests, ISeasonalQuest } from '@/contract/quest';
+import { ISeasonalQuest } from '@/contract/quests/quests-types/seasonal-quests';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
-import { SortOrderEnum, useSort } from '@/hooks/use-sort';
+import { useSort, SortOrderEnum } from '@/hooks/use-sort';
+import { useGetAllSeasonalQuestsQuery } from '@/redux/api/seasonal-quests-api';
+import Header from '@/components/views/quests/reusable/header';
 
 const SeasonalQuests: React.FC = () => {
-  const [quests, setQuests] = useState<ISeasonalQuest[]>(exampleSeasonalQuests);
   const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
+  const { data: fetchedQuests = [], isLoading } = useGetAllSeasonalQuestsQuery();
+
+  const handleCloseModal = () => setIsAddQuestModalVisible(false);
 
   const {
     data: searchedData,
@@ -24,7 +27,7 @@ const SeasonalQuests: React.FC = () => {
     setSearchQuery,
     setIsSearchVisible,
   } = useSearch({
-    data: quests,
+    data: fetchedQuests,
     initialSearch: {
       key: 'title',
       value: '',
@@ -33,13 +36,13 @@ const SeasonalQuests: React.FC = () => {
 
   const {
     data: filteredQuests,
-    actualFilterData,
     setFilter,
-  } = useFilter({
+    actualFilter,
+  } = useFilter<ISeasonalQuest>({
     data: searchedData,
     initialFilter: {
-      key: 'completed',
-      value: SeasonalQuestsFilterMap.get('ALL')!.value,
+      isCompleted: null,
+      priority: null,
     },
   });
 
@@ -57,6 +60,10 @@ const SeasonalQuests: React.FC = () => {
     },
   });
 
+  if (isLoading) {
+    return <Loader message="Fetching quests..." />;
+  }
+
   return (
     <View className="flex-1 p-4">
       <Header
@@ -71,7 +78,7 @@ const SeasonalQuests: React.FC = () => {
       <FlatList
         data={sortedData}
         keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => <SeasonalQuestItem quest={item} setQuests={setQuests} />}
+        renderItem={({ item }) => <SeasonalQuestItem quest={item} />}
         ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
       />
 
@@ -84,18 +91,17 @@ const SeasonalQuests: React.FC = () => {
 
       <ConfigModal<ISeasonalQuest>
         isModalVisible={isConfigModalVisible}
-        actualFilterData={actualFilterData}
         actualSortKey={actualSortKey}
         actualSortOrder={actualSortOrder}
-        filtersMap={SeasonalQuestsFilterMap}
         setisModalVisible={setIsConfigModalVisible}
         setSortOrder={setSortOrder}
         setSortKey={setSortKey}
         setFilter={setFilter}
-        wihoutDate
+        actualFilterData={actualFilter}
+        filterCategories={SeasonalQuestsFilterMap}
       />
 
-      <AddSeasonalQuestModal isModalVisible={isAddQuestModalVisible} setIsModalVisible={setIsAddQuestModalVisible} />
+      {/* <AddSeasonalQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} /> */}
     </View>
   );
 };

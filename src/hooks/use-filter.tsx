@@ -10,7 +10,10 @@ export type FilterValueType = string | number | boolean | null;
 
 const matchesFilter = <T,>(item: T, filter: ActualFilterData): boolean => {
   return Object.entries(filter).every(([key, value]) => {
-    if (value === null) return true;
+    if (value === null) {
+      return true;
+    }
+
     return item[key as keyof T] === value;
   });
 };

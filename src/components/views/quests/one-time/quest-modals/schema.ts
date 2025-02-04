@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import * as Yup from 'yup';
-import { PriorityEnumType } from '@/contract/quest';
+import { PriorityEnumType } from '@/contract/quests/base-quests';
 
 export interface OneTimeQuestFormValues {
   title: string;

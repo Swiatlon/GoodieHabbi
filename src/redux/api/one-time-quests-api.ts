@@ -1,19 +1,21 @@
 import Api from '../config/api';
 import {
   IOneTimeQuest,
-  IPatchQuestRequest,
   IPostOneTimeQuestRequest,
   IPutOneTimeQuestRequest,
-} from '@/contract/one-time-quests';
+  IPatchQuestRequest,
+  IGetOneTimeQuestRequest,
+  IDeleteOneTimeQuestRequest,
+} from '@/contract/quests/quests-types/one-time-quests';
 
 export const questSlice = Api.injectEndpoints({
   endpoints: builder => ({
-    getOneTimeQuestById: builder.query<IOneTimeQuest, { id: number }>({
+    getOneTimeQuestById: builder.query<IOneTimeQuest, IGetOneTimeQuestRequest>({
       query: ({ id }) => ({
         method: 'GET',
         url: `/one-time-quests/${id}`,
       }),
-      providesTags: ['questsGet'],
+      providesTags: ['oneTimeQuestsGet'],
     }),
 
     getAllOneTimeQuests: builder.query<IOneTimeQuest[], void>({
@@ -21,53 +23,53 @@ export const questSlice = Api.injectEndpoints({
         method: 'GET',
         url: '/one-time-quests',
       }),
-      providesTags: ['questsGet'],
+      providesTags: ['oneTimeQuestsGet'],
     }),
 
-    createQuest: builder.mutation<void, IPostOneTimeQuestRequest>({
+    createOneTimeQuest: builder.mutation<void, IPostOneTimeQuestRequest>({
       query: newQuest => ({
         url: '/one-time-quests',
         method: 'POST',
         body: newQuest,
       }),
-      invalidatesTags: ['questsGet'],
+      invalidatesTags: ['oneTimeQuestsGet'],
     }),
 
-    updateQuest: builder.mutation<void, IPutOneTimeQuestRequest>({
+    updateOneTimeQuest: builder.mutation<void, IPutOneTimeQuestRequest>({
       query: updatedQuest => ({
         url: `/one-time-quests/${updatedQuest.id}`,
         method: 'PUT',
         body: updatedQuest,
       }),
-      invalidatesTags: ['questsGet'],
+      invalidatesTags: ['oneTimeQuestsGet'],
     }),
 
-    patchQuest: builder.mutation<void, IPatchQuestRequest>({
+    patchOneTimeQuest: builder.mutation<void, IPatchQuestRequest>({
       query: patchData => ({
         url: `/one-time-quests/${patchData.id}`,
         method: 'PATCH',
         body: patchData,
       }),
-      invalidatesTags: ['questsGet'],
+      invalidatesTags: ['oneTimeQuestsGet'],
     }),
 
-    deleteQuest: builder.mutation<void, { id: number }>({
+    deleteOneTimeQuest: builder.mutation<void, IDeleteOneTimeQuestRequest>({
       query: ({ id }) => ({
         url: `/one-time-quests/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['questsGet'],
+      invalidatesTags: ['oneTimeQuestsGet'],
     }),
   }),
 });
 
 export const {
-  useCreateQuestMutation,
-  useDeleteQuestMutation,
+  useCreateOneTimeQuestMutation,
+  useDeleteOneTimeQuestMutation,
   useGetAllOneTimeQuestsQuery,
   useGetOneTimeQuestByIdQuery,
   useLazyGetAllOneTimeQuestsQuery,
   useLazyGetOneTimeQuestByIdQuery,
-  useUpdateQuestMutation,
-  usePatchQuestMutation,
+  useUpdateOneTimeQuestMutation,
+  usePatchOneTimeQuestMutation,
 } = questSlice;

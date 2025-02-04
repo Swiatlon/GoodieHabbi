@@ -4,12 +4,11 @@ import QuestItemDate from './quest-item-date';
 import QuestItemPriority from './quest-item-priority';
 import Button from '@/components/shared/button/button';
 import Modal from '@/components/shared/modal/modal';
-import { IOneTimeQuest } from '@/contract/one-time-quests';
-import { IRepeatableQuest } from '@/contract/repeatable-quests';
+import { IOneTimeQuest } from '@/contract/quests/quests-types/one-time-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 
 interface QuestShowItemModalProps {
-  quest: IOneTimeQuest | IRepeatableQuest;
+  quest: IOneTimeQuest;
   isVisible: boolean;
   onClose: () => void;
   deleteQuest: (payload: { id: number }) => Promise<unknown>;

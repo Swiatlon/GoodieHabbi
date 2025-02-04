@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text } from 'react-native';
-import { PriorityEnum, PriorityEnumType } from '@/contract/quest';
+import { PriorityEnum, PriorityEnumType } from '@/contract/quests/base-quests';
 
 interface QuestItemPriorityProps {
   priority: PriorityEnumType | null;

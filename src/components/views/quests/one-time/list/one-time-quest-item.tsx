@@ -8,16 +8,16 @@ import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
 import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
 import UpdateOneTimeQuestModal from '../quest-modals/update-one-time-quest-modal';
-import { IOneTimeQuest } from '@/contract/one-time-quests';
-import { usePatchQuestMutation, useDeleteQuestMutation } from '@/redux/api/one-time-quests-api';
+import { IOneTimeQuest } from '@/contract/quests/quests-types/one-time-quests';
+import { useDeleteOneTimeQuestMutation, usePatchOneTimeQuestMutation } from '@/redux/api/one-time-quests-api';
 
 interface OneTimeQuestItemProps {
   quest: IOneTimeQuest;
 }
 
 const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest }) => {
-  const [patchQuest, { isLoading }] = usePatchQuestMutation();
-  const [deleteQuest] = useDeleteQuestMutation();
+  const [patchQuest, { isLoading: isPatching }] = usePatchOneTimeQuestMutation();
+  const [deleteQuest] = useDeleteOneTimeQuestMutation();
 
   const [isShowQuestModalVisible, setIsShowQuestModalVisible] = useState(false);
   const [isUpdateQuestModalVisible, setIsUpdateQuestModalVisible] = useState(false);
@@ -46,7 +46,7 @@ const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest }) => {
             completed={quest.isCompleted}
             questId={quest.id}
             patchQuest={patchQuest}
-            isLoading={isLoading}
+            isLoading={isPatching}
           />
         </View>
       </QuestItemContainer>

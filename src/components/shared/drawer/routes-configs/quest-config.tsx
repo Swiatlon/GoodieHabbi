@@ -33,8 +33,13 @@ const QuestConfig = () => {
               icon: <Ionicons name="sunny-outline" />,
             },
             {
-              label: 'Repeatable Quests',
-              route: 'quests/recurring/repeatable',
+              label: 'Weekly Quests',
+              route: 'quests/recurring/weekly',
+              icon: <Ionicons name="calendar-outline" />,
+            },
+            {
+              label: 'Monthly Quests',
+              route: 'quests/recurring/monthly',
               icon: <Ionicons name="calendar-number-outline" />,
             },
           ],

@@ -24,7 +24,10 @@ const FilterSection = <T,>({ actualFilterData, setFilter, filterCategories }: Fi
 
               return (
                 <View key={filterKey} className="flex items-center p-2 w-1/3">
-                  <IconButton onPress={() => setFilter(filterMainKey as keyof T, value)} className="flex items-center">
+                  <IconButton
+                    onPress={() => setFilter(filterMainKey as keyof T, isActive ? null : value)}
+                    className="flex items-center"
+                  >
                     {icon}
                     <Text className={`text-sm text-center ${isActive ? 'font-bold text-primary' : ''}`}>{label}</Text>
                   </IconButton>

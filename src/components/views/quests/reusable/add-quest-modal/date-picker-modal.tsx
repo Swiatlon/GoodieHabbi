@@ -9,15 +9,14 @@ import { NullableString } from '@/types/global-types';
 import { toUTCISOString } from '@/utils/utils';
 
 interface DatePickerModalProps {
+  name: string;
+  label: string;
+  placeholder: string;
   minDate?: string;
   maxDate?: string;
-  label: string;
-  formVersion?: boolean;
-  name: string;
-  placeholderWhenSelected: string;
 }
 
-const DatePickerModal: React.FC<DatePickerModalProps> = ({ minDate, maxDate, label, formVersion, name }) => {
+const DatePickerModal: React.FC<DatePickerModalProps> = ({ minDate, maxDate, label, name, placeholder }) => {
   const { setValue, watch } = useFormContext();
   const [isVisible, setIsVisible] = useState(false);
 
@@ -32,8 +31,8 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({ minDate, maxDate, lab
 
   return (
     <View className="flex gap-2">
-      {formVersion && <Text className="text-sm font-semibold text-gray-500">{label}:</Text>}
-      <ControlledSelect name={name} placeholder={label} onPress={handleOpen} isDate />
+      <Text className="text-sm font-semibold text-gray-500">{label}:</Text>
+      <ControlledSelect name={name} placeholder={placeholder} onPress={handleOpen} isDate />
 
       <Modal isVisible={isVisible} onClose={handleClose}>
         <Text className="text-lg font-bold text-center mb-4">Select Date:</Text>

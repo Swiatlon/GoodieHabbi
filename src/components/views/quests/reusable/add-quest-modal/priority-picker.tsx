@@ -2,7 +2,7 @@ import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Text, View } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import { PriorityEnum, PriorityEnumType } from '@/contract/quest';
+import { PriorityEnum, PriorityEnumType } from '@/contract/quests/base-quests';
 interface ControlledPriorityPickerProps {
   name: string;
   label?: string;

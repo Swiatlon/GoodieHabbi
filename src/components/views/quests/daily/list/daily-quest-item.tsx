@@ -8,16 +8,16 @@ import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
 import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
 import UpdateDailyQuestModal from '../quest-modals/update-daily-quest-modal';
-import { IRepeatableQuest } from '@/contract/repeatable-quests';
-import { usePatchRepeatableQuestMutation, useDeleteRepeatableQuestMutation } from '@/redux/api/repeatable-quests-api';
+import { IDailyQuest } from '@/contract/quests/quests-types/daily-quests';
+import { useDeleteDailyQuestMutation, usePatchDailyQuestMutation } from '@/redux/api/daily-quests-api';
 
 interface DailyQuestItemProps {
-  quest: IRepeatableQuest;
+  quest: IDailyQuest;
 }
 
 const DailyQuestItem: React.FC<DailyQuestItemProps> = ({ quest }) => {
-  const [patchQuest, { isLoading: isPatching }] = usePatchRepeatableQuestMutation();
-  const [deleteQuest] = useDeleteRepeatableQuestMutation();
+  const [patchQuest, { isLoading: isPatching }] = usePatchDailyQuestMutation();
+  const [deleteQuest] = useDeleteDailyQuestMutation();
 
   const [isShowQuestModalVisible, setIsShowQuestModalVisible] = useState(false);
   const [isUpdateQuestModalVisible, setIsUpdateQuestModalVisible] = useState(false);

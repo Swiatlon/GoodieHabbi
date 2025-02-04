@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import { SeasonEnum } from '@/contract/quest';
+import { SeasonEnum } from '@/contract/quests/base-quests';
 
 interface SeasonPickerProps {
   season: SeasonEnum | null;

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import * as Yup from 'yup';
-import { PriorityEnumType, RepeatIntervalEnum, RepeatIntervalEnumType } from '@/contract/quest';
+import { PriorityEnumType, RepeatIntervalEnum, RepeatIntervalEnumType } from '@/contract/quests/base-quests';
 
 export interface DailyQuestFormValues {
   title: string;

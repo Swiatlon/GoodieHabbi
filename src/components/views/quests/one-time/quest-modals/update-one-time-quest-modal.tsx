@@ -14,9 +14,9 @@ import {
   OneTimeQuestFormValues,
   oneTimeQuestValidationSchema,
 } from '@/components/views/quests/one-time/quest-modals/schema';
-import { IOneTimeQuest } from '@/contract/one-time-quests';
-import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import { useUpdateQuestMutation } from '@/redux/api/one-time-quests-api';
+import { IOneTimeQuest } from '@/contract/quests/quests-types/one-time-quests';
+import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
+import { useUpdateOneTimeQuestMutation } from '@/redux/api/one-time-quests-api';
 import { toUTCISOString } from '@/utils/utils';
 
 interface UpdateOneTimeQuestModalProps {
@@ -27,7 +27,7 @@ interface UpdateOneTimeQuestModalProps {
 
 const UpdateOneTimeQuestModal: React.FC<UpdateOneTimeQuestModalProps> = ({ isVisible, onClose, quest }) => {
   const { showSnackbar } = useSnackbar();
-  const [updateQuest, { isLoading }] = useUpdateQuestMutation();
+  const [updateQuest, { isLoading }] = useUpdateOneTimeQuestMutation();
 
   const methods = useForm<OneTimeQuestFormValues>({
     resolver: yupResolver(oneTimeQuestValidationSchema),

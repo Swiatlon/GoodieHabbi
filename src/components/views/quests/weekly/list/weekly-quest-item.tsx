@@ -1,22 +1,21 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import QuestItemCheckmark from '../reusable/quest-item/quest-item-checkmark';
-import QuestItemContainer from '../reusable/quest-item/quest-item-container';
-import QuestItemDate from '../reusable/quest-item/quest-item-date';
-import QuestItemEmoji from '../reusable/quest-item/quest-item-emoji';
-import QuestItemPriority from '../reusable/quest-item/quest-item-priority';
-import QuestItemTitle from '../reusable/quest-item/quest-item-title';
-import ShowQuestItemModal from '../reusable/quest-item/quest-show-item-modal';
-import { ITodayQuest } from '@/contract/quests/quests-types/today-quests';
-import { usePatchTodayQuestMutation, useDeleteTodayQuestMutation } from '@/redux/api/today-quests-api';
+import QuestItemCheckmark from '../../reusable/quest-item/quest-item-checkmark';
+import QuestItemContainer from '../../reusable/quest-item/quest-item-container';
+import QuestItemEmoji from '../../reusable/quest-item/quest-item-emoji';
+import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
+import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
+import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
+import { IWeeklyQuest } from '@/contract/quests/quests-types/weekly-quests';
+import { usePatchWeeklyQuestMutation, useDeleteWeeklyQuestMutation } from '@/redux/api/weekly-quests-api';
 
-interface TodayQuestItemProps {
-  quest: ITodayQuest;
+interface WeeklyQuestItemProps {
+  quest: IWeeklyQuest;
 }
 
-const TodayQuestItem: React.FC<TodayQuestItemProps> = ({ quest }) => {
-  const [patchQuest, { isLoading: isPatching }] = usePatchTodayQuestMutation();
-  const [deleteQuest] = useDeleteTodayQuestMutation();
+const WeeklyQuestItem: React.FC<WeeklyQuestItemProps> = ({ quest }) => {
+  const [patchQuest, { isLoading: isPatching }] = usePatchWeeklyQuestMutation();
+  const [deleteQuest] = useDeleteWeeklyQuestMutation();
 
   const [isShowQuestModalVisible, setIsShowQuestModalVisible] = useState(false);
   const [isUpdateQuestModalVisible, setIsUpdateQuestModalVisible] = useState(false);
@@ -37,7 +36,6 @@ const TodayQuestItem: React.FC<TodayQuestItemProps> = ({ quest }) => {
               <View className="flex-1 gap-1">
                 <QuestItemTitle title={quest.title} description={quest.description} isCompleted={quest.isCompleted} />
                 <QuestItemPriority priority={quest.priority} />
-                <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
               </View>
             </View>
           </TouchableOpacity>
@@ -60,9 +58,9 @@ const TodayQuestItem: React.FC<TodayQuestItemProps> = ({ quest }) => {
         }}
       />
 
-      {/* <UpdateTodayQuestModal isVisible={isUpdateQuestModalVisible} onClose={closeUpdateModal} quest={quest} /> */}
+      {/* <UpdateWeeklyQuestModal isVisible={isUpdateQuestModalVisible} onClose={closeUpdateModal} quest={quest} /> */}
     </>
   );
 };
 
-export default TodayQuestItem;
+export default WeeklyQuestItem;

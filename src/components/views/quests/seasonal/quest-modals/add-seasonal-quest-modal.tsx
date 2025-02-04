@@ -9,7 +9,7 @@ import Button from '@/components/shared/button/button';
 import Input from '@/components/shared/input/input';
 import Modal from '@/components/shared/modal/modal';
 import TextArea from '@/components/shared/text-area/text-area';
-import { PriorityEnum, SeasonEnum } from '@/contract/quest';
+import { PriorityEnum, SeasonEnum } from '@/contract/quests/base-quests';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 
 interface AddSeasonalQuestModalProps {

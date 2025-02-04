@@ -4,7 +4,14 @@ const Api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: 'https://goodiehabits.runasp.net/api', credentials: 'include' }),
   endpoints: builder => ({}),
-  tagTypes: ['questsGet', 'repeatableQuestsGet'],
+  tagTypes: [
+    'dailyQuestsGet',
+    'monthlyQuestsGet',
+    'oneTimeQuestsGet',
+    'seasonalQuestsGet',
+    'weeklyQuestsGet',
+    'todayQuestsGet',
+  ],
 });
 
 export default Api;

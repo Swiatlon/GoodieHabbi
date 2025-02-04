@@ -1,5 +1,4 @@
 import { View } from 'react-native';
-import { QuestType, QuestKeyType, IFilterMapValues } from '../../constants/quest-constants';
 import FilterSection from './elements/filter-section';
 import SortKeySection from './elements/sort-key-section';
 import SortOrderSection from './elements/sort-order-section';
@@ -8,20 +7,30 @@ import Modal from '@/components/shared/modal/modal';
 import { FilterValueType, ActualFilterData } from '@/hooks/use-filter';
 import { SortOrderEnumType } from '@/hooks/use-sort';
 
-interface ConfigModalProps<T extends QuestType> {
+export type QuestKeyType<T> = keyof T;
+
+export interface IFilterMapValues<T> {
+  filterMainKey: QuestKeyType<T>;
+  value: FilterValueType;
+  icon: React.ReactNode;
+  color: string;
+  label: string;
+}
+
+interface ConfigModalProps<T> {
   isModalVisible: boolean;
   actualSortOrder: SortOrderEnumType;
   actualSortKey: string | null;
   withoutDate?: boolean;
   actualFilterData: ActualFilterData;
-  filterCategories: Record<string, Map<string, IFilterMapValues>>;
+  filterCategories: Record<string, Map<string, IFilterMapValues<T>>>;
   setisModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setFilter: (key: QuestKeyType<T>, value: FilterValueType) => void;
   setSortKey: (key: string | null) => void;
   setSortOrder: (order: SortOrderEnumType) => void;
 }
 
-const ConfigModal = <T extends QuestType>({
+const ConfigModal = <T,>({
   isModalVisible,
   actualSortKey,
   actualSortOrder,

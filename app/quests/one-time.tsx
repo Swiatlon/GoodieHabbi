@@ -5,10 +5,10 @@ import Button from '@/components/shared/button/button';
 import Loader from '@/components/shared/loader/loader';
 import { OneTimeQuestsFilterMap } from '@/components/views/quests/one-time/constants/constants';
 import OneTimeQuestItem from '@/components/views/quests/one-time/list/one-time-quest-item';
-import AddQuestModal from '@/components/views/quests/one-time/quest-modals/add-one-time-quest-modal';
+import AddOneTimeQuestModal from '@/components/views/quests/one-time/quest-modals/add-one-time-quest-modal';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
 import Header from '@/components/views/quests/reusable/header';
-import { IOneTimeQuest } from '@/contract/one-time-quests';
+import { IOneTimeQuest } from '@/contract/quests/quests-types/one-time-quests';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
 import { SortOrderEnum, useSort } from '@/hooks/use-sort';
@@ -101,7 +101,8 @@ const OneTimeQuests: React.FC = () => {
         actualFilterData={actualFilter}
         filterCategories={OneTimeQuestsFilterMap}
       />
-      <AddQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
+
+      <AddOneTimeQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
     </View>
   );
 };

@@ -11,21 +11,21 @@ import ControlledInput from '@/components/shared/input/controlled-input';
 import Loader from '@/components/shared/loader/loader';
 import Modal from '@/components/shared/modal/modal';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
-import { RepeatIntervalEnum } from '@/contract/quest';
-import { IRepeatableQuest } from '@/contract/repeatable-quests';
+import { RepeatIntervalEnum } from '@/contract/quests/base-quests';
+import { IDailyQuest } from '@/contract/quests/quests-types/daily-quests';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import { useUpdateRepeatableQuestMutation } from '@/redux/api/repeatable-quests-api';
+import { useUpdateDailyQuestMutation } from '@/redux/api/daily-quests-api';
 import { toUTCISOString } from '@/utils/utils';
 
 interface UpdateDailyQuestModalProps {
   isVisible: boolean;
   onClose: () => void;
-  quest: IRepeatableQuest;
+  quest: IDailyQuest;
 }
 
 const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible, onClose, quest }) => {
   const { showSnackbar } = useSnackbar();
-  const [updateQuest, { isLoading }] = useUpdateRepeatableQuestMutation();
+  const [updateQuest, { isLoading }] = useUpdateDailyQuestMutation();
 
   const methods = useForm<DailyQuestFormValues>({
     resolver: yupResolver(dailyQuestValidationSchema),
@@ -48,7 +48,7 @@ const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible
 
   const onSubmit = async (data: DailyQuestFormValues) => {
     try {
-      await updateQuest({ id: quest.id, ...data } as IRepeatableQuest).unwrap();
+      await updateQuest({ id: quest.id, ...data }).unwrap();
       showSnackbar({ text: 'Quest updated successfully!', variant: SnackbarVariantEnum.SUCCESS });
       onClose();
     } catch {
@@ -64,20 +64,8 @@ const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible
           <Text className="text-lg font-bold text-center">Edit Quest</Text>
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
-          <DatePickerModal
-            name="startDate"
-            formVersion
-            minDate={toUTCISOString(new Date())}
-            label="Start Date"
-            placeholderWhenSelected="Start Date:"
-          />
-          <DatePickerModal
-            name="endDate"
-            formVersion
-            minDate={toUTCISOString(startDate)}
-            label="End Date"
-            placeholderWhenSelected="End Date:"
-          />
+          <DatePickerModal name="startDate" minDate={toUTCISOString(new Date())} label="Start Date" />
+          <DatePickerModal name="endDate" minDate={toUTCISOString(startDate)} label="End Date" />
           <EmojiPickerComponent name="emoji" formVersion label="Emoji" />
           <PriorityPicker label="Priority:" name="priority" />
           <View className="flex-row justify-between">

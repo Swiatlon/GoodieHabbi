@@ -1,8 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
-import { IFilterMapValues } from '../../constants/quest-constants';
-import { PriorityEnum } from '@/contract/quest';
+import { IFilterMapValues } from '../../reusable/config-modal/config-modal';
+import { PriorityEnum } from '@/contract/quests/base-quests';
+import { IDailyQuest } from '@/contract/quests/quests-types/daily-quests';
 
-export const DailyQuestFilterMap: Record<string, Map<string, IFilterMapValues>> = {
+export const DailyQuestFilterMap: Record<string, Map<string, IFilterMapValues<IDailyQuest>>> = {
   Status: new Map([
     [
       'ALL',

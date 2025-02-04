@@ -15,7 +15,7 @@ import {
   oneTimeQuestValidationSchema,
 } from '@/components/views/quests/one-time/quest-modals/schema';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import { useCreateQuestMutation } from '@/redux/api/one-time-quests-api';
+import { useCreateOneTimeQuestMutation } from '@/redux/api/one-time-quests-api';
 import { toUTCISOString } from '@/utils/utils';
 
 interface AddOneTimeQuestModalProps {
@@ -25,7 +25,7 @@ interface AddOneTimeQuestModalProps {
 
 const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, onClose }) => {
   const { showSnackbar } = useSnackbar();
-  const [createQuest, { isLoading }] = useCreateQuestMutation();
+  const [createQuest, { isLoading }] = useCreateOneTimeQuestMutation();
 
   const methods = useForm<OneTimeQuestFormValues>({
     resolver: yupResolver(oneTimeQuestValidationSchema),
@@ -65,17 +65,15 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, 
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
           <DatePickerModal
             name="startDate"
-            formVersion
             minDate={toUTCISOString(new Date())}
             label="Start Date"
-            placeholderWhenSelected="Start Date:"
+            placeholder="Tap to pick start date"
           />
           <DatePickerModal
             name="endDate"
-            formVersion
             minDate={toUTCISOString(startDate)}
             label="End Date"
-            placeholderWhenSelected="End Date:"
+            placeholder="Tap to pick end date"
           />
           <EmojiPickerComponent name="emoji" formVersion label="Emoji:" />
           <PriorityPicker label="Priority:" name="priority" />

@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, FlatList, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
-import { OneTimeQuestsFilterMap } from '@/components/views/quests/one-time/constants/constants';
-import AddRepeatableQuestModal from '@/components/views/quests/repeatable/add-quest-modal/elements/add-repeatable-quest-modal';
-import RepatableQuestItem from '@/components/views/quests/repeatable/list/repeatable-quest-item';
+import Loader from '@/components/shared/loader/loader';
+import { MonthlyQuestsFilterMap } from '@/components/views/quests/monthly/constants/constants';
+import MonthlyQuestItem from '@/components/views/quests/monthly/list/monthly-quest-item';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
-import Header from '@/components/views/quests/reusable/header';
-import { exampleRepeatableQuests, IRepeatableQuest } from '@/contract/quest';
+import { IMonthlyQuest } from '@/contract/quests/quests-types/monthly-quests';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
-import { SortOrderEnum, useSort } from '@/hooks/use-sort';
+import { useSort, SortOrderEnum } from '@/hooks/use-sort';
+import { useGetAllMonthlyQuestsQuery } from '@/redux/api/monthly-quests-api';
+import Header from '@/components/views/quests/reusable/header';
 
-const RepeatableQuests: React.FC = () => {
-  const [quests, setQuests] = useState<IRepeatableQuest[]>(exampleRepeatableQuests);
+const MonthlyQuests: React.FC = () => {
   const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
+  const { data: fetchedQuests = [], isLoading } = useGetAllMonthlyQuestsQuery();
+
+  const handleCloseModal = () => setIsAddQuestModalVisible(false);
 
   const {
     data: searchedData,
@@ -24,7 +27,7 @@ const RepeatableQuests: React.FC = () => {
     setSearchQuery,
     setIsSearchVisible,
   } = useSearch({
-    data: quests,
+    data: fetchedQuests,
     initialSearch: {
       key: 'title',
       value: '',
@@ -33,13 +36,13 @@ const RepeatableQuests: React.FC = () => {
 
   const {
     data: filteredQuests,
-    actualFilterData,
     setFilter,
-  } = useFilter({
+    actualFilter,
+  } = useFilter<IMonthlyQuest>({
     data: searchedData,
     initialFilter: {
-      key: 'completed',
-      value: OneTimeQuestsFilterMap.get('ALL')!.value,
+      isCompleted: null,
+      priority: null,
     },
   });
 
@@ -57,10 +60,14 @@ const RepeatableQuests: React.FC = () => {
     },
   });
 
+  if (isLoading) {
+    return <Loader message="Fetching quests..." />;
+  }
+
   return (
     <View className="flex-1 p-4">
       <Header
-        title="Repeatable Quests"
+        title="Monthly Quests"
         isSearchVisible={isSearchVisible}
         searchQuery={searchQuery}
         setIsSearchVisible={setIsSearchVisible}
@@ -71,7 +78,7 @@ const RepeatableQuests: React.FC = () => {
       <FlatList
         data={sortedData}
         keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => <RepatableQuestItem quest={item} setQuests={setQuests} />}
+        renderItem={({ item }) => <MonthlyQuestItem quest={item} />}
         ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
       />
 
@@ -82,21 +89,21 @@ const RepeatableQuests: React.FC = () => {
         className="mx-auto py-2 mt-4"
       />
 
-      <ConfigModal<IRepeatableQuest>
+      <ConfigModal<IMonthlyQuest>
         isModalVisible={isConfigModalVisible}
-        actualFilterData={actualFilterData}
         actualSortKey={actualSortKey}
         actualSortOrder={actualSortOrder}
-        filtersMap={OneTimeQuestsFilterMap}
         setisModalVisible={setIsConfigModalVisible}
         setSortOrder={setSortOrder}
         setSortKey={setSortKey}
         setFilter={setFilter}
+        actualFilterData={actualFilter}
+        filterCategories={MonthlyQuestsFilterMap}
       />
 
-      <AddRepeatableQuestModal isModalVisible={isAddQuestModalVisible} setIsModalVisible={setIsAddQuestModalVisible} />
+      {/* <AddMonthlyQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} /> */}
     </View>
   );
 };
 
-export default RepeatableQuests;
+export default MonthlyQuests;

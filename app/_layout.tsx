@@ -11,6 +11,7 @@ import { CustomDrawerContent } from '@/components/shared/drawer/drawer';
 import SnackbarProvider from '@/providers/snackbar/snackbar-provider';
 import { store } from '@/redux/config/store';
 import '@/configs/day-js-config';
+
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -21,7 +22,6 @@ export default function RootLayout() {
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
-      // Appearance.setColorScheme('light');
     }
   }, [fontsLoaded]);
 
