@@ -4,14 +4,15 @@ import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
 import Loader from '@/components/shared/loader/loader';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
+import Header from '@/components/views/quests/reusable/header';
 import { SeasonalQuestsFilterMap } from '@/components/views/quests/seasonal/constants/constants';
 import SeasonalQuestItem from '@/components/views/quests/seasonal/list/seasonal-quest-item';
+import AddSeasonalQuestModal from '@/components/views/quests/seasonal/quest-modals/add-seasonal-quest-modal';
 import { ISeasonalQuest } from '@/contract/quests/quests-types/seasonal-quests';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
 import { useSort, SortOrderEnum } from '@/hooks/use-sort';
 import { useGetAllSeasonalQuestsQuery } from '@/redux/api/seasonal-quests-api';
-import Header from '@/components/views/quests/reusable/header';
 
 const SeasonalQuests: React.FC = () => {
   const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
@@ -101,7 +102,7 @@ const SeasonalQuests: React.FC = () => {
         filterCategories={SeasonalQuestsFilterMap}
       />
 
-      {/* <AddSeasonalQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} /> */}
+      <AddSeasonalQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
     </View>
   );
 };

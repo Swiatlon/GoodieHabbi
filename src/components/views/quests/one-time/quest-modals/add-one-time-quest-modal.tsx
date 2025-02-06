@@ -5,29 +5,24 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import DatePickerModal from '../../reusable/add-quest-modal/date-picker-modal';
 import EmojiPickerComponent from '../../reusable/add-quest-modal/emoji-picker';
 import PriorityPicker from '../../reusable/add-quest-modal/priority-picker';
+import { oneTimeQuestValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Loader from '@/components/shared/loader/loader';
-import Modal from '@/components/shared/modal/modal';
+import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
-import {
-  OneTimeQuestFormValues,
-  oneTimeQuestValidationSchema,
-} from '@/components/views/quests/one-time/quest-modals/schema';
+import { IPostOneTimeQuestRequest } from '@/contract/quests/quests-types/one-time-quests';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateOneTimeQuestMutation } from '@/redux/api/one-time-quests-api';
 import { toUTCISOString } from '@/utils/utils';
 
-interface AddOneTimeQuestModalProps {
-  isVisible: boolean;
-  onClose: () => void;
-}
+interface AddOneTimeQuestModalProps extends IBaseModalProps {}
 
 const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, onClose }) => {
   const { showSnackbar } = useSnackbar();
   const [createQuest, { isLoading }] = useCreateOneTimeQuestMutation();
 
-  const methods = useForm<OneTimeQuestFormValues>({
+  const methods = useForm<IPostOneTimeQuestRequest>({
     resolver: yupResolver(oneTimeQuestValidationSchema),
     defaultValues: {
       title: '',
@@ -42,7 +37,7 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, 
 
   const { handleSubmit, reset, watch } = methods;
 
-  const onSubmit = async (data: OneTimeQuestFormValues) => {
+  const onSubmit = async (data: IPostOneTimeQuestRequest) => {
     try {
       await createQuest(data).unwrap();
       onClose();
@@ -75,7 +70,7 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, 
             label="End Date"
             placeholder="Tap to pick end date"
           />
-          <EmojiPickerComponent name="emoji" formVersion label="Emoji:" />
+          <EmojiPickerComponent name="emoji" label="Emoji:" />
           <PriorityPicker label="Priority:" name="priority" />
           <View className="flex-row justify-between">
             <Button

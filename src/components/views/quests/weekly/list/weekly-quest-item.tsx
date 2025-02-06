@@ -5,7 +5,9 @@ import QuestItemContainer from '../../reusable/quest-item/quest-item-container';
 import QuestItemEmoji from '../../reusable/quest-item/quest-item-emoji';
 import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
+import QuestItemDateWeekly from '../../reusable/quest-item/quest-item-weekly';
 import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
+import UpdateWeeklyQuestModal from '../quest-modals/update-weekly-quest-modal';
 import { IWeeklyQuest } from '@/contract/quests/quests-types/weekly-quests';
 import { usePatchWeeklyQuestMutation, useDeleteWeeklyQuestMutation } from '@/redux/api/weekly-quests-api';
 
@@ -36,6 +38,7 @@ const WeeklyQuestItem: React.FC<WeeklyQuestItemProps> = ({ quest }) => {
               <View className="flex-1 gap-1">
                 <QuestItemTitle title={quest.title} description={quest.description} isCompleted={quest.isCompleted} />
                 <QuestItemPriority priority={quest.priority} />
+                <QuestItemDateWeekly weekdays={quest.weekdays} />
               </View>
             </View>
           </TouchableOpacity>
@@ -58,7 +61,7 @@ const WeeklyQuestItem: React.FC<WeeklyQuestItemProps> = ({ quest }) => {
         }}
       />
 
-      {/* <UpdateWeeklyQuestModal isVisible={isUpdateQuestModalVisible} onClose={closeUpdateModal} quest={quest} /> */}
+      <UpdateWeeklyQuestModal isVisible={isUpdateQuestModalVisible} onClose={closeUpdateModal} quest={quest} />
     </>
   );
 };

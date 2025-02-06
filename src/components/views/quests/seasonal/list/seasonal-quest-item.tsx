@@ -7,6 +7,7 @@ import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
 import QuestItemSeason from '../../reusable/quest-item/quest-item-season';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
 import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
+import UpdateSeasonalQuestModal from '../quest-modals/update-seasonal-quest-modal';
 import { ISeasonalQuest } from '@/contract/quests/quests-types/seasonal-quests';
 import { usePatchSeasonalQuestMutation, useDeleteSeasonalQuestMutation } from '@/redux/api/seasonal-quests-api';
 

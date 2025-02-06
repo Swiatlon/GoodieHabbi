@@ -5,25 +5,26 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import DatePickerModal from '../../reusable/add-quest-modal/date-picker-modal';
 import EmojiPickerComponent from '../../reusable/add-quest-modal/emoji-picker';
 import PriorityPicker from '../../reusable/add-quest-modal/priority-picker';
-import { dailyQuestValidationSchema } from './schema';
+import WeeklyPicker from '../../reusable/add-quest-modal/weekly-picker';
+import { weeklyQuestValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
-import { IPostDailyQuestRequest } from '@/contract/quests/quests-types/daily-quests';
+import { IPostWeeklyQuestRequest } from '@/contract/quests/quests-types/weekly-quests';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import { useCreateDailyQuestMutation } from '@/redux/api/daily-quests-api';
+import { useCreateWeeklyQuestMutation } from '@/redux/api/weekly-quests-api';
 import { toUTCISOString } from '@/utils/utils';
 
-interface AddDailyQuestModalProps extends IBaseModalProps {}
+interface AddWeeklyQuestModalProps extends IBaseModalProps {}
 
-const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onClose }) => {
+const AddWeeklyTimeQuestModal: React.FC<AddWeeklyQuestModalProps> = ({ isVisible, onClose }) => {
   const { showSnackbar } = useSnackbar();
-  const [createQuest, { isLoading }] = useCreateDailyQuestMutation();
+  const [createQuest, { isLoading }] = useCreateWeeklyQuestMutation();
 
-  const methods = useForm<IPostDailyQuestRequest>({
-    resolver: yupResolver(dailyQuestValidationSchema),
+  const methods = useForm<IPostWeeklyQuestRequest>({
+    resolver: yupResolver(weeklyQuestValidationSchema),
     defaultValues: {
       title: '',
       description: '',
@@ -32,12 +33,13 @@ const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onCl
       endDate: null,
       isCompleted: false,
       emoji: null,
+      weekdays: [],
     },
   });
 
   const { handleSubmit, reset, watch } = methods;
 
-  const onSubmit = async (data: IPostDailyQuestRequest) => {
+  const onSubmit = async (data: IPostWeeklyQuestRequest) => {
     try {
       await createQuest(data).unwrap();
       onClose();
@@ -72,6 +74,7 @@ const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onCl
           />
           <EmojiPickerComponent name="emoji" label="Emoji:" />
           <PriorityPicker label="Priority:" name="priority" />
+          <WeeklyPicker name="weekdays" />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"
@@ -90,4 +93,4 @@ const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onCl
   );
 };
 
-export default AddDailyQuestModal;
+export default AddWeeklyTimeQuestModal;

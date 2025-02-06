@@ -9,9 +9,12 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { IconButton } from '../icon-button/icon-button';
 
-interface ModalProps extends OriginalModalProps {
+export interface IBaseModalProps {
   isVisible: boolean;
   onClose: () => void;
+}
+
+interface ModalProps extends OriginalModalProps, IBaseModalProps {
   children: React.ReactNode;
   className?: string;
 }

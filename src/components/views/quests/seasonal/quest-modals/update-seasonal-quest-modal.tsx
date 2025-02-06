@@ -5,57 +5,59 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import DatePickerModal from '../../reusable/add-quest-modal/date-picker-modal';
 import EmojiPickerComponent from '../../reusable/add-quest-modal/emoji-picker';
 import PriorityPicker from '../../reusable/add-quest-modal/priority-picker';
-import { dailyQuestValidationSchema } from './schema';
+import ControlledSeasonPicker from '../../reusable/add-quest-modal/season-picker';
+import { seasonalQuestValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
-import { IPostDailyQuestRequest } from '@/contract/quests/quests-types/daily-quests';
-import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import { useCreateDailyQuestMutation } from '@/redux/api/daily-quests-api';
+import { ISeasonalQuest, IPostSeasonalQuestRequest } from '@/contract/quests/quests-types/seasonal-quests';
+import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
+import { useUpdateSeasonalQuestMutation } from '@/redux/api/seasonal-quests-api';
 import { toUTCISOString } from '@/utils/utils';
 
-interface AddDailyQuestModalProps extends IBaseModalProps {}
+interface UpdateSeasonalQuestModalProps extends IBaseModalProps {
+  quest: ISeasonalQuest;
+}
 
-const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onClose }) => {
+const UpdateSeasonalQuestModal: React.FC<UpdateSeasonalQuestModalProps> = ({ isVisible, onClose, quest }) => {
   const { showSnackbar } = useSnackbar();
-  const [createQuest, { isLoading }] = useCreateDailyQuestMutation();
+  const [updateQuest, { isLoading }] = useUpdateSeasonalQuestMutation();
 
-  const methods = useForm<IPostDailyQuestRequest>({
-    resolver: yupResolver(dailyQuestValidationSchema),
+  const methods = useForm<IPostSeasonalQuestRequest>({
+    resolver: yupResolver(seasonalQuestValidationSchema),
     defaultValues: {
-      title: '',
-      description: '',
-      startDate: null,
-      priority: null,
-      endDate: null,
-      isCompleted: false,
-      emoji: null,
+      title: quest.title,
+      description: quest.description,
+      startDate: toUTCISOString(quest.startDate),
+      endDate: toUTCISOString(quest.endDate),
+      priority: quest.priority,
+      isCompleted: quest.isCompleted,
+      emoji: quest.emoji,
+      season: quest.season,
     },
   });
 
   const { handleSubmit, reset, watch } = methods;
+  const startDate = watch('startDate');
 
-  const onSubmit = async (data: IPostDailyQuestRequest) => {
+  const onSubmit = async (data: IPostSeasonalQuestRequest) => {
     try {
-      await createQuest(data).unwrap();
+      await updateQuest({ id: quest.id, ...data }).unwrap();
+      showSnackbar({ text: 'Quest updated successfully!', variant: SnackbarVariantEnum.SUCCESS });
       onClose();
-      reset();
-      showSnackbar({ text: 'Quest added successfully!', variant: SnackbarVariantEnum.SUCCESS });
     } catch {
-      showSnackbar({ text: 'Failed to add quest. Please try again.', variant: SnackbarVariantEnum.ERROR });
+      showSnackbar({ text: 'Failed to update quest. Please try again.', variant: SnackbarVariantEnum.ERROR });
     }
   };
 
-  const startDate = watch('startDate');
-
   return (
-    <Modal isVisible={isVisible} onClose={onClose}>
-      {isLoading && <Loader size="large" message="Adding quest..." fullscreen />}
+    <Modal isVisible={isVisible} onClose={() => onClose()} key={quest.id}>
+      {isLoading && <Loader size="large" message="Updating quest..." fullscreen />}
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 py-6 gap-4">
-          <Text className="text-lg font-bold text-center">Add New Quest</Text>
+          <Text className="text-lg font-bold text-center">Edit Quest</Text>
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
           <DatePickerModal
@@ -72,6 +74,7 @@ const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onCl
           />
           <EmojiPickerComponent name="emoji" label="Emoji:" />
           <PriorityPicker label="Priority:" name="priority" />
+          <ControlledSeasonPicker name="season" label="Season:" />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"
@@ -82,7 +85,11 @@ const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onCl
               className="bg-gray-200 text-gray-700 rounded-lg"
               variant="outlined"
             />
-            <Button label="Add Quest" onPress={handleSubmit(onSubmit)} className="bg-blue-500 text-white rounded-lg" />
+            <Button
+              label="Save Changes"
+              onPress={handleSubmit(onSubmit)}
+              className="bg-blue-500 text-white rounded-lg"
+            />
           </View>
         </View>
       </FormProvider>
@@ -90,4 +97,4 @@ const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onCl
   );
 };
 
-export default AddDailyQuestModal;
+export default UpdateSeasonalQuestModal;

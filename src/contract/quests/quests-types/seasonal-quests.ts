@@ -1,7 +1,7 @@
 import { IQuest, SeasonEnumType } from '../base-quests';
 
 export interface ISeasonalQuest extends IQuest {
-  season: SeasonEnumType;
+  season: SeasonEnumType | null;
 }
 
 export interface IGetSeasonalQuestRequest {

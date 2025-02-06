@@ -17,9 +17,11 @@ const QuestItemTitle: React.FC<QuestItemTitleProps> = ({ title, description, isC
         >
           {title}
         </Text>
-        <Text className="text-sm text-gray-500 mt-1" numberOfLines={2}>
-          {description}
-        </Text>
+        {description && (
+          <Text className="text-sm text-gray-500 mt-1" numberOfLines={2}>
+            {description}
+          </Text>
+        )}
       </View>
     </View>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { View, Text } from 'react-native';
 import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
@@ -16,7 +16,7 @@ interface DatePickerModalProps {
   maxDate?: string;
 }
 
-const DatePickerModal: React.FC<DatePickerModalProps> = ({ minDate, maxDate, label, name, placeholder }) => {
+const DatePickerModal = ({ minDate, maxDate, label, name, placeholder }: DatePickerModalProps) => {
   const { setValue, watch } = useFormContext();
   const [isVisible, setIsVisible] = useState(false);
 
@@ -32,7 +32,7 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({ minDate, maxDate, lab
   return (
     <View className="flex gap-2">
       <Text className="text-sm font-semibold text-gray-500">{label}:</Text>
-      <ControlledSelect name={name} placeholder={placeholder} onPress={handleOpen} isDate />
+      <ControlledSelect name={name} placeholder={placeholder} onPress={handleOpen} isDate isEditable={false} />
 
       <Modal isVisible={isVisible} onClose={handleClose}>
         <Text className="text-lg font-bold text-center mb-4">Select Date:</Text>

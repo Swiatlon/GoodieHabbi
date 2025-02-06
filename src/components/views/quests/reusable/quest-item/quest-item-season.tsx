@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SeasonEnum, SeasonEnumType } from '@/contract/quests/base-quests';
 
 interface QuestItemSeasonProps {
-  season: SeasonEnumType;
+  season: SeasonEnumType | null;
 }
 
 const seasonData: Record<SeasonEnumType, { icon: JSX.Element; label: string; color: string }> = {
@@ -31,6 +31,10 @@ const seasonData: Record<SeasonEnumType, { icon: JSX.Element; label: string; col
 };
 
 const QuestItemSeason: React.FC<QuestItemSeasonProps> = ({ season }) => {
+  if (!season) {
+    return null;
+  }
+
   const { icon, label } = seasonData[season];
 
   return (

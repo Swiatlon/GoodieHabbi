@@ -1,29 +1,29 @@
-import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { View, Text } from 'react-native';
 import { yupResolver } from '@hookform/resolvers/yup';
 import DatePickerModal from '../../reusable/add-quest-modal/date-picker-modal';
+import DayPicker from '../../reusable/add-quest-modal/day-picker';
 import EmojiPickerComponent from '../../reusable/add-quest-modal/emoji-picker';
 import PriorityPicker from '../../reusable/add-quest-modal/priority-picker';
-import { dailyQuestValidationSchema } from './schema';
+import { monthlyQuestValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
-import { IPostDailyQuestRequest } from '@/contract/quests/quests-types/daily-quests';
-import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import { useCreateDailyQuestMutation } from '@/redux/api/daily-quests-api';
+import { IPostMonthlyQuestRequest } from '@/contract/quests/quests-types/monthly-quests';
+import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
+import { useCreateMonthlyQuestMutation } from '@/redux/api/monthly-quests-api';
 import { toUTCISOString } from '@/utils/utils';
 
-interface AddDailyQuestModalProps extends IBaseModalProps {}
+interface AddMonthlyQuestModalProps extends IBaseModalProps {}
 
-const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onClose }) => {
+const AddMonthlyQuestModal: React.FC<AddMonthlyQuestModalProps> = ({ isVisible, onClose }) => {
   const { showSnackbar } = useSnackbar();
-  const [createQuest, { isLoading }] = useCreateDailyQuestMutation();
+  const [createQuest, { isLoading }] = useCreateMonthlyQuestMutation();
 
-  const methods = useForm<IPostDailyQuestRequest>({
-    resolver: yupResolver(dailyQuestValidationSchema),
+  const methods = useForm<IPostMonthlyQuestRequest>({
+    resolver: yupResolver(monthlyQuestValidationSchema),
     defaultValues: {
       title: '',
       description: '',
@@ -32,12 +32,14 @@ const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onCl
       endDate: null,
       isCompleted: false,
       emoji: null,
+      startDay: undefined,
+      endDay: undefined,
     },
   });
 
   const { handleSubmit, reset, watch } = methods;
 
-  const onSubmit = async (data: IPostDailyQuestRequest) => {
+  const onSubmit = async (data: IPostMonthlyQuestRequest) => {
     try {
       await createQuest(data).unwrap();
       onClose();
@@ -72,6 +74,8 @@ const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onCl
           />
           <EmojiPickerComponent name="emoji" label="Emoji:" />
           <PriorityPicker label="Priority:" name="priority" />
+          <DayPicker label="Start" name="startDay" />
+          <DayPicker label="End" name="endDay" />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"
@@ -90,4 +94,4 @@ const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onCl
   );
 };
 
-export default AddDailyQuestModal;
+export default AddMonthlyQuestModal;

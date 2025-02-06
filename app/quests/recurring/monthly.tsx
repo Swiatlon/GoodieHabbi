@@ -5,13 +5,14 @@ import Button from '@/components/shared/button/button';
 import Loader from '@/components/shared/loader/loader';
 import { MonthlyQuestsFilterMap } from '@/components/views/quests/monthly/constants/constants';
 import MonthlyQuestItem from '@/components/views/quests/monthly/list/monthly-quest-item';
+import AddMonthlyQuestModal from '@/components/views/quests/monthly/quest-modals/add-monthly-quest-modal';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
+import Header from '@/components/views/quests/reusable/header';
 import { IMonthlyQuest } from '@/contract/quests/quests-types/monthly-quests';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
 import { useSort, SortOrderEnum } from '@/hooks/use-sort';
 import { useGetAllMonthlyQuestsQuery } from '@/redux/api/monthly-quests-api';
-import Header from '@/components/views/quests/reusable/header';
 
 const MonthlyQuests: React.FC = () => {
   const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
@@ -101,7 +102,7 @@ const MonthlyQuests: React.FC = () => {
         filterCategories={MonthlyQuestsFilterMap}
       />
 
-      {/* <AddMonthlyQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} /> */}
+      <AddMonthlyQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
     </View>
   );
 };

@@ -5,12 +5,11 @@ import EmojiPicker, { EmojiType } from 'rn-emoji-keyboard';
 import ControlledSelect from '@/components/shared/select/controlled-select';
 
 interface EmojiPickerComponentProps {
-  formVersion?: boolean;
   label?: string;
   name: string;
 }
 
-const EmojiPickerComponent: React.FC<EmojiPickerComponentProps> = ({ name, formVersion, label }) => {
+const EmojiPickerComponent: React.FC<EmojiPickerComponentProps> = ({ name, label }) => {
   const { setValue } = useFormContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -21,7 +20,7 @@ const EmojiPickerComponent: React.FC<EmojiPickerComponentProps> = ({ name, formV
 
   return (
     <View className="flex gap-2">
-      {formVersion && label && <Text className="text-sm font-semibold text-gray-500">{label}</Text>}
+      {label && <Text className="text-sm font-semibold text-gray-500">{label}</Text>}
       <ControlledSelect
         name={name}
         placeholder="Tap to pick emoji for quest"

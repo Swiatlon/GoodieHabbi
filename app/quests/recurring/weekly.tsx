@@ -4,14 +4,15 @@ import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
 import Loader from '@/components/shared/loader/loader';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
-import { WeeklyQuestFilterMap } from '@/components/views/quests/weekly/constants/constants';
+import Header from '@/components/views/quests/reusable/header';
+import { WeeklyQuestsFilterMap } from '@/components/views/quests/weekly/constants/constants';
 import WeeklyQuestItem from '@/components/views/quests/weekly/list/weekly-quest-item';
+import AddWeeklyQuestModal from '@/components/views/quests/weekly/quest-modals/add-weekly-quest-modal';
 import { IWeeklyQuest } from '@/contract/quests/quests-types/weekly-quests';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
 import { useSort, SortOrderEnum } from '@/hooks/use-sort';
 import { useGetAllWeeklyQuestsQuery } from '@/redux/api/weekly-quests-api';
-import Header from '@/components/views/quests/reusable/header';
 
 const WeeklyQuests: React.FC = () => {
   const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
@@ -98,10 +99,10 @@ const WeeklyQuests: React.FC = () => {
         setSortKey={setSortKey}
         setFilter={setFilter}
         actualFilterData={actualFilter}
-        filterCategories={WeeklyQuestFilterMap}
+        filterCategories={WeeklyQuestsFilterMap}
       />
 
-      {/* <AddWeeklyQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} /> */}
+      <AddWeeklyQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
     </View>
   );
 };

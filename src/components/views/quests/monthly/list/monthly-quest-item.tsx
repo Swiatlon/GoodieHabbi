@@ -3,10 +3,12 @@ import { View, TouchableOpacity } from 'react-native';
 import QuestItemCheckmark from '../../reusable/quest-item/quest-item-checkmark';
 import QuestItemContainer from '../../reusable/quest-item/quest-item-container';
 import QuestItemDate from '../../reusable/quest-item/quest-item-date';
+import QuestItemDateMonthly from '../../reusable/quest-item/quest-item-date-monthly';
 import QuestItemEmoji from '../../reusable/quest-item/quest-item-emoji';
 import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
 import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
+import UpdateMonthlyQuestModal from '../quest-modals/update-monthly-quest-modal';
 import { IMonthlyQuest } from '@/contract/quests/quests-types/monthly-quests';
 import { useDeleteMonthlyQuestMutation, usePatchMonthlyQuestMutation } from '@/redux/api/monthly-quests-api';
 
@@ -38,6 +40,7 @@ const MonthlyQuestItem: React.FC<MonthlyQuestItemProps> = ({ quest }) => {
                 <QuestItemTitle title={quest.title} description={quest.description} isCompleted={quest.isCompleted} />
                 <QuestItemPriority priority={quest.priority} />
                 <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
+                <QuestItemDateMonthly startDay={quest.startDay} endDay={quest.endDay} />
               </View>
             </View>
           </TouchableOpacity>

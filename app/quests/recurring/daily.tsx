@@ -3,16 +3,16 @@ import { View, FlatList, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
 import Loader from '@/components/shared/loader/loader';
-import { DailyQuestFilterMap } from '@/components/views/quests/daily/constants/constants';
+import { DailyQuestsFilterMap } from '@/components/views/quests/daily/constants/constants';
 import DailyQuestItem from '@/components/views/quests/daily/list/daily-quest-item';
 import AddDailyQuestModal from '@/components/views/quests/daily/quest-modals/add-daily-quest-modal';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
+import Header from '@/components/views/quests/reusable/header';
 import { IDailyQuest } from '@/contract/quests/quests-types/daily-quests';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
 import { useSort, SortOrderEnum } from '@/hooks/use-sort';
 import { useGetAllDailyQuestsQuery } from '@/redux/api/daily-quests-api';
-import Header from '@/components/views/quests/reusable/header';
 
 const DailyQuests: React.FC = () => {
   const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
@@ -60,7 +60,6 @@ const DailyQuests: React.FC = () => {
       order: SortOrderEnum.ASC,
     },
   });
-
   if (isLoading) {
     return <Loader message="Fetching quests..." />;
   }
@@ -99,7 +98,7 @@ const DailyQuests: React.FC = () => {
         setSortKey={setSortKey}
         setFilter={setFilter}
         actualFilterData={actualFilter}
-        filterCategories={DailyQuestFilterMap}
+        filterCategories={DailyQuestsFilterMap}
       />
 
       <AddDailyQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
