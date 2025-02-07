@@ -119,7 +119,7 @@ module.exports = tseslint.config(
       'eslint-comments/no-unused-disable': 'error',
       'sonarjs/cognitive-complexity': ['error', 15],
       'sonarjs/no-duplicate-string': 'error',
-      'prettier/prettier': ['error', { endOfLine: 'auto', printWidth: 120 }],
+      'prettier/prettier': ['error', { endOfLine: 'auto', printWidth: 150 }],
       '@typescript-eslint/naming-convention': ['off'],
       'react/jsx-no-literals': 'off',
       'react/forbid-component-props': ['off'],

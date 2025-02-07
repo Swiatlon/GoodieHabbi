@@ -35,6 +35,16 @@ export const WeekdayEnum = {
 
 export type WeekdayEnumType = (typeof WeekdayEnum)[keyof typeof WeekdayEnum];
 
+export const QuestTypesEnum = {
+  ONE_TIME: 'One-Time',
+  SEASONAL: 'Seasonal',
+  MONTHLY: 'Monthly',
+  DAILY: 'Daily',
+  WEEKLY: 'Weekly',
+} as const;
+
+export type QuestTypesEnumType = (typeof QuestTypesEnum)[keyof typeof QuestTypesEnum];
+
 export interface IQuest {
   id: number;
   title: string;
@@ -44,4 +54,5 @@ export interface IQuest {
   priority: PriorityEnumType | null;
   isCompleted: boolean;
   emoji: string | null;
+  type: QuestTypesEnumType;
 }

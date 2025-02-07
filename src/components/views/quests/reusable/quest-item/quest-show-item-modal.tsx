@@ -15,13 +15,7 @@ interface QuestShowItemModalProps {
   onUpdate: () => void;
 }
 
-const ShowQuestItemModal: React.FC<QuestShowItemModalProps> = ({
-  quest,
-  isVisible,
-  onClose,
-  deleteQuest,
-  onUpdate,
-}) => {
+const ShowQuestItemModal: React.FC<QuestShowItemModalProps> = ({ quest, isVisible, onClose, deleteQuest, onUpdate }) => {
   const { showSnackbar } = useSnackbar();
 
   const handleDelete = () => {

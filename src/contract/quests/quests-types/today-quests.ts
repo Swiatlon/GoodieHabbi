@@ -6,11 +6,11 @@ export interface IGetTodayQuestRequest {
   id: number;
 }
 
-export interface IPostTodayQuestRequest extends Omit<IQuest, 'id'> {}
+export interface IPostTodayQuestRequest extends Omit<IQuest, 'id' | 'type'> {}
 
-export interface IPutTodayQuestRequest extends IQuest {}
+export interface IPutTodayQuestRequest extends Omit<IQuest, 'type'> {}
 
-export interface IPatchTodayQuestRequest extends Partial<IQuest> {
+export interface IPatchTodayQuestRequest extends Partial<Omit<IQuest, 'type'>> {
   id: number;
 }
 

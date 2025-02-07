@@ -11,10 +11,7 @@ const QuestItemTitle: React.FC<QuestItemTitleProps> = ({ title, description, isC
   return (
     <View className="flex pr-2">
       <View>
-        <Text
-          className={`text-lg ${isCompleted ? 'line-through [text-decoration-thickness:3px] text-gray-500' : ''}`}
-          numberOfLines={2}
-        >
+        <Text className={`text-lg ${isCompleted ? 'line-through [text-decoration-thickness:3px] text-gray-500' : ''}`} numberOfLines={2}>
           {title}
         </Text>
         {description && (

@@ -45,11 +45,7 @@ const ConfigModal = <T,>({
   return (
     <Modal isVisible={isModalVisible} onClose={() => setisModalVisible(false)}>
       <View className="flex gap-4">
-        <FilterSection<T>
-          actualFilterData={actualFilterData}
-          setFilter={setFilter}
-          filterCategories={filterCategories}
-        />
+        <FilterSection<T> actualFilterData={actualFilterData} setFilter={setFilter} filterCategories={filterCategories} />
         <SortOrderSection actualSortOrder={actualSortOrder} setSortOrder={setSortOrder} />
         <SortKeySection actualSortKey={actualSortKey} setSortKey={setSortKey} withoutDate={withoutDate} />
         <Button label="Close" onPress={() => setisModalVisible(false)} className="mx-auto px-6" />
