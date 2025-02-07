@@ -41,12 +41,7 @@ const TodayQuestItem: React.FC<TodayQuestItemProps> = ({ quest }) => {
               </View>
             </View>
           </TouchableOpacity>
-          <QuestItemCheckmark
-            completed={quest.isCompleted}
-            questId={quest.id}
-            patchQuest={patchQuest}
-            isLoading={isPatching}
-          />
+          <QuestItemCheckmark completed={quest.isCompleted} questId={quest.id} patchQuest={patchQuest} isLoading={isPatching} />
         </View>
       </QuestItemContainer>
       <ShowQuestItemModal

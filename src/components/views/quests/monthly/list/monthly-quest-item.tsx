@@ -44,12 +44,7 @@ const MonthlyQuestItem: React.FC<MonthlyQuestItemProps> = ({ quest }) => {
               </View>
             </View>
           </TouchableOpacity>
-          <QuestItemCheckmark
-            completed={quest.isCompleted}
-            questId={quest.id}
-            patchQuest={patchQuest}
-            isLoading={isPatching}
-          />
+          <QuestItemCheckmark completed={quest.isCompleted} questId={quest.id} patchQuest={patchQuest} isLoading={isPatching} />
         </View>
       </QuestItemContainer>
       <ShowQuestItemModal

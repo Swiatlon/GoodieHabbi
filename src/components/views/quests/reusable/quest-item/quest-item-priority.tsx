@@ -24,11 +24,7 @@ const QuestItemPriority: React.FC<QuestItemPriorityProps> = ({ priority }) => {
     return null;
   }
 
-  return (
-    <Text className={`text-sm font-bold ${getPriorityStyle(priority)}`}>
-      Priority: {priority.charAt(0).toUpperCase() + priority.slice(1)}
-    </Text>
-  );
+  return <Text className={`text-sm font-bold ${getPriorityStyle(priority)}`}>Priority: {priority.charAt(0).toUpperCase() + priority.slice(1)}</Text>;
 };
 
 export default QuestItemPriority;

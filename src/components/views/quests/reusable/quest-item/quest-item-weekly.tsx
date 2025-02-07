@@ -36,9 +36,7 @@ const QuestItemDateWeekly: React.FC<QuestItemDateWeeklyProps> = ({ weekdays }) =
       <View className="flex-row flex-wrap gap-2">
         {weekdays.map(day => (
           <View key={day} className="px-3 py-1 rounded-full bg-primary justify-center items-center">
-            <Text className="text-white text-sm font-bold">
-              {dayAbbreviations[day.toLowerCase()] || day[0].toUpperCase()}
-            </Text>
+            <Text className="text-white text-sm font-bold">{dayAbbreviations[day.toLowerCase()] || day[0].toUpperCase()}</Text>
           </View>
         ))}
       </View>
@@ -49,9 +47,7 @@ const QuestItemDateWeekly: React.FC<QuestItemDateWeeklyProps> = ({ weekdays }) =
     <View className="flex-row flex-wrap gap-2">
       {weekdays.map(day => (
         <View key={day} className="w-6 h-6 rounded-full bg-primary justify-center items-center">
-          <Text className="text-white text-xs font-bold">
-            {dayAbbreviations[day.toLowerCase()][0].toUpperCase() || day[0].toUpperCase()}
-          </Text>
+          <Text className="text-white text-xs font-bold">{dayAbbreviations[day.toLowerCase()][0].toUpperCase() || day[0].toUpperCase()}</Text>
         </View>
       ))}
     </View>

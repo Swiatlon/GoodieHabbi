@@ -35,15 +35,7 @@ const styleTypeColors: Record<StyleType, { contained: string; outlined: string }
   },
 };
 
-const Button: React.FC<ButtonProps> = ({
-  label,
-  onPress,
-  styleType = 'primary',
-  variant = 'contained',
-  className = '',
-  startIcon,
-  endIcon,
-}) => {
+const Button: React.FC<ButtonProps> = ({ label, onPress, styleType = 'primary', variant = 'contained', className = '', startIcon, endIcon }) => {
   const buttonStyles = styleTypeColors[styleType][variant];
   const textColor = variant === 'contained' ? 'text-white' : `text-${styleType}`;
 

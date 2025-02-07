@@ -23,9 +23,7 @@ const DayPickerModal: React.FC<DayPickerModalProps> = ({ isVisible, onClose, onC
             <TouchableOpacity
               key={day}
               onPress={() => onConfirm(day)}
-              className={`w-12 h-12 m-1 rounded-full justify-center items-center ${
-                day === selectedDay ? 'bg-blue-500' : 'bg-gray-200'
-              }`}
+              className={`w-12 h-12 m-1 rounded-full justify-center items-center ${day === selectedDay ? 'bg-blue-500' : 'bg-gray-200'}`}
             >
               <Text className={`text-sm font-bold ${day === selectedDay ? 'text-white' : 'text-gray-700'}`}>{day}</Text>
             </TouchableOpacity>

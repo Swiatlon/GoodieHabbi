@@ -33,9 +33,7 @@ const renderIcon = (iconElement: JSX.Element, active: boolean) =>
     color: active ? '#1987EE' : '#4b465d',
   });
 
-const renderLabel = (text: string, active: boolean) => (
-  <Text className={`flex-1 text-base ${active ? 'text-primary' : 'text-black'}`}>{text}</Text>
-);
+const renderLabel = (text: string, active: boolean) => <Text className={`flex-1 text-base ${active ? 'text-primary' : 'text-black'}`}>{text}</Text>;
 
 const renderExtendArrow = (isOpen: boolean) => (
   <Ionicons name={isOpen ? 'chevron-up-outline' : 'chevron-down-outline'} size={ICON_SIZE} color="#4b465d" />
@@ -63,13 +61,7 @@ const CustomDrawerItem: React.FC<CustomDrawerProps> = ({ label, icon, items = []
     hasChildren &&
     items.map((item, index) => (
       <View key={index} className="mt-4">
-        <CustomDrawerItem
-          label={item.label}
-          icon={item.icon}
-          items={item.children}
-          route={item.route}
-          depth={depth + 1}
-        />
+        <CustomDrawerItem label={item.label} icon={item.icon} items={item.children} route={item.route} depth={depth + 1} />
       </View>
     ));
 

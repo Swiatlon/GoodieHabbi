@@ -18,14 +18,7 @@ const ControlledTextArea = ({ name, label, isRequired, ...otherProps }: Controll
       control={control}
       render={({ field, fieldState: { error } }) => (
         <View className="flex gap-1">
-          <TextArea
-            {...field}
-            {...otherProps}
-            onChange={field.onChange}
-            onClear={() => field.onChange('')}
-            label={label}
-            isRequired={isRequired}
-          />
+          <TextArea {...field} {...otherProps} onChange={field.onChange} onClear={() => field.onChange('')} label={label} isRequired={isRequired} />
           {error && <Text className="text-red-500 text-sm mt-1">{error.message}</Text>}
         </View>
       )}

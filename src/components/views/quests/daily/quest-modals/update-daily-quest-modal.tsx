@@ -78,11 +78,7 @@ const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible
               className="bg-gray-200 text-gray-700 rounded-lg"
               variant="outlined"
             />
-            <Button
-              label="Save Changes"
-              onPress={handleSubmit(onSubmit)}
-              className="bg-blue-500 text-white rounded-lg"
-            />
+            <Button label="Save Changes" onPress={handleSubmit(onSubmit)} className="bg-blue-500 text-white rounded-lg" />
           </View>
         </View>
       </FormProvider>

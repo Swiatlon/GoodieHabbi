@@ -22,13 +22,7 @@ const DayPicker: React.FC<DayPickerProps> = ({ label, name }) => {
   return (
     <View className="flex gap-2">
       <Text className="text-sm font-semibold text-gray-500">{label}</Text>
-      <ControlledSelect
-        name={name}
-        placeholder={`Select ${label} Day`}
-        isEditable={false}
-        clearAsNull
-        onPress={() => setIsOpen(true)}
-      />
+      <ControlledSelect name={name} placeholder={`Select ${label} Day`} isEditable={false} clearAsNull onPress={() => setIsOpen(true)} />
       <DayPickerModal
         isVisible={isOpen}
         onClose={() => setIsOpen(false)}

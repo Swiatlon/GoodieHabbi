@@ -12,20 +12,10 @@ interface HeaderProps {
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Header: React.FC<HeaderProps> = ({
-  title,
-  isSearchVisible,
-  searchQuery,
-  setIsSearchVisible,
-  setIsConfigModalVisible,
-  setSearchQuery,
-}) => (
+const Header: React.FC<HeaderProps> = ({ title, isSearchVisible, searchQuery, setIsSearchVisible, setIsConfigModalVisible, setSearchQuery }) => (
   <>
     <View className="flex-row justify-between items-center mb-4">
-      <IconButton
-        onPress={() => setIsConfigModalVisible(true)}
-        icon={<Ionicons name="settings-outline" size={24} color="#1987EE" />}
-      />
+      <IconButton onPress={() => setIsConfigModalVisible(true)} icon={<Ionicons name="settings-outline" size={24} color="#1987EE" />} />
       <Text className="text-2xl font-bold text-primary text-center">{title}</Text>
       <IconButton
         onPress={() => setIsSearchVisible(prev => !prev)}

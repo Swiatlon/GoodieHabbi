@@ -36,13 +36,7 @@ const DatePickerModal = ({ minDate, maxDate, label, name, placeholder }: DatePic
 
       <Modal isVisible={isVisible} onClose={handleClose}>
         <Text className="text-lg font-bold text-center mb-4">Select Date:</Text>
-        <DateTimePicker
-          mode="single"
-          date={selectedDate}
-          minDate={minDate}
-          maxDate={maxDate}
-          onChange={({ date }) => handleDateChange(date)}
-        />
+        <DateTimePicker mode="single" date={selectedDate} minDate={minDate} maxDate={maxDate} onChange={({ date }) => handleDateChange(date)} />
         <View className="flex-row justify-between">
           <Button label="Close" onPress={handleClose} className="bg-primary rounded-lg px-4 py-2" />
         </View>

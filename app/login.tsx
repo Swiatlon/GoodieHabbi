@@ -12,11 +12,7 @@ const Login = () => {
       <View className="items-center gap-8">
         <Image source={userLogo} style={{ width: 80, height: 80 }} resizeMode="contain" />
         <Text className="text-2xl font-bold text-primary text-center">Login Form</Text>
-        <TextInput
-          className="w-full border border-gray-300 rounded bg-white px-3 py-3"
-          placeholder="Login"
-          placeholderTextColor="#aaa"
-        />
+        <TextInput className="w-full border border-gray-300 rounded bg-white px-3 py-3" placeholder="Login" placeholderTextColor="#aaa" />
         <TextInput
           className="w-full border border-gray-300 rounded bg-white px-3 py-3"
           placeholder="Password"

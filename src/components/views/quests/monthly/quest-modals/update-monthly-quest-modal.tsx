@@ -61,18 +61,8 @@ const UpdateMonthlyQuestModal: React.FC<UpdateMonthlyQuestModalProps> = ({ isVis
           <Text className="text-lg font-bold text-center">Edit Quest</Text>
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
-          <DatePickerModal
-            name="startDate"
-            minDate={toUTCISOString(new Date())}
-            label="Start Date"
-            placeholder="Tap to pick start date"
-          />
-          <DatePickerModal
-            name="endDate"
-            minDate={toUTCISOString(startDate)}
-            label="End Date"
-            placeholder="Tap to pick end date"
-          />
+          <DatePickerModal name="startDate" minDate={toUTCISOString(new Date())} label="Start Date" placeholder="Tap to pick start date" />
+          <DatePickerModal name="endDate" minDate={toUTCISOString(startDate)} label="End Date" placeholder="Tap to pick end date" />
           <EmojiPickerComponent name="emoji" label="Emoji:" />
           <PriorityPicker label="Priority:" name="priority" />
           <DayPicker label="Start" name="startDay" />
@@ -87,11 +77,7 @@ const UpdateMonthlyQuestModal: React.FC<UpdateMonthlyQuestModalProps> = ({ isVis
               className="bg-gray-200 text-gray-700 rounded-lg"
               variant="outlined"
             />
-            <Button
-              label="Save Changes"
-              onPress={handleSubmit(onSubmit)}
-              className="bg-blue-500 text-white rounded-lg"
-            />
+            <Button label="Save Changes" onPress={handleSubmit(onSubmit)} className="bg-blue-500 text-white rounded-lg" />
           </View>
         </View>
       </FormProvider>
