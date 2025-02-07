@@ -3,9 +3,9 @@ import {
   IOneTimeQuest,
   IPostOneTimeQuestRequest,
   IPutOneTimeQuestRequest,
-  IPatchQuestRequest,
   IGetOneTimeQuestRequest,
   IDeleteOneTimeQuestRequest,
+  IPatchOneTimeQuestRequest,
 } from '@/contract/quests/quests-types/one-time-quests';
 
 export const questSlice = Api.injectEndpoints({
@@ -32,7 +32,7 @@ export const questSlice = Api.injectEndpoints({
         method: 'POST',
         body: newQuest,
       }),
-      invalidatesTags: ['oneTimeQuestsGet'],
+      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet'],
     }),
 
     updateOneTimeQuest: builder.mutation<void, IPutOneTimeQuestRequest>({
@@ -41,16 +41,16 @@ export const questSlice = Api.injectEndpoints({
         method: 'PUT',
         body: updatedQuest,
       }),
-      invalidatesTags: ['oneTimeQuestsGet'],
+      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet'],
     }),
 
-    patchOneTimeQuest: builder.mutation<void, IPatchQuestRequest>({
+    patchOneTimeQuest: builder.mutation<void, IPatchOneTimeQuestRequest>({
       query: patchData => ({
         url: `/one-time-quests/${patchData.id}`,
         method: 'PATCH',
         body: patchData,
       }),
-      invalidatesTags: ['oneTimeQuestsGet'],
+      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet'],
     }),
 
     deleteOneTimeQuest: builder.mutation<void, IDeleteOneTimeQuestRequest>({
@@ -58,7 +58,7 @@ export const questSlice = Api.injectEndpoints({
         url: `/one-time-quests/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['oneTimeQuestsGet'],
+      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet'],
     }),
   }),
 });

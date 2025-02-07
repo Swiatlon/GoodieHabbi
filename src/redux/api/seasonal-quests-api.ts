@@ -32,7 +32,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
         method: 'POST',
         body: newQuest,
       }),
-      invalidatesTags: ['seasonalQuestsGet'],
+      invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet'],
     }),
 
     updateSeasonalQuest: builder.mutation<void, IPutSeasonalQuestRequest>({
@@ -41,7 +41,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
         method: 'PUT',
         body: updatedQuest,
       }),
-      invalidatesTags: ['seasonalQuestsGet'],
+      invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet'],
     }),
 
     patchSeasonalQuest: builder.mutation<void, IPatchSeasonalQuestRequest>({
@@ -50,7 +50,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
         method: 'PATCH',
         body: patchData,
       }),
-      invalidatesTags: ['seasonalQuestsGet'],
+      invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet'],
     }),
 
     deleteSeasonalQuest: builder.mutation<void, IDeleteSeasonalQuestRequest>({
@@ -58,7 +58,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
         url: `/seasonal-quests/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['seasonalQuestsGet'],
+      invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet'],
     }),
   }),
 });

@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { View, FlatList, Text } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import Button from '@/components/shared/button/button';
+import { View, Text, FlatList } from 'react-native';
 import Loader from '@/components/shared/loader/loader';
 import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
 import Header from '@/components/views/quests/reusable/header';
 import { TodayQuestsFilterMap } from '@/components/views/quests/today/constants/constants';
-import TodayQuestItem from '@/components/views/quests/today/today-quest-item';
-import { ITodayQuest } from '@/contract/quests/quests-types/today-quests';
+import TodayQuestItem from '@/components/views/quests/today/list/today-quest-item';
+import { AllQuestsUnion } from '@/hooks/quests/useGetAllQuests';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
 import { useSort, SortOrderEnum } from '@/hooks/use-sort';
@@ -15,10 +13,7 @@ import { useGetAllTodayQuestsQuery } from '@/redux/api/today-quests-api';
 
 const TodayQuests: React.FC = () => {
   const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
-  const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
   const { data: fetchedQuests = [], isLoading } = useGetAllTodayQuestsQuery();
-
-  const handleCloseModal = () => setIsAddQuestModalVisible(false);
 
   const {
     data: searchedData,
@@ -38,7 +33,7 @@ const TodayQuests: React.FC = () => {
     data: filteredQuests,
     setFilter,
     actualFilter,
-  } = useFilter<ITodayQuest>({
+  } = useFilter<AllQuestsUnion>({
     data: searchedData,
     initialFilter: {
       isCompleted: null,
@@ -82,14 +77,7 @@ const TodayQuests: React.FC = () => {
         ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
       />
 
-      <Button
-        label="Add new Quest"
-        onPress={() => setIsAddQuestModalVisible(true)}
-        startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
-        className="mx-auto py-2 mt-4"
-      />
-
-      <ConfigModal<ITodayQuest>
+      <ConfigModal<AllQuestsUnion>
         isModalVisible={isConfigModalVisible}
         actualSortKey={actualSortKey}
         actualSortOrder={actualSortOrder}
@@ -100,8 +88,6 @@ const TodayQuests: React.FC = () => {
         actualFilterData={actualFilter}
         filterCategories={TodayQuestsFilterMap}
       />
-
-      {/* <AddTodayQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} /> */}
     </View>
   );
 };
