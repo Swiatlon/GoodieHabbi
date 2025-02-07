@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import { AllQuestsUnion, useQuestMutations } from '@/components/views/quests/hooks/useGetAllQuests';
 import QuestItemCheckmark from '@/components/views/quests/reusable/quest-item/quest-item-checkmark';
 import QuestItemContainer from '@/components/views/quests/reusable/quest-item/quest-item-container';
 import QuestItemDate from '@/components/views/quests/reusable/quest-item/quest-item-date';
@@ -13,6 +12,7 @@ import { IMonthlyQuest } from '@/contract/quests/quests-types/monthly-quests';
 import { IOneTimeQuest } from '@/contract/quests/quests-types/one-time-quests';
 import { ISeasonalQuest } from '@/contract/quests/quests-types/seasonal-quests';
 import { IWeeklyQuest } from '@/contract/quests/quests-types/weekly-quests';
+import { AllQuestsUnion, useQuestMutations } from '@/hooks/quests/useGetAllQuests';
 
 interface AllQuestItemProps {
   quest: AllQuestsUnion;

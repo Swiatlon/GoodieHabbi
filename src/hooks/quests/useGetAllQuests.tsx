@@ -1,8 +1,8 @@
-import UpdateDailyQuestModal from '../daily/quest-modals/update-daily-quest-modal';
-import UpdateMonthlyQuestModal from '../monthly/quest-modals/update-monthly-quest-modal';
-import UpdateOneTimeQuestModal from '../one-time/quest-modals/update-one-time-quest-modal';
-import UpdateSeasonalQuestModal from '../seasonal/quest-modals/update-seasonal-quest-modal';
-import UpdateWeeklyQuestModal from '../weekly/quest-modals/update-weekly-quest-modal';
+import UpdateDailyQuestModal from '@/components/views/quests/daily/quest-modals/update-daily-quest-modal';
+import UpdateMonthlyQuestModal from '@/components/views/quests/monthly/quest-modals/update-monthly-quest-modal';
+import UpdateOneTimeQuestModal from '@/components/views/quests/one-time/quest-modals/update-one-time-quest-modal';
+import UpdateSeasonalQuestModal from '@/components/views/quests/seasonal/quest-modals/update-seasonal-quest-modal';
+import UpdateWeeklyQuestModal from '@/components/views/quests/weekly/quest-modals/update-weekly-quest-modal';
 import { QuestTypesEnum, QuestTypesEnumType } from '@/contract/quests/base-quests';
 import { IDailyQuest } from '@/contract/quests/quests-types/daily-quests';
 import { IMonthlyQuest } from '@/contract/quests/quests-types/monthly-quests';

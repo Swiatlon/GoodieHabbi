@@ -1,7 +1,7 @@
-import { IAllQuestsUnion } from '../../hooks/useGetAllQuests';
 import { IFilterMapValues } from '../../reusable/config-modal/config-modal';
 import { BaseQuestFilterMap } from '../../reusable/constants/constants';
+import { AllQuestsUnion } from '@/hooks/quests/useGetAllQuests';
 
 export const AllQuestsFilterMap = {
   ...BaseQuestFilterMap,
-} as Record<string, Map<string, IFilterMapValues<IAllQuestsUnion>>>;
+} as Record<string, Map<string, IFilterMapValues<AllQuestsUnion>>>;
