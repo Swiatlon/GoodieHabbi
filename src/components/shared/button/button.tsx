@@ -12,37 +12,56 @@ interface ButtonProps {
   className?: string;
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
+  disabled?: boolean;
 }
 
 const baseStyles = 'rounded-full flex-row gap-2 items-center px-4 py-2';
 
-const styleTypeColors: Record<StyleType, { contained: string; outlined: string }> = {
+const styleTypeColors: Record<StyleType, { contained: string; outlined: string; text: string }> = {
   primary: {
     contained: 'bg-blue-500',
     outlined: 'border border-blue-500 bg-transparent',
+    text: 'text-blue-500',
   },
   secondary: {
     contained: 'bg-gray-500',
     outlined: 'border border-gray-500 bg-transparent',
+    text: 'text-gray-500',
   },
   danger: {
     contained: 'bg-red-500',
     outlined: 'border border-red-500 bg-transparent',
+    text: 'text-red-500',
   },
   accent: {
-    contained: 'bg-purple-600',
-    outlined: 'border border-purple-600 bg-transparent',
+    contained: 'bg-[#30D5C8]',
+    outlined: 'border border-[#30D5C8] bg-transparent',
+    text: 'text-[#30D5C8]',
   },
 };
 
-const Button: React.FC<ButtonProps> = ({ label, onPress, styleType = 'primary', variant = 'contained', className = '', startIcon, endIcon }) => {
-  const buttonStyles = styleTypeColors[styleType][variant];
-  const textColor = variant === 'contained' ? 'text-white' : `text-${styleType}`;
+const Button: React.FC<ButtonProps> = ({
+  label,
+  onPress,
+  styleType = 'primary',
+  variant = 'contained',
+  className = '',
+  startIcon,
+  endIcon,
+  disabled = false,
+}) => {
+  const buttonStyles = `${styleTypeColors[styleType][variant]} ${disabled ? 'opacity-50' : ''}`;
+  const textColor = variant === 'contained' ? 'text-white' : styleTypeColors[styleType].text;
 
   return (
-    <TouchableOpacity onPress={onPress} className={`${baseStyles} ${buttonStyles} ${className}`}>
+    <TouchableOpacity
+      onPress={!disabled ? onPress : undefined}
+      activeOpacity={0.7}
+      className={`${baseStyles} ${buttonStyles} ${className}`}
+      disabled={disabled}
+    >
       {startIcon}
-      {label && <Text className={`font-semibold  ${textColor}`}>{label}</Text>}
+      {label && <Text className={`font-semibold ${textColor}`}>{label}</Text>}
       {endIcon}
     </TouchableOpacity>
   );

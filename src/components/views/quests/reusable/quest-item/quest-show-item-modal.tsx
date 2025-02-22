@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import QuestItemDate from './quest-item-date';
 import QuestItemPriority from './quest-item-priority';
 import Button from '@/components/shared/button/button';
@@ -36,25 +37,27 @@ const ShowQuestItemModal: React.FC<QuestShowItemModalProps> = ({ quest, isVisibl
   };
 
   return (
-    <Modal isVisible={isVisible} onClose={onClose}>
-      <View className="flex gap-4">
+    <Modal isVisible={isVisible} onClose={onClose} className="min-h-[200px]">
+      <View className="flex gap-4 h-full">
         <View className="flex-row items-center gap-2">
           <Text className="text-lg font-bold">{quest.title}</Text>
           {quest.emoji && <Text className="text-2xl">{quest.emoji}</Text>}
         </View>
-        {quest.description && <Text className="text-sm text-gray-700">{quest.description}</Text>}
-        {(quest.priority || quest.startDate || quest.endDate) && (
-          <View>
-            <QuestItemPriority priority={quest.priority} />
-            <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
-          </View>
-        )}
-        <View className="flex-row justify-between mt-4">
+        <View>
+          {quest.description && <Text className="text-sm text-gray-700">{quest.description}</Text>}
+          {(quest.priority || quest.startDate || quest.endDate) && (
+            <View>
+              <QuestItemPriority priority={quest.priority} />
+              <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
+            </View>
+          )}
+        </View>
+        <View className="flex-row justify-between mt-auto pt-2">
           <View className="flex-row gap-2">
-            <Button label="Delete" styleType="danger" onPress={handleDelete} />
-            <Button label="Edit" styleType="accent" onPress={onUpdate} />
+            <Button label="Delete" styleType="danger" onPress={handleDelete} startIcon={<Ionicons name="trash-outline" size={18} color="white" />} />
+            <Button label="Edit" styleType="accent" onPress={onUpdate} startIcon={<Ionicons name="create-outline" size={18} color="white" />} />
           </View>
-          <Button label="Close" onPress={onClose} />
+          <Button label="Close" styleType="primary" onPress={onClose} startIcon={<Ionicons name="close-outline" size={18} color="white" />} />
         </View>
       </View>
     </Modal>
