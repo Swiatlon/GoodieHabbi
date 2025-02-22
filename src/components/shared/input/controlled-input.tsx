@@ -18,7 +18,7 @@ const ControlledInput = ({ name, label, isRequired, ...otherProps }: ControlledI
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (
-        <View className="flex gap-1">
+        <View className="flex gap-1 w-full">
           <Input
             {...field}
             {...otherProps}
