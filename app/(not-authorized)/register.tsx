@@ -7,6 +7,7 @@ import { useNavigation } from 'expo-router';
 import userLogo from '@/assets/images/exampleUserIconLogin.png';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
+import ControlledPasswordInput from '@/components/shared/password/controlled-password-input';
 import { registerValidationSchema } from '@/components/views/register/schema/schema';
 import { IPostRegisterRequest } from '@/contract/account/account';
 import { useTypedDispatch } from '@/hooks/use-store-hooks';
@@ -47,11 +48,11 @@ const Register = () => {
   return (
     <View className="flex-1 justify-center px-4">
       <FormProvider {...methods}>
-        <View className="place-self-center items-center place-items-center gap-6 px-8 w-[300px]">
+        <View className="place-self-center items-center place-items-center gap-6 px-8 w-[300px] mx-auto">
           <Image source={userLogo} style={{ width: 80, height: 80 }} resizeMode="contain" />
           <Text className="text-2xl font-bold text-primary">Register Form</Text>
           <ControlledInput name="email" className="py-1" placeholder="Email" placeholderTextColor="#aaa" />
-          <ControlledInput name="password" className="py-1" placeholder="Password" placeholderTextColor="#aaa" secureTextEntry={true} />
+          <ControlledPasswordInput name="password" className="py-1" placeholder="Password" placeholderTextColor="#aaa" />
           <Text
             className="text-sm text-blue-300"
             onPress={() => {
@@ -60,7 +61,7 @@ const Register = () => {
           >
             Do you have an account?
           </Text>
-          <Button label="Register" disabled={isLoading} onPress={handleSubmit(onSubmit)} className="px-6 py-3" />
+          <Button label="Register" disabled={isLoading} onPress={handleSubmit(onSubmit)} className="px-8 py-3" />
         </View>
       </FormProvider>
     </View>

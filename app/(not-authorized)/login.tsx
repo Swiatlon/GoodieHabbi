@@ -7,6 +7,7 @@ import { useNavigation } from 'expo-router';
 import userLogo from '@/assets/images/exampleUserIconLogin.png';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
+import ControlledPasswordInput from '@/components/shared/password/controlled-password-input';
 import { loginValidationSchema } from '@/components/views/login/schema/schema';
 import { IPostLoginRequest } from '@/contract/account/account';
 import { useTypedDispatch } from '@/hooks/use-store-hooks';
@@ -51,7 +52,7 @@ const Login = () => {
           <Image source={userLogo} style={{ width: 80, height: 80 }} resizeMode="contain" />
           <Text className="text-2xl font-bold text-primary">Login Form</Text>
           <ControlledInput name="login" className="py-1" placeholder="Login" placeholderTextColor="#aaa" />
-          <ControlledInput name="password" className="py-1" placeholder="Password" placeholderTextColor="#aaa" secureTextEntry={true} />
+          <ControlledPasswordInput name="password" className="py-1" placeholder="Password" placeholderTextColor="#aaa" />
           <Text
             className="text-sm text-blue-300"
             onPress={() => {
@@ -60,7 +61,7 @@ const Login = () => {
           >
             You don't have an account?
           </Text>
-          <Button label="Login" disabled={isLoading} onPress={handleSubmit(onSubmit)} className="px-6 py-3" />
+          <Button label="Login" disabled={isLoading} onPress={handleSubmit(onSubmit)} className="px-8 py-3" />
         </View>
       </FormProvider>
     </View>
