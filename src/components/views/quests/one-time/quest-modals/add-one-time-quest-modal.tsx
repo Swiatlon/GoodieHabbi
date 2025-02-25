@@ -72,7 +72,7 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, 
               className="bg-gray-200 text-gray-700 rounded-lg"
               variant="outlined"
             />
-            <Button label="Add Quest" onPress={handleSubmit(onSubmit)} className="bg-blue-500 text-white rounded-lg" />
+            <Button label="Add Quest" onPress={handleSubmit(onSubmit)} className="bg-blue-500 text-white rounded-lg py-2" />
           </View>
         </View>
       </FormProvider>

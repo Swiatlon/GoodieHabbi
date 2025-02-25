@@ -14,9 +14,6 @@ interface ButtonProps {
   endIcon?: React.ReactNode;
   disabled?: boolean;
 }
-
-const baseStyles = 'rounded-full flex-row gap-2 items-center px-4 py-2';
-
 const styleTypeColors: Record<StyleType, { contained: string; outlined: string; text: string }> = {
   primary: {
     contained: 'bg-blue-500',
@@ -57,7 +54,7 @@ const Button: React.FC<ButtonProps> = ({
     <TouchableOpacity
       onPress={!disabled ? onPress : undefined}
       activeOpacity={0.7}
-      className={`${baseStyles} ${buttonStyles} ${className}`}
+      className={`rounded-3xl flex-row gap-2 px-4 py-4 ${buttonStyles} ${className}`}
       disabled={disabled}
     >
       {startIcon}

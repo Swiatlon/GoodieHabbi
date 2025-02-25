@@ -8,6 +8,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import '@/assets/styles/global.css';
 import Header from '@/components/shared/app-bar/app-bar';
 import { CustomDrawerContent } from '@/components/shared/drawer/drawer';
+import PersistLoginMiddleware from '@/middlewares/persist-login-middleware';
 import SnackbarProvider from '@/providers/snackbar/snackbar-provider';
 import { store } from '@/redux/config/store';
 import '@/configs/day-js-config';
@@ -33,17 +34,21 @@ export default function RootLayout() {
     <SnackbarProvider>
       <Provider store={store}>
         <GestureHandlerRootView className="flex-1 bg-white">
-          <Drawer
-            screenOptions={{
-              header: () => <Header />,
-              sceneStyle: {
-                backgroundColor: 'white',
-              },
-            }}
-            drawerContent={props => <CustomDrawerContent {...props} />}
-          >
-            <Slot />
-          </Drawer>
+          <PersistLoginMiddleware>
+            {/* <RoutesPermissionMiddleware> */}
+            <Drawer
+              screenOptions={{
+                header: () => <Header />,
+                sceneStyle: {
+                  backgroundColor: 'white',
+                },
+              }}
+              drawerContent={props => <CustomDrawerContent {...props} />}
+            >
+              <Slot />
+            </Drawer>
+            {/* </RoutesPermissionMiddleware> */}
+          </PersistLoginMiddleware>
         </GestureHandlerRootView>
       </Provider>
     </SnackbarProvider>

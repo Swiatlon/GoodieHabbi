@@ -1,18 +1,25 @@
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { View, Text, Pressable, Image } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import { useNavigation } from 'expo-router';
 import userLogo from '@/assets/images/exampleUserIconLogin.png';
+import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import { registerValidationSchema } from '@/components/views/register/schema/schema';
-import { IPostRegisterRequest } from '@/contract/register/register';
+import { IPostRegisterRequest } from '@/contract/account/account';
+import { useTypedDispatch } from '@/hooks/use-store-hooks';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
+import { useRegisterAccountMutation } from '@/redux/api/accounts-api';
+import { handleAuthSuccess } from '@/redux/state/auth/auth-state';
+import { IApiError } from '@/types/global-types';
 
 const Register = () => {
+  const dispatch = useTypedDispatch();
   const { showSnackbar } = useSnackbar();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const [createAccount, { isLoading }] = useRegisterAccountMutation();
 
   const methods = useForm<IPostRegisterRequest>({
     resolver: yupResolver(registerValidationSchema),
@@ -26,18 +33,21 @@ const Register = () => {
 
   const onSubmit = async (data: IPostRegisterRequest) => {
     try {
-      console.log(data);
-      // await createQuest(data).unwrap();
-      showSnackbar({ text: 'Quest added successfully!', variant: SnackbarVariantEnum.SUCCESS });
-    } catch {
-      showSnackbar({ text: 'Failed to add quest. Please try again.', variant: SnackbarVariantEnum.ERROR });
+      const response = await createAccount(data).unwrap();
+      showSnackbar({ text: 'Account added successfully!', variant: SnackbarVariantEnum.SUCCESS });
+      dispatch(handleAuthSuccess(response));
+      navigation.navigate('(authorized)/dashboard');
+    } catch (error: unknown) {
+      const typedError = error as IApiError;
+      const errorMessage = typedError.data?.message || 'Failed to add account. Please try again.';
+      showSnackbar({ text: errorMessage, variant: SnackbarVariantEnum.ERROR });
     }
   };
 
   return (
     <View className="flex-1 justify-center px-4">
       <FormProvider {...methods}>
-        <View className="place-self-center place-items-center gap-6 px-8 w-[300px]">
+        <View className="place-self-center items-center place-items-center gap-6 px-8 w-[300px]">
           <Image source={userLogo} style={{ width: 80, height: 80 }} resizeMode="contain" />
           <Text className="text-2xl font-bold text-primary">Register Form</Text>
           <ControlledInput name="email" className="py-1" placeholder="Email" placeholderTextColor="#aaa" />
@@ -45,14 +55,12 @@ const Register = () => {
           <Text
             className="text-sm text-blue-300"
             onPress={() => {
-              navigation.navigate('email');
+              navigation.navigate('(not-authorized)/login');
             }}
           >
             Do you have an account?
           </Text>
-          <Pressable onPress={handleSubmit(onSubmit)} className="bg-blue-500 w-full py-2 rounded">
-            <Text className="text-white font-bold text-center">Register</Text>
-          </Pressable>
+          <Button label="Register" disabled={isLoading} onPress={handleSubmit(onSubmit)} className="px-6 py-3" />
         </View>
       </FormProvider>
     </View>

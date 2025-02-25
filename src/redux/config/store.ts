@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
+import authSlice from '../state/auth/auth-state';
 import Api from './api';
 
 export const store = configureStore({
   reducer: {
     [Api.reducerPath]: Api.reducer,
+    authSlice,
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware().concat(Api.middleware),
   // devTools: import.meta.env.VITE_NODE_ENV !== 'production',

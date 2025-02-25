@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Text, ActivityIndicator } from 'react-native';
+import React, { useLayoutEffect } from 'react';
+import { Text, ActivityIndicator, View } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 interface LoaderProps {
@@ -8,6 +8,7 @@ interface LoaderProps {
   color?: string;
   backgroundColor?: string;
   fullscreen?: boolean;
+  children?: React.JSX.Element;
 }
 
 const Loader: React.FC<LoaderProps> = ({
@@ -16,10 +17,11 @@ const Loader: React.FC<LoaderProps> = ({
   color = '#1987EE',
   backgroundColor = 'bg-white',
   fullscreen = true,
+  children,
 }) => {
   const opacity = useSharedValue(0);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     opacity.value = withTiming(1, { duration: 500 });
   }, [opacity]);
 
@@ -34,6 +36,7 @@ const Loader: React.FC<LoaderProps> = ({
     >
       <ActivityIndicator size={size} color={color} />
       {message && <Text className="mt-4 text-base text-gray-600">{message}</Text>}
+      {fullscreen && children && <View className="hidden">{children}</View>}
     </Animated.View>
   );
 };

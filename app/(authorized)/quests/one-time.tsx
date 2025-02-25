@@ -87,7 +87,7 @@ const OneTimeQuests: React.FC = () => {
         label="Add new Quest"
         onPress={() => setIsAddQuestModalVisible(true)}
         startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
-        className="mx-auto py-2 mt-4"
+        className="mx-auto mt-4"
       />
 
       <ConfigModal<IOneTimeQuest>
