@@ -1,10 +1,6 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
-export default function Dashboard() {
-  return (
-    <View>
-      <Text>Dashboard</Text>
-    </View>
-  );
+export default function Basic() {
+  return <View className="flex"></View>;
 }

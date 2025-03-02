@@ -51,8 +51,8 @@ const Login = () => {
         <View className="place-self-center items-center place-items-center gap-6 px-8 w-[300px] mx-auto">
           <Image source={userLogo} style={{ width: 80, height: 80 }} resizeMode="contain" />
           <Text className="text-2xl font-bold text-primary">Login Form</Text>
-          <ControlledInput name="login" className="py-1" placeholder="Login" placeholderTextColor="#aaa" />
-          <ControlledPasswordInput name="password" className="py-1" placeholder="Password" placeholderTextColor="#aaa" />
+          <ControlledInput name="login" placeholder="Login" placeholderTextColor="#aaa" />
+          <ControlledPasswordInput name="password" placeholder="Password" placeholderTextColor="#aaa" />
           <Text
             className="text-sm text-blue-300"
             onPress={() => {

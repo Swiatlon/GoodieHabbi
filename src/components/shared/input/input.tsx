@@ -26,8 +26,8 @@ const Input = forwardRef<TextInput, InputProps>(
             {isRequired && <Text className="text-red-500">*</Text>}
           </Text>
         )}
-        <View className={`py-1 pl-1 flex-row items-center border rounded-md ${error ? 'border-red-500' : 'border-gray-300'}`}>
-          <TextInput ref={ref} className={`flex-1 px-2 ${className}`} value={value ?? ''} onChangeText={text => onChange(text)} {...props} />
+        <View className={`pl-1 flex-row items-center border rounded-md ${error ? 'border-red-500' : 'border-gray-300'}`}>
+          <TextInput ref={ref} className={`flex-1 px-2 py-3 ${className}`} value={value ?? ''} onChangeText={text => onChange(text)} {...props} />
           {value && onClear && (
             <TouchableOpacity onPress={onClear} className="pr-4">
               <Ionicons name="close-circle" size={20} color="#888" />

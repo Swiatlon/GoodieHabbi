@@ -56,14 +56,14 @@ const Select = forwardRef<TextInput, SelectProps>(
     return (
       <>
         <View className="w-full">
-          <View className={`flex-row items-center border rounded-lg pl-1 py-1 ${error ? 'border-red-500' : 'border-gray-300'} ${className}`}>
+          <View className={`flex-row items-center border rounded-lg pl-1 ${error ? 'border-red-500' : 'border-gray-300'}`}>
             <TouchableOpacity onPress={onPressHandler} className="flex-1">
               <TextInput
                 ref={ref}
                 placeholder={placeholder}
                 value={formattedValue ?? ''}
                 editable={false}
-                className={`${error ? 'text-red-500' : 'text-black'} px-2`}
+                className={`${error ? 'text-red-500' : 'text-black'} px-2 py-3 ${className}`}
                 style={{ color: textColor }}
                 pointerEvents={'none'}
                 showSoftInputOnFocus={false}
