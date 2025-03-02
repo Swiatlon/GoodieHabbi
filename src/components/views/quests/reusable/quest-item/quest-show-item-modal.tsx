@@ -52,7 +52,7 @@ const ShowQuestItemModal: React.FC<QuestShowItemModalProps> = ({ quest, isVisibl
             </View>
           )}
         </View>
-        <View className="flex-row justify-between mt-auto pt-2">
+        <View className="flex-row justify-between mt-auto">
           <View className="flex-row gap-2">
             <Button label="Delete" styleType="danger" onPress={handleDelete} startIcon={<Ionicons name="trash-outline" size={18} color="white" />} />
             <Button label="Edit" styleType="accent" onPress={onUpdate} startIcon={<Ionicons name="create-outline" size={18} color="white" />} />

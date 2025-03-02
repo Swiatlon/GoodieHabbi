@@ -14,7 +14,7 @@ const sortKeys = ['title', 'date'];
 const SortKeySection: React.FC<SortKeySectionProps> = ({ actualSortKey, withoutDate, setSortKey }) => {
   return (
     <View className="flex gap-2">
-      <Text className="text-lg font-semibold text-center">Sort By:</Text>
+      <Text className="text-md font-semibold ml-4">Sort By:</Text>
       <View className="flex-row justify-around">
         {sortKeys.map(key => {
           if (key === 'date' && withoutDate) {

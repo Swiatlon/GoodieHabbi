@@ -32,13 +32,11 @@ const DatePickerModal = ({ minDate, maxDate, label, name, placeholder }: DatePic
   return (
     <View className="flex gap-2">
       <Text className="text-sm font-semibold text-gray-500">{label}:</Text>
-      <ControlledSelect name={name} placeholder={placeholder} onPress={handleOpen} isDate isEditable={false} />
-
-      <Modal isVisible={isVisible} onClose={handleClose}>
-        <Text className="text-lg font-bold text-center mb-4">Select Date:</Text>
+      <ControlledSelect name={name} placeholder={placeholder} onPress={handleOpen} isDate />
+      <Modal isVisible={isVisible} onClose={handleClose} className="py-6">
         <DateTimePicker mode="single" date={selectedDate} minDate={minDate} maxDate={maxDate} onChange={({ date }) => handleDateChange(date)} />
-        <View className="flex-row justify-between">
-          <Button label="Close" onPress={handleClose} className="bg-primary rounded-lg px-4 py-2" />
+        <View className="flex-row justify-between mt-8">
+          <Button label="Close" onPress={handleClose} className="px-6" />
         </View>
       </Modal>
     </View>

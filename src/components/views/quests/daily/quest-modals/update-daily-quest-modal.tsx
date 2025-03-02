@@ -5,14 +5,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import DatePickerModal from '../../reusable/add-quest-modal/date-picker-modal';
 import EmojiPickerComponent from '../../reusable/add-quest-modal/emoji-picker';
 import PriorityPicker from '../../reusable/add-quest-modal/priority-picker';
-import { DailyQuestFormValues, dailyQuestValidationSchema } from './schema';
+import { dailyQuestValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Loader from '@/components/shared/loader/loader';
 import Modal from '@/components/shared/modal/modal';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
-import { RepeatIntervalEnum } from '@/contract/quests/base-quests';
-import { IDailyQuest } from '@/contract/quests/quests-types/daily-quests';
+import { IDailyQuest, IPostDailyQuestRequest } from '@/contract/quests/quests-types/daily-quests';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useUpdateDailyQuestMutation } from '@/redux/api/daily-quests-api';
 import { toUTCISOString } from '@/utils/utils';
@@ -27,7 +26,7 @@ const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible
   const { showSnackbar } = useSnackbar();
   const [updateQuest, { isLoading }] = useUpdateDailyQuestMutation();
 
-  const methods = useForm<DailyQuestFormValues>({
+  const methods = useForm<IPostDailyQuestRequest>({
     resolver: yupResolver(dailyQuestValidationSchema),
     defaultValues: {
       title: quest.title,
@@ -37,16 +36,12 @@ const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible
       priority: quest.priority,
       isCompleted: quest.isCompleted,
       emoji: quest.emoji,
-      repeatInterval: {
-        type: RepeatIntervalEnum.DAILY,
-      },
     },
   });
 
   const { handleSubmit, reset, watch } = methods;
-  const startDate = watch('startDate');
 
-  const onSubmit = async (data: DailyQuestFormValues) => {
+  const onSubmit = async (data: IPostDailyQuestRequest) => {
     try {
       await updateQuest({ id: quest.id, ...data }).unwrap();
       showSnackbar({ text: 'Quest updated successfully!', variant: SnackbarVariantEnum.SUCCESS });
@@ -56,18 +51,20 @@ const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible
     }
   };
 
+  const startDate = watch('startDate');
+
   return (
-    <Modal isVisible={isVisible} onClose={() => onClose()} key={quest.id}>
+    <Modal isVisible={isVisible} onClose={() => onClose()} key={quest.id} className="py-2">
       {isLoading && <Loader size="large" message="Updating quest..." fullscreen />}
       <FormProvider {...methods}>
-        <View className="bg-white rounded-lg px-4 py-6 gap-4">
+        <View className="bg-white rounded-lg px-4 gap-5">
           <Text className="text-lg font-bold text-center">Edit Quest</Text>
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
-          <DatePickerModal name="startDate" minDate={toUTCISOString(new Date())} label="Start Date" />
-          <DatePickerModal name="endDate" minDate={toUTCISOString(startDate)} label="End Date" />
-          <EmojiPickerComponent name="emoji" formVersion label="Emoji" />
-          <PriorityPicker label="Priority:" name="priority" />
+          <DatePickerModal name="startDate" minDate={toUTCISOString(new Date())} label="Start Date" placeholder="Tap to pick start date" />
+          <DatePickerModal name="endDate" minDate={toUTCISOString(startDate)} label="End Date" placeholder="Tap to pick end date" />
+          <EmojiPickerComponent />
+          <PriorityPicker />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"

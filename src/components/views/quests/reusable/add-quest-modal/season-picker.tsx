@@ -1,13 +1,8 @@
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { Text, View } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
+import ControlledSelect from '@/components/shared/select/controlled-select';
 import { SeasonEnum, SeasonEnumType } from '@/contract/quests/base-quests';
-
-interface ControlledSeasonPickerProps {
-  name: string;
-  label?: string;
-}
 
 const getSeasonStyle = (season: SeasonEnumType | null) => {
   switch (season) {
@@ -24,47 +19,27 @@ const getSeasonStyle = (season: SeasonEnumType | null) => {
   }
 };
 
-const ControlledSeasonPicker: React.FC<ControlledSeasonPickerProps> = ({ name, label }) => {
-  const { control } = useFormContext();
+const ControlledSeasonPicker: React.FC = () => {
+  const { watch } = useFormContext();
+  const selectedSeason = watch('season') as SeasonEnumType | null;
 
   return (
-    <Controller
-      name={name}
-      control={control}
-      render={({ field: { onChange, value }, fieldState: { error } }) => (
-        <View className="flex gap-2">
-          {label && <Text className="text-sm font-semibold text-gray-500">{label}</Text>}
-          <View className="rounded-lg border border-gray-300">
-            <RNPickerSelect
-              onValueChange={onChange}
-              items={[
-                { label: 'Winter', value: SeasonEnum.WINTER },
-                { label: 'Spring', value: SeasonEnum.SPRING },
-                { label: 'Summer', value: SeasonEnum.SUMMER },
-                { label: 'Autumn', value: SeasonEnum.AUTUMN },
-              ]}
-              value={value as SeasonEnumType}
-              placeholder={{
-                label: 'Select Season:',
-                value: '',
-                color: '#6b7280',
-              }}
-              style={{
-                inputIOS: {
-                  marginLeft: 0,
-                  color: getSeasonStyle(value),
-                },
-                inputAndroid: {
-                  marginLeft: 0,
-                  color: getSeasonStyle(value),
-                },
-              }}
-            />
-          </View>
-          {error && <Text className="text-xs text-red-500">{error.message}</Text>}
-        </View>
-      )}
-    />
+    <View className="flex gap-2">
+      <Text className="text-sm font-semibold text-gray-500">Season:</Text>
+      <ControlledSelect
+        name="season"
+        placeholder="Select season"
+        options={[
+          { label: 'Winter', value: SeasonEnum.WINTER },
+          { label: 'Spring', value: SeasonEnum.SPRING },
+          { label: 'Summer', value: SeasonEnum.SUMMER },
+          { label: 'Autumn', value: SeasonEnum.AUTUMN },
+        ]}
+        isModalVersion={true}
+        className={`px-2`}
+        textColor={getSeasonStyle(selectedSeason)}
+      />
+    </View>
   );
 };
 

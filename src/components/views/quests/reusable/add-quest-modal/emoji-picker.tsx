@@ -4,24 +4,19 @@ import { Text, View } from 'react-native';
 import EmojiPicker, { EmojiType } from 'rn-emoji-keyboard';
 import ControlledSelect from '@/components/shared/select/controlled-select';
 
-interface EmojiPickerComponentProps {
-  label?: string;
-  name: string;
-}
-
-const EmojiPickerComponent: React.FC<EmojiPickerComponentProps> = ({ name, label }) => {
+const EmojiPickerComponent: React.FC = () => {
   const { setValue } = useFormContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handlePick = (emojiObject: EmojiType) => {
-    setValue(name, emojiObject.emoji);
+    setValue('emoji', emojiObject.emoji);
     setIsOpen(false);
   };
 
   return (
     <View className="flex gap-2">
-      {label && <Text className="text-sm font-semibold text-gray-500">{label}</Text>}
-      <ControlledSelect name={name} placeholder="Tap to pick emoji for quest" isEditable={false} onPress={() => setIsOpen(true)} />
+      <Text className="text-sm font-semibold text-gray-500">Emoji:</Text>
+      <ControlledSelect name="emoji" placeholder="Tap to pick emoji for quest" onPress={() => setIsOpen(true)} />
 
       <EmojiPicker
         open={isOpen}

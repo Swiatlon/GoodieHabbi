@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { IFilterMapValues } from '../../../constants/quest-constants';
+import { IFilterMapValues } from '../config-modal';
 import { IconButton } from '@/components/shared/icon-button/icon-button';
 import { ActualFilterData, FilterValueType } from '@/hooks/use-filter';
 
 interface FilterSectionProps<T> {
   actualFilterData: ActualFilterData;
   setFilter: (key: keyof T, value: FilterValueType) => void;
-  filterCategories: Record<string, Map<string, IFilterMapValues>>;
+  filterCategories: Record<string, Map<string, IFilterMapValues<T>>>;
 }
 
 const FilterSection = <T,>({ actualFilterData, setFilter, filterCategories }: FilterSectionProps<T>) => {
@@ -20,8 +20,7 @@ const FilterSection = <T,>({ actualFilterData, setFilter, filterCategories }: Fi
           <Text className="text-md font-semibold ml-4 mb-2">{category}:</Text>
           <View className="flex-row flex-wrap justify-around">
             {Array.from(filtersMap.entries()).map(([filterKey, { value, icon, label, filterMainKey }]) => {
-              const isActive = actualFilterData[filterMainKey] === value;
-
+              const isActive = actualFilterData[filterMainKey as keyof ActualFilterData] === value;
               return (
                 <View key={filterKey} className="flex items-center p-2 w-1/3">
                   <IconButton onPress={() => setFilter(filterMainKey as keyof T, isActive ? null : value)} className="flex items-center">

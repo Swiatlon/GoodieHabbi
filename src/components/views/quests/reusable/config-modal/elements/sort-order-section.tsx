@@ -12,7 +12,7 @@ interface SortOrderSectionProps {
 const SortOrderSection: React.FC<SortOrderSectionProps> = ({ actualSortOrder, setSortOrder }) => {
   return (
     <View className="flex gap-2">
-      <Text className="text-lg font-semibold text-center">Sort Order:</Text>
+      <Text className="text-md font-semibold ml-4">Sort Order:</Text>
       <View className="flex-row justify-around">
         {[SortOrderEnum.ASC, SortOrderEnum.DESC].map(order => (
           <IconButton key={order} onPress={() => setSortOrder(order)} className="flex items-center p-2">

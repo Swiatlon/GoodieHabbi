@@ -4,10 +4,6 @@ import { View, Text } from 'react-native';
 import Button from '@/components/shared/button/button';
 import { WeekdayEnum, WeekdayEnumType } from '@/contract/quests/base-quests';
 
-interface WeeklyPickerProps {
-  name: string;
-}
-
 const DAYS_OF_WEEK = [
   { label: 'Mon', value: WeekdayEnum.MONDAY },
   { label: 'Tues', value: WeekdayEnum.TUESDAY },
@@ -18,7 +14,7 @@ const DAYS_OF_WEEK = [
   { label: 'Sun', value: WeekdayEnum.SUNDAY },
 ];
 
-const WeeklyPicker: React.FC<WeeklyPickerProps> = ({ name }) => {
+const WeeklyPicker: React.FC = () => {
   const { control } = useFormContext();
 
   const toggleSelection = (selectedDays: string[], day: string) => {
@@ -27,14 +23,16 @@ const WeeklyPicker: React.FC<WeeklyPickerProps> = ({ name }) => {
 
   return (
     <Controller
-      name={name}
+      name="weekdays"
       control={control}
       render={({ field: { value = [], onChange }, fieldState: { error } }) => {
         const selectedDays = value as WeekdayEnumType[];
 
         return (
           <View className="flex gap-2">
-            <Text className="text-sm font-semibold text-gray-500">Select days:</Text>
+            <Text className="text-sm font-semibold text-gray-500">
+              Pick days:<Text className="text-red-500">*</Text>
+            </Text>
             <View className="flex-row flex-wrap gap-2">
               {DAYS_OF_WEEK.map(({ label, value: dayValue }) => (
                 <Button

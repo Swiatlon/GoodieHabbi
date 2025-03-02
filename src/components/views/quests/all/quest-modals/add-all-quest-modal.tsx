@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AddDailyQuestModal from '../../daily/quest-modals/add-daily-quest-modal';
 import AddMonthlyQuestModal from '../../monthly/quest-modals/add-monthly-quest-modal';
@@ -28,32 +28,30 @@ const AddAllQuestModal = ({ isVisible, onClose }: AddAllQuestModalProps) => {
   };
 
   const renderQuestSelection = () => (
-    <View className="bg-white rounded-lg px-4 py-6 gap-4">
+    <View className="bg-white rounded-lg px-4 gap-5">
       <Text className="text-lg font-bold text-center">Select Quest Type</Text>
-      <FlatList
-        data={Object.values(QuestTypesEnum)}
-        keyExtractor={item => item}
-        renderItem={({ item }) => {
-          const { icon, color } = questIcons[item as QuestTypesEnumType];
+      {Object.values(QuestTypesEnum).map(item => {
+        const { icon, color } = questIcons[item as QuestTypesEnumType];
 
-          return (
-            <TouchableOpacity
-              className={`flex-row items-center justify-center py-3 px-4 ${color} rounded-lg my-2`}
-              onPress={() => setSelectedQuestType(item as QuestTypesEnumType)}
-              activeOpacity={0.8}
-            >
-              <FontAwesome5 name={icon} size={20} color="white" className="mr-3" />
-              <Text className="text-white text-lg font-semibold">{item}</Text>
-            </TouchableOpacity>
-          );
-        }}
-      />
+        return (
+          <TouchableOpacity
+            key={item}
+            className={`flex-row items-center justify-center py-3 px-4 ${color} rounded-lg`}
+            onPress={() => setSelectedQuestType(item as QuestTypesEnumType)}
+            activeOpacity={0.8}
+          >
+            <FontAwesome5 name={icon} size={20} color="white" className="mr-3" />
+            <Text className="text-white text-lg font-semibold">{item}</Text>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 
   return (
     <Modal isVisible={isVisible} onClose={onClose}>
-      {!selectedQuestType ? renderQuestSelection() : null}
+      {renderQuestSelection()}
+
       {selectedQuestType === QuestTypesEnum.ONE_TIME && <AddOneTimeQuestModal isVisible={true} onClose={handleClose} />}
       {selectedQuestType === QuestTypesEnum.SEASONAL && <AddSeasonalQuestModal isVisible={true} onClose={handleClose} />}
       {selectedQuestType === QuestTypesEnum.MONTHLY && <AddMonthlyQuestModal isVisible={true} onClose={handleClose} />}

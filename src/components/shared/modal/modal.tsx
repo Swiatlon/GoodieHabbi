@@ -17,13 +17,15 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children, className =
   return (
     <OriginalModal visible={isVisible} animationType="fade" transparent {...rest}>
       <TouchableWithoutFeedback onPress={onClose}>
-        <View className="flex-1 bg-black/50 justify-center items-center relative">
+        <View className="bg-black/50 h-full w-full flex">
           <TouchableWithoutFeedback onPress={() => {}}>
-            <View className={`w-11/12 bg-white rounded-lg shadow-lg ${className} max-h-[90vh]`}>
-              <View className="absolute top-3 right-2 z-40">
+            <View className={`w-11/12 bg-white rounded-lg shadow-lg ${className} max-h-[90vh] m-auto`}>
+              <View className="absolute top-5 right-2 z-40">
                 <IconButton onPress={() => onClose()} icon={<Ionicons name="close-outline" size={24} color="#1987EE" />} />
               </View>
-              <ScrollView contentContainerStyle={{ padding: 16, height: '100%' }}>{children}</ScrollView>
+              <ScrollView contentContainerStyle={{ padding: 16, position: 'relative', display: 'flex', flexGrow: 1 }}>
+                <View className="h-full">{children}</View>
+              </ScrollView>
             </View>
           </TouchableWithoutFeedback>
         </View>

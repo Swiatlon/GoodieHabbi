@@ -54,7 +54,7 @@ const Button: React.FC<ButtonProps> = ({
     <TouchableOpacity
       onPress={!disabled ? onPress : undefined}
       activeOpacity={0.7}
-      className={`rounded-3xl flex-row gap-2 px-4 py-4 ${buttonStyles} ${className}`}
+      className={`rounded-3xl flex-row gap-2 px-4 py-3 ${buttonStyles} ${className}`}
       disabled={disabled}
     >
       {startIcon}

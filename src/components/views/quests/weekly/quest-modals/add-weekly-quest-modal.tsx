@@ -53,18 +53,18 @@ const AddWeeklyTimeQuestModal: React.FC<AddWeeklyQuestModalProps> = ({ isVisible
   const startDate = watch('startDate');
 
   return (
-    <Modal isVisible={isVisible} onClose={onClose}>
+    <Modal isVisible={isVisible} onClose={onClose} className="py-2">
       {isLoading && <Loader size="large" message="Adding quest..." fullscreen />}
       <FormProvider {...methods}>
-        <View className="bg-white rounded-lg px-4 py-6 gap-4">
+        <View className="bg-white rounded-lg px-4 gap-5">
           <Text className="text-lg font-bold text-center">Add New Quest</Text>
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
           <DatePickerModal name="startDate" minDate={toUTCISOString(new Date())} label="Start Date" placeholder="Tap to pick start date" />
           <DatePickerModal name="endDate" minDate={toUTCISOString(startDate)} label="End Date" placeholder="Tap to pick end date" />
-          <EmojiPickerComponent name="emoji" label="Emoji:" />
-          <PriorityPicker label="Priority:" name="priority" />
-          <WeeklyPicker name="weekdays" />
+          <EmojiPickerComponent />
+          <PriorityPicker />
+          <WeeklyPicker />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"
