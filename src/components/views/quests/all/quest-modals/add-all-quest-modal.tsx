@@ -21,10 +21,18 @@ const questIcons: Record<QuestTypesEnumType, { icon: string; color: string }> = 
 
 const AddAllQuestModal = ({ isVisible, onClose }: AddAllQuestModalProps) => {
   const [selectedQuestType, setSelectedQuestType] = useState<QuestTypesEnumType | null>(null);
+  const [isVisibleForAddModals, setIsVisibleForAddModals] = useState(false);
 
   const handleClose = () => {
+    setIsVisibleForAddModals(false);
     setSelectedQuestType(null);
     onClose();
+  };
+
+  const openQuestModal = (questType: QuestTypesEnumType) => {
+    onClose();
+    setSelectedQuestType(questType);
+    setIsVisibleForAddModals(true);
   };
 
   const renderQuestSelection = () => (
@@ -37,7 +45,7 @@ const AddAllQuestModal = ({ isVisible, onClose }: AddAllQuestModalProps) => {
           <TouchableOpacity
             key={item}
             className={`flex-row items-center justify-center py-3 px-4 ${color} rounded-lg`}
-            onPress={() => setSelectedQuestType(item as QuestTypesEnumType)}
+            onPress={() => openQuestModal(item as QuestTypesEnumType)}
             activeOpacity={0.8}
           >
             <FontAwesome5 name={icon} size={20} color="white" className="mr-3" />
@@ -49,15 +57,17 @@ const AddAllQuestModal = ({ isVisible, onClose }: AddAllQuestModalProps) => {
   );
 
   return (
-    <Modal isVisible={isVisible} onClose={onClose}>
-      {renderQuestSelection()}
+    <>
+      <Modal isVisible={isVisible} onClose={onClose}>
+        {!isVisibleForAddModals && renderQuestSelection()}
+      </Modal>
 
-      {selectedQuestType === QuestTypesEnum.ONE_TIME && <AddOneTimeQuestModal isVisible={true} onClose={handleClose} />}
-      {selectedQuestType === QuestTypesEnum.SEASONAL && <AddSeasonalQuestModal isVisible={true} onClose={handleClose} />}
-      {selectedQuestType === QuestTypesEnum.MONTHLY && <AddMonthlyQuestModal isVisible={true} onClose={handleClose} />}
-      {selectedQuestType === QuestTypesEnum.DAILY && <AddDailyQuestModal isVisible={true} onClose={handleClose} />}
-      {selectedQuestType === QuestTypesEnum.WEEKLY && <AddWeeklyQuestModal isVisible={true} onClose={handleClose} />}
-    </Modal>
+      {selectedQuestType === QuestTypesEnum.ONE_TIME && <AddOneTimeQuestModal isVisible={isVisibleForAddModals} onClose={handleClose} />}
+      {selectedQuestType === QuestTypesEnum.SEASONAL && <AddSeasonalQuestModal isVisible={isVisibleForAddModals} onClose={handleClose} />}
+      {selectedQuestType === QuestTypesEnum.MONTHLY && <AddMonthlyQuestModal isVisible={isVisibleForAddModals} onClose={handleClose} />}
+      {selectedQuestType === QuestTypesEnum.DAILY && <AddDailyQuestModal isVisible={isVisibleForAddModals} onClose={handleClose} />}
+      {selectedQuestType === QuestTypesEnum.WEEKLY && <AddWeeklyQuestModal isVisible={isVisibleForAddModals} onClose={handleClose} />}
+    </>
   );
 };
 

@@ -51,7 +51,7 @@ const UpdateOneTimeQuestModal: React.FC<UpdateOneTimeQuestModalProps> = ({ isVis
   };
 
   return (
-    <Modal isVisible={isVisible} onClose={() => onClose()} key={quest.id} className="py-2">
+    <Modal isVisible={isVisible} onClose={() => onClose()} key={quest.id}>
       {isLoading && <Loader size="large" message="Updating quest..." fullscreen />}
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-5">

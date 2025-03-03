@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 import Modal from '../modal/modal';
 import { fromUTCToLocal } from '@/utils/utils';
+import { string } from 'yup';
 
 export interface OptionsItem {
   label: string;
@@ -52,7 +53,6 @@ const Select = forwardRef<TextInput, SelectProps>(
         setIsVisibleModal(true);
       }
     };
-
     return (
       <>
         <View className="w-full">
@@ -61,7 +61,7 @@ const Select = forwardRef<TextInput, SelectProps>(
               <TextInput
                 ref={ref}
                 placeholder={placeholder}
-                value={formattedValue ?? ''}
+                value={formattedValue ? String(formattedValue) : ''}
                 editable={false}
                 className={`${error ? 'text-red-500' : 'text-black'} px-2 py-3 ${className}`}
                 style={{ color: textColor }}

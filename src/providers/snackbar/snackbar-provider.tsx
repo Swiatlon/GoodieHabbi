@@ -55,12 +55,9 @@ export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   return (
     <SnackbarContext.Provider value={{ showSnackbar }}>
-      {children}
       {isVisible && snackbar && (
-        <Animated.View className={`z-99999 flex items-center`} style={{ opacity: fadeAnim }}>
-          <View
-            className={`fixed top-0 left-0 right-0 rounded-lg p-4 shadow-md w-11/12 m-4 flex-row items-center justify-between ${getSnackbarStyle()}`}
-          >
+        <Animated.View className={`flex items-center absolute top-16 left-0 right-0 z-10`} style={{ opacity: fadeAnim }}>
+          <View className={` rounded-lg p-4 shadow-md w-11/12 m-4 flex-row items-center justify-between ${getSnackbarStyle()}`}>
             <Text className="text-white font-bold flex-1">{snackbar.text}</Text>
             <TouchableOpacity onPress={handleCloseSnackbar}>
               <Ionicons name="close" size={20} color="white" />
@@ -68,6 +65,7 @@ export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           </View>
         </Animated.View>
       )}
+      {children}
     </SnackbarContext.Provider>
   );
 };

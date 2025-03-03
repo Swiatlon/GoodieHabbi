@@ -53,7 +53,7 @@ const AddMonthlyQuestModal: React.FC<AddMonthlyQuestModalProps> = ({ isVisible, 
   const startDate = watch('startDate');
 
   return (
-    <Modal isVisible={isVisible} onClose={onClose} className="py-2">
+    <Modal isVisible={isVisible} onClose={onClose}>
       {isLoading && <Loader size="large" message="Adding quest..." fullscreen />}
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-5">
@@ -64,8 +64,8 @@ const AddMonthlyQuestModal: React.FC<AddMonthlyQuestModalProps> = ({ isVisible, 
           <DatePickerModal name="endDate" minDate={toUTCISOString(startDate)} label="End Date" placeholder="Tap to pick end date" />
           <EmojiPickerComponent />
           <PriorityPicker />
-          <DayPicker label="Start" name="startDay" />
-          <DayPicker label="End" name="endDay" />
+          <DayPicker label="Start:" name="startDay" />
+          <DayPicker label="End:" name="endDay" />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"

@@ -14,10 +14,10 @@ export const todayQuestSlice = Api.injectEndpoints({
         method: 'GET',
         url: '/all-quests',
       }),
-      transformResponse: (response: ApiResponseItem[]) =>
-        response.map(({ quest }) => ({
-          ...quest,
-        })),
+      // transformResponse: (response: ApiResponseItem[]) =>
+      //   response.map(({ quest }) => ({
+      //     ...quest,
+      //   })),
       providesTags: ['todayQuestsGet'],
     }),
   }),

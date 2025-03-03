@@ -22,10 +22,12 @@ const RichTextAreaModal: React.FC<RichTextAreaModalModalProps> = ({ isVisible, o
   });
 
   return (
-    <Modal isVisible={isVisible} onClose={onClose} className="py-0 h-4/5">
+    <Modal isVisible={isVisible} onClose={onClose} className="w-full h-full pt-4 pb-0">
       <View className="flex h-full relative">
-        <Text className="text-base font-semibold mb-3 text-gray-500 mt-1">{label}</Text>
-        <RichText editor={editor} style={exampleStyles.fullScreen} />
+        <View className="pt-4 h-full">
+          <Text className="text-base font-semibold mb-3 text-gray-500 mt-1">{label}</Text>
+          <RichText editor={editor} />
+        </View>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={exampleStyles.keyboardAvoidingView}>
           <Toolbar editor={editor} />
         </KeyboardAvoidingView>
@@ -37,9 +39,6 @@ const RichTextAreaModal: React.FC<RichTextAreaModalModalProps> = ({ isVisible, o
 export default RichTextAreaModal;
 
 const exampleStyles = StyleSheet.create({
-  fullScreen: {
-    flex: 1,
-  },
   keyboardAvoidingView: {
     position: 'absolute',
     width: '100%',

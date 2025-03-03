@@ -26,7 +26,7 @@ const ControlledPriorityPicker: React.FC = () => {
       <Text className="text-sm font-semibold text-gray-500">Priority:</Text>
       <ControlledSelect
         name="priority"
-        placeholder="Select Priority"
+        placeholder="Select priority"
         options={[
           { label: 'High', value: PriorityEnum.HIGH },
           { label: 'Medium', value: PriorityEnum.MEDIUM },

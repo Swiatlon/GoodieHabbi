@@ -19,11 +19,11 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children, className =
       <TouchableWithoutFeedback onPress={onClose}>
         <View className="bg-black/50 h-full w-full flex">
           <TouchableWithoutFeedback onPress={() => {}}>
-            <View className={`w-11/12 bg-white rounded-lg shadow-lg ${className} max-h-[90vh] m-auto`}>
-              <View className="absolute top-5 right-2 z-40">
+            <View className={`w-11/12 bg-white rounded-lg shadow-lg max-h-[90vh] m-auto py-6 px-4 ${className}`}>
+              <View className="absolute top-1 right-2 z-40">
                 <IconButton onPress={() => onClose()} icon={<Ionicons name="close-outline" size={24} color="#1987EE" />} />
               </View>
-              <ScrollView contentContainerStyle={{ padding: 16, position: 'relative', display: 'flex', flexGrow: 1 }}>
+              <ScrollView contentContainerStyle={{ padding: 0, position: 'relative', display: 'flex', flexGrow: 1 }}>
                 <View className="h-full">{children}</View>
               </ScrollView>
             </View>

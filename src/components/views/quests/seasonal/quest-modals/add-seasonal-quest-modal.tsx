@@ -52,7 +52,7 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible
   const startDate = watch('startDate');
 
   return (
-    <Modal isVisible={isVisible} onClose={onClose} className="py-2">
+    <Modal isVisible={isVisible} onClose={onClose}>
       {isLoading && <Loader size="large" message="Adding quest..." fullscreen />}
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-5">

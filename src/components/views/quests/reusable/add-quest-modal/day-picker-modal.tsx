@@ -30,7 +30,7 @@ const DayPickerModal: React.FC<DayPickerModalProps> = ({ isVisible, onClose, onC
           ))}
         </ScrollView>
         <View className="flex-row justify-between mt-4">
-          <Button label="Cancel" onPress={onClose} className="bg-gray-200 text-gray-700 rounded-lg px-4 py-2" />
+          <Button label="Cancel" onPress={onClose} />
         </View>
       </View>
     </Modal>

@@ -30,14 +30,15 @@ const Login = () => {
     },
   });
 
-  const { handleSubmit } = methods;
+  const { handleSubmit, reset } = methods;
 
   const onSubmit = async (data: IPostLoginRequest) => {
     try {
       const response = await loginAccount(data).unwrap();
       showSnackbar({ text: 'Logged successfully!', variant: SnackbarVariantEnum.SUCCESS });
-      dispatch(handleAuthSuccess(response));
+      await dispatch(handleAuthSuccess(response));
       navigation.navigate('(authorized)/dashboard');
+      reset();
     } catch (error: unknown) {
       const typedError = error as IApiError;
       const errorMessage = typedError.data?.message || 'Failed to login. Please try again.';

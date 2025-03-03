@@ -30,14 +30,15 @@ const Register = () => {
     },
   });
 
-  const { handleSubmit } = methods;
+  const { handleSubmit, reset } = methods;
 
   const onSubmit = async (data: IPostRegisterRequest) => {
     try {
       const response = await createAccount(data).unwrap();
       showSnackbar({ text: 'Account added successfully!', variant: SnackbarVariantEnum.SUCCESS });
-      dispatch(handleAuthSuccess(response));
+      await dispatch(handleAuthSuccess(response));
       navigation.navigate('(authorized)/dashboard');
+      reset();
     } catch (error: unknown) {
       const typedError = error as IApiError;
       const errorMessage = typedError.data?.message || 'Failed to add account. Please try again.';
