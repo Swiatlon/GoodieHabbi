@@ -36,7 +36,7 @@ export const WeekdayEnum = {
 export type WeekdayEnumType = (typeof WeekdayEnum)[keyof typeof WeekdayEnum];
 
 export const QuestTypesEnum = {
-  ONE_TIME: 'One-Time',
+  ONE_TIME: 'OneTime',
   SEASONAL: 'Seasonal',
   MONTHLY: 'Monthly',
   DAILY: 'Daily',
