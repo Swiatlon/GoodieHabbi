@@ -4,15 +4,24 @@ import * as SecureStore from 'expo-secure-store';
 import qs from 'qs';
 import { IAuthState, setCredentials } from '../state/auth/auth-state';
 
+const getUserTimeZone = () => {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+};
+
 const baseQuery = fetchBaseQuery({
   baseUrl: 'https://goodiehabits.runasp.net/api',
   credentials: 'include',
 
   prepareHeaders: (headers, { getState }) => {
     const { token } = (getState() as { authSlice: IAuthState }).authSlice;
+    const timeZone = getUserTimeZone();
 
     if (token) {
       headers.set('authorization', `Bearer ${token}`);
+    }
+
+    if (timeZone) {
+      headers.set('x-time-zone', timeZone);
     }
 
     return headers;
