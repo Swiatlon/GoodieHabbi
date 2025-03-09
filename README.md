@@ -1,50 +1,106 @@
-# Welcome to your Expo app 👋
+Below is an updated version with actual Unicode emoji characters:
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+---
 
-## Get started
+# GoodieHabbi ✨🐲
 
-1. Install dependencies
+**RPG-Style Habit Tracker**
+Transform your everyday routines into epic quests and level up your life one habit at a time!
+
+---
+
+## Key Features
+
+- **Epic Quests ⚔️**
+  Turn daily tasks into adventures with **Daily**, **Weekly**, **Monthly**, **Seasonal**, and **One-Time** quests.
+
+- **Personalized Scheduling 📅**
+  Customize your quest schedule to fit your lifestyle—whether it's a daily grind or a seasonal sprint.
+
+- **Progress at a Glance 📊**
+  Track your streaks, mark quests as complete, and celebrate every achievement with flair!
+
+- **Secure & Seamless 🔒**
+  Enjoy robust JWT-based authentication that keeps your data secure and your session seamless.
+
+- **Immersive UI 📱**
+  Built with React Native and Expo, delivering a sleek, mobile-first experience with dynamic visuals.
+
+---
+
+## Built With
+
+- **React Native** + **Expo** 🚀
+- **TypeScript** 📝
+- **Tailwind CSS** 🎨
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js** v18.0.0 or higher 💻
+- **npm** or **yarn** 📦
+
+### Installation
+
+1. **Clone the Repo:**
+
+   ```bash
+   git clone https://github.com/Swiatlon/GoodieHabbi.git
+   cd GoodieHabbi
+   ```
+
+2. **Install Dependencies:**
 
    ```bash
    npm install
+   # or
+   yarn
    ```
 
-2. Start the app
+3. **Start the App:**
 
    ```bash
-    npx expo start
+   npm run start
+   # or
+   yarn start
    ```
 
-In the output, you'll find options to open the app in a
+   Launch with Expo CLI and scan the QR code with the Expo Go app on your device.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## How It Works
 
-## Get a fresh project
+1. **Register / Log In 🔑**
+   Securely authenticate with JWT tokens to access your personal quest dashboard.
 
-When you're ready, run:
+2. **Create & Customize Quests ✨**
+   Add tasks with details like priority, emojis, and dates to make your quests uniquely yours.
 
-```bash
-npm run reset-project
-```
+3. **Track & Complete 🏁**
+   Mark quests as complete, monitor your progress, and enjoy your journey to better habits.
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## Contributing
 
-To learn more about developing your project with Expo, look at the following resources:
+We’d love your help in making GoodieHabbi even better! Follow these steps:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+1. Fork the repository.
+2. Create a new branch (e.g., `feature/your-feature`).
+3. Commit your changes with clear messages.
+4. Push your branch and open a pull request.
 
-## Join the community
+---
 
-Join our community of developers creating universal apps.
+## License
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+**Ready to embark on your epic habit journey?**
+Level up your life with **GoodieHabbi** and conquer your quests! ✨⚔️🎉
