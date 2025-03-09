@@ -9,7 +9,8 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "build": "npx expo prebuild --clean && cd android && gradlew assembleRelease"
+    "clean-build": "npx expo prebuild --clean && cd android && gradlew assembleRelease",
+    "build": "cd android && gradlew assembleRelease"
   },
   "jest": {
     "preset": "jest-expo"
