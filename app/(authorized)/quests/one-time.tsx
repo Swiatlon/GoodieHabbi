@@ -102,7 +102,7 @@ const OneTimeQuests: React.FC = () => {
         filterCategories={OneTimeQuestsFilterMap}
       />
 
-      <AddOneTimeQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
+      {isAddQuestModalVisible && <AddOneTimeQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />}
     </View>
   );
 };

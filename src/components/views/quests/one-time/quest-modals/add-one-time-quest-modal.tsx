@@ -10,10 +10,12 @@ import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
+import ControlledMultiSelect from '@/components/shared/multi-select/controlled-multi-select';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
 import { IPostOneTimeQuestRequest } from '@/contract/quests/quests-types/one-time-quests';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateOneTimeQuestMutation } from '@/redux/api/one-time-quests-api';
+import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
 import { toUTCISOString } from '@/utils/utils';
 
 interface AddOneTimeQuestModalProps extends IBaseModalProps {}
@@ -21,6 +23,7 @@ interface AddOneTimeQuestModalProps extends IBaseModalProps {}
 const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, onClose }) => {
   const { showSnackbar } = useSnackbar();
   const [createQuest, { isLoading }] = useCreateOneTimeQuestMutation();
+  const { data: questLabels = [] } = useGetQuestLabelsQuery();
 
   const methods = useForm<IPostOneTimeQuestRequest>({
     resolver: yupResolver(oneTimeQuestValidationSchema),
@@ -32,6 +35,7 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, 
       endDate: null,
       isCompleted: false,
       emoji: null,
+      labels: [],
     },
   });
 
@@ -62,6 +66,12 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, 
           <DatePickerModal name="endDate" minDate={toUTCISOString(startDate)} label="End Date" placeholder="Tap to pick end date" />
           <EmojiPickerComponent />
           <PriorityPicker />
+          <ControlledMultiSelect
+            name="labels"
+            label="Tags:"
+            placeholder="Select quest tags"
+            options={questLabels.map(item => ({ ...item, label: item.value }))}
+          />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"

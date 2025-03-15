@@ -1,6 +1,6 @@
 import React from 'react';
-import QuestsTags from './quests/tags';
+import { View } from 'react-native';
 
 export default function Basic() {
-  return <QuestsTags />;
+  return <View className="flex"></View>;
 }

@@ -6,6 +6,7 @@ import QuestItemDate from '../../reusable/quest-item/quest-item-date';
 import QuestItemDateMonthly from '../../reusable/quest-item/quest-item-date-monthly';
 import QuestItemEmoji from '../../reusable/quest-item/quest-item-emoji';
 import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
+import QuestItemTag from '../../reusable/quest-item/quest-item-tag';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
 import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
 import UpdateMonthlyQuestModal from '../quest-modals/update-monthly-quest-modal';
@@ -41,6 +42,7 @@ const MonthlyQuestItem: React.FC<MonthlyQuestItemProps> = ({ quest }) => {
                 <QuestItemPriority priority={quest.priority} />
                 <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
                 <QuestItemDateMonthly startDay={quest.startDay} endDay={quest.endDay} />
+                <QuestItemTag tags={quest.labels} onPress={openShowModal} />
               </View>
             </View>
           </TouchableOpacity>

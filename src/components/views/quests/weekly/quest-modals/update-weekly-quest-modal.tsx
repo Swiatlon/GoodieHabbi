@@ -11,9 +11,11 @@ import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
+import ControlledMultiSelect from '@/components/shared/multi-select/controlled-multi-select';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
 import { IWeeklyQuest, IPostWeeklyQuestRequest } from '@/contract/quests/quests-types/weekly-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
+import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
 import { useUpdateWeeklyQuestMutation } from '@/redux/api/weekly-quests-api';
 import { toUTCISOString } from '@/utils/utils';
 
@@ -24,6 +26,7 @@ interface UpdateWeeklyQuestModalProps extends IBaseModalProps {
 const UpdateWeeklyQuestModal: React.FC<UpdateWeeklyQuestModalProps> = ({ isVisible, onClose, quest }) => {
   const { showSnackbar } = useSnackbar();
   const [updateQuest, { isLoading }] = useUpdateWeeklyQuestMutation();
+  const { data: questLabels = [] } = useGetQuestLabelsQuery();
 
   const methods = useForm<IPostWeeklyQuestRequest>({
     resolver: yupResolver(weeklyQuestValidationSchema),
@@ -36,6 +39,7 @@ const UpdateWeeklyQuestModal: React.FC<UpdateWeeklyQuestModalProps> = ({ isVisib
       isCompleted: quest.isCompleted,
       emoji: quest.emoji,
       weekdays: quest.weekdays,
+      labels: [],
     },
   });
 
@@ -65,6 +69,12 @@ const UpdateWeeklyQuestModal: React.FC<UpdateWeeklyQuestModalProps> = ({ isVisib
           <EmojiPickerComponent />
           <PriorityPicker />
           <WeeklyPicker />
+          <ControlledMultiSelect
+            name="labels"
+            label="Tags:"
+            placeholder="Select quest tags"
+            options={questLabels.map(item => ({ ...item, label: item.value }))}
+          />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"

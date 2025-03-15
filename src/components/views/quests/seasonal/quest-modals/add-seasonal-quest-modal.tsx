@@ -10,9 +10,11 @@ import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
+import ControlledMultiSelect from '@/components/shared/multi-select/controlled-multi-select';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
 import { IPostSeasonalQuestRequest } from '@/contract/quests/quests-types/seasonal-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
+import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
 import { useCreateSeasonalQuestMutation } from '@/redux/api/seasonal-quests-api';
 import { toUTCISOString } from '@/utils/utils';
 
@@ -21,6 +23,7 @@ interface AddSeasonalQuestModalProps extends IBaseModalProps {}
 const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible, onClose }) => {
   const { showSnackbar } = useSnackbar();
   const [createQuest, { isLoading }] = useCreateSeasonalQuestMutation();
+  const { data: questLabels = [] } = useGetQuestLabelsQuery();
 
   const methods = useForm<IPostSeasonalQuestRequest>({
     resolver: yupResolver(seasonalQuestValidationSchema),
@@ -33,6 +36,7 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible
       isCompleted: false,
       emoji: null,
       season: null,
+      labels: [],
     },
   });
 
@@ -64,6 +68,12 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible
           <EmojiPickerComponent />
           <PriorityPicker />
           <ControlledSeasonPicker />
+          <ControlledMultiSelect
+            name="labels"
+            label="Tags:"
+            placeholder="Select quest tags"
+            options={questLabels.map(item => ({ ...item, label: item.value }))}
+          />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"

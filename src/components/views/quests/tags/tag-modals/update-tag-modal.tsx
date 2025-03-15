@@ -81,7 +81,7 @@ const UpdateTagModal: React.FC<UpdateTagModalProps> = ({ isVisible, onClose, tag
               styleType="secondary"
               variant="outlined"
             />
-            <Button label="Create Tag" styleType="primary" onPress={handleSubmit(onSubmit)} disabled={!newTagValue.trim()} />
+            <Button label="Update Tag" styleType="primary" onPress={handleSubmit(onSubmit)} disabled={!newTagValue.trim()} />
           </View>
         </View>
       </FormProvider>

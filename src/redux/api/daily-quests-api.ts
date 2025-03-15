@@ -27,29 +27,50 @@ export const dailyQuestSlice = Api.injectEndpoints({
     }),
 
     createDailyQuest: builder.mutation<void, IPostDailyQuestRequest>({
-      query: newQuest => ({
-        url: '/daily-quests',
-        method: 'POST',
-        body: newQuest,
-      }),
+      query: newQuest => {
+        const transformedQuest = {
+          ...newQuest,
+          labels: newQuest.labels.map(item => item.id),
+        };
+
+        return {
+          url: '/daily-quests',
+          method: 'POST',
+          body: transformedQuest,
+        };
+      },
       invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet'],
     }),
 
     updateDailyQuest: builder.mutation<void, IPutDailyQuestRequest>({
-      query: updatedQuest => ({
-        url: `/daily-quests/${updatedQuest.id}`,
-        method: 'PUT',
-        body: updatedQuest,
-      }),
+      query: updatedQuest => {
+        const transformedQuest = {
+          ...updatedQuest,
+          labels: updatedQuest.labels.map(item => item.id),
+        };
+
+        return {
+          url: `/daily-quests/${updatedQuest.id}`,
+          method: 'PUT',
+          body: transformedQuest,
+        };
+      },
       invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet'],
     }),
 
     patchDailyQuest: builder.mutation<void, IPatchDailyQuestRequest>({
-      query: patchData => ({
-        url: `/daily-quests/${patchData.id}`,
-        method: 'PATCH',
-        body: patchData,
-      }),
+      query: patchData => {
+        const transformedPatchData = {
+          ...patchData,
+          labels: patchData.labels?.map(item => item.id),
+        };
+
+        return {
+          url: `/daily-quests/${patchData.id}`,
+          method: 'PATCH',
+          body: transformedPatchData,
+        };
+      },
       invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet'],
     }),
 

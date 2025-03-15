@@ -39,7 +39,7 @@ const TagItem: React.FC<TagItemProps> = ({ tag }) => {
   };
 
   return (
-    <View className={`flex flex-row items-center justify-between py-2 border-b border-gray-300`}>
+    <View className={`flex flex-row items-center justify-between py-2 mx-4 border-b border-gray-300`}>
       <View
         className={`flex-row items-center justify-between my-3 py-2 mr-auto rounded-3xl pl-4 pr-6 shadow-lg max-w-[200px]`}
         style={{
@@ -47,7 +47,7 @@ const TagItem: React.FC<TagItemProps> = ({ tag }) => {
         }}
       >
         <Ionicons name="pricetag-outline" size={20} color={textColor} className="mr-4" />
-        <Text className="text-lg font-medium max-w-[140px]" numberOfLines={2} ellipsizeMode="tail" style={{ color: textColor }}>
+        <Text className="text-sm font-medium max-w-[140px]" numberOfLines={2} ellipsizeMode="tail" style={{ color: textColor }}>
           {value}
         </Text>
       </View>

@@ -11,10 +11,12 @@ import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
+import ControlledMultiSelect from '@/components/shared/multi-select/controlled-multi-select';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
 import { IMonthlyQuest, IPostMonthlyQuestRequest } from '@/contract/quests/quests-types/monthly-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useUpdateMonthlyQuestMutation } from '@/redux/api/monthly-quests-api';
+import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
 import { toUTCISOString } from '@/utils/utils';
 
 interface UpdateMonthlyQuestModalProps extends IBaseModalProps {
@@ -24,6 +26,7 @@ interface UpdateMonthlyQuestModalProps extends IBaseModalProps {
 const UpdateMonthlyQuestModal: React.FC<UpdateMonthlyQuestModalProps> = ({ isVisible, onClose, quest }) => {
   const { showSnackbar } = useSnackbar();
   const [updateQuest, { isLoading }] = useUpdateMonthlyQuestMutation();
+  const { data: questLabels = [] } = useGetQuestLabelsQuery();
 
   const methods = useForm<IPostMonthlyQuestRequest>({
     resolver: yupResolver(monthlyQuestValidationSchema),
@@ -37,6 +40,7 @@ const UpdateMonthlyQuestModal: React.FC<UpdateMonthlyQuestModalProps> = ({ isVis
       emoji: quest.emoji,
       startDay: quest.startDay,
       endDay: quest.endDay,
+      labels: [],
     },
   });
 
@@ -65,6 +69,12 @@ const UpdateMonthlyQuestModal: React.FC<UpdateMonthlyQuestModalProps> = ({ isVis
           <DatePickerModal name="endDate" minDate={toUTCISOString(startDate)} label="End Date" placeholder="Tap to pick end date" />
           <EmojiPickerComponent />
           <PriorityPicker />
+          <ControlledMultiSelect
+            name="labels"
+            label="Tags:"
+            placeholder="Select quest tags"
+            options={questLabels.map(item => ({ ...item, label: item.value }))}
+          />
           <DayPicker label="Start" name="startDay" />
           <DayPicker label="End" name="endDay" />
           <View className="flex-row justify-between">

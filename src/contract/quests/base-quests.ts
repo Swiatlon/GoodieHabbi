@@ -1,3 +1,5 @@
+import { IQuestLabel } from './labels/labels-quests';
+
 export const PriorityEnum = {
   LOW: 'Low',
   MEDIUM: 'Medium',
@@ -55,4 +57,5 @@ export interface IQuest {
   isCompleted: boolean;
   emoji: string | null;
   type: QuestTypesEnumType;
+  labels: IQuestLabel[];
 }

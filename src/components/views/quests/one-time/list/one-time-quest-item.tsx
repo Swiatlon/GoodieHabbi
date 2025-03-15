@@ -5,6 +5,7 @@ import QuestItemContainer from '../../reusable/quest-item/quest-item-container';
 import QuestItemDate from '../../reusable/quest-item/quest-item-date';
 import QuestItemEmoji from '../../reusable/quest-item/quest-item-emoji';
 import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
+import QuestItemTag from '../../reusable/quest-item/quest-item-tag';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
 import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
 import UpdateOneTimeQuestModal from '../quest-modals/update-one-time-quest-modal';
@@ -39,6 +40,7 @@ const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest }) => {
                 <QuestItemTitle title={quest.title} description={quest.description} isCompleted={quest.isCompleted} />
                 <QuestItemPriority priority={quest.priority} />
                 <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
+                <QuestItemTag tags={quest.labels} onPress={openShowModal} />
               </View>
             </View>
           </TouchableOpacity>

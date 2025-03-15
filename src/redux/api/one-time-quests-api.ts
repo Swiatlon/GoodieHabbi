@@ -27,29 +27,50 @@ export const questSlice = Api.injectEndpoints({
     }),
 
     createOneTimeQuest: builder.mutation<void, IPostOneTimeQuestRequest>({
-      query: newQuest => ({
-        url: '/one-time-quests',
-        method: 'POST',
-        body: newQuest,
-      }),
+      query: newQuest => {
+        const transformedQuest = {
+          ...newQuest,
+          labels: newQuest.labels.map(item => item.id),
+        };
+
+        return {
+          url: '/one-time-quests',
+          method: 'POST',
+          body: transformedQuest,
+        };
+      },
       invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet'],
     }),
 
     updateOneTimeQuest: builder.mutation<void, IPutOneTimeQuestRequest>({
-      query: updatedQuest => ({
-        url: `/one-time-quests/${updatedQuest.id}`,
-        method: 'PUT',
-        body: updatedQuest,
-      }),
+      query: updatedQuest => {
+        const transformedQuest = {
+          ...updatedQuest,
+          labels: updatedQuest.labels.map(item => item.id),
+        };
+
+        return {
+          url: `/one-time-quests/${updatedQuest.id}`,
+          method: 'PUT',
+          body: transformedQuest,
+        };
+      },
       invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet'],
     }),
 
     patchOneTimeQuest: builder.mutation<void, IPatchOneTimeQuestRequest>({
-      query: patchData => ({
-        url: `/one-time-quests/${patchData.id}`,
-        method: 'PATCH',
-        body: patchData,
-      }),
+      query: patchData => {
+        const transformedPatchData = {
+          ...patchData,
+          labels: patchData.labels?.map(item => item.id),
+        };
+
+        return {
+          url: `/one-time-quests/${patchData.id}`,
+          method: 'PATCH',
+          body: transformedPatchData,
+        };
+      },
       invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet'],
     }),
 
