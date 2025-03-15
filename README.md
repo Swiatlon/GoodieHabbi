@@ -1,7 +1,3 @@
-Below is an updated version with actual Unicode emoji characters:
-
----
-
 # GoodieHabbi ✨🐲
 
 **RPG-Style Habit Tracker**
