@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Provider } from 'react-redux';
 import { useFonts } from 'expo-font';
@@ -14,40 +14,58 @@ import RoutesPermissionMiddleware from '@/middlewares/routes-permission-middlewa
 import SnackbarProvider from '@/providers/snackbar/snackbar-provider';
 import { store } from '@/redux/config/store';
 import '@/configs/day-js-config';
+import PrefetchMiddleware from '@/middlewares/prefetch-middleware';
+
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [loadingState, setLoadingState] = useState({
+    fonts: true,
+    persistLogin: true,
+    prefetch: false,
+  });
+
   const [fontsLoaded] = useFonts({
     SpaceMono: SpaceMonoFont,
   });
 
   useEffect(() => {
     if (fontsLoaded) {
-      SplashScreen.hideAsync();
+      setLoadingState(prevState => ({ ...prevState, fonts: false }));
     }
   }, [fontsLoaded]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  useEffect(() => {
+    const { fonts, persistLogin, prefetch } = loadingState;
+
+    if (!(fonts || persistLogin || prefetch)) {
+      SplashScreen.hideAsync();
+    }
+  }, [loadingState]);
+
+  const handleLoaded = (key: string) => {
+    setLoadingState(prevState => ({ ...prevState, [key]: false }));
+  };
 
   return (
     <SnackbarProvider>
       <Provider store={store}>
         <GestureHandlerRootView className="flex-1 bg-white">
-          <PersistLoginMiddleware>
+          <PersistLoginMiddleware onLoaded={() => handleLoaded('persistLogin')}>
             <RoutesPermissionMiddleware>
-              <Drawer
-                screenOptions={{
-                  header: () => <Header />,
-                  sceneStyle: {
-                    backgroundColor: 'white',
-                  },
-                }}
-                drawerContent={props => <CustomDrawerContent {...props} />}
-              >
-                <Slot />
-              </Drawer>
+              <PrefetchMiddleware onLoaded={() => handleLoaded('prefetch')}>
+                <Drawer
+                  screenOptions={{
+                    header: () => <Header />,
+                    sceneStyle: {
+                      backgroundColor: 'white',
+                    },
+                  }}
+                  drawerContent={props => <CustomDrawerContent {...props} />}
+                >
+                  <Slot />
+                </Drawer>
+              </PrefetchMiddleware>
             </RoutesPermissionMiddleware>
           </PersistLoginMiddleware>
         </GestureHandlerRootView>

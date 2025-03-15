@@ -1,33 +1,35 @@
-export interface IPostRegisterRequest {
-  email: string;
-  password: string;
+import { IQuestLabel } from '../quests/labels/labels-quests';
+
+export interface IUserPreferences {}
+
+// GET
+
+export interface IGetAccountRequest {}
+
+export interface IAccountDataResponse {
+  name: string | null;
+  surname: string | null;
+  nickname: string | null;
+  email: string | null;
+  avatar: string | null;
+  data: {
+    questsLabels: IQuestLabel[];
+  };
+  preferences: IUserPreferences;
 }
 
-export interface IPostRegisterResponse {
-  accessToken: string;
-  refreshToken: string;
+// PATCH
+
+export interface IUpdateAccountRequest {
+  name?: string;
+  surname?: string;
+  nickname?: string;
+  email?: string;
+  avatar?: string | null;
+  data?: {
+    questsLabels?: IQuestLabel[];
+  };
+  preferences?: IUserPreferences;
 }
 
-export interface IPostLoginRequest {
-  login: string;
-  password: string;
-}
-
-export interface IPostLoginResponse {
-  accessToken: string;
-  refreshToken: string;
-}
-
-export interface IPostRefreshRequest {
-  refreshToken: string;
-}
-
-export interface IPostRefreshResponse {
-  accessToken: string;
-  refreshToken: string;
-}
-
-export interface IDecodedJwt {
-  accountId: number;
-  exp: number;
-}
+export interface IUpdateAccountResponse {}

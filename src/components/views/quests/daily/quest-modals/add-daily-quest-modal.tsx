@@ -54,7 +54,7 @@ const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onCl
     <Modal isVisible={isVisible} onClose={onClose}>
       {isLoading && <Loader size="large" message="Adding quest..." fullscreen />}
       <FormProvider {...methods}>
-        <View className="bg-white rounded-lg px-4 gap-5">
+        <View className="bg-white rounded-lg px-4 gap-5 py-2">
           <Text className="text-lg font-bold text-center">Add New Quest</Text>
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />

@@ -5,7 +5,7 @@ const Api = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
   endpoints: builder => ({}),
-  tagTypes: ['dailyQuestsGet', 'monthlyQuestsGet', 'oneTimeQuestsGet', 'seasonalQuestsGet', 'weeklyQuestsGet', 'todayQuestsGet'],
+  tagTypes: ['dailyQuestsGet', 'monthlyQuestsGet', 'oneTimeQuestsGet', 'seasonalQuestsGet', 'weeklyQuestsGet', 'todayQuestsGet', 'questLabelsGet'],
 });
 
 export default Api;

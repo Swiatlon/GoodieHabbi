@@ -8,14 +8,18 @@ interface HeaderProps {
   isSearchVisible: boolean;
   searchQuery: string;
   setIsSearchVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsConfigModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsConfigModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const Header: React.FC<HeaderProps> = ({ title, isSearchVisible, searchQuery, setIsSearchVisible, setIsConfigModalVisible, setSearchQuery }) => (
   <>
     <View className="flex-row justify-between items-center mb-4">
-      <IconButton onPress={() => setIsConfigModalVisible(true)} icon={<Ionicons name="settings-outline" size={24} color="#1987EE" />} />
+      <View className="min-w-[38px]">
+        {setIsConfigModalVisible && (
+          <IconButton onPress={() => setIsConfigModalVisible(true)} icon={<Ionicons name="settings-outline" size={24} color="#1987EE" />} />
+        )}
+      </View>
       <Text className="text-2xl font-bold text-primary text-center">{title}</Text>
       <IconButton
         onPress={() => setIsSearchVisible(prev => !prev)}
