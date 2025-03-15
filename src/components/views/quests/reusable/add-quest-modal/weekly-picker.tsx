@@ -31,7 +31,7 @@ const WeeklyPicker: React.FC = () => {
         return (
           <View className="flex gap-2">
             <Text className="text-sm font-semibold text-gray-500">
-              Pick days:<Text className="text-red-500">*</Text>
+              Days:<Text className="text-red-500">*</Text>
             </Text>
             <View className="flex-row flex-wrap gap-2">
               {DAYS_OF_WEEK.map(({ label, value: dayValue }) => (

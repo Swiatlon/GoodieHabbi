@@ -102,7 +102,7 @@ const SeasonalQuests: React.FC = () => {
         filterCategories={SeasonalQuestsFilterMap}
       />
 
-      <AddSeasonalQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
+      {isAddQuestModalVisible && <AddSeasonalQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />}
     </View>
   );
 };

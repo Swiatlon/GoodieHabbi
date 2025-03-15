@@ -102,7 +102,7 @@ const WeeklyQuests: React.FC = () => {
         filterCategories={WeeklyQuestsFilterMap}
       />
 
-      <AddWeeklyQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
+      {isAddQuestModalVisible && <AddWeeklyQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />}
     </View>
   );
 };

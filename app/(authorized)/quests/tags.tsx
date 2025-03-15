@@ -54,7 +54,7 @@ const Tags: React.FC = () => {
         className="mx-auto mt-4"
       />
 
-      <AddTagModal isVisible={isAddTagModalVisible} onClose={() => setIsAddTagModalVisible(false)} />
+      {isAddTagModalVisible && <AddTagModal isVisible={isAddTagModalVisible} onClose={() => setIsAddTagModalVisible(false)} />}
     </View>
   );
 };

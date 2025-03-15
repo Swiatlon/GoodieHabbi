@@ -101,7 +101,7 @@ const DailyQuests: React.FC = () => {
         filterCategories={DailyQuestsFilterMap}
       />
 
-      <AddDailyQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
+      {isAddQuestModalVisible && <AddDailyQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />}
     </View>
   );
 };
