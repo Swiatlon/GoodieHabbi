@@ -11,9 +11,11 @@ import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
+import ControlledMultiSelect from '@/components/shared/multi-select/controlled-multi-select';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
 import { ISeasonalQuest, IPostSeasonalQuestRequest } from '@/contract/quests/quests-types/seasonal-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
+import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
 import { useUpdateSeasonalQuestMutation } from '@/redux/api/seasonal-quests-api';
 import { toUTCISOString } from '@/utils/utils';
 
@@ -24,6 +26,7 @@ interface UpdateSeasonalQuestModalProps extends IBaseModalProps {
 const UpdateSeasonalQuestModal: React.FC<UpdateSeasonalQuestModalProps> = ({ isVisible, onClose, quest }) => {
   const { showSnackbar } = useSnackbar();
   const [updateQuest, { isLoading }] = useUpdateSeasonalQuestMutation();
+  const { data: questLabels = [] } = useGetQuestLabelsQuery();
 
   const methods = useForm<IPostSeasonalQuestRequest>({
     resolver: yupResolver(seasonalQuestValidationSchema),
@@ -36,6 +39,7 @@ const UpdateSeasonalQuestModal: React.FC<UpdateSeasonalQuestModalProps> = ({ isV
       isCompleted: quest.isCompleted,
       emoji: quest.emoji,
       season: quest.season,
+      labels: [],
     },
   });
 
@@ -56,7 +60,7 @@ const UpdateSeasonalQuestModal: React.FC<UpdateSeasonalQuestModalProps> = ({ isV
     <Modal isVisible={isVisible} onClose={() => onClose()} key={quest.id} className="py-2">
       {isLoading && <Loader size="large" message="Updating quest..." fullscreen />}
       <FormProvider {...methods}>
-        <View className="bg-white rounded-lg px-4 gap-5">
+        <View className="bg-white rounded-lg px-4 gap-5 py-2">
           <Text className="text-lg font-bold text-center">Edit Quest</Text>
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
@@ -65,6 +69,12 @@ const UpdateSeasonalQuestModal: React.FC<UpdateSeasonalQuestModalProps> = ({ isV
           <EmojiPickerComponent />
           <PriorityPicker />
           <ControlledSeasonPicker />
+          <ControlledMultiSelect
+            name="labels"
+            label="Tags:"
+            placeholder="Select quest tags"
+            options={questLabels.map(item => ({ ...item, label: item.value }))}
+          />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"

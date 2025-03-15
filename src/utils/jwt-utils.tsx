@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { IDecodedJwt } from '@/contract/account/account';
+import { IDecodedJwt } from '@/contract/auth/auth';
 import { useTypedSelector } from '@/hooks/use-store-hooks';
 import { NullableString } from '@/types/global-types';
 

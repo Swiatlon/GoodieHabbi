@@ -9,11 +9,13 @@ import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
+import ControlledMultiSelect from '@/components/shared/multi-select/controlled-multi-select';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
 import { oneTimeQuestValidationSchema } from '@/components/views/quests/one-time/quest-modals/schema';
 import { IOneTimeQuest, IPostOneTimeQuestRequest } from '@/contract/quests/quests-types/one-time-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useUpdateOneTimeQuestMutation } from '@/redux/api/one-time-quests-api';
+import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
 import { toUTCISOString } from '@/utils/utils';
 
 interface UpdateOneTimeQuestModalProps extends IBaseModalProps {
@@ -23,6 +25,7 @@ interface UpdateOneTimeQuestModalProps extends IBaseModalProps {
 const UpdateOneTimeQuestModal: React.FC<UpdateOneTimeQuestModalProps> = ({ isVisible, onClose, quest }) => {
   const { showSnackbar } = useSnackbar();
   const [updateQuest, { isLoading }] = useUpdateOneTimeQuestMutation();
+  const { data: questLabels = [] } = useGetQuestLabelsQuery();
 
   const methods = useForm<IPostOneTimeQuestRequest>({
     resolver: yupResolver(oneTimeQuestValidationSchema),
@@ -34,6 +37,7 @@ const UpdateOneTimeQuestModal: React.FC<UpdateOneTimeQuestModalProps> = ({ isVis
       priority: quest.priority,
       isCompleted: quest.isCompleted,
       emoji: quest.emoji,
+      labels: quest.labels,
     },
   });
 
@@ -54,7 +58,7 @@ const UpdateOneTimeQuestModal: React.FC<UpdateOneTimeQuestModalProps> = ({ isVis
     <Modal isVisible={isVisible} onClose={() => onClose()} key={quest.id}>
       {isLoading && <Loader size="large" message="Updating quest..." fullscreen />}
       <FormProvider {...methods}>
-        <View className="bg-white rounded-lg px-4 gap-5">
+        <View className="bg-white rounded-lg px-4 gap-5 py-2">
           <Text className="text-lg font-bold text-center">Edit Quest</Text>
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
@@ -62,6 +66,12 @@ const UpdateOneTimeQuestModal: React.FC<UpdateOneTimeQuestModalProps> = ({ isVis
           <DatePickerModal name="endDate" minDate={toUTCISOString(startDate)} label="End Date" placeholder="Tap to pick end date" />
           <EmojiPickerComponent />
           <PriorityPicker />
+          <ControlledMultiSelect
+            name="labels"
+            label="Tags:"
+            placeholder="Select quest tags"
+            options={questLabels.map(item => ({ ...item, label: item.value }))}
+          />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"

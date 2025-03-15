@@ -9,10 +9,10 @@ import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import ControlledPasswordInput from '@/components/shared/password/controlled-password-input';
 import { registerValidationSchema } from '@/components/views/register/schema/schema';
-import { IPostRegisterRequest } from '@/contract/account/account';
+import { IPostRegisterRequest } from '@/contract/auth/auth';
 import { useTypedDispatch } from '@/hooks/use-store-hooks';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import { useRegisterAccountMutation } from '@/redux/api/accounts-api';
+import { useRegisterAccountMutation } from '@/redux/api/auth/auth-api';
 import { handleAuthSuccess } from '@/redux/state/auth/auth-state';
 import { IApiError } from '@/types/global-types';
 

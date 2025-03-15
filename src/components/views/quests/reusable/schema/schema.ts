@@ -29,5 +29,15 @@ export const baseQuestSchema = Yup.object().shape({
     .default(null),
   priority: Yup.mixed<PriorityEnumType>().nullable().default(null),
   isCompleted: Yup.boolean().default(false),
+  labels: Yup.array()
+    .of(
+      Yup.object().shape({
+        id: Yup.number().required('ID is required'),
+        value: Yup.string().trim().required('Tag cannot be empty').max(25, 'Tag is too long. Please keep it under 25 characters.'),
+        backgroundColor: Yup.string().default('#1987EE'),
+        textColor: Yup.string().default('#FFFFFF'),
+      })
+    )
+    .default([]),
   emoji: Yup.string().nullable().default(null),
 });

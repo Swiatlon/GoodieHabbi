@@ -11,9 +11,11 @@ import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
+import ControlledMultiSelect from '@/components/shared/multi-select/controlled-multi-select';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
 import { IPostWeeklyQuestRequest } from '@/contract/quests/quests-types/weekly-quests';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
+import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
 import { useCreateWeeklyQuestMutation } from '@/redux/api/weekly-quests-api';
 import { toUTCISOString } from '@/utils/utils';
 
@@ -22,6 +24,7 @@ interface AddWeeklyQuestModalProps extends IBaseModalProps {}
 const AddWeeklyTimeQuestModal: React.FC<AddWeeklyQuestModalProps> = ({ isVisible, onClose }) => {
   const { showSnackbar } = useSnackbar();
   const [createQuest, { isLoading }] = useCreateWeeklyQuestMutation();
+  const { data: questLabels = [] } = useGetQuestLabelsQuery();
 
   const methods = useForm<IPostWeeklyQuestRequest>({
     resolver: yupResolver(weeklyQuestValidationSchema),
@@ -34,6 +37,7 @@ const AddWeeklyTimeQuestModal: React.FC<AddWeeklyQuestModalProps> = ({ isVisible
       isCompleted: false,
       emoji: null,
       weekdays: [],
+      labels: [],
     },
   });
 
@@ -56,7 +60,7 @@ const AddWeeklyTimeQuestModal: React.FC<AddWeeklyQuestModalProps> = ({ isVisible
     <Modal isVisible={isVisible} onClose={onClose}>
       {isLoading && <Loader size="large" message="Adding quest..." fullscreen />}
       <FormProvider {...methods}>
-        <View className="bg-white rounded-lg px-4 gap-5">
+        <View className="bg-white rounded-lg px-4 gap-5 py-2">
           <Text className="text-lg font-bold text-center">Add New Quest</Text>
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
@@ -65,6 +69,12 @@ const AddWeeklyTimeQuestModal: React.FC<AddWeeklyQuestModalProps> = ({ isVisible
           <EmojiPickerComponent />
           <PriorityPicker />
           <WeeklyPicker />
+          <ControlledMultiSelect
+            name="labels"
+            label="Tags:"
+            placeholder="Select quest tags"
+            options={questLabels.map(item => ({ ...item, label: item.value }))}
+          />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"

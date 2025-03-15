@@ -1,4 +1,4 @@
-import Api from '../config/api';
+import Api from '../../config/api';
 import {
   IPostLoginRequest,
   IPostLoginResponse,
@@ -6,9 +6,9 @@ import {
   IPostRefreshResponse,
   IPostRegisterRequest,
   IPostRegisterResponse,
-} from '@/contract/account/account';
+} from '@/contract/auth/auth';
 
-export const accountSlice = Api.injectEndpoints({
+export const authSlice = Api.injectEndpoints({
   endpoints: builder => ({
     registerAccount: builder.mutation<IPostRegisterResponse, IPostRegisterRequest>({
       query: newAccount => ({
@@ -36,4 +36,4 @@ export const accountSlice = Api.injectEndpoints({
   }),
 });
 
-export const { useRegisterAccountMutation, useLoginAccountMutation, useRefreshAccessTokenMutation } = accountSlice;
+export const { useRegisterAccountMutation, useLoginAccountMutation, useRefreshAccessTokenMutation } = authSlice;

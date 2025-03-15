@@ -49,6 +49,11 @@ const QuestConfig = () => {
           route: '(authorized)/quests/one-time',
           icon: <Ionicons name="checkmark-done-outline" />,
         },
+        {
+          label: 'Quest Tags',
+          route: '(authorized)/quests/tags',
+          icon: <Ionicons name="pricetag-outline" />,
+        },
       ]}
     />
   );

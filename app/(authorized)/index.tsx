@@ -1,6 +1,6 @@
 import React from 'react';
-import Dashboard from './dashboard';
+import QuestsTags from './quests/tags';
 
 export default function Index() {
-  return <Dashboard />;
+  return <QuestsTags />;
 }

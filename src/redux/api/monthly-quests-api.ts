@@ -27,29 +27,50 @@ export const monthlyQuestSlice = Api.injectEndpoints({
     }),
 
     createMonthlyQuest: builder.mutation<void, IPostMonthlyQuestRequest>({
-      query: newQuest => ({
-        url: '/monthly-quests',
-        method: 'POST',
-        body: newQuest,
-      }),
+      query: newQuest => {
+        const transformedQuest = {
+          ...newQuest,
+          labels: newQuest.labels.map(item => item.id),
+        };
+
+        return {
+          url: '/monthly-quests',
+          method: 'POST',
+          body: transformedQuest,
+        };
+      },
       invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet'],
     }),
 
     updateMonthlyQuest: builder.mutation<void, IPutMonthlyQuestRequest>({
-      query: updatedQuest => ({
-        url: `/monthly-quests/${updatedQuest.id}`,
-        method: 'PUT',
-        body: updatedQuest,
-      }),
+      query: updatedQuest => {
+        const transformedQuest = {
+          ...updatedQuest,
+          labels: updatedQuest.labels.map(item => item.id),
+        };
+
+        return {
+          url: `/monthly-quests/${updatedQuest.id}`,
+          method: 'PUT',
+          body: transformedQuest,
+        };
+      },
       invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet'],
     }),
 
     patchMonthlyQuest: builder.mutation<void, IPatchMonthlyQuestRequest>({
-      query: patchData => ({
-        url: `/monthly-quests/${patchData.id}`,
-        method: 'PATCH',
-        body: patchData,
-      }),
+      query: patchData => {
+        const transformedPatchData = {
+          ...patchData,
+          labels: patchData.labels?.map(item => item.id),
+        };
+
+        return {
+          url: `/monthly-quests/${patchData.id}`,
+          method: 'PATCH',
+          body: transformedPatchData,
+        };
+      },
       invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet'],
     }),
 
