@@ -10,11 +10,11 @@ import SpaceMonoFont from '../src/assets/fonts/Rubik-VariableFont_wght.ttf';
 import Header from '@/components/shared/app-bar/app-bar';
 import { CustomDrawerContent } from '@/components/shared/drawer/drawer';
 import PersistLoginMiddleware from '@/middlewares/persist-login-middleware';
+import PrefetchMiddleware from '@/middlewares/prefetch-middleware';
 import RoutesPermissionMiddleware from '@/middlewares/routes-permission-middleware';
 import SnackbarProvider from '@/providers/snackbar/snackbar-provider';
 import { store } from '@/redux/config/store';
 import '@/configs/day-js-config';
-import PrefetchMiddleware from '@/middlewares/prefetch-middleware';
 
 SplashScreen.preventAutoHideAsync();
 

@@ -63,7 +63,12 @@ const UpdateOneTimeQuestModal: React.FC<UpdateOneTimeQuestModalProps> = ({ isVis
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
           <DatePickerModal name="startDate" minDate={toUTCISOString(new Date())} label="Start Date" placeholder="Tap to pick start date" />
-          <DatePickerModal name="endDate" minDate={toUTCISOString(startDate)} label="End Date" placeholder="Tap to pick end date" />
+          <DatePickerModal
+            name="endDate"
+            minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(new Date())}
+            label="End Date"
+            placeholder="Tap to pick end date"
+          />
           <EmojiPickerComponent />
           <PriorityPicker />
           <ControlledMultiSelect
