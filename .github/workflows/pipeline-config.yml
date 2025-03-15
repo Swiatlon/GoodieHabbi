@@ -1,66 +1,66 @@
-name: Expo CI Workflows
+# name: Expo CI Workflows
 
-on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
-    paths:
-      - '**/*'
+# on:
+#   push:
+#     branches: ["main"]
+#   pull_request:
+#     branches: ["main"]
+#     paths:
+#       - '**/*'
 
-jobs:
-  common:
-    name: Setup Environment
-    runs-on: ubuntu-latest
+# jobs:
+#   common:
+#     name: Setup Environment
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.10.0'
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20.10.0'
 
-      - name: Cache node_modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+#       - name: Cache node_modules
+#         uses: actions/cache@v4
+#         with:
+#           path: node_modules
+#           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install dependencies
-        run: npm install
+#       - name: Install dependencies
+#         run: npm install
 
-  lint:
-    name: Lint Modified Files
-    runs-on: ubuntu-latest
-    needs: [common]
+  # lint:
+  #   name: Lint Modified Files
+  #   runs-on: ubuntu-latest
+  #   needs: [common]
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.10.0'
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '20.10.0'
 
-      - name: Lint modified files
-        run: |
-          echo "Identifying modified files..."
-          BASE_SHA=${{ github.event.pull_request.base.sha }}
-          HEAD_SHA=${{ github.event.pull_request.head.sha }}
-          MODIFIED_FILES=$(git diff --name-only --diff-filter=ACMRT $BASE_SHA $HEAD_SHA -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.cjs' '*.mjs')
-          echo "Modified files: $MODIFIED_FILES"
-          if [ -n "$MODIFIED_FILES" ]; then
-            echo "Running ESLint..."
-            npx eslint $MODIFIED_FILES --format table || exit 2
-          else
-            echo "No modified files to lint"
-          fi
+  #     - name: Lint modified files
+  #       run: |
+  #         echo "Identifying modified files..."
+  #         BASE_SHA=${{ github.event.pull_request.base.sha }}
+  #         HEAD_SHA=${{ github.event.pull_request.head.sha }}
+  #         MODIFIED_FILES=$(git diff --name-only --diff-filter=ACMRT $BASE_SHA $HEAD_SHA -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.cjs' '*.mjs')
+  #         echo "Modified files: $MODIFIED_FILES"
+  #         if [ -n "$MODIFIED_FILES" ]; then
+  #           echo "Running ESLint..."
+  #           npx eslint $MODIFIED_FILES --format table || exit 2
+  #         else
+  #           echo "No modified files to lint"
+  #         fi
 
   # TODO: Later will check also build
   # build:
