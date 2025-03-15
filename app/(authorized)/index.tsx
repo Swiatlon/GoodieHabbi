@@ -1,6 +1,6 @@
 import React from 'react';
-import QuestsTags from './quests/tags';
+import TodayQuests from './quests/today';
 
 export default function Index() {
-  return <QuestsTags />;
+  return <TodayQuests />;
 }

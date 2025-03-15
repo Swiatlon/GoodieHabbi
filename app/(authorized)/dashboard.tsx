@@ -1,6 +1,6 @@
 import React from 'react';
-import { View } from 'react-native';
+import TodayQuests from './quests/today';
 
 export default function Basic() {
-  return <View className="flex"></View>;
+  return <TodayQuests />;
 }
