@@ -10,6 +10,7 @@ module.exports = {
         accent: "#47B64E",
         success: "#47B64E",
         error: '#d32f2f',
+        warning: '#FACC15',
       },
       fontFamily: {
         rubik: ["Rubik_400Regular", "sans-serif"],
