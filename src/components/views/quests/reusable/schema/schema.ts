@@ -1,19 +1,25 @@
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
 import * as Yup from 'yup';
+import dayjs from '@/configs/day-js-config';
 import { PriorityEnumType } from '@/contract/quests/base-quests';
-
-dayjs.extend(utc);
-
-const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 
 export const baseQuestSchema = Yup.object().shape({
   title: Yup.string().required('Title is required').min(3, 'Title must be at least 3 characters'),
   description: Yup.string().nullable().default(''),
-  startDate: Yup.string().nullable().matches(isoDateRegex, 'Start date must be a valid ISO 8601 string').default(null),
+  startDate: Yup.string()
+    .nullable()
+    .test('is-not-less-than-today', 'Start date must be today or in the future', function (value) {
+      if (!value) {
+        return true;
+      }
+
+      const today = dayjs.utc().startOf('day');
+      const startDate = dayjs(value);
+
+      return startDate.isSameOrAfter(today, 'day');
+    })
+    .default(null),
   endDate: Yup.string()
     .nullable()
-    .matches(isoDateRegex, 'End date must be a valid ISO 8601 string')
     .test('is-after-or-equal-start', 'End date must be after or equal to start date', function (value) {
       const startDate = this.resolve(Yup.ref('startDate')) as string;
 

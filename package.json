@@ -10,6 +10,7 @@
     "test": "jest --watchAll",
     "lint": "expo lint",
     "clean-build": "npx expo prebuild --clean && cd android && gradlew assembleRelease",
+    "eas-build": "eas build -p android --profile release-apk",
     "build": "cd android && gradlew assembleRelease"
   },
   "jest": {

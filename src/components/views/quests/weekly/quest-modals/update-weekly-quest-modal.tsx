@@ -33,8 +33,8 @@ const UpdateWeeklyQuestModal: React.FC<UpdateWeeklyQuestModalProps> = ({ isVisib
     defaultValues: {
       title: quest.title,
       description: quest.description,
-      startDate: toUTCISOString(quest.startDate),
-      endDate: toUTCISOString(quest.endDate),
+      startDate: quest.startDate,
+      endDate: quest.endDate,
       priority: quest.priority,
       isCompleted: quest.isCompleted,
       emoji: quest.emoji,

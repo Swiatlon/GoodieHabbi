@@ -16,7 +16,7 @@ import { IPostSeasonalQuestRequest } from '@/contract/quests/quests-types/season
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
 import { useCreateSeasonalQuestMutation } from '@/redux/api/seasonal-quests-api';
-import { toUTCISOString } from '@/utils/utils';
+import { getSeasonalDateLimits } from '@/utils/get-seasonal-date-limits';
 
 interface AddSeasonalQuestModalProps extends IBaseModalProps {}
 
@@ -42,6 +42,11 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible
 
   const { handleSubmit, reset, watch } = methods;
 
+  const selectedSeason = watch('season');
+  const watchedStartDate = watch('startDate');
+
+  const { minStartDate, maxStartDate, minEndDate, maxEndDate } = getSeasonalDateLimits(selectedSeason, watchedStartDate);
+
   const onSubmit = async (data: IPostSeasonalQuestRequest) => {
     try {
       await createQuest(data).unwrap();
@@ -53,8 +58,6 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible
     }
   };
 
-  const startDate = watch('startDate');
-
   return (
     <Modal isVisible={isVisible} onClose={onClose}>
       {isLoading && <Loader size="large" message="Adding quest..." fullscreen />}
@@ -63,13 +66,8 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible
           <Text className="text-lg font-bold text-center">Add New Quest</Text>
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
-          <DatePickerModal name="startDate" minDate={toUTCISOString(new Date())} label="Start Date" placeholder="Tap to pick start date" />
-          <DatePickerModal
-            name="endDate"
-            minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(new Date())}
-            label="End Date"
-            placeholder="Tap to pick end date"
-          />
+          <DatePickerModal name="startDate" minDate={minStartDate} maxDate={maxStartDate} label="Start Date" placeholder="Tap to pick start date" />
+          <DatePickerModal name="endDate" minDate={minEndDate} maxDate={maxEndDate} label="End Date" placeholder="Tap to pick end date" />
           <EmojiPickerComponent />
           <PriorityPicker />
           <ControlledSeasonPicker />
