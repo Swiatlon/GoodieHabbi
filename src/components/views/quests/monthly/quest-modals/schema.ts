@@ -12,21 +12,19 @@ export const monthlyQuestValidationSchema = baseQuestSchema.shape({
     .integer('Start day must be an integer')
     .min(1, 'Start day must be at least 1')
     .max(31, 'Start day cannot be more than 31')
-    .nullable()
     .required('Start day is required'),
   endDay: Yup.number()
     .integer('End day must be an integer')
     .min(1, 'End day must be at least 1')
     .max(31, 'End day cannot be more than 31')
-    .nullable()
     .required('End day is required')
     .test('is-greater', 'End day must be greater than or equal to start day', function (value) {
-      const parent = this.parent as { startDay?: number };
+      const { startDay } = this.parent as { startDay?: number };
 
-      if (!parent.startDay) {
+      if (startDay === undefined) {
         return true;
       }
 
-      return value >= parent.startDay;
+      return value >= startDay;
     }),
 });

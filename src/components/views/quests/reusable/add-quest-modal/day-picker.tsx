@@ -7,9 +7,11 @@ import ControlledSelect from '@/components/shared/select/controlled-select';
 interface DayPickerProps {
   label: string;
   name: string;
+  min?: number;
+  max?: number;
 }
 
-const DayPicker: React.FC<DayPickerProps> = ({ label, name }) => {
+const DayPicker: React.FC<DayPickerProps> = ({ label, name, min, max }) => {
   const { setValue, watch } = useFormContext();
   const [isOpen, setIsOpen] = useState(false);
   const selectedDay = watch(name) as number;
@@ -29,6 +31,8 @@ const DayPicker: React.FC<DayPickerProps> = ({ label, name }) => {
         onConfirm={handleConfirm}
         selectedDay={selectedDay}
         label={`Select ${label} Day:`}
+        min={min}
+        max={max}
       />
     </View>
   );
