@@ -46,6 +46,7 @@ const UpdateMonthlyQuestModal: React.FC<UpdateMonthlyQuestModalProps> = ({ isVis
 
   const { handleSubmit, reset, watch } = methods;
   const startDate = watch('startDate');
+  const startDay = watch('startDay');
 
   const onSubmit = async (data: IPostMonthlyQuestRequest) => {
     try {
@@ -81,7 +82,7 @@ const UpdateMonthlyQuestModal: React.FC<UpdateMonthlyQuestModalProps> = ({ isVis
             options={questLabels.map(item => ({ ...item, label: item.value }))}
           />
           <DayPicker label="Start" name="startDay" />
-          <DayPicker label="End" name="endDay" />
+          <DayPicker label="End:" name="endDay" min={startDay} />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"
