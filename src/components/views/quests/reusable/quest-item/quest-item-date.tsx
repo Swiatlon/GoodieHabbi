@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import dayjs from 'dayjs';
-import { NullableString } from '@/types/global-types';
+import { NullableString, UndefinedString } from '@/types/global-types';
 import { safeDateFormat } from '@/utils/utils';
 
 interface QuestItemDateProps {
@@ -9,7 +9,7 @@ interface QuestItemDateProps {
   endDate: NullableString;
 }
 
-const getDateLabel = (startDate: NullableString, endDate: NullableString): NullableString => {
+const getDateLabel = (startDate: UndefinedString, endDate: UndefinedString): NullableString => {
   if (startDate && endDate) {
     return `${startDate} - ${endDate} `;
   }
@@ -30,7 +30,7 @@ const QuestItemDate: React.FC<QuestItemDateProps> = ({ startDate, endDate }) => 
   const formattedEndDate = safeDateFormat(endDate);
 
   const dateLabel = getDateLabel(formattedStartDate, formattedEndDate);
-  const daysLeft = dayjs(endDate).diff(dayjs(), 'day');
+  const daysLeft = Math.ceil(dayjs(dayjs(endDate)).diff(dayjs(), 'day', true));
 
   if (!dateLabel) {
     return null;
@@ -42,7 +42,7 @@ const QuestItemDate: React.FC<QuestItemDateProps> = ({ startDate, endDate }) => 
     <View>
       <Text className="text-sm text-gray-400">
         {dateLabel}
-        {endDate && <Text className={`font-bold ${daysLeftColor}`}>({daysLeft} days left)</Text>}
+        {endDate && daysLeft >= 0 && <Text className={`font-bold ${daysLeftColor}`}>({daysLeft} days left)</Text>}
       </Text>
     </View>
   );

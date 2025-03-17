@@ -1,10 +1,9 @@
 import React, { ReactNode, forwardRef, useState } from 'react';
 import { TextInput, TouchableOpacity, View, Text, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import dayjs from 'dayjs';
 import Modal from '../modal/modal';
-import { fromUTCToLocal } from '@/utils/utils';
-import { string } from 'yup';
+import dayjs from '@/configs/day-js-config';
+import { fromUTCToLocal, safeDateFormat } from '@/utils/utils';
 
 export interface OptionsItem {
   label: string;
@@ -40,7 +39,7 @@ export type SelectProps = ModalSelectProps | NonModalSelectProps;
 const Select = forwardRef<TextInput, SelectProps>(
   ({ placeholder, value, onPress, onClear, onChange, className, isDate, error, isModalVersion, options, textColor }, ref) => {
     const [isVisibleModal, setIsVisibleModal] = useState(false);
-    const formattedValue = value && isDate && dayjs(value).isValid() ? fromUTCToLocal(value) : value;
+    const formattedValue = getFormattedValue(value, isDate);
 
     const onClose = () => {
       setIsVisibleModal(false);
@@ -53,6 +52,7 @@ const Select = forwardRef<TextInput, SelectProps>(
         setIsVisibleModal(true);
       }
     };
+
     return (
       <>
         <View className="w-full">
@@ -61,7 +61,7 @@ const Select = forwardRef<TextInput, SelectProps>(
               <TextInput
                 ref={ref}
                 placeholder={placeholder}
-                value={formattedValue ? String(formattedValue) : ''}
+                value={formattedValue}
                 editable={false}
                 className={`${error ? 'text-red-500' : 'text-black'} px-2 py-3 ${className}`}
                 style={{ color: textColor }}
@@ -80,7 +80,7 @@ const Select = forwardRef<TextInput, SelectProps>(
 
         {isModalVersion && (
           <Modal isVisible={isVisibleModal} onClose={onClose} className="py-2">
-            <Text className="text-[16px] font-semibold mb-3 text-gray-500">Select an option</Text>
+            <Text className="text-[16px] font-semibold mb-3 text-gray-500">Select an option:</Text>
             <ScrollView className="max-h-60">
               {options.map(item => (
                 <TouchableOpacity
@@ -103,3 +103,15 @@ const Select = forwardRef<TextInput, SelectProps>(
 );
 
 export default Select;
+
+const getFormattedValue = (value: string | null | undefined | number, isDate?: boolean): string => {
+  if (value === null || value === undefined) {
+    return '';
+  }
+
+  if (isDate && dayjs(value).isValid()) {
+    return safeDateFormat(fromUTCToLocal(value as string)) ?? '';
+  }
+
+  return String(value);
+};

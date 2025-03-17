@@ -1,21 +1,21 @@
 import { DateType } from 'react-native-ui-datepicker';
-import dayjs from 'dayjs';
-import { NullableString } from '@/types/global-types';
+import dayjs from '@/configs/day-js-config';
+import { NullableString, UndefinedString } from '@/types/global-types';
 
-export const safeDateFormat = (date: NullableString, format = 'DD.MM.YYYY'): NullableString => {
-  return date ? dayjs(date).format(format) : null;
+export const safeDateFormat = (date: NullableString, format = 'DD.MM.YYYY'): UndefinedString => {
+  return date ? dayjs(date).format(format) : undefined;
 };
 
 export const toUTCISOString = (date: DateType) => {
-  return date ? dayjs.utc(date).toISOString() : undefined;
+  return date ? dayjs.utc(date).toISOString() : null;
 };
 
 export const fromUTCToLocal = (date: NullableString) => {
-  return date ? dayjs.utc(date).local().format('DD.MM.YYYY') : undefined;
+  return date ? dayjs(date).local().toISOString() : null;
 };
 
 export const fromUTCToDateObject = (date: NullableString) => {
-  return date ? dayjs.utc(date).toDate() : undefined;
+  return date ? dayjs.utc(date).toDate() : null;
 };
 
 export function getBestContrastTextColor(hexcolor: string) {
