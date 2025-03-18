@@ -15,7 +15,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
         method: 'GET',
         url: `/seasonal-quests/${id}`,
       }),
-      providesTags: ['seasonalQuestsGet'],
+      providesTags: ['seasonalQuestsGet', 'questLabelsGet'],
     }),
 
     getAllSeasonalQuests: builder.query<ISeasonalQuest[], void>({
@@ -23,7 +23,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
         method: 'GET',
         url: '/seasonal-quests',
       }),
-      providesTags: ['seasonalQuestsGet'],
+      providesTags: ['seasonalQuestsGet', 'questLabelsGet'],
     }),
 
     createSeasonalQuest: builder.mutation<void, IPostSeasonalQuestRequest>({

@@ -15,7 +15,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
         method: 'GET',
         url: `/daily-quests/${id}`,
       }),
-      providesTags: ['dailyQuestsGet'],
+      providesTags: ['dailyQuestsGet', 'questLabelsGet'],
     }),
 
     getAllDailyQuests: builder.query<IDailyQuest[], void>({
@@ -23,7 +23,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
         method: 'GET',
         url: '/daily-quests',
       }),
-      providesTags: ['dailyQuestsGet'],
+      providesTags: ['dailyQuestsGet', 'questLabelsGet'],
     }),
 
     createDailyQuest: builder.mutation<void, IPostDailyQuestRequest>({

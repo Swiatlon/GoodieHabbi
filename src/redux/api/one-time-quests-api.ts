@@ -15,7 +15,7 @@ export const questSlice = Api.injectEndpoints({
         method: 'GET',
         url: `/one-time-quests/${id}`,
       }),
-      providesTags: ['oneTimeQuestsGet'],
+      providesTags: ['oneTimeQuestsGet', 'questLabelsGet'],
     }),
 
     getAllOneTimeQuests: builder.query<IOneTimeQuest[], void>({
@@ -23,7 +23,7 @@ export const questSlice = Api.injectEndpoints({
         method: 'GET',
         url: '/one-time-quests',
       }),
-      providesTags: ['oneTimeQuestsGet'],
+      providesTags: ['oneTimeQuestsGet', 'questLabelsGet'],
     }),
 
     createOneTimeQuest: builder.mutation<void, IPostOneTimeQuestRequest>({

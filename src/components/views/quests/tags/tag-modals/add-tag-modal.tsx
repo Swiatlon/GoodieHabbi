@@ -2,15 +2,16 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { View, Text } from 'react-native';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { tagValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledSwatches from '@/components/shared/swatches/controlled-swatches';
-import { tagValidationSchema } from '@/components/views/quests/tags/tag-modals/schema';
 import { IPostQuestLabelRequest } from '@/contract/quests/labels/labels-quests';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import { useCreateQuestLabelMutation } from '@/redux/api/quests/labels-quests-api';
+import { useCreateQuestLabelMutation, useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
+import { IApiError } from '@/types/global-types';
 import { getBestContrastTextColor } from '@/utils/utils';
 
 interface AddTagModalProps extends IBaseModalProps {}
@@ -18,9 +19,10 @@ interface AddTagModalProps extends IBaseModalProps {}
 const AddTagModal: React.FC<AddTagModalProps> = ({ isVisible, onClose }) => {
   const { showSnackbar } = useSnackbar();
   const [createQuestLabel, { isLoading }] = useCreateQuestLabelMutation();
+  const { data: questLabels = [] } = useGetQuestLabelsQuery();
 
   const methods = useForm<IPostQuestLabelRequest>({
-    resolver: yupResolver(tagValidationSchema),
+    resolver: yupResolver(tagValidationSchema(questLabels)),
     defaultValues: {
       value: '',
       backgroundColor: '#1987EE',
@@ -40,8 +42,9 @@ const AddTagModal: React.FC<AddTagModalProps> = ({ isVisible, onClose }) => {
       onClose();
       reset();
       showSnackbar({ text: 'Tag added successfully!', variant: SnackbarVariantEnum.SUCCESS });
-    } catch {
-      showSnackbar({ text: 'Failed to add tag. Please try again.', variant: SnackbarVariantEnum.ERROR });
+    } catch (err) {
+      const error = err as IApiError;
+      showSnackbar({ text: error.data?.message || 'Failed to add tag. Please try again.', variant: SnackbarVariantEnum.ERROR });
     }
   };
 
@@ -55,18 +58,15 @@ const AddTagModal: React.FC<AddTagModalProps> = ({ isVisible, onClose }) => {
           <ControlledSwatches
             name="backgroundColor"
             label="Pick a Background Color:"
-            onChange={color => {
-              setValue('textColor', getBestContrastTextColor(color));
-            }}
+            onChange={color => setValue('textColor', getBestContrastTextColor(color))}
           />
-
           <View>
             <Text className="text-base font-semibold mb-2">Tag Preview:</Text>
             <View
               className="py-2 px-6 rounded-full flex-row justify-center items-center overflow-hidden max-w-[200px]"
               style={{ backgroundColor: selectedBackgroundColor, alignSelf: 'flex-start' }}
             >
-              <Text className="text-lg font-medium" numberOfLines={2} ellipsizeMode="tail" style={{ color: selectedTextColor }}>
+              <Text className="text-lg font-medium shadow-lg" numberOfLines={2} ellipsizeMode="tail" style={{ color: selectedTextColor }}>
                 {newTagValue || 'Example Tag'}
               </Text>
             </View>
