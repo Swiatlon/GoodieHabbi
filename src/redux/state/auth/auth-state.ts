@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 import * as SecureStore from 'expo-secure-store';
+import Api from '@/redux/config/api';
 import { NullableNumber, NullableString } from '@/types/global-types';
 import { parseJwt } from '@/utils/jwt-utils';
 
@@ -60,6 +61,7 @@ export const handleAuthSuccess = createAsyncThunk(
   'auth/handleAuthSuccess',
   async (data: { accessToken: string; refreshToken: string }, { dispatch }) => {
     await SecureStore.setItemAsync('refreshToken', data.refreshToken);
+    dispatch(Api.util.resetApiState());
     dispatch(setCredentials({ accessToken: data.accessToken }));
   }
 );
