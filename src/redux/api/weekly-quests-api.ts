@@ -15,7 +15,7 @@ export const weeklyQuestSlice = Api.injectEndpoints({
         method: 'GET',
         url: `/weekly-quests/${id}`,
       }),
-      providesTags: ['weeklyQuestsGet'],
+      providesTags: ['weeklyQuestsGet', 'questLabelsGet'],
     }),
 
     getAllWeeklyQuests: builder.query<IWeeklyQuest[], void>({
@@ -23,7 +23,7 @@ export const weeklyQuestSlice = Api.injectEndpoints({
         method: 'GET',
         url: '/weekly-quests',
       }),
-      providesTags: ['weeklyQuestsGet'],
+      providesTags: ['weeklyQuestsGet', 'questLabelsGet'],
     }),
 
     createWeeklyQuest: builder.mutation<void, IPostWeeklyQuestRequest>({

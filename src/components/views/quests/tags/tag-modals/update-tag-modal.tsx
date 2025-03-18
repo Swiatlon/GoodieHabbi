@@ -10,7 +10,8 @@ import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledSwatches from '@/components/shared/swatches/controlled-swatches';
 import { IPostQuestLabelRequest, IQuestLabel } from '@/contract/quests/labels/labels-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
-import { useUpdateQuestLabelMutation } from '@/redux/api/quests/labels-quests-api';
+import { useGetQuestLabelsQuery, useUpdateQuestLabelMutation } from '@/redux/api/quests/labels-quests-api';
+import { IApiError } from '@/types/global-types';
 import { getBestContrastTextColor } from '@/utils/utils';
 
 interface UpdateTagModalProps extends IBaseModalProps {
@@ -20,9 +21,10 @@ interface UpdateTagModalProps extends IBaseModalProps {
 const UpdateTagModal: React.FC<UpdateTagModalProps> = ({ isVisible, onClose, tag }) => {
   const { showSnackbar } = useSnackbar();
   const [createQuestLabel, { isLoading }] = useUpdateQuestLabelMutation();
+  const { data: questLabels = [] } = useGetQuestLabelsQuery();
 
   const methods = useForm<IPostQuestLabelRequest>({
-    resolver: yupResolver(tagValidationSchema),
+    resolver: yupResolver(tagValidationSchema(questLabels)),
     defaultValues: {
       value: tag.value,
       backgroundColor: tag.backgroundColor,
@@ -38,10 +40,11 @@ const UpdateTagModal: React.FC<UpdateTagModalProps> = ({ isVisible, onClose, tag
   const onSubmit = async (data: IPostQuestLabelRequest) => {
     try {
       await createQuestLabel({ id: tag.id, ...data }).unwrap();
-      showSnackbar({ text: 'Quest updated successfully!', variant: SnackbarVariantEnum.SUCCESS });
+      showSnackbar({ text: 'Tag updated successfully!', variant: SnackbarVariantEnum.SUCCESS });
       onClose();
-    } catch {
-      showSnackbar({ text: 'Failed to update quest. Please try again.', variant: SnackbarVariantEnum.ERROR });
+    } catch (err) {
+      const error = err as IApiError;
+      showSnackbar({ text: error.data?.message || 'Failed to update tag. Please try again.', variant: SnackbarVariantEnum.ERROR });
     }
   };
 
@@ -78,7 +81,7 @@ const UpdateTagModal: React.FC<UpdateTagModalProps> = ({ isVisible, onClose, tag
                 onClose();
                 reset();
               }}
-              styleType="secondary"
+              styleType="primary"
               variant="outlined"
             />
             <Button label="Update Tag" styleType="primary" onPress={handleSubmit(onSubmit)} disabled={!newTagValue.trim()} />

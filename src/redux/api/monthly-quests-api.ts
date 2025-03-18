@@ -15,7 +15,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
         method: 'GET',
         url: `/monthly-quests/${id}`,
       }),
-      providesTags: ['monthlyQuestsGet'],
+      providesTags: ['monthlyQuestsGet', 'questLabelsGet'],
     }),
 
     getAllMonthlyQuests: builder.query<IMonthlyQuest[], void>({
@@ -23,7 +23,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
         method: 'GET',
         url: '/monthly-quests',
       }),
-      providesTags: ['monthlyQuestsGet'],
+      providesTags: ['monthlyQuestsGet', 'questLabelsGet'],
     }),
 
     createMonthlyQuest: builder.mutation<void, IPostMonthlyQuestRequest>({

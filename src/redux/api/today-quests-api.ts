@@ -8,7 +8,7 @@ export const todayQuestSlice = Api.injectEndpoints({
         method: 'GET',
         url: '/all-quests',
       }),
-      providesTags: ['todayQuestsGet'],
+      providesTags: ['todayQuestsGet', 'questLabelsGet'],
     }),
   }),
 });
