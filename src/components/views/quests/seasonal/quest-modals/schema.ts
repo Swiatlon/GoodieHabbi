@@ -12,7 +12,9 @@ interface Parent {
 }
 
 export const seasonalQuestValidationSchema = baseQuestSchema.shape({
-  season: Yup.mixed<SeasonEnumType>().nullable().default(null),
+  season: Yup.mixed<SeasonEnumType>()
+    .required('Season is required')
+    .test('required', 'Season is required', value => Boolean(value)),
   startDate: Yup.string()
     .nullable()
     .test('is-not-less-than-today', 'Start date must be today or in the future', function (value) {

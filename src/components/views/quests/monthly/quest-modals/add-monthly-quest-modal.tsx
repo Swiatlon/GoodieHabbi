@@ -80,8 +80,8 @@ const AddMonthlyQuestModal: React.FC<AddMonthlyQuestModalProps> = ({ isVisible, 
             placeholder="Select quest tags"
             options={questLabels.map(item => ({ ...item, label: item.value }))}
           />
-          <DayPicker label="Start:" name="startDay" />
-          <DayPicker label="End:" name="endDay" min={startDay} />
+          <DayPicker label="Start Day:" name="startDay" isRequired placeholder="Select start day" />
+          <DayPicker label="End Day:" name="endDay" min={startDay} isRequired placeholder="Select end day" />
           <View className="flex-row justify-between">
             <Button
               label="Cancel"

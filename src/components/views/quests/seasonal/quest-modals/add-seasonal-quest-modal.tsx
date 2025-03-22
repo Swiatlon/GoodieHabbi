@@ -12,6 +12,7 @@ import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledMultiSelect from '@/components/shared/multi-select/controlled-multi-select';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
+import { SeasonEnumType } from '@/contract/quests/base-quests';
 import { IPostSeasonalQuestRequest } from '@/contract/quests/quests-types/seasonal-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
@@ -20,12 +21,16 @@ import { getSeasonalDateLimits } from '@/utils/get-seasonal-date-limits';
 
 interface AddSeasonalQuestModalProps extends IBaseModalProps {}
 
+interface IFormValues extends Omit<IPostSeasonalQuestRequest, 'season'> {
+  season: SeasonEnumType;
+}
+
 const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible, onClose }) => {
   const { showSnackbar } = useSnackbar();
   const [createQuest, { isLoading }] = useCreateSeasonalQuestMutation();
   const { data: questLabels = [] } = useGetQuestLabelsQuery();
 
-  const methods = useForm<IPostSeasonalQuestRequest>({
+  const methods = useForm<IFormValues>({
     resolver: yupResolver(seasonalQuestValidationSchema),
     defaultValues: {
       title: '',
@@ -35,7 +40,7 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible
       endDate: null,
       isCompleted: false,
       emoji: null,
-      season: null,
+      season: null!,
       labels: [],
     },
   });
@@ -47,9 +52,9 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible
 
   const { minStartDate, maxStartDate, minEndDate, maxEndDate } = getSeasonalDateLimits(selectedSeason, watchedStartDate);
 
-  const onSubmit = async (data: IPostSeasonalQuestRequest) => {
+  const onSubmit = async (data: IFormValues) => {
     try {
-      await createQuest(data).unwrap();
+      await createQuest(data as IPostSeasonalQuestRequest).unwrap();
       onClose();
       reset();
       showSnackbar({ text: 'Quest added successfully!', variant: SnackbarVariantEnum.SUCCESS });
@@ -70,7 +75,7 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible
           <DatePickerModal name="endDate" minDate={minEndDate} maxDate={maxEndDate} label="End Date" placeholder="Tap to pick end date" />
           <EmojiPickerComponent />
           <PriorityPicker />
-          <ControlledSeasonPicker />
+          <ControlledSeasonPicker isRequired />
           <ControlledMultiSelect
             name="labels"
             label="Tags:"

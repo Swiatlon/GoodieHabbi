@@ -19,14 +19,15 @@ const getSeasonStyle = (season: SeasonEnumType | null) => {
   }
 };
 
-const ControlledSeasonPicker: React.FC = () => {
+const ControlledSeasonPicker = ({ isRequired }: { isRequired?: boolean }) => {
   const { watch } = useFormContext();
   const selectedSeason = watch('season') as SeasonEnumType | null;
 
   return (
     <View className="flex gap-2">
-      <Text className="text-sm font-semibold text-gray-500">Season:</Text>
+      <Text className="text-sm font-semibold text-gray-500">Season:{isRequired && <Text className="text-red-500">*</Text>}</Text>
       <ControlledSelect
+        clearAsNull
         name="season"
         placeholder="Select season"
         options={[
