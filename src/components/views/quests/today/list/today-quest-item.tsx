@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import QuestItemDate from '../../reusable/quest-item/quest-item-date';
+import QuestItemTag from '../../reusable/quest-item/quest-item-tag';
 import QuestItemCheckmark from '@/components/views/quests/reusable/quest-item/quest-item-checkmark';
 import QuestItemContainer from '@/components/views/quests/reusable/quest-item/quest-item-container';
 import QuestItemEmoji from '@/components/views/quests/reusable/quest-item/quest-item-emoji';
@@ -38,10 +39,11 @@ const TodayQuestItem: React.FC<TodayQuestItemProps> = ({ quest }) => {
           <TouchableOpacity onPress={openShowModal} className="flex-1">
             <View className="flex-row items-center gap-2">
               <QuestItemEmoji emoji={quest.emoji} />
-              <View className="flex-1 gap-1">
+              <View className="flex-1 gap-2">
                 <QuestItemTitle title={quest.title} description={quest.description} isCompleted={quest.isCompleted} />
                 <QuestItemPriority priority={quest.priority} />
                 <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
+                <QuestItemTag tags={quest.labels} onPress={openShowModal} />
               </View>
             </View>
           </TouchableOpacity>

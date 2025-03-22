@@ -37,7 +37,7 @@ const MonthlyQuestItem: React.FC<MonthlyQuestItemProps> = ({ quest }) => {
           <TouchableOpacity onPress={openShowModal} className="flex-1">
             <View className="flex-row items-center gap-2">
               <QuestItemEmoji emoji={quest.emoji} />
-              <View className="flex-1 gap-1">
+              <View className="flex-1 gap-2">
                 <QuestItemTitle title={quest.title} description={quest.description} isCompleted={quest.isCompleted} />
                 <QuestItemPriority priority={quest.priority} />
                 <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />

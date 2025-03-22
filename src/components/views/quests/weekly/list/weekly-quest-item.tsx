@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import QuestItemCheckmark from '../../reusable/quest-item/quest-item-checkmark';
 import QuestItemContainer from '../../reusable/quest-item/quest-item-container';
+import QuestItemDate from '../../reusable/quest-item/quest-item-date';
 import QuestItemEmoji from '../../reusable/quest-item/quest-item-emoji';
 import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
+import QuestItemTag from '../../reusable/quest-item/quest-item-tag';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
 import QuestItemDateWeekly from '../../reusable/quest-item/quest-item-weekly';
 import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
@@ -35,10 +37,12 @@ const WeeklyQuestItem: React.FC<WeeklyQuestItemProps> = ({ quest }) => {
           <TouchableOpacity onPress={openShowModal} className="flex-1">
             <View className="flex-row items-center gap-2">
               <QuestItemEmoji emoji={quest.emoji} />
-              <View className="flex-1 gap-1">
+              <View className="flex-1 gap-2">
                 <QuestItemTitle title={quest.title} description={quest.description} isCompleted={quest.isCompleted} />
                 <QuestItemPriority priority={quest.priority} />
+                <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
                 <QuestItemDateWeekly weekdays={quest.weekdays} />
+                <QuestItemTag tags={quest.labels} onPress={openShowModal} />
               </View>
             </View>
           </TouchableOpacity>
