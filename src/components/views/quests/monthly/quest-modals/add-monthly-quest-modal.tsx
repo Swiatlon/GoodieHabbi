@@ -1,5 +1,6 @@
 import { useForm, FormProvider } from 'react-hook-form';
 import { View, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import DatePickerModal from '../../reusable/add-quest-modal/date-picker-modal';
 import DayPicker from '../../reusable/add-quest-modal/day-picker';
@@ -58,7 +59,27 @@ const AddMonthlyQuestModal: React.FC<AddMonthlyQuestModalProps> = ({ isVisible, 
   const startDay = watch('startDay');
 
   return (
-    <Modal isVisible={isVisible} onClose={onClose}>
+    <Modal
+      isVisible={isVisible}
+      onClose={onClose}
+      footer={
+        <View className="flex-row justify-between">
+          <Button
+            label="Cancel"
+            variant="outlined"
+            onPress={onClose}
+            className="rounded-lg"
+            startIcon={<Ionicons name="close-circle-outline" size={20} color="#1987EE" />}
+          />
+          <Button
+            label="Add Quest"
+            onPress={handleSubmit(onSubmit)}
+            className="rounded-lg"
+            startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
+          />
+        </View>
+      }
+    >
       {isLoading && <Loader size="large" message="Adding quest..." fullscreen />}
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-5 py-2">
@@ -82,18 +103,6 @@ const AddMonthlyQuestModal: React.FC<AddMonthlyQuestModalProps> = ({ isVisible, 
           />
           <DayPicker label="Start Day:" name="startDay" isRequired placeholder="Select start day" />
           <DayPicker label="End Day:" name="endDay" min={startDay} isRequired placeholder="Select end day" />
-          <View className="flex-row justify-between">
-            <Button
-              label="Cancel"
-              onPress={() => {
-                onClose();
-                reset();
-              }}
-              className="bg-gray-200 text-gray-700 rounded-lg"
-              variant="outlined"
-            />
-            <Button label="Add Quest" onPress={handleSubmit(onSubmit)} className="bg-blue-500 text-white rounded-lg" />
-          </View>
         </View>
       </FormProvider>
     </Modal>

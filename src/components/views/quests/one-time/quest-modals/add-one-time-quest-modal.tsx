@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { View, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import DatePickerModal from '../../reusable/add-quest-modal/date-picker-modal';
 import EmojiPickerComponent from '../../reusable/add-quest-modal/emoji-picker';
@@ -55,7 +56,27 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, 
   const startDate = watch('startDate');
 
   return (
-    <Modal isVisible={isVisible} onClose={onClose}>
+    <Modal
+      isVisible={isVisible}
+      onClose={onClose}
+      footer={
+        <View className="flex-row justify-between">
+          <Button
+            label="Cancel"
+            variant="outlined"
+            onPress={onClose}
+            className="rounded-lg"
+            startIcon={<Ionicons name="close-circle-outline" size={20} color="#1987EE" />}
+          />
+          <Button
+            label="Add Quest"
+            onPress={handleSubmit(onSubmit)}
+            className="rounded-lg"
+            startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
+          />
+        </View>
+      }
+    >
       {isLoading && <Loader size="large" message="Adding quest..." fullscreen />}
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-5 py-2">
@@ -77,18 +98,6 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, 
             placeholder="Select quest tags"
             options={questLabels.map(item => ({ ...item, label: item.value }))}
           />
-          <View className="flex-row justify-between">
-            <Button
-              label="Cancel"
-              onPress={() => {
-                onClose();
-                reset();
-              }}
-              variant="outlined"
-              className="rounded-lg"
-            />
-            <Button label="Add Quest" onPress={handleSubmit(onSubmit)} className="rounded-lg" />
-          </View>
         </View>
       </FormProvider>
     </Modal>
