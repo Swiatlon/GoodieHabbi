@@ -60,7 +60,7 @@ const WeeklyQuestItem: React.FC<WeeklyQuestItemProps> = ({ quest }) => {
         }}
       />
 
-      <UpdateWeeklyQuestModal isVisible={isUpdateQuestModalVisible} onClose={closeUpdateModal} quest={quest} />
+      {isUpdateQuestModalVisible && <UpdateWeeklyQuestModal isVisible={isUpdateQuestModalVisible} onClose={closeUpdateModal} quest={quest} />}
     </>
   );
 };

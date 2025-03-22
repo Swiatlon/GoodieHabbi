@@ -25,7 +25,7 @@ const UpdateTagModal: React.FC<UpdateTagModalProps> = ({ isVisible, onClose, tag
   const { data: questLabels = [] } = useGetQuestLabelsQuery();
 
   const methods = useForm<IPostQuestLabelRequest>({
-    resolver: yupResolver(tagValidationSchema(questLabels)),
+    resolver: yupResolver(tagValidationSchema(questLabels, tag.value)),
     defaultValues: {
       value: tag.value,
       backgroundColor: tag.backgroundColor,

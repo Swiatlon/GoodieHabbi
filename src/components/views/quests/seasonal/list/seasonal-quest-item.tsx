@@ -60,7 +60,7 @@ const SeasonalQuestItem: React.FC<SeasonalQuestItemProps> = ({ quest }) => {
         }}
       />
 
-      <UpdateSeasonalQuestModal isVisible={isUpdateQuestModalVisible} onClose={closeUpdateModal} quest={quest} />
+      {isUpdateQuestModalVisible && <UpdateSeasonalQuestModal isVisible={isUpdateQuestModalVisible} onClose={closeUpdateModal} quest={quest} />}
     </>
   );
 };

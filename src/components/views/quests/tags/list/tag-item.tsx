@@ -70,7 +70,7 @@ const TagItem: React.FC<TagItemProps> = ({ tag }) => {
           />
         </View>
       </View>
-      <UpdateTagModal isVisible={isUpdateTagModalVisible} onClose={closeUpdateModal} tag={tag} />
+      {isUpdateTagModalVisible && <UpdateTagModal isVisible={isUpdateTagModalVisible} onClose={closeUpdateModal} tag={tag} />}
     </View>
   );
 };

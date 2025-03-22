@@ -57,7 +57,7 @@ const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest }) => {
           openUpdateModal();
         }}
       />
-      <UpdateOneTimeQuestModal isVisible={isUpdateQuestModalVisible} onClose={closeUpdateModal} quest={quest} />
+      {isUpdateQuestModalVisible && <UpdateOneTimeQuestModal isVisible={isUpdateQuestModalVisible} onClose={closeUpdateModal} quest={quest} />}
     </>
   );
 };

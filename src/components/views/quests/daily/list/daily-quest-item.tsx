@@ -57,7 +57,7 @@ const DailyQuestItem: React.FC<DailyQuestItemProps> = ({ quest }) => {
           openUpdateModal();
         }}
       />
-      <UpdateDailyQuestModal isVisible={isUpdateQuestModalVisible} onClose={closeUpdateModal} quest={quest} />
+      {isUpdateQuestModalVisible && <UpdateDailyQuestModal isVisible={isUpdateQuestModalVisible} onClose={closeUpdateModal} quest={quest} />}
     </>
   );
 };

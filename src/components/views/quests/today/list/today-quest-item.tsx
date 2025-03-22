@@ -60,11 +60,13 @@ const TodayQuestItem: React.FC<TodayQuestItemProps> = ({ quest }) => {
           openUpdateModal();
         }}
       />
-      <UpdateQuestModal
-        isVisible={isUpdateQuestModalVisible}
-        onClose={closeUpdateModal}
-        quest={quest as IOneTimeQuest & ISeasonalQuest & IMonthlyQuest & IDailyQuest & IWeeklyQuest}
-      />
+      {isUpdateQuestModalVisible && (
+        <UpdateQuestModal
+          isVisible={isUpdateQuestModalVisible}
+          onClose={closeUpdateModal}
+          quest={quest as IOneTimeQuest & ISeasonalQuest & IMonthlyQuest & IDailyQuest & IWeeklyQuest}
+        />
+      )}
     </>
   );
 };
