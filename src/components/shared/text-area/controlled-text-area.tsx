@@ -1,15 +1,15 @@
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { View, Text } from 'react-native';
-import RichTextArea, { TextAreaProps } from './rich-text-area';
+import { TextInputProps, View, Text } from 'react-native';
+import TextArea from './text-area';
 
-interface ControlledTextAreaProps extends Omit<TextAreaProps, 'onChange'> {
+interface ControlledTextAreaProps extends TextInputProps {
   name: string;
-  label: string;
+  label?: string;
   isRequired?: boolean;
 }
 
-const ControlledRichTextArea = ({ name, label, isRequired, ...otherProps }: ControlledTextAreaProps) => {
+const ControlledTextArea = ({ name, label, isRequired, ...otherProps }: ControlledTextAreaProps) => {
   const { control } = useFormContext();
 
   return (
@@ -18,14 +18,7 @@ const ControlledRichTextArea = ({ name, label, isRequired, ...otherProps }: Cont
       control={control}
       render={({ field, fieldState: { error } }) => (
         <View className="flex gap-1">
-          <RichTextArea
-            {...field}
-            {...otherProps}
-            onChange={field.onChange}
-            onClear={() => field.onChange('')}
-            label={label}
-            isRequired={isRequired}
-          />
+          <TextArea {...field} {...otherProps} onChange={field.onChange} onClear={() => field.onChange('')} label={label} isRequired={isRequired} />
           {error && <Text className="text-red-500 text-sm mt-1">{error.message}</Text>}
         </View>
       )}
@@ -33,4 +26,4 @@ const ControlledRichTextArea = ({ name, label, isRequired, ...otherProps }: Cont
   );
 };
 
-export default ControlledRichTextArea;
+export default ControlledTextArea;
