@@ -75,12 +75,7 @@ const UpdateSeasonalQuestModal: React.FC<UpdateSeasonalQuestModalProps> = ({ isV
             className="rounded-lg"
             startIcon={<Ionicons name="close-circle-outline" size={20} color="#1987EE" />}
           />
-          <Button
-            label="Add Quest"
-            onPress={handleSubmit(onSubmit)}
-            className="rounded-lg"
-            startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
-          />
+          <Button label="Update Quest" onPress={handleSubmit(onSubmit)} startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />} />
         </View>
       }
     >

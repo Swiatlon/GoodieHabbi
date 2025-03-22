@@ -74,7 +74,7 @@ const UpdateMonthlyQuestModal: React.FC<UpdateMonthlyQuestModalProps> = ({ isVis
             startIcon={<Ionicons name="close-circle-outline" size={20} color="#1987EE" />}
           />
           <Button
-            label="Add Quest"
+            label="Update Quest"
             onPress={handleSubmit(onSubmit)}
             className="rounded-lg"
             startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
