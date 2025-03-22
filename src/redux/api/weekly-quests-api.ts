@@ -27,20 +27,34 @@ export const weeklyQuestSlice = Api.injectEndpoints({
     }),
 
     createWeeklyQuest: builder.mutation<void, IPostWeeklyQuestRequest>({
-      query: newQuest => ({
-        url: '/weekly-quests',
-        method: 'POST',
-        body: newQuest,
-      }),
+      query: newQuest => {
+        const transformedQuest = {
+          ...newQuest,
+          labels: newQuest.labels.map(item => item.id),
+        };
+
+        return {
+          url: '/weekly-quests',
+          method: 'POST',
+          body: transformedQuest,
+        };
+      },
       invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet'],
     }),
 
     updateWeeklyQuest: builder.mutation<void, IPutWeeklyQuestRequest>({
-      query: updatedQuest => ({
-        url: `/weekly-quests/${updatedQuest.id}`,
-        method: 'PUT',
-        body: updatedQuest,
-      }),
+      query: newQuest => {
+        const transformedQuest = {
+          ...newQuest,
+          labels: newQuest.labels.map(item => item.id),
+        };
+
+        return {
+          url: `/weekly-quests/${newQuest.id}`,
+          method: 'PUT',
+          body: transformedQuest,
+        };
+      },
       invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet'],
     }),
 

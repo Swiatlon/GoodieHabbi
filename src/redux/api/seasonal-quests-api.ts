@@ -27,20 +27,34 @@ export const seasonalQuestSlice = Api.injectEndpoints({
     }),
 
     createSeasonalQuest: builder.mutation<void, IPostSeasonalQuestRequest>({
-      query: newQuest => ({
-        url: '/seasonal-quests',
-        method: 'POST',
-        body: newQuest,
-      }),
+      query: newQuest => {
+        const transformedQuest = {
+          ...newQuest,
+          labels: newQuest.labels.map(item => item.id),
+        };
+
+        return {
+          url: '/seasonal-quests',
+          method: 'POST',
+          body: transformedQuest,
+        };
+      },
       invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet'],
     }),
 
     updateSeasonalQuest: builder.mutation<void, IPutSeasonalQuestRequest>({
-      query: updatedQuest => ({
-        url: `/seasonal-quests/${updatedQuest.id}`,
-        method: 'PUT',
-        body: updatedQuest,
-      }),
+      query: newQuest => {
+        const transformedQuest = {
+          ...newQuest,
+          labels: newQuest.labels.map(item => item.id),
+        };
+
+        return {
+          url: `/seasonal-quests/${newQuest.id}`,
+          method: 'PUT',
+          body: transformedQuest,
+        };
+      },
       invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet'],
     }),
 
