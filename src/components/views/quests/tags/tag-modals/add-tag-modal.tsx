@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { View, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { tagValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
@@ -49,7 +50,27 @@ const AddTagModal: React.FC<AddTagModalProps> = ({ isVisible, onClose }) => {
   };
 
   return (
-    <Modal isVisible={isVisible} onClose={onClose}>
+    <Modal
+      isVisible={isVisible}
+      onClose={onClose}
+      footer={
+        <View className="flex-row justify-between">
+          <Button
+            label="Cancel"
+            variant="outlined"
+            onPress={onClose}
+            className="rounded-lg"
+            startIcon={<Ionicons name="close-circle-outline" size={20} color="#1987EE" />}
+          />
+          <Button
+            label="Add Quest"
+            onPress={handleSubmit(onSubmit)}
+            className="rounded-lg"
+            startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
+          />
+        </View>
+      }
+    >
       {isLoading && <Loader size="large" message="Adding quest..." fullscreen />}
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-8 py-2">
@@ -70,18 +91,6 @@ const AddTagModal: React.FC<AddTagModalProps> = ({ isVisible, onClose }) => {
                 {newTagValue || 'Example Tag'}
               </Text>
             </View>
-          </View>
-          <View className="flex-row justify-between">
-            <Button
-              label="Cancel"
-              onPress={() => {
-                onClose();
-                reset();
-              }}
-              styleType="secondary"
-              variant="outlined"
-            />
-            <Button label="Create Tag" styleType="primary" onPress={handleSubmit(onSubmit)} disabled={!newTagValue.trim()} />
           </View>
         </View>
       </FormProvider>

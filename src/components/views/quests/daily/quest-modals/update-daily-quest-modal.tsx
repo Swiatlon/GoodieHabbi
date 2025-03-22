@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { View, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import DatePickerModal from '../../reusable/add-quest-modal/date-picker-modal';
 import EmojiPickerComponent from '../../reusable/add-quest-modal/emoji-picker';
@@ -43,7 +44,7 @@ const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible
     },
   });
 
-  const { handleSubmit, reset, watch } = methods;
+  const { handleSubmit, watch } = methods;
 
   const onSubmit = async (data: IPostDailyQuestRequest) => {
     try {
@@ -58,7 +59,28 @@ const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible
   const startDate = watch('startDate');
 
   return (
-    <Modal isVisible={isVisible} onClose={() => onClose()} key={quest.id}>
+    <Modal
+      isVisible={isVisible}
+      onClose={() => onClose()}
+      key={quest.id}
+      footer={
+        <View className="flex-row justify-between">
+          <Button
+            label="Cancel"
+            variant="outlined"
+            onPress={onClose}
+            className="rounded-lg"
+            startIcon={<Ionicons name="close-circle-outline" size={20} color="#1987EE" />}
+          />
+          <Button
+            label="Add Quest"
+            onPress={handleSubmit(onSubmit)}
+            className="rounded-lg"
+            startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
+          />
+        </View>
+      }
+    >
       {isLoading && <Loader size="large" message="Updating quest..." fullscreen />}
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-5 py-2">
@@ -80,18 +102,6 @@ const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible
             placeholder="Select quest tags"
             options={questLabels.map(item => ({ ...item, label: item.value }))}
           />
-          <View className="flex-row justify-between">
-            <Button
-              label="Cancel"
-              onPress={() => {
-                onClose();
-                reset();
-              }}
-              className="bg-gray-200 text-gray-700 rounded-lg"
-              variant="outlined"
-            />
-            <Button label="Save Changes" onPress={handleSubmit(onSubmit)} className="bg-blue-500 text-white rounded-lg" />
-          </View>
         </View>
       </FormProvider>
     </Modal>
