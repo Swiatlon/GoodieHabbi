@@ -9,8 +9,6 @@ export const tagValidationSchema = (questsLabels: IQuestLabel[]) => {
       .required('Tag cannot be empty')
       .max(25, 'Tag is too long. Please keep it under 25 characters.')
       .test('unique-tag', 'This tag name already exists. Please choose another.', value => {
-        console.log('new value', value);
-        console.log(questsLabels.map(val => val.value));
         if (value) {
           return questsLabels.every(label => label.value.toLowerCase() !== value.toLowerCase());
         }

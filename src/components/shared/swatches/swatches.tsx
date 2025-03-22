@@ -24,7 +24,7 @@ const Swatches: React.FC<SwatchesProps> = ({ selectedColor, onSelect }) => {
     '#C71585',
     '#2F4F4F',
     //TODO: EASTER-EGG on white color
-    '#fff',
+    // '#fff',
   ];
 
   return (
