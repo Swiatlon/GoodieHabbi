@@ -40,9 +40,10 @@ const MonthlyQuests: React.FC = () => {
     setFilter,
     actualFilter,
   } = useFilter<IMonthlyQuest>({
+    secureStorageName: 'FilterMonthlyQuests',
     data: searchedData,
     initialFilter: {
-      isCompleted: null,
+      isCompleted: false,
       priority: null,
     },
   });

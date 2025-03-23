@@ -40,9 +40,10 @@ const SeasonalQuests: React.FC = () => {
     setFilter,
     actualFilter,
   } = useFilter<ISeasonalQuest>({
+    secureStorageName: 'FilterSeasonalQuests',
     data: searchedData,
     initialFilter: {
-      isCompleted: null,
+      isCompleted: false,
       priority: null,
     },
   });

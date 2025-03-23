@@ -20,7 +20,6 @@ const OneTimeQuests: React.FC = () => {
   const { data: fetchedQuests = [], isLoading } = useGetAllOneTimeQuestsQuery();
 
   const handleCloseModal = () => setIsAddQuestModalVisible(false);
-
   const {
     data: searchedData,
     searchQuery,
@@ -40,9 +39,10 @@ const OneTimeQuests: React.FC = () => {
     setFilter,
     actualFilter,
   } = useFilter<IOneTimeQuest>({
+    secureStorageName: 'FilterOneTimeQuests',
     data: searchedData,
     initialFilter: {
-      isCompleted: null,
+      isCompleted: false,
       priority: null,
     },
   });

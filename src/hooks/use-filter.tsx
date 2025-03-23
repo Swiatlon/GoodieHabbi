@@ -1,8 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface FilterOptions<T> {
   data: T[];
   initialFilter: Partial<Record<keyof T, unknown>>;
+  secureStorageName?: string;
 }
 
 export type ActualFilterData = Record<string, unknown>;
@@ -13,12 +15,11 @@ const matchesFilter = <T,>(item: T, filter: ActualFilterData): boolean => {
     if (value === null) {
       return true;
     }
-
     return item[key as keyof T] === value;
   });
 };
 
-export const useFilter = <T,>({ data, initialFilter }: FilterOptions<T>) => {
+export const useFilter = <T,>({ data, initialFilter, secureStorageName }: FilterOptions<T>) => {
   const [actualFilter, setActualFilter] = useState<ActualFilterData>(initialFilter);
 
   const setFilter = (key: string, value: FilterValueType) => {
@@ -31,10 +32,33 @@ export const useFilter = <T,>({ data, initialFilter }: FilterOptions<T>) => {
   const resetFilter = () => {
     setActualFilter(initialFilter);
   };
-
   const filteredData = useMemo(() => {
     return data.filter(item => matchesFilter(item, actualFilter));
   }, [data, actualFilter]);
+
+  useEffect(() => {
+    if (secureStorageName) {
+      const loadFilter = async () => {
+        const storedFilter = await AsyncStorage.getItem(secureStorageName);
+
+        if (storedFilter) {
+          setActualFilter(JSON.parse(storedFilter));
+        }
+      };
+
+      loadFilter();
+    }
+  }, [secureStorageName]);
+
+  useEffect(() => {
+    if (secureStorageName) {
+      const saveFilter = async () => {
+        await AsyncStorage.setItem(secureStorageName, JSON.stringify(actualFilter));
+      };
+
+      saveFilter();
+    }
+  }, [actualFilter, secureStorageName]);
 
   return {
     data: filteredData,

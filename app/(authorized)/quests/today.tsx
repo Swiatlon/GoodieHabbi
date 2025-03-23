@@ -34,9 +34,10 @@ const TodayQuests: React.FC = () => {
     setFilter,
     actualFilter,
   } = useFilter<AllQuestsUnion>({
+    secureStorageName: 'FilterTodayQuests',
     data: searchedData,
     initialFilter: {
-      isCompleted: null,
+      isCompleted: false,
       priority: null,
     },
   });

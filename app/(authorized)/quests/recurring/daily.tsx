@@ -40,9 +40,10 @@ const DailyQuests: React.FC = () => {
     setFilter,
     actualFilter,
   } = useFilter<IDailyQuest>({
+    secureStorageName: 'FilterDailyQuests',
     data: searchedData,
     initialFilter: {
-      isCompleted: null,
+      isCompleted: false,
       priority: null,
     },
   });
