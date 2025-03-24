@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs from '@/configs/day-js-config';
 import { IDecodedJwt } from '@/contract/auth/auth';
 import { useTypedSelector } from '@/hooks/use-store-hooks';
 import { NullableString } from '@/types/global-types';

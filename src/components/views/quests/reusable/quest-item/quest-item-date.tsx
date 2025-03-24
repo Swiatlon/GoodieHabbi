@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import dayjs from 'dayjs';
+import dayjs from '@/configs/day-js-config';
 import { NullableString, UndefinedString } from '@/types/global-types';
 import { safeDateFormat } from '@/utils/utils';
 

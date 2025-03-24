@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
+import dayjs from '@/configs/day-js-config';
 import { PriorityEnum, PriorityEnumType } from '@/contract/quests/base-quests';
 
 export const SortOrderEnum = {
