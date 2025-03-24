@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, FlatList, Text } from 'react-native';
+import FilterModal from '@/components/shared/config-modal/filter-modal';
+import SortModal from '@/components/shared/config-modal/sort-modal';
 import Loader from '@/components/shared/loader/loader';
-import FilterModal from '@/components/views/quests/reusable/config-modal/filter-modal';
-import SortModal from '@/components/views/quests/reusable/config-modal/sort-modal';
 import Header from '@/components/views/quests/reusable/header';
 import { TodayQuestsFilterMap } from '@/components/views/quests/today/constants/constants';
 import TodayQuestItem from '@/components/views/quests/today/list/today-quest-item';
