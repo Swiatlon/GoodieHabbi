@@ -6,7 +6,8 @@ import Loader from '@/components/shared/loader/loader';
 import { OneTimeQuestsFilterMap } from '@/components/views/quests/one-time/constants/constants';
 import OneTimeQuestItem from '@/components/views/quests/one-time/list/one-time-quest-item';
 import AddOneTimeQuestModal from '@/components/views/quests/one-time/quest-modals/add-one-time-quest-modal';
-import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
+import FilterModal from '@/components/views/quests/reusable/config-modal/filter-modal';
+import SortModal from '@/components/views/quests/reusable/config-modal/sort-modal';
 import Header from '@/components/views/quests/reusable/header';
 import { IOneTimeQuest } from '@/contract/quests/quests-types/one-time-quests';
 import { useFilter } from '@/hooks/use-filter';
@@ -15,11 +16,13 @@ import { SortOrderEnum, useSort } from '@/hooks/use-sort';
 import { useGetAllOneTimeQuestsQuery } from '@/redux/api/one-time-quests-api';
 
 const OneTimeQuests: React.FC = () => {
-  const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+  const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
   const { data: fetchedQuests = [], isLoading } = useGetAllOneTimeQuestsQuery();
 
   const handleCloseModal = () => setIsAddQuestModalVisible(false);
+
   const {
     data: searchedData,
     searchQuery,
@@ -28,10 +31,7 @@ const OneTimeQuests: React.FC = () => {
     setIsSearchVisible,
   } = useSearch({
     data: fetchedQuests,
-    initialSearch: {
-      key: 'title',
-      value: '',
-    },
+    initialSearch: { key: 'title', value: '' },
   });
 
   const {
@@ -41,10 +41,7 @@ const OneTimeQuests: React.FC = () => {
   } = useFilter<IOneTimeQuest>({
     secureStorageName: 'FilterOneTimeQuests',
     data: searchedData,
-    initialFilter: {
-      isCompleted: false,
-      priority: null,
-    },
+    initialFilter: { isCompleted: false, priority: null },
   });
 
   const {
@@ -54,11 +51,9 @@ const OneTimeQuests: React.FC = () => {
     setSortOrder,
     setSortKey,
   } = useSort({
+    secureStorageName: 'SortOneTimeQuests',
     data: filteredQuests,
-    initialSort: {
-      key: 'title',
-      order: SortOrderEnum.ASC,
-    },
+    initialSort: { key: 'title', order: SortOrderEnum.ASC },
   });
 
   if (isLoading) {
@@ -72,8 +67,9 @@ const OneTimeQuests: React.FC = () => {
         isSearchVisible={isSearchVisible}
         searchQuery={searchQuery}
         setIsSearchVisible={setIsSearchVisible}
-        setIsConfigModalVisible={setIsConfigModalVisible}
         setSearchQuery={setSearchQuery}
+        setIsFilterModalVisible={setIsFilterModalVisible}
+        setIsSortModalVisible={setIsSortModalVisible}
       />
 
       <FlatList
@@ -90,16 +86,21 @@ const OneTimeQuests: React.FC = () => {
         className="mx-auto mt-4"
       />
 
-      <ConfigModal<IOneTimeQuest>
-        isModalVisible={isConfigModalVisible}
-        actualSortKey={actualSortKey}
-        actualSortOrder={actualSortOrder}
-        setisModalVisible={setIsConfigModalVisible}
-        setSortOrder={setSortOrder}
-        setSortKey={setSortKey}
+      <FilterModal<IOneTimeQuest>
+        isVisible={isFilterModalVisible}
+        setIsVisible={setIsFilterModalVisible}
         setFilter={setFilter}
         actualFilterData={actualFilter}
         filterCategories={OneTimeQuestsFilterMap}
+      />
+
+      <SortModal
+        isVisible={isSortModalVisible}
+        setIsVisible={setIsSortModalVisible}
+        actualSortKey={actualSortKey}
+        actualSortOrder={actualSortOrder}
+        setSortOrder={setSortOrder}
+        setActualSortKey={setSortKey}
       />
 
       {isAddQuestModalVisible && <AddOneTimeQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />}

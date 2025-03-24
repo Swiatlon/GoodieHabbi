@@ -1,4 +1,4 @@
-import { IFilterMapValues } from '../../reusable/config-modal/config-modal';
+import { IFilterMapValues } from '../../reusable/config-modal/filter-modal';
 import { BaseQuestFilterMap } from '../../reusable/constants/constants';
 import { IMonthlyQuest } from '@/contract/quests/quests-types/monthly-quests';
 
