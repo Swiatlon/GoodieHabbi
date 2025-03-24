@@ -66,7 +66,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
         };
 
         return {
-          url: `/daily-quests/${patchData.id}`,
+          url: `/daily-quests/${patchData.id}/completion`,
           method: 'PATCH',
           body: transformedPatchData,
         };

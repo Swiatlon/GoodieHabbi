@@ -66,7 +66,7 @@ export const questSlice = Api.injectEndpoints({
         };
 
         return {
-          url: `/one-time-quests/${patchData.id}`,
+          url: `/one-time-quests/${patchData.id}/completion`,
           method: 'PATCH',
           body: transformedPatchData,
         };

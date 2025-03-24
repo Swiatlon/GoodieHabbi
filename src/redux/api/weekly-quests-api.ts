@@ -60,7 +60,7 @@ export const weeklyQuestSlice = Api.injectEndpoints({
 
     patchWeeklyQuest: builder.mutation<void, IPatchWeeklyQuestRequest>({
       query: patchData => ({
-        url: `/weekly-quests/${patchData.id}`,
+        url: `/weekly-quests/${patchData.id}/completion`,
         method: 'PATCH',
         body: patchData,
       }),

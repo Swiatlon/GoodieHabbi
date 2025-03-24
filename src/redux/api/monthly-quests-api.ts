@@ -66,7 +66,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
         };
 
         return {
-          url: `/monthly-quests/${patchData.id}`,
+          url: `/monthly-quests/${patchData.id}/completion`,
           method: 'PATCH',
           body: transformedPatchData,
         };

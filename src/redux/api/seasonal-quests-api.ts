@@ -60,7 +60,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
 
     patchSeasonalQuest: builder.mutation<void, IPatchSeasonalQuestRequest>({
       query: patchData => ({
-        url: `/seasonal-quests/${patchData.id}`,
+        url: `/seasonal-quests/${patchData.id}/completion`,
         method: 'PATCH',
         body: patchData,
       }),
