@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
+import QuestItemDateMonthly from '../../reusable/quest-item/quest-item-date-monthly';
+import QuestItemSeason from '../../reusable/quest-item/quest-item-season';
+import QuestItemTag from '../../reusable/quest-item/quest-item-tag';
+import QuestItemDateWeekly from '../../reusable/quest-item/quest-item-weekly';
 import QuestItemCheckmark from '@/components/views/quests/reusable/quest-item/quest-item-checkmark';
 import QuestItemContainer from '@/components/views/quests/reusable/quest-item/quest-item-container';
 import QuestItemDate from '@/components/views/quests/reusable/quest-item/quest-item-date';
@@ -13,6 +17,7 @@ import { IOneTimeQuest } from '@/contract/quests/quests-types/one-time-quests';
 import { ISeasonalQuest } from '@/contract/quests/quests-types/seasonal-quests';
 import { IWeeklyQuest } from '@/contract/quests/quests-types/weekly-quests';
 import { AllQuestsUnion, useQuestMutations } from '@/hooks/quests/useGetAllQuests';
+import { isSeasonalQuest, isWeeklyQuest, isMonthlyQuest } from '@/utils/quests';
 
 interface AllQuestItemProps {
   quest: AllQuestsUnion;
@@ -41,7 +46,11 @@ const AllQuestItem: React.FC<AllQuestItemProps> = ({ quest }) => {
               <View className="flex-1 gap-2">
                 <QuestItemTitle title={quest.title} description={quest.description} isCompleted={quest.isCompleted} />
                 <QuestItemPriority priority={quest.priority} />
+                {isSeasonalQuest(quest) && <QuestItemSeason season={quest.season} />}
                 <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
+                {isWeeklyQuest(quest) && <QuestItemDateWeekly weekdays={quest.weekdays} />}
+                {isMonthlyQuest(quest) && <QuestItemDateMonthly startDay={quest.startDay} endDay={quest.endDay} />}
+                <QuestItemTag tags={quest.labels} onPress={openShowModal} />
               </View>
             </View>
           </TouchableOpacity>
