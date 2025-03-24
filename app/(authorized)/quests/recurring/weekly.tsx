@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { View, FlatList, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
+import FilterModal from '@/components/shared/config-modal/filter-modal';
+import SortModal from '@/components/shared/config-modal/sort-modal';
 import Loader from '@/components/shared/loader/loader';
-import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
 import Header from '@/components/views/quests/reusable/header';
 import { WeeklyQuestsFilterMap } from '@/components/views/quests/weekly/constants/constants';
 import WeeklyQuestItem from '@/components/views/quests/weekly/list/weekly-quest-item';
@@ -15,8 +16,10 @@ import { useSort, SortOrderEnum } from '@/hooks/use-sort';
 import { useGetAllWeeklyQuestsQuery } from '@/redux/api/weekly-quests-api';
 
 const WeeklyQuests: React.FC = () => {
-  const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+  const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
+
   const { data: fetchedQuests = [], isLoading } = useGetAllWeeklyQuestsQuery();
 
   const handleCloseModal = () => setIsAddQuestModalVisible(false);
@@ -55,6 +58,7 @@ const WeeklyQuests: React.FC = () => {
     setSortOrder,
     setSortKey,
   } = useSort({
+    secureStorageName: 'SortWeeklyQuests',
     data: filteredQuests,
     initialSort: {
       key: 'title',
@@ -73,7 +77,8 @@ const WeeklyQuests: React.FC = () => {
         isSearchVisible={isSearchVisible}
         searchQuery={searchQuery}
         setIsSearchVisible={setIsSearchVisible}
-        setIsConfigModalVisible={setIsConfigModalVisible}
+        setIsFilterModalVisible={setIsFilterModalVisible}
+        setIsSortModalVisible={setIsSortModalVisible}
         setSearchQuery={setSearchQuery}
       />
 
@@ -91,16 +96,21 @@ const WeeklyQuests: React.FC = () => {
         className="mx-auto py-2 mt-4"
       />
 
-      <ConfigModal<IWeeklyQuest>
-        isModalVisible={isConfigModalVisible}
-        actualSortKey={actualSortKey}
-        actualSortOrder={actualSortOrder}
-        setisModalVisible={setIsConfigModalVisible}
-        setSortOrder={setSortOrder}
-        setSortKey={setSortKey}
+      <FilterModal<IWeeklyQuest>
+        isVisible={isFilterModalVisible}
+        setIsVisible={setIsFilterModalVisible}
         setFilter={setFilter}
         actualFilterData={actualFilter}
         filterCategories={WeeklyQuestsFilterMap}
+      />
+
+      <SortModal
+        isVisible={isSortModalVisible}
+        setIsVisible={setIsSortModalVisible}
+        actualSortKey={actualSortKey}
+        actualSortOrder={actualSortOrder}
+        setSortOrder={setSortOrder}
+        setActualSortKey={setSortKey}
       />
 
       {isAddQuestModalVisible && <AddWeeklyQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />}

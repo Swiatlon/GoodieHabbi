@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, FlatList, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
+import FilterModal from '@/components/shared/config-modal/filter-modal';
+import SortModal from '@/components/shared/config-modal/sort-modal';
 import Loader from '@/components/shared/loader/loader';
 import { AllQuestsFilterMap } from '@/components/views/quests/all/constants/constants';
 import AllQuestItem from '@/components/views/quests/all/list/all-quest-item';
 import AddAllQuestModal from '@/components/views/quests/all/quest-modals/add-all-quest-modal';
-import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
 import Header from '@/components/views/quests/reusable/header';
-import { useGetAllQuests, AllQuestsUnion } from '@/hooks/quests/useGetAllQuests';
+import { AllQuestsUnion, useGetAllQuests } from '@/hooks/quests/useGetAllQuests';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
 import { useSort, SortOrderEnum } from '@/hooks/use-sort';
-
 const AllQuests: React.FC = () => {
-  const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+  const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
+
   const { data: fetchedQuests = [], isLoading } = useGetAllQuests();
 
   const handleCloseModal = () => setIsAddQuestModalVisible(false);
@@ -39,7 +41,7 @@ const AllQuests: React.FC = () => {
     setFilter,
     actualFilter,
   } = useFilter<AllQuestsUnion>({
-    secureStorageName: 'FiltersAllQuests',
+    secureStorageName: 'FilterAllQuests',
     data: searchedData,
     initialFilter: {
       isCompleted: false,
@@ -54,6 +56,7 @@ const AllQuests: React.FC = () => {
     setSortOrder,
     setSortKey,
   } = useSort({
+    secureStorageName: 'SortAllQuests',
     data: filteredQuests,
     initialSort: {
       key: 'title',
@@ -72,7 +75,8 @@ const AllQuests: React.FC = () => {
         isSearchVisible={isSearchVisible}
         searchQuery={searchQuery}
         setIsSearchVisible={setIsSearchVisible}
-        setIsConfigModalVisible={setIsConfigModalVisible}
+        setIsFilterModalVisible={setIsFilterModalVisible}
+        setIsSortModalVisible={setIsSortModalVisible}
         setSearchQuery={setSearchQuery}
       />
 
@@ -87,22 +91,27 @@ const AllQuests: React.FC = () => {
         label="Add new Quest"
         onPress={() => setIsAddQuestModalVisible(true)}
         startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
-        className="mx-auto mt-4"
+        className="mx-auto py-2 mt-4"
       />
 
-      <ConfigModal<AllQuestsUnion>
-        isModalVisible={isConfigModalVisible}
-        actualSortKey={actualSortKey}
-        actualSortOrder={actualSortOrder}
-        setisModalVisible={setIsConfigModalVisible}
-        setSortOrder={setSortOrder}
-        setSortKey={setSortKey}
+      <FilterModal<AllQuestsUnion>
+        isVisible={isFilterModalVisible}
+        setIsVisible={setIsFilterModalVisible}
         setFilter={setFilter}
         actualFilterData={actualFilter}
         filterCategories={AllQuestsFilterMap}
       />
 
-      <AddAllQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
+      <SortModal
+        isVisible={isSortModalVisible}
+        setIsVisible={setIsSortModalVisible}
+        actualSortKey={actualSortKey}
+        actualSortOrder={actualSortOrder}
+        setSortOrder={setSortOrder}
+        setActualSortKey={setSortKey}
+      />
+
+      {isAddQuestModalVisible && <AddAllQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />}
     </View>
   );
 };

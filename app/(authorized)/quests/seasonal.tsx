@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { View, FlatList, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
+import FilterModal from '@/components/shared/config-modal/filter-modal';
+import SortModal from '@/components/shared/config-modal/sort-modal';
 import Loader from '@/components/shared/loader/loader';
-import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
 import Header from '@/components/views/quests/reusable/header';
 import { SeasonalQuestsFilterMap } from '@/components/views/quests/seasonal/constants/constants';
 import SeasonalQuestItem from '@/components/views/quests/seasonal/list/seasonal-quest-item';
@@ -11,11 +12,12 @@ import AddSeasonalQuestModal from '@/components/views/quests/seasonal/quest-moda
 import { ISeasonalQuest } from '@/contract/quests/quests-types/seasonal-quests';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
-import { useSort, SortOrderEnum } from '@/hooks/use-sort';
+import { SortOrderEnum, useSort } from '@/hooks/use-sort';
 import { useGetAllSeasonalQuestsQuery } from '@/redux/api/seasonal-quests-api';
 
 const SeasonalQuests: React.FC = () => {
-  const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+  const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
   const { data: fetchedQuests = [], isLoading } = useGetAllSeasonalQuestsQuery();
 
@@ -55,6 +57,7 @@ const SeasonalQuests: React.FC = () => {
     setSortOrder,
     setSortKey,
   } = useSort({
+    secureStorageName: 'SortSeasonalQuests',
     data: filteredQuests,
     initialSort: {
       key: 'title',
@@ -73,8 +76,9 @@ const SeasonalQuests: React.FC = () => {
         isSearchVisible={isSearchVisible}
         searchQuery={searchQuery}
         setIsSearchVisible={setIsSearchVisible}
-        setIsConfigModalVisible={setIsConfigModalVisible}
         setSearchQuery={setSearchQuery}
+        setIsFilterModalVisible={setIsFilterModalVisible}
+        setIsSortModalVisible={setIsSortModalVisible}
       />
 
       <FlatList
@@ -91,16 +95,21 @@ const SeasonalQuests: React.FC = () => {
         className="mx-auto mt-4"
       />
 
-      <ConfigModal<ISeasonalQuest>
-        isModalVisible={isConfigModalVisible}
-        actualSortKey={actualSortKey}
-        actualSortOrder={actualSortOrder}
-        setisModalVisible={setIsConfigModalVisible}
-        setSortOrder={setSortOrder}
-        setSortKey={setSortKey}
+      <FilterModal<ISeasonalQuest>
+        isVisible={isFilterModalVisible}
+        setIsVisible={setIsFilterModalVisible}
         setFilter={setFilter}
         actualFilterData={actualFilter}
         filterCategories={SeasonalQuestsFilterMap}
+      />
+
+      <SortModal
+        isVisible={isSortModalVisible}
+        setIsVisible={setIsSortModalVisible}
+        actualSortKey={actualSortKey}
+        actualSortOrder={actualSortOrder}
+        setSortOrder={setSortOrder}
+        setActualSortKey={setSortKey}
       />
 
       {isAddQuestModalVisible && <AddSeasonalQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />}

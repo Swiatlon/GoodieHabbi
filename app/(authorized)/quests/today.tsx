@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, FlatList, Text } from 'react-native';
+import FilterModal from '@/components/shared/config-modal/filter-modal';
+import SortModal from '@/components/shared/config-modal/sort-modal';
 import Loader from '@/components/shared/loader/loader';
-import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
 import Header from '@/components/views/quests/reusable/header';
 import { TodayQuestsFilterMap } from '@/components/views/quests/today/constants/constants';
 import TodayQuestItem from '@/components/views/quests/today/list/today-quest-item';
@@ -12,7 +13,8 @@ import { useSort, SortOrderEnum } from '@/hooks/use-sort';
 import { useGetAllTodayQuestsQuery } from '@/redux/api/today-quests-api';
 
 const TodayQuests: React.FC = () => {
-  const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+  const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const { data: fetchedQuests = [], isLoading } = useGetAllTodayQuestsQuery();
 
   const {
@@ -49,6 +51,7 @@ const TodayQuests: React.FC = () => {
     setSortOrder,
     setSortKey,
   } = useSort({
+    secureStorageName: 'SortTodayQuests',
     data: filteredQuests,
     initialSort: {
       key: 'title',
@@ -67,8 +70,9 @@ const TodayQuests: React.FC = () => {
         isSearchVisible={isSearchVisible}
         searchQuery={searchQuery}
         setIsSearchVisible={setIsSearchVisible}
-        setIsConfigModalVisible={setIsConfigModalVisible}
         setSearchQuery={setSearchQuery}
+        setIsFilterModalVisible={setIsFilterModalVisible}
+        setIsSortModalVisible={setIsSortModalVisible}
       />
 
       <FlatList
@@ -78,16 +82,21 @@ const TodayQuests: React.FC = () => {
         ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
       />
 
-      <ConfigModal<AllQuestsUnion>
-        isModalVisible={isConfigModalVisible}
-        actualSortKey={actualSortKey}
-        actualSortOrder={actualSortOrder}
-        setisModalVisible={setIsConfigModalVisible}
-        setSortOrder={setSortOrder}
-        setSortKey={setSortKey}
+      <FilterModal<AllQuestsUnion>
+        isVisible={isFilterModalVisible}
+        setIsVisible={setIsFilterModalVisible}
         setFilter={setFilter}
         actualFilterData={actualFilter}
         filterCategories={TodayQuestsFilterMap}
+      />
+
+      <SortModal
+        isVisible={isSortModalVisible}
+        setIsVisible={setIsSortModalVisible}
+        actualSortKey={actualSortKey}
+        actualSortOrder={actualSortOrder}
+        setSortOrder={setSortOrder}
+        setActualSortKey={setSortKey}
       />
     </View>
   );

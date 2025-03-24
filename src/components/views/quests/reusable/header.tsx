@@ -8,16 +8,28 @@ interface HeaderProps {
   isSearchVisible: boolean;
   searchQuery: string;
   setIsSearchVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsConfigModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsFilterModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsSortModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, isSearchVisible, searchQuery, setIsSearchVisible, setIsConfigModalVisible, setSearchQuery }) => (
+const Header: React.FC<HeaderProps> = ({
+  title,
+  isSearchVisible,
+  searchQuery,
+  setIsSearchVisible,
+  setIsFilterModalVisible,
+  setIsSortModalVisible,
+  setSearchQuery,
+}) => (
   <>
     <View className="flex-row justify-between items-center mb-4">
-      <View className="min-w-[38px]">
-        {setIsConfigModalVisible && (
-          <IconButton onPress={() => setIsConfigModalVisible(true)} icon={<Ionicons name="settings-outline" size={24} color="#1987EE" />} />
+      <View className="flex-row">
+        {setIsFilterModalVisible && (
+          <IconButton onPress={() => setIsFilterModalVisible(true)} icon={<Ionicons name="filter-outline" size={24} color="#1987EE" />} />
+        )}
+        {setIsSortModalVisible && (
+          <IconButton onPress={() => setIsSortModalVisible(true)} icon={<Ionicons name="swap-vertical-outline" size={24} color="#1987EE" />} />
         )}
       </View>
       <Text className="text-2xl font-bold text-primary text-center">{title}</Text>

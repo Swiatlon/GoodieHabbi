@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { IFilterMapValues } from '../../reusable/config-modal/config-modal';
+import { IFilterMapValues } from '../../../../shared/config-modal/filter-modal';
 import { BaseQuestFilterMap } from '../../reusable/constants/constants';
 import { SeasonEnum } from '@/contract/quests/base-quests';
 import { ISeasonalQuest } from '@/contract/quests/quests-types/seasonal-quests';

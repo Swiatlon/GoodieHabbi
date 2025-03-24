@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { View, FlatList, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
+import FilterModal from '@/components/shared/config-modal/filter-modal';
+import SortModal from '@/components/shared/config-modal/sort-modal';
 import Loader from '@/components/shared/loader/loader';
 import { DailyQuestsFilterMap } from '@/components/views/quests/daily/constants/constants';
 import DailyQuestItem from '@/components/views/quests/daily/list/daily-quest-item';
 import AddDailyQuestModal from '@/components/views/quests/daily/quest-modals/add-daily-quest-modal';
-import ConfigModal from '@/components/views/quests/reusable/config-modal/config-modal';
 import Header from '@/components/views/quests/reusable/header';
 import { IDailyQuest } from '@/contract/quests/quests-types/daily-quests';
 import { useFilter } from '@/hooks/use-filter';
@@ -15,7 +16,8 @@ import { useSort, SortOrderEnum } from '@/hooks/use-sort';
 import { useGetAllDailyQuestsQuery } from '@/redux/api/daily-quests-api';
 
 const DailyQuests: React.FC = () => {
-  const [isConfigModalVisible, setIsConfigModalVisible] = useState(false);
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+  const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
   const { data: fetchedQuests = [], isLoading } = useGetAllDailyQuestsQuery();
 
@@ -55,12 +57,14 @@ const DailyQuests: React.FC = () => {
     setSortOrder,
     setSortKey,
   } = useSort({
+    secureStorageName: 'SortDailyQuests',
     data: filteredQuests,
     initialSort: {
       key: 'title',
       order: SortOrderEnum.ASC,
     },
   });
+
   if (isLoading) {
     return <Loader message="Fetching quests..." />;
   }
@@ -72,7 +76,8 @@ const DailyQuests: React.FC = () => {
         isSearchVisible={isSearchVisible}
         searchQuery={searchQuery}
         setIsSearchVisible={setIsSearchVisible}
-        setIsConfigModalVisible={setIsConfigModalVisible}
+        setIsFilterModalVisible={setIsFilterModalVisible}
+        setIsSortModalVisible={setIsSortModalVisible}
         setSearchQuery={setSearchQuery}
       />
 
@@ -90,16 +95,21 @@ const DailyQuests: React.FC = () => {
         className="mx-auto py-2 mt-4"
       />
 
-      <ConfigModal<IDailyQuest>
-        isModalVisible={isConfigModalVisible}
-        actualSortKey={actualSortKey}
-        actualSortOrder={actualSortOrder}
-        setisModalVisible={setIsConfigModalVisible}
-        setSortOrder={setSortOrder}
-        setSortKey={setSortKey}
+      <FilterModal<IDailyQuest>
+        isVisible={isFilterModalVisible}
+        setIsVisible={setIsFilterModalVisible}
         setFilter={setFilter}
         actualFilterData={actualFilter}
         filterCategories={DailyQuestsFilterMap}
+      />
+
+      <SortModal
+        isVisible={isSortModalVisible}
+        setIsVisible={setIsSortModalVisible}
+        actualSortKey={actualSortKey}
+        actualSortOrder={actualSortOrder}
+        setSortOrder={setSortOrder}
+        setActualSortKey={setSortKey}
       />
 
       {isAddQuestModalVisible && <AddDailyQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />}

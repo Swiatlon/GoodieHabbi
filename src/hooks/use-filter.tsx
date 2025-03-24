@@ -32,6 +32,7 @@ export const useFilter = <T,>({ data, initialFilter, secureStorageName }: Filter
   const resetFilter = () => {
     setActualFilter(initialFilter);
   };
+
   const filteredData = useMemo(() => {
     return data.filter(item => matchesFilter(item, actualFilter));
   }, [data, actualFilter]);
@@ -48,7 +49,7 @@ export const useFilter = <T,>({ data, initialFilter, secureStorageName }: Filter
 
       loadFilter();
     }
-  }, [secureStorageName]);
+  }, []);
 
   useEffect(() => {
     if (secureStorageName) {
