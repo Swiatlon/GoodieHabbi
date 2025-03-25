@@ -57,11 +57,13 @@ const WeeklyQuests: React.FC = () => {
     actualSortOrder,
     setSortOrder,
     setSortKey,
+    setSortObjKey,
   } = useSort({
     secureStorageName: 'SortWeeklyQuests',
     data: filteredQuests,
     initialSort: {
       key: 'title',
+      objKey: 'title',
       order: SortOrderEnum.ASC,
     },
   });
@@ -108,9 +110,12 @@ const WeeklyQuests: React.FC = () => {
         isVisible={isSortModalVisible}
         setIsVisible={setIsSortModalVisible}
         actualSortKey={actualSortKey}
+        setActualSortKeys={(key, objKey) => {
+          setSortKey(key);
+          setSortObjKey(objKey);
+        }}
         actualSortOrder={actualSortOrder}
         setSortOrder={setSortOrder}
-        setActualSortKey={setSortKey}
       />
 
       {isAddQuestModalVisible && <AddWeeklyQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />}

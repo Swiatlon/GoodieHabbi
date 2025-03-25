@@ -50,10 +50,15 @@ const OneTimeQuests: React.FC = () => {
     actualSortOrder,
     setSortOrder,
     setSortKey,
+    setSortObjKey,
   } = useSort({
     secureStorageName: 'SortOneTimeQuests',
     data: filteredQuests,
-    initialSort: { key: 'title', order: SortOrderEnum.ASC },
+    initialSort: {
+      key: 'title',
+      objKey: 'title',
+      order: SortOrderEnum.ASC,
+    },
   });
 
   if (isLoading) {
@@ -98,9 +103,12 @@ const OneTimeQuests: React.FC = () => {
         isVisible={isSortModalVisible}
         setIsVisible={setIsSortModalVisible}
         actualSortKey={actualSortKey}
+        setActualSortKeys={(key, objKey) => {
+          setSortKey(key);
+          setSortObjKey(objKey);
+        }}
         actualSortOrder={actualSortOrder}
         setSortOrder={setSortOrder}
-        setActualSortKey={setSortKey}
       />
 
       {isAddQuestModalVisible && <AddOneTimeQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />}

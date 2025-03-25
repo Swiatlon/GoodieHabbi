@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Dayjs } from 'dayjs';
 import dayjs from '@/configs/day-js-config';
 import { PriorityEnum, PriorityEnumType } from '@/contract/quests/base-quests';
+import { NullableString } from '@/types/global-types';
 
 export const SortOrderEnum = {
   ASC: 'asc',
@@ -12,7 +13,8 @@ export const SortOrderEnum = {
 export type SortOrderEnumType = (typeof SortOrderEnum)[keyof typeof SortOrderEnum];
 
 interface SortConfig {
-  key: string | null;
+  key: NullableString;
+  objKey: NullableString;
   order: SortOrderEnumType;
 }
 
@@ -24,18 +26,19 @@ interface UseSortProps<T> {
 
 export const useSort = <T,>({ data, initialSort, secureStorageName }: UseSortProps<T>) => {
   const [sortKey, setSortKey] = useState(initialSort.key);
+  const [sortObjKey, setSortObjKey] = useState(initialSort.objKey);
   const [sortOrder, setSortOrder] = useState(initialSort.order);
 
   const sortedData = useMemo(() => {
-    if (!sortKey) {
+    if (!sortObjKey) {
       return data;
     }
 
-    const [validItems, nullItems] = separateItems(data, sortKey as keyof T);
-    const sortedValidItems = sortItems(validItems, sortKey as keyof T, sortOrder);
+    const [validItems, nullItems] = separateItems(data, sortObjKey as keyof T);
+    const sortedValidItems = sortItems(validItems, sortObjKey as keyof T, sortOrder, sortKey);
 
     return [...sortedValidItems, ...nullItems];
-  }, [data, sortKey, sortOrder]);
+  }, [data, sortObjKey, sortOrder]);
 
   useEffect(() => {
     if (secureStorageName) {
@@ -43,9 +46,10 @@ export const useSort = <T,>({ data, initialSort, secureStorageName }: UseSortPro
         const storedSort = await AsyncStorage.getItem(secureStorageName);
 
         if (storedSort) {
-          const { key, order } = JSON.parse(storedSort) as SortConfig;
+          const { key, objKey, order } = JSON.parse(storedSort) as SortConfig;
 
           setSortKey(key);
+          setSortObjKey(objKey);
           setSortOrder(order);
         }
       };
@@ -57,7 +61,7 @@ export const useSort = <T,>({ data, initialSort, secureStorageName }: UseSortPro
   useEffect(() => {
     if (secureStorageName) {
       const saveSort = async () => {
-        await AsyncStorage.setItem(secureStorageName, JSON.stringify({ key: sortKey, order: sortOrder }));
+        await AsyncStorage.setItem(secureStorageName, JSON.stringify({ key: sortKey, objKey: sortObjKey, order: sortOrder }));
       };
 
       saveSort();
@@ -69,6 +73,7 @@ export const useSort = <T,>({ data, initialSort, secureStorageName }: UseSortPro
     actualSortKey: sortKey,
     actualSortOrder: sortOrder,
     setSortKey,
+    setSortObjKey,
     setSortOrder,
   };
 };
@@ -77,14 +82,14 @@ const hasValue = (value: unknown) => {
   return value !== null && value !== undefined;
 };
 
-const separateItems = <T,>(data: T[], sortKey: keyof T) => {
-  if (!sortKey) {
+const separateItems = <T,>(data: T[], sortObjKey: keyof T) => {
+  if (!sortObjKey) {
     return [[], data];
   }
 
   return data.reduce<[T[], T[]]>(
     (acc, item) => {
-      const value = item[sortKey];
+      const value = item[sortObjKey];
 
       if (hasValue(value)) {
         acc[0].push(item);
@@ -126,8 +131,22 @@ const compareNumbers = (aValue: number, bValue: number, sortMultiplier: number) 
   return (aValue - bValue) * sortMultiplier;
 };
 
-const compareValues = (aValue: unknown, bValue: unknown, sortOrder: SortOrderEnumType) => {
+const getAdjustedDaysLeft = (endDate: string, sortMultiplier: number) => {
+  const daysLeft = Math.ceil(dayjs(endDate).diff(dayjs(), 'day', true));
+
+  return daysLeft <= 0 ? 99999 * sortMultiplier : daysLeft;
+};
+
+const compareValues = (aValue: unknown, bValue: unknown, sortOrder: SortOrderEnumType, sortKey: NullableString) => {
   const sortMultiplier = sortOrder === SortOrderEnum.ASC ? 1 : -1;
+
+  if (sortKey === 'timeLeft') {
+    return compareNumbers(
+      getAdjustedDaysLeft(aValue as string, sortMultiplier),
+      getAdjustedDaysLeft(bValue as string, sortMultiplier),
+      sortMultiplier
+    );
+  }
 
   if (Object.values(PriorityEnum).includes(aValue as PriorityEnumType) && Object.values(PriorityEnum).includes(bValue as PriorityEnumType)) {
     return comparePriorityValues(aValue as PriorityEnumType, bValue as PriorityEnumType, sortMultiplier);
@@ -155,11 +174,11 @@ const compareValues = (aValue: unknown, bValue: unknown, sortOrder: SortOrderEnu
   return 0;
 };
 
-const sortItems = <T,>(validItems: T[], sortKey: keyof T, sortOrder: SortOrderEnumType) => {
+const sortItems = <T,>(validItems: T[], sortObjKey: keyof T, sortOrder: SortOrderEnumType, sortKey: NullableString) => {
   return [...validItems].sort((a, b) => {
-    const aValue = a[sortKey];
-    const bValue = b[sortKey];
+    const aValue = a[sortObjKey];
+    const bValue = b[sortObjKey];
 
-    return compareValues(aValue, bValue, sortOrder);
+    return compareValues(aValue, bValue, sortOrder, sortKey);
   });
 };
