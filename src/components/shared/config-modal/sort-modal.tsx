@@ -10,7 +10,7 @@ interface SortModalProps {
   isVisible: boolean;
   setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
   actualSortKey: string | null;
-  setActualSortKey: (key: string | null) => void;
+  setActualSortKeys: (key: string | null, objKey: string | null) => void;
   actualSortOrder: SortOrderEnumType;
   setSortOrder: (order: SortOrderEnumType) => void;
   sortOptions?: SortOption[];
@@ -18,24 +18,32 @@ interface SortModalProps {
 
 export interface SortOption {
   key: string;
+  objKey: string;
   icon: ReactElement;
   label: string;
   color: string;
 }
 
 const defaultSortOptions: SortOption[] = [
-  { key: 'title', icon: <Ionicons name="text-outline" size={28} />, label: 'Title', color: '#000000' },
-  { key: 'startDate', icon: <Ionicons name="calendar-outline" size={28} />, label: 'Start Date', color: '#FF8C00' },
-  { key: 'endDate', icon: <Ionicons name="calendar-outline" size={28} />, label: 'End Date', color: '#20B2AA' },
-  { key: 'priority', icon: <MaterialIcons name="flag" size={28} />, label: 'Priority', color: '#FF4500' },
-  { key: 'isCompleted', icon: <Ionicons name="checkmark-done-outline" size={28} />, label: 'Completed', color: '#32CD32' },
+  { key: 'title', objKey: 'title', icon: <Ionicons name="text-outline" size={28} />, label: 'Title', color: '#000000' },
+  { key: 'startDate', objKey: 'startDate', icon: <Ionicons name="calendar-outline" size={28} />, label: 'Start Date', color: '#FF8C00' },
+  { key: 'endDate', objKey: 'endDate', icon: <Ionicons name="calendar-outline" size={28} />, label: 'End Date', color: '#20B2AA' },
+  { key: 'priority', objKey: 'priority', icon: <MaterialIcons name="flag" size={28} />, label: 'Priority', color: '#FF4500' },
+  { key: 'isCompleted', objKey: 'isCompleted', icon: <Ionicons name="checkmark-done-outline" size={28} />, label: 'Completed', color: '#32CD32' },
+  {
+    key: 'timeLeft',
+    objKey: 'endDate',
+    icon: <Ionicons name="time-outline" size={28} />,
+    label: 'Time Left',
+    color: '#cc0000',
+  },
 ];
 
 const SortModal: React.FC<SortModalProps> = ({
   isVisible,
   setIsVisible,
   actualSortKey,
-  setActualSortKey,
+  setActualSortKeys,
   actualSortOrder,
   setSortOrder,
   sortOptions = defaultSortOptions,
@@ -48,11 +56,12 @@ const SortModal: React.FC<SortModalProps> = ({
         <View className="flex gap-2">
           <Text className="text-md font-semibold ml-4">Sort By:</Text>
           <View className="flex-row flex-wrap justify-around">
-            {sortOptions.map(({ key, icon, label, color }) => {
+            {sortOptions.map(({ key, objKey, icon, label, color }) => {
               const isActive = actualSortKey === key;
+
               return (
                 <View key={key} className="flex items-center p-2 w-1/3">
-                  <IconButton onPress={() => setActualSortKey(key)} className="flex items-center">
+                  <IconButton onPress={() => setActualSortKeys(key, objKey)} className="flex items-center">
                     {React.cloneElement(icon, { color: isActive ? '#1987EE' : color })}
                     <Text className={`text-sm mt-1 text-center flex-wrap ${isActive ? 'font-bold text-blue-500' : 'text-black'}`}>{label}</Text>
                   </IconButton>

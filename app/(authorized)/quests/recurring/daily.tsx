@@ -56,11 +56,13 @@ const DailyQuests: React.FC = () => {
     actualSortOrder,
     setSortOrder,
     setSortKey,
+    setSortObjKey,
   } = useSort({
     secureStorageName: 'SortDailyQuests',
     data: filteredQuests,
     initialSort: {
       key: 'title',
+      objKey: 'title',
       order: SortOrderEnum.ASC,
     },
   });
@@ -107,9 +109,12 @@ const DailyQuests: React.FC = () => {
         isVisible={isSortModalVisible}
         setIsVisible={setIsSortModalVisible}
         actualSortKey={actualSortKey}
+        setActualSortKeys={(key, objKey) => {
+          setSortKey(key);
+          setSortObjKey(objKey);
+        }}
         actualSortOrder={actualSortOrder}
         setSortOrder={setSortOrder}
-        setActualSortKey={setSortKey}
       />
 
       {isAddQuestModalVisible && <AddDailyQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />}

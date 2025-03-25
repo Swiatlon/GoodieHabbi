@@ -11,7 +11,10 @@ import { useSearch } from '@/hooks/use-search';
 import { SortOrderEnum, useSort } from '@/hooks/use-sort';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
 
-const defaultSortOptions: SortOption[] = [{ key: 'title', icon: <Ionicons name="text-outline" size={28} />, label: 'Title', color: '#000000' }];
+const defaultSortOptions: SortOption[] = [
+  { key: 'title', objKey: 'value', icon: <Ionicons name="text-outline" size={28} />, label: 'Title', color: '#000000' },
+];
+
 const Tags: React.FC = () => {
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [isAddTagModalVisible, setIsAddTagModalVisible] = useState(false);
@@ -37,10 +40,15 @@ const Tags: React.FC = () => {
     actualSortOrder,
     setSortOrder,
     setSortKey,
+    setSortObjKey,
   } = useSort({
     secureStorageName: 'SortTags',
     data: searchedData,
-    initialSort: { key: 'value', order: SortOrderEnum.ASC },
+    initialSort: {
+      key: 'title',
+      objKey: 'value',
+      order: SortOrderEnum.ASC,
+    },
   });
 
   if (isLoading) {
@@ -76,9 +84,12 @@ const Tags: React.FC = () => {
         isVisible={isSortModalVisible}
         setIsVisible={setIsSortModalVisible}
         actualSortKey={actualSortKey}
+        setActualSortKeys={(key, objKey) => {
+          setSortKey(key);
+          setSortObjKey(objKey);
+        }}
         actualSortOrder={actualSortOrder}
         setSortOrder={setSortOrder}
-        setActualSortKey={setSortKey}
         sortOptions={defaultSortOptions}
       />
 

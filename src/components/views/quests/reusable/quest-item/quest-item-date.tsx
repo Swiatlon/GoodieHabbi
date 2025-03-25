@@ -42,7 +42,7 @@ const QuestItemDate: React.FC<QuestItemDateProps> = ({ startDate, endDate }) => 
     <View>
       <Text className="text-sm text-gray-400">
         {dateLabel}
-        {endDate && daysLeft >= 0 && <Text className={`font-bold ${daysLeftColor}`}>({daysLeft} days left)</Text>}
+        {endDate && daysLeft > 0 && <Text className={`font-bold ${daysLeftColor}`}>({daysLeft} days left)</Text>}
       </Text>
     </View>
   );
