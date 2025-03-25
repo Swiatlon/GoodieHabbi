@@ -134,7 +134,7 @@ const compareNumbers = (aValue: number, bValue: number, sortMultiplier: number) 
 const getAdjustedDaysLeft = (endDate: string, sortMultiplier: number) => {
   const daysLeft = Math.ceil(dayjs(endDate).diff(dayjs(), 'day', true));
 
-  return daysLeft <= 0 ? 99999 * sortMultiplier : daysLeft;
+  return daysLeft < 0 ? 99999 * sortMultiplier : daysLeft;
 };
 
 const compareValues = (aValue: unknown, bValue: unknown, sortOrder: SortOrderEnumType, sortKey: NullableString) => {
