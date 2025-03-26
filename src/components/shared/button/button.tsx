@@ -26,7 +26,7 @@ const styleTypeColors: Record<StyleType, { contained: string; outlined: string; 
     text: 'text-gray-500',
   },
   danger: {
-    contained: 'bg-red-500',
+    contained: 'bg-red-600',
     outlined: 'border border-red-500 bg-transparent',
     text: 'text-red-500',
   },

@@ -5,6 +5,7 @@ import { DrawerContentComponentProps, DrawerContentScrollView } from '@react-nav
 import { useRouter } from 'expo-router';
 import Button from '../button/button';
 import DashboardConfig from './routes-configs/dashboard-config';
+import ProfileConfig from './routes-configs/profile-config';
 import LoginConfig from '@/components/shared/drawer/routes-configs/login-config';
 import QuestConfig from '@/components/shared/drawer/routes-configs/quest-config';
 import RegisterConfig from '@/components/shared/drawer/routes-configs/register-config';
@@ -44,6 +45,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props 
             <>
               <DashboardConfig />
               <QuestConfig />
+              <ProfileConfig />
             </>
           )}
         </View>
