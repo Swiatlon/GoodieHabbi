@@ -12,7 +12,7 @@ interface ControlledMultiSelectProps {
 }
 
 const ControlledMultiSelect: React.FC<ControlledMultiSelectProps> = ({ label, name, ...props }) => {
-  const { control } = useFormContext();
+  const { control } = useFormContext<Record<string, MultiSelectItem[]>>();
 
   return (
     <Controller
@@ -22,13 +22,7 @@ const ControlledMultiSelect: React.FC<ControlledMultiSelectProps> = ({ label, na
         return (
           <View className="flex gap-1 w-full">
             {label && <Text className="text-sm font-semibold text-gray-500">{label}</Text>}
-            <MultiSelect
-              {...field}
-              {...props}
-              selectedOptions={field.value as MultiSelectItem[]}
-              onChange={field.onChange}
-              error={error ? error.message : undefined}
-            />
+            <MultiSelect {...field} {...props} selectedOptions={field.value} onChange={field.onChange} error={error ? error.message : undefined} />
             {error && <Text className="text-red-500 text-sm mt-1">{error.message}</Text>}
           </View>
         );
