@@ -28,14 +28,14 @@ const Input = forwardRef<TextInput, InputProps>(
         )}
         <View className={`pl-1 flex-row items-center border rounded-md ${error ? 'border-red-500' : 'border-gray-300'}`}>
           <TextInput ref={ref} className={`flex-1 px-2 py-3 ${className}`} value={value ?? ''} onChangeText={text => onChange(text)} {...props} />
-          {value && onClear && (
-            <TouchableOpacity onPress={onClear} className="pr-4">
-              <Ionicons name="close-circle" size={20} color="#888" />
-            </TouchableOpacity>
-          )}
           {value && passwordField && (
             <TouchableOpacity onPress={passwordField.onPasswordVisibilityChange} className="pr-4">
               <Ionicons name={passwordField.visibilityValue ? 'eye-off-outline' : 'eye-outline'} size={20} color="#888" />
+            </TouchableOpacity>
+          )}
+          {value && onClear && (
+            <TouchableOpacity onPress={onClear} className="pr-4">
+              <Ionicons name="close-circle" size={20} color="#888" />
             </TouchableOpacity>
           )}
         </View>

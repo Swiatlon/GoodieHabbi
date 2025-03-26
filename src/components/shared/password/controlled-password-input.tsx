@@ -28,6 +28,7 @@ const ControlledPasswordInput = ({ name, label, isRequired, ...otherProps }: Con
             {...field}
             {...otherProps}
             onChange={field.onChange}
+            onClear={() => field.onChange('')}
             label={label}
             isRequired={isRequired}
             error={error ? error.message : undefined}
