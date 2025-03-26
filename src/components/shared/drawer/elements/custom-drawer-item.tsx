@@ -40,7 +40,7 @@ const renderExtendArrow = (isOpen: boolean) => (
 );
 
 const CustomDrawerItem: React.FC<CustomDrawerProps> = ({ label, icon, items = [], route, depth = 0 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(label === 'Quests' ? true : false);
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const currentRoute = navigation.getState().routes[navigation.getState().index]?.name;
