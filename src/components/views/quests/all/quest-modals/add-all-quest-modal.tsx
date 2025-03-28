@@ -36,7 +36,7 @@ const AddAllQuestModal = ({ isVisible, onClose }: AddAllQuestModalProps) => {
   };
 
   const renderQuestSelection = () => (
-    <View className="bg-white rounded-lg px-4 gap-5 py-2">
+    <View className="bg-white rounded-lg px-4 gap-5 py-0">
       <Text className="text-lg font-bold text-center">Select Quest Type</Text>
       {Object.values(QuestTypesEnum).map(item => {
         const { icon, color } = questIcons[item as QuestTypesEnumType];

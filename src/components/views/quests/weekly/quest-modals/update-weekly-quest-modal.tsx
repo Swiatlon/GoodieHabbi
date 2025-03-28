@@ -82,7 +82,7 @@ const UpdateWeeklyQuestModal: React.FC<UpdateWeeklyQuestModalProps> = ({ isVisib
     >
       {isLoading && <Loader size="large" message="Updating quest..." fullscreen />}
       <FormProvider {...methods}>
-        <View className="bg-white rounded-lg px-4 gap-5 py-2">
+        <View className="bg-white rounded-lg px-4 gap-5 py-0">
           <Text className="text-lg font-bold text-center">Edit Quest</Text>
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
