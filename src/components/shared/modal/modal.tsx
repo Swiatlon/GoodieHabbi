@@ -22,7 +22,7 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children, className =
           <View className="bg-black/50 absolute top-0 left-0 h-full w-full" />
         </TouchableWithoutFeedback>
         <View className={`w-11/12 bg-white rounded-lg shadow-lg max-h-[90vh] m-auto py-6 px-4 ${className}`}>
-          <View className="absolute top-1 right-2 z-40">
+          <View className="absolute top-[14px] right-2 z-40">
             <IconButton onPress={() => onClose()} icon={<Ionicons name="close-outline" size={24} color="#1987EE" />} />
           </View>
           <ScrollView contentContainerStyle={{ padding: 0, position: 'relative', display: 'flex', flexGrow: 1 }}>

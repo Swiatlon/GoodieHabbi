@@ -56,7 +56,7 @@ const ProfileView: React.FC = () => {
                   style={{ width: `${calculateProgress()}%` }}
                 />
                 <Text className="absolute left-1/2 transform -translate-x-1/2 text-white font-bold -top-0.5">
-                  {user.xp}/{user.totalXP} XP
+                  {user.xp} / {user.totalXP} XP
                 </Text>
               </View>
             </View>
@@ -69,7 +69,7 @@ const ProfileView: React.FC = () => {
                   style={{ width: `${calculateQuestProgress()}%` }}
                 />
                 <Text className="absolute left-1/2 transform -translate-x-1/2 text-white font-bold -top-0.5">
-                  {user.completedQuests}/{user.totalQuests}
+                  {user.completedQuests} / {user.totalQuests}
                 </Text>
               </View>
             </View>

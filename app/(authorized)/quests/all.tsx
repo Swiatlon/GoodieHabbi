@@ -13,6 +13,7 @@ import { AllQuestsUnion, useGetAllQuests } from '@/hooks/quests/useGetAllQuests'
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
 import { useSort, SortOrderEnum } from '@/hooks/use-sort';
+
 const AllQuests: React.FC = () => {
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
@@ -93,7 +94,7 @@ const AllQuests: React.FC = () => {
         label="Add new Quest"
         onPress={() => setIsAddQuestModalVisible(true)}
         startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
-        className="mx-auto py-2 mt-4"
+        className="mx-auto mt-4"
       />
 
       <FilterModal<AllQuestsUnion>
@@ -116,7 +117,7 @@ const AllQuests: React.FC = () => {
         setSortOrder={setSortOrder}
       />
 
-      {isAddQuestModalVisible && <AddAllQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />}
+      <AddAllQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
     </View>
   );
 };

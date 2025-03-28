@@ -5,7 +5,7 @@ import { IQuestLabel } from '@/contract/quests/labels/labels-quests';
 
 interface QuestItemTagProps {
   tags: IQuestLabel[];
-  onPress: () => void;
+  onPress?: () => void;
 }
 
 const QuestItemTag: React.FC<QuestItemTagProps> = ({ tags, onPress }) => {
