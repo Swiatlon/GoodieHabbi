@@ -7,13 +7,20 @@ export const baseQuestSchema = Yup.object().shape({
   description: Yup.string().nullable().default(''),
   startDate: Yup.string()
     .nullable()
-    .test('is-not-less-than-today', 'Start date must be today or in the future', function (value) {
+    .test('is-not-less-than-allowed', 'Start date is invalid', function (value) {
+      const { initialStartDate } = this.options.context || {};
+
       if (!value) {
         return true;
       }
 
-      const today = dayjs.utc().startOf('day');
-      const startDate = dayjs(value);
+      const startDate = dayjs(value).local();
+      const today = dayjs().local();
+
+      if (initialStartDate) {
+        const transformedInitialStartDate = dayjs(initialStartDate).local();
+        return startDate.isSameOrAfter(transformedInitialStartDate, 'day');
+      }
 
       return startDate.isSameOrAfter(today, 'day');
     })
@@ -27,10 +34,10 @@ export const baseQuestSchema = Yup.object().shape({
         return true;
       }
 
-      const start = dayjs.utc(startDate);
-      const end = dayjs.utc(value);
+      const start = dayjs(startDate).local();
+      const end = dayjs(value).local();
 
-      return end.isAfter(start) || end.isSame(start);
+      return end.isSameOrAfter(start, 'day');
     })
     .default(null),
   priority: Yup.mixed<PriorityEnumType>().nullable().default(null),

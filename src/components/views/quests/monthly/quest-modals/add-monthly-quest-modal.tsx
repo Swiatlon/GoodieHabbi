@@ -13,6 +13,7 @@ import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledMultiSelect from '@/components/shared/multi-select/controlled-multi-select';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
+import dayjs from '@/configs/day-js-config';
 import { IPostMonthlyQuestRequest } from '@/contract/quests/quests-types/monthly-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useCreateMonthlyQuestMutation } from '@/redux/api/monthly-quests-api';
@@ -86,10 +87,10 @@ const AddMonthlyQuestModal: React.FC<AddMonthlyQuestModalProps> = ({ isVisible, 
           <Text className="text-lg font-bold text-center">Add New Quest</Text>
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
-          <DatePickerModal name="startDate" minDate={toUTCISOString(new Date())} label="Start Date" placeholder="Tap to pick start date" />
+          <DatePickerModal name="startDate" minDate={toUTCISOString(dayjs())} label="Start Date" placeholder="Tap to pick start date" />
           <DatePickerModal
             name="endDate"
-            minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(new Date())}
+            minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(dayjs())}
             label="End Date"
             placeholder="Tap to pick end date"
           />

@@ -14,6 +14,7 @@ import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledMultiSelect from '@/components/shared/multi-select/controlled-multi-select';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
+import dayjs from '@/configs/day-js-config';
 import { IWeeklyQuest, IPostWeeklyQuestRequest } from '@/contract/quests/quests-types/weekly-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
@@ -42,6 +43,7 @@ const UpdateWeeklyQuestModal: React.FC<UpdateWeeklyQuestModalProps> = ({ isVisib
       weekdays: quest.weekdays,
       labels: [],
     },
+    context: { initialStartDate: quest.startDate },
   });
 
   const { handleSubmit, watch } = methods;
@@ -86,10 +88,15 @@ const UpdateWeeklyQuestModal: React.FC<UpdateWeeklyQuestModalProps> = ({ isVisib
           <Text className="text-lg font-bold text-center">Edit Quest</Text>
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
-          <DatePickerModal name="startDate" minDate={toUTCISOString(new Date())} label="Start Date" placeholder="Tap to pick start date" />
+          <DatePickerModal
+            name="startDate"
+            minDate={toUTCISOString(quest.startDate ?? dayjs())}
+            label="Start Date"
+            placeholder="Tap to pick start date"
+          />
           <DatePickerModal
             name="endDate"
-            minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(new Date())}
+            minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(quest.endDate ?? dayjs())}
             label="End Date"
             placeholder="Tap to pick end date"
           />
