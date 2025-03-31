@@ -4,6 +4,7 @@ import QuestItemDateMonthly from '../../reusable/quest-item/quest-item-date-mont
 import QuestItemSeason from '../../reusable/quest-item/quest-item-season';
 import QuestItemTag from '../../reusable/quest-item/quest-item-tag';
 import QuestItemDateWeekly from '../../reusable/quest-item/quest-item-weekly';
+import Loader from '@/components/shared/loader/loader';
 import QuestItemCheckmark from '@/components/views/quests/reusable/quest-item/quest-item-checkmark';
 import QuestItemContainer from '@/components/views/quests/reusable/quest-item/quest-item-container';
 import QuestItemDate from '@/components/views/quests/reusable/quest-item/quest-item-date';
@@ -28,16 +29,19 @@ const AllQuestItem: React.FC<AllQuestItemProps> = ({ quest }) => {
   const [isUpdateQuestModalVisible, setIsUpdateQuestModalVisible] = useState(false);
 
   const { patchQuest, deleteQuest, updateModal: UpdateQuestModal } = useQuestMutations(quest.type);
-  const [patchQuestMutation, { isLoading }] = patchQuest();
-  const [delteQuestMutation] = deleteQuest();
+  const [patchQuestMutation, { isLoading: isPatching }] = patchQuest();
+  const [delteQuestMutation, { isLoading: isDeleting }] = deleteQuest();
 
   const openShowModal = () => setIsShowQuestModalVisible(true);
   const openUpdateModal = () => setIsUpdateQuestModalVisible(true);
   const closeShowModal = () => setIsShowQuestModalVisible(false);
   const closeUpdateModal = () => setIsUpdateQuestModalVisible(false);
 
+  const isLoading = isPatching || isDeleting;
+
   return (
     <>
+      {isLoading && <Loader fullscreen />}
       <QuestItemContainer completed={quest.isCompleted}>
         <View className="flex-1 flex-row items-center">
           <TouchableOpacity onPress={openShowModal} className="flex-1">

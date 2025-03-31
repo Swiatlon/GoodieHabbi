@@ -10,6 +10,7 @@ import QuestItemTag from '../../reusable/quest-item/quest-item-tag';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
 import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
 import UpdateMonthlyQuestModal from '../quest-modals/update-monthly-quest-modal';
+import Loader from '@/components/shared/loader/loader';
 import { IMonthlyQuest } from '@/contract/quests/quests-types/monthly-quests';
 import { useDeleteMonthlyQuestMutation, usePatchMonthlyQuestMutation } from '@/redux/api/monthly-quests-api';
 
@@ -19,7 +20,7 @@ interface MonthlyQuestItemProps {
 
 const MonthlyQuestItem: React.FC<MonthlyQuestItemProps> = ({ quest }) => {
   const [patchQuest, { isLoading: isPatching }] = usePatchMonthlyQuestMutation();
-  const [deleteQuest] = useDeleteMonthlyQuestMutation();
+  const [deleteQuest, { isLoading: isDeleting }] = useDeleteMonthlyQuestMutation();
 
   const [isShowQuestModalVisible, setIsShowQuestModalVisible] = useState(false);
   const [isUpdateQuestModalVisible, setIsUpdateQuestModalVisible] = useState(false);
@@ -30,8 +31,11 @@ const MonthlyQuestItem: React.FC<MonthlyQuestItemProps> = ({ quest }) => {
   const closeShowModal = () => setIsShowQuestModalVisible(false);
   const closeUpdateModal = () => setIsUpdateQuestModalVisible(false);
 
+  const isLoading = isPatching || isDeleting;
+
   return (
     <>
+      {isLoading && <Loader fullscreen />}
       <QuestItemContainer completed={quest.isCompleted}>
         <View className="flex-1 flex-row items-center">
           <TouchableOpacity onPress={openShowModal} className="flex-1">

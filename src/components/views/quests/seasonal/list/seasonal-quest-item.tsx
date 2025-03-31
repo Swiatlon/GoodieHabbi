@@ -10,6 +10,7 @@ import QuestItemTag from '../../reusable/quest-item/quest-item-tag';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
 import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
 import UpdateSeasonalQuestModal from '../quest-modals/update-seasonal-quest-modal';
+import Loader from '@/components/shared/loader/loader';
 import { ISeasonalQuest } from '@/contract/quests/quests-types/seasonal-quests';
 import { usePatchSeasonalQuestMutation, useDeleteSeasonalQuestMutation } from '@/redux/api/seasonal-quests-api';
 
@@ -19,7 +20,7 @@ interface SeasonalQuestItemProps {
 
 const SeasonalQuestItem: React.FC<SeasonalQuestItemProps> = ({ quest }) => {
   const [patchQuest, { isLoading: isPatching }] = usePatchSeasonalQuestMutation();
-  const [deleteQuest] = useDeleteSeasonalQuestMutation();
+  const [deleteQuest, { isLoading: isDeleting }] = useDeleteSeasonalQuestMutation();
 
   const [isShowQuestModalVisible, setIsShowQuestModalVisible] = useState(false);
   const [isUpdateQuestModalVisible, setIsUpdateQuestModalVisible] = useState(false);
@@ -30,8 +31,11 @@ const SeasonalQuestItem: React.FC<SeasonalQuestItemProps> = ({ quest }) => {
   const closeShowModal = () => setIsShowQuestModalVisible(false);
   const closeUpdateModal = () => setIsUpdateQuestModalVisible(false);
 
+  const isLoading = isPatching || isDeleting;
+
   return (
     <>
+      {isLoading && <Loader fullscreen />}
       <QuestItemContainer completed={quest.isCompleted}>
         <View className="flex-1 flex-row items-center">
           <TouchableOpacity onPress={openShowModal} className="flex-1">

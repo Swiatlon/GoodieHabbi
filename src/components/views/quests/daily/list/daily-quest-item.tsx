@@ -9,6 +9,7 @@ import QuestItemTag from '../../reusable/quest-item/quest-item-tag';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
 import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
 import UpdateDailyQuestModal from '../quest-modals/update-daily-quest-modal';
+import Loader from '@/components/shared/loader/loader';
 import { IDailyQuest } from '@/contract/quests/quests-types/daily-quests';
 import { useDeleteDailyQuestMutation, usePatchDailyQuestMutation } from '@/redux/api/daily-quests-api';
 
@@ -18,7 +19,7 @@ interface DailyQuestItemProps {
 
 const DailyQuestItem: React.FC<DailyQuestItemProps> = ({ quest }) => {
   const [patchQuest, { isLoading: isPatching }] = usePatchDailyQuestMutation();
-  const [deleteQuest] = useDeleteDailyQuestMutation();
+  const [deleteQuest, { isLoading: isDeleting }] = useDeleteDailyQuestMutation();
 
   const [isShowQuestModalVisible, setIsShowQuestModalVisible] = useState(false);
   const [isUpdateQuestModalVisible, setIsUpdateQuestModalVisible] = useState(false);
@@ -29,8 +30,11 @@ const DailyQuestItem: React.FC<DailyQuestItemProps> = ({ quest }) => {
   const closeShowModal = () => setIsShowQuestModalVisible(false);
   const closeUpdateModal = () => setIsUpdateQuestModalVisible(false);
 
+  const isLoading = isPatching || isDeleting;
+
   return (
     <>
+      {isLoading && <Loader fullscreen />}
       <QuestItemContainer completed={quest.isCompleted}>
         <View className="flex-1 flex-row items-center">
           <TouchableOpacity onPress={openShowModal} className="flex-1">
