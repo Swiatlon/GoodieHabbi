@@ -13,8 +13,10 @@ const RoutesPermissionMiddleware = ({ children }: { children: React.JSX.Element 
 
   useEffect(() => {
     if (!isCorrect && isAuthenticatedRoute) {
-      router.navigate('/(not-authorized)/login');
+      router.replace('/(not-authorized)/login');
       showSnackbar({ text: 'Access denied!', variant: SnackbarVariantEnum.ERROR });
+    } else if (isCorrect && !isAuthenticatedRoute) {
+      router.replace('/(authorized)/dashboard');
     }
   }, [isCorrect, isAuthenticatedRoute, router]);
 
