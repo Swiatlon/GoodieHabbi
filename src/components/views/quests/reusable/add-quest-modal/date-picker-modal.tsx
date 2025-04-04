@@ -5,6 +5,7 @@ import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
 import Button from '@/components/shared/button/button';
 import Modal from '@/components/shared/modal/modal';
 import ControlledSelect from '@/components/shared/select/controlled-select';
+import dayjs from '@/configs/day-js-config';
 import { NullableString } from '@/types/global-types';
 import { safeDateFormat, toUTCISOString } from '@/utils/utils';
 
@@ -14,9 +15,10 @@ interface DatePickerModalProps {
   placeholder: string;
   minDate?: string | null;
   maxDate?: string | null;
+  isEndDate?: boolean;
 }
 
-const DatePickerModal = ({ minDate = null, maxDate = null, label, name, placeholder }: DatePickerModalProps) => {
+const DatePickerModal = ({ minDate = null, maxDate = null, label, name, placeholder, isEndDate }: DatePickerModalProps) => {
   const { setValue, watch } = useFormContext<Record<string, NullableString>>();
   const [isVisible, setIsVisible] = useState(false);
 
@@ -24,7 +26,8 @@ const DatePickerModal = ({ minDate = null, maxDate = null, label, name, placehol
   const handleClose = () => setIsVisible(false);
 
   const handleDateChange = (date: DateType) => {
-    setValue(name, toUTCISOString(date));
+    const transformedDate = isEndDate ? dayjs(date).endOf('day') : date;
+    setValue(name, toUTCISOString(transformedDate));
   };
 
   const selectedDate = watch(name);

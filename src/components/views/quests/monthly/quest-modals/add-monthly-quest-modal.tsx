@@ -93,6 +93,7 @@ const AddMonthlyQuestModal: React.FC<AddMonthlyQuestModalProps> = ({ isVisible, 
             minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(dayjs())}
             label="End Date"
             placeholder="Tap to pick end date"
+            isEndDate
           />
           <EmojiPickerComponent />
           <PriorityPicker />

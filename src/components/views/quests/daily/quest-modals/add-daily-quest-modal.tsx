@@ -90,6 +90,7 @@ const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onCl
             minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(dayjs())}
             label="End Date"
             placeholder="Tap to pick end date"
+            isEndDate
           />
           <EmojiPickerComponent />
           <PriorityPicker />

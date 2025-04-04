@@ -93,7 +93,7 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible
           <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
           <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
           <DatePickerModal name="startDate" minDate={minStartDate} maxDate={maxStartDate} label="Start Date" placeholder="Tap to pick start date" />
-          <DatePickerModal name="endDate" minDate={minEndDate} maxDate={maxEndDate} label="End Date" placeholder="Tap to pick end date" />
+          <DatePickerModal name="endDate" minDate={minEndDate} maxDate={maxEndDate} label="End Date" placeholder="Tap to pick end date" isEndDate />
           <EmojiPickerComponent />
           <PriorityPicker />
           <ControlledSeasonPicker isRequired />

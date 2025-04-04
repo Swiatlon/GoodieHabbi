@@ -94,9 +94,10 @@ const UpdateOneTimeQuestModal: React.FC<UpdateOneTimeQuestModalProps> = ({ isVis
           />
           <DatePickerModal
             name="endDate"
-              minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(quest.endDate ?? dayjs())}
+            minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(quest.endDate ?? dayjs())}
             label="End Date"
             placeholder="Tap to pick end date"
+            isEndDate
           />
           <EmojiPickerComponent />
           <PriorityPicker />

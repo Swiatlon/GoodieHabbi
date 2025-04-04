@@ -96,6 +96,7 @@ const UpdateWeeklyQuestModal: React.FC<UpdateWeeklyQuestModalProps> = ({ isVisib
           />
           <DatePickerModal
             name="endDate"
+            isEndDate
             minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(quest.endDate ?? dayjs())}
             label="End Date"
             placeholder="Tap to pick end date"
