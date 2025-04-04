@@ -1,35 +1,44 @@
-import { IQuestLabel } from '../quests/labels/labels-quests';
+import { NullableString } from '@/types/global-types';
 
 export interface IUserPreferences {}
 
 // GET
-
 export interface IGetAccountRequest {}
 
-export interface IAccountDataResponse {
-  name: string | null;
-  surname: string | null;
-  nickname: string | null;
-  email: string | null;
-  avatar: string | null;
-  data: {
-    questsLabels: IQuestLabel[];
-  };
-  preferences: IUserPreferences;
+export interface IBadge {
+  text: string;
 }
 
-// PATCH
+export interface IAccountDataResponse {
+  login: NullableString;
+  email: string;
+  nickname: NullableString;
+  avatar: NullableString;
+  completedQuests: number;
+  totalQuests: number;
+  level: number;
+  xp: number;
+  totalXP: number;
+  bio: NullableString;
+  joinDate: string;
+  badges: IBadge[];
+}
 
+// PUT
 export interface IUpdateAccountRequest {
-  name?: string;
-  surname?: string;
-  nickname?: string;
-  email?: string;
-  avatar?: string | null;
-  data?: {
-    questsLabels?: IQuestLabel[];
-  };
-  preferences?: IUserPreferences;
+  login: NullableString;
+  nickname: NullableString;
+  email: string;
+  bio: NullableString;
 }
 
 export interface IUpdateAccountResponse {}
+
+export interface IUpdatePasswordRequest {
+  oldPassword: string;
+  newPassword: string;
+}
+
+export interface IUpdatePasswordResponse {}
+
+export interface IDeleteAccountResponse {}

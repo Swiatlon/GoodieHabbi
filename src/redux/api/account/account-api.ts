@@ -1,5 +1,13 @@
 import Api from '../../config/api';
-import { IAccountDataResponse, IGetAccountRequest, IUpdateAccountResponse, IUpdateAccountRequest } from '@/contract/account/account';
+import {
+  IAccountDataResponse,
+  IGetAccountRequest,
+  IUpdateAccountResponse,
+  IUpdateAccountRequest,
+  IDeleteAccountResponse,
+  IUpdatePasswordRequest,
+  IUpdatePasswordResponse,
+} from '@/contract/account/account';
 import { RootStateType } from '@/redux/config/store';
 
 export const accountSliceAPI = Api.injectEndpoints({
@@ -14,13 +22,28 @@ export const accountSliceAPI = Api.injectEndpoints({
     updateAccountData: builder.mutation<IUpdateAccountResponse, IUpdateAccountRequest>({
       query: accountData => ({
         url: `/accounts/me`,
-        method: 'PATCH',
+        method: 'PUT',
         body: accountData,
+      }),
+    }),
+
+    updatePassword: builder.mutation<IUpdatePasswordResponse, IUpdatePasswordRequest>({
+      query: passwordData => ({
+        url: `/accounts/me/password`,
+        method: 'PUT',
+        body: passwordData,
+      }),
+    }),
+
+    deleteAccount: builder.mutation<IDeleteAccountResponse, void>({
+      query: () => ({
+        url: `/accounts/me`,
+        method: 'DELETE',
       }),
     }),
   }),
 });
 
-export const { useGetAccountDataQuery, useUpdateAccountDataMutation } = accountSliceAPI;
+export const { useGetAccountDataQuery, useUpdateAccountDataMutation, useUpdatePasswordMutation, useDeleteAccountMutation } = accountSliceAPI;
 
 export const selectAccountData = (state: RootStateType) => state.api.queries;

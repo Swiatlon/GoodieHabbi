@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { View, Text, Alert } from 'react-native';
+import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { profilePasswordSchema, profileSchema } from './schema';
@@ -8,12 +8,32 @@ import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledPasswordInput from '@/components/shared/password/controlled-password-input';
+import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
+import { useUpdateAccountDataMutation, useUpdatePasswordMutation } from '@/redux/api/account/account-api';
+import { IApiError, NullableString } from '@/types/global-types';
+
+interface FormDataProfile {
+  nickname: NullableString;
+  email: string;
+  bio: NullableString;
+  login: NullableString;
+}
+
+interface FormDataPassword {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
 
 interface UpdateProfileModalProps extends IBaseModalProps {
-  user: { nickname: string; email: string; bio: string; login: string };
+  user: FormDataProfile;
 }
 
 const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onClose, user }) => {
+  const { showSnackbar } = useSnackbar();
+  const [updateProfile] = useUpdateAccountDataMutation();
+  const [updatePassword] = useUpdatePasswordMutation();
+
   const profileMethods = useForm({
     resolver: yupResolver(profileSchema),
     defaultValues: {
@@ -27,23 +47,43 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onCl
   const passwordMethods = useForm({
     resolver: yupResolver(profilePasswordSchema),
     defaultValues: {
-      password: '',
-      confirmPassword: '',
+      oldPassword: '',
+      newPassword: '',
+      confirmNewPassword: '',
     },
   });
 
-  const handleSaveProfile = (data: { nickname?: string; email: string; bio?: string; login?: string }) => {
-    Alert.alert('Success', 'Profile data updated!');
+  const { reset: profileReset } = profileMethods;
+  const { reset: passwordReset } = passwordMethods;
+
+  const handleSaveProfile = async (data: FormDataProfile) => {
+    try {
+      await updateProfile(data).unwrap();
+      onClose();
+      profileReset();
+      showSnackbar({ text: 'Profile updated!', variant: SnackbarVariantEnum.SUCCESS });
+    } catch (err) {
+      const error = err as IApiError;
+      showSnackbar({ text: error.data?.message || 'Failed to update profile. Please try again.', variant: SnackbarVariantEnum.ERROR });
+    }
   };
 
-  const handleChangePassword = (data: { password: string; confirmPassword: string }) => {
-    Alert.alert('Success', 'Password updated successfully!');
+  const handleChangePassword = async (data: FormDataPassword) => {
+    try {
+      await updatePassword(data).unwrap();
+      onClose();
+      passwordReset();
+      showSnackbar({ text: 'Password updated!', variant: SnackbarVariantEnum.SUCCESS });
+    } catch (err) {
+      const error = err as IApiError;
+      showSnackbar({ text: error.data?.message || 'Failed to update password. Please try again.', variant: SnackbarVariantEnum.ERROR });
+    }
   };
 
   return (
     <Modal isVisible={isVisible} onClose={onClose}>
       <View className="bg-white p-6 rounded-lg">
-        <Text className="text-lg font-bold mb-4">Update Profile</Text>
+        <Text className="text-lg font-bold mb-4 text-centerabc">Update Profile</Text>
 
         <FormProvider {...profileMethods}>
           <View className="flex gap-4">
@@ -67,8 +107,15 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onCl
 
         <FormProvider {...passwordMethods}>
           <View className="flex gap-4">
-            <ControlledPasswordInput name="password" label="New Password:" placeholder="Enter new password" secureTextEntry isRequired />
-            <ControlledPasswordInput name="confirmPassword" label="Confirm Password:" placeholder="Confirm new password" secureTextEntry isRequired />
+            <ControlledPasswordInput name="oldPassword" label="Old Password:" placeholder="Enter new password" secureTextEntry isRequired />
+            <ControlledPasswordInput name="newPassword" label="New Password:" placeholder="Enter new password" secureTextEntry isRequired />
+            <ControlledPasswordInput
+              name="confirmNewPassword"
+              label="Confirm Password:"
+              placeholder="Confirm new password"
+              secureTextEntry
+              isRequired
+            />
 
             <Button
               label="Change Password"
