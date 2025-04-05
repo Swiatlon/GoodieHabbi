@@ -1,7 +1,7 @@
 {
   "name": "goodiehabbi",
   "main": "expo-router/entry",
-  "version": "1.5.5",
+  "version": "1.7.0",
   "scripts": {
     "start": "expo start -c",
     "android": "expo run:android",
