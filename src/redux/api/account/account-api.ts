@@ -7,6 +7,7 @@ import {
   IDeleteAccountResponse,
   IUpdatePasswordRequest,
   IUpdatePasswordResponse,
+  IDeleteAccountRequest,
 } from '@/contract/account/account';
 import { RootStateType } from '@/redux/config/store';
 
@@ -17,6 +18,7 @@ export const accountSliceAPI = Api.injectEndpoints({
         url: `/accounts/me`,
         method: 'GET',
       }),
+      providesTags: ['account'],
     }),
 
     updateAccountData: builder.mutation<IUpdateAccountResponse, IUpdateAccountRequest>({
@@ -25,6 +27,7 @@ export const accountSliceAPI = Api.injectEndpoints({
         method: 'PUT',
         body: accountData,
       }),
+      invalidatesTags: ['account'],
     }),
 
     updatePassword: builder.mutation<IUpdatePasswordResponse, IUpdatePasswordRequest>({
@@ -33,13 +36,16 @@ export const accountSliceAPI = Api.injectEndpoints({
         method: 'PUT',
         body: passwordData,
       }),
+      invalidatesTags: ['account'],
     }),
 
-    deleteAccount: builder.mutation<IDeleteAccountResponse, void>({
-      query: () => ({
+    deleteAccount: builder.mutation<IDeleteAccountResponse, IDeleteAccountRequest>({
+      query: ({ password }) => ({
         url: `/accounts/me`,
         method: 'DELETE',
+        body: { password },
       }),
+      invalidatesTags: ['account'],
     }),
   }),
 });

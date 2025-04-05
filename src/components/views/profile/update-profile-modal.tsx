@@ -83,7 +83,7 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onCl
   return (
     <Modal isVisible={isVisible} onClose={onClose}>
       <View className="bg-white p-6 rounded-lg">
-        <Text className="text-lg font-bold mb-4 text-centerabc">Update Profile</Text>
+        <Text className="text-lg font-bold mb-4 text-center">Update Profile</Text>
 
         <FormProvider {...profileMethods}>
           <View className="flex gap-4">

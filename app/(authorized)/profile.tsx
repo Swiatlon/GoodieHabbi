@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import userLogo from '@/assets/images/exampleUserIconLogin.png';
 import Button from '@/components/shared/button/button';
 import Loader from '@/components/shared/loader/loader';
+import DeleteAccountModal from '@/components/views/profile/delete-profile-modal';
 import UpdateProfileModal from '@/components/views/profile/update-profile-modal';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useGetAccountDataQuery } from '@/redux/api/account/account-api';
@@ -13,6 +14,7 @@ import { useGetAccountDataQuery } from '@/redux/api/account/account-api';
 const ProfileView: React.FC = () => {
   const { data, isLoading } = useGetAccountDataQuery({});
   const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const profileStyle = useTransformFade({ isContentLoading: isLoading, delay: 100 });
   const statsStyle = useTransformFade({ isContentLoading: isLoading, delay: 500 });
@@ -24,7 +26,9 @@ const ProfileView: React.FC = () => {
 
   const calculateProgress = () => (data.xp / data.totalXP) * 100;
   const calculateQuestProgress = () => (data.completedQuests / data.totalQuests) * 100;
+
   const closeUpdateModal = () => setIsUpdateModalVisible(false);
+  const closeDeleteModal = () => setIsDeleteModalVisible(false);
 
   return (
     <>
@@ -95,11 +99,19 @@ const ProfileView: React.FC = () => {
             }}
             startIcon={<Ionicons name="create" size={20} color="white" />}
           />
-          <Button label="Delete Account" styleType="danger" onPress={() => {}} startIcon={<Ionicons name="trash" size={20} color="white" />} />
+          <Button
+            label="Delete Account"
+            styleType="danger"
+            onPress={() => {
+              setIsDeleteModalVisible(true);
+            }}
+            startIcon={<Ionicons name="trash" size={20} color="white" />}
+          />
         </Animated.View>
       </View>
 
       {isUpdateModalVisible && <UpdateProfileModal isVisible={isUpdateModalVisible} onClose={closeUpdateModal} user={data} />}
+      {isDeleteModalVisible && <DeleteAccountModal isVisible={isDeleteModalVisible} onClose={closeDeleteModal} />}
     </>
   );
 };

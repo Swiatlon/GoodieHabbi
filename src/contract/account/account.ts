@@ -42,3 +42,7 @@ export interface IUpdatePasswordRequest {
 export interface IUpdatePasswordResponse {}
 
 export interface IDeleteAccountResponse {}
+
+export interface IDeleteAccountRequest {
+  password: string;
+}
