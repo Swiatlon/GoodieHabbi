@@ -31,7 +31,6 @@ const PersistLoginMiddleware = ({ children, onLoaded }: { children: React.JSX.El
       dispatch(setCredentials({ accessToken: data.accessToken }));
       router.navigate('/(authorized)/dashboard');
       onLoaded();
-      showSnackbar({ text: 'Logged in!', variant: SnackbarVariantEnum.SUCCESS });
     } else if (error) {
       showSnackbar({ text: 'Failed to refresh token. Please log in again.', variant: SnackbarVariantEnum.ERROR });
       onLoaded();

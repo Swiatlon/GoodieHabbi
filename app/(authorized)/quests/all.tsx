@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, FlatList, Text } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
 import FilterModal from '@/components/shared/config-modal/filter-modal';
@@ -9,6 +10,7 @@ import { AllQuestsFilterMap } from '@/components/views/quests/all/constants/cons
 import AllQuestItem from '@/components/views/quests/all/list/all-quest-item';
 import AddAllQuestModal from '@/components/views/quests/all/quest-modals/add-all-quest-modal';
 import Header from '@/components/views/quests/reusable/header';
+import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { AllQuestsUnion, useGetAllQuests } from '@/hooks/quests/useGetAllQuests';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
@@ -20,6 +22,7 @@ const AllQuests: React.FC = () => {
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
 
   const { data: fetchedQuests = [], isLoading } = useGetAllQuests();
+  const buttonsStyle = useTransformFade({ isContentLoading: isLoading, delay: 200 });
 
   const handleCloseModal = () => setIsAddQuestModalVisible(false);
 
@@ -72,53 +75,57 @@ const AllQuests: React.FC = () => {
   }
 
   return (
-    <View className="flex-1 p-4">
-      <Header
-        title="All Quests"
-        isSearchVisible={isSearchVisible}
-        searchQuery={searchQuery}
-        setIsSearchVisible={setIsSearchVisible}
-        setIsFilterModalVisible={setIsFilterModalVisible}
-        setIsSortModalVisible={setIsSortModalVisible}
-        setSearchQuery={setSearchQuery}
-      />
+    <>
+      <View className="flex-1 p-4">
+        <Header
+          title="All Quests"
+          isSearchVisible={isSearchVisible}
+          searchQuery={searchQuery}
+          setIsSearchVisible={setIsSearchVisible}
+          setIsFilterModalVisible={setIsFilterModalVisible}
+          setIsSortModalVisible={setIsSortModalVisible}
+          setSearchQuery={setSearchQuery}
+        />
 
-      <FlatList
-        data={sortedData}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => <AllQuestItem quest={item} />}
-        ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
-      />
+        <FlatList
+          data={sortedData}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) => <AllQuestItem quest={item} />}
+          ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
+        />
 
-      <Button
-        label="Add new Quest"
-        onPress={() => setIsAddQuestModalVisible(true)}
-        startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
-        className="mx-auto mt-4"
-      />
+        <Animated.View style={buttonsStyle}>
+          <Button
+            label="Add new Quest"
+            onPress={() => setIsAddQuestModalVisible(true)}
+            startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
+            className="mx-auto mt-4"
+          />
+        </Animated.View>
 
-      <FilterModal<AllQuestsUnion>
-        isVisible={isFilterModalVisible}
-        setIsVisible={setIsFilterModalVisible}
-        setFilter={setFilter}
-        actualFilterData={actualFilter}
-        filterCategories={AllQuestsFilterMap}
-      />
+        <FilterModal<AllQuestsUnion>
+          isVisible={isFilterModalVisible}
+          setIsVisible={setIsFilterModalVisible}
+          setFilter={setFilter}
+          actualFilterData={actualFilter}
+          filterCategories={AllQuestsFilterMap}
+        />
 
-      <SortModal
-        isVisible={isSortModalVisible}
-        setIsVisible={setIsSortModalVisible}
-        actualSortKey={actualSortKey}
-        setActualSortKeys={(key, objKey) => {
-          setSortKey(key);
-          setSortObjKey(objKey);
-        }}
-        actualSortOrder={actualSortOrder}
-        setSortOrder={setSortOrder}
-      />
+        <SortModal
+          isVisible={isSortModalVisible}
+          setIsVisible={setIsSortModalVisible}
+          actualSortKey={actualSortKey}
+          setActualSortKeys={(key, objKey) => {
+            setSortKey(key);
+            setSortObjKey(objKey);
+          }}
+          actualSortOrder={actualSortOrder}
+          setSortOrder={setSortOrder}
+        />
 
-      <AddAllQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
-    </View>
+        <AddAllQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
+      </View>
+    </>
   );
 };
 

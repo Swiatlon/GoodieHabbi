@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
 import SortModal, { SortOption } from '@/components/shared/config-modal/sort-modal';
@@ -7,6 +8,7 @@ import Loader from '@/components/shared/loader/loader';
 import Header from '@/components/views/quests/reusable/header';
 import TagItem from '@/components/views/quests/tags/list/tag-item';
 import AddTagModal from '@/components/views/quests/tags/tag-modals/add-tag-modal';
+import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useSearch } from '@/hooks/use-search';
 import { SortOrderEnum, useSort } from '@/hooks/use-sort';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
@@ -19,6 +21,7 @@ const Tags: React.FC = () => {
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [isAddTagModalVisible, setIsAddTagModalVisible] = useState(false);
   const { data: questLabels = [], isLoading } = useGetQuestLabelsQuery();
+  const buttonsStyle = useTransformFade({ isContentLoading: isLoading, delay: 200 });
 
   const {
     data: searchedData,
@@ -56,45 +59,49 @@ const Tags: React.FC = () => {
   }
 
   return (
-    <View className="flex-1 p-4">
-      <Header
-        title="Quest tags"
-        isSearchVisible={isSearchVisible}
-        searchQuery={searchQuery}
-        setIsSearchVisible={setIsSearchVisible}
-        setSearchQuery={setSearchQuery}
-        setIsSortModalVisible={setIsSortModalVisible}
-      />
+    <>
+      <View className="flex-1 p-4">
+        <Header
+          title="Quest tags"
+          isSearchVisible={isSearchVisible}
+          searchQuery={searchQuery}
+          setIsSearchVisible={setIsSearchVisible}
+          setSearchQuery={setSearchQuery}
+          setIsSortModalVisible={setIsSortModalVisible}
+        />
 
-      <FlatList
-        data={sortedData}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => <TagItem tag={item} />}
-        ListEmptyComponent={<Text className="text-center text-gray-500">No tags found.</Text>}
-      />
+        <FlatList
+          data={sortedData}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) => <TagItem tag={item} />}
+          ListEmptyComponent={<Text className="text-center text-gray-500">No tags found.</Text>}
+        />
 
-      <Button
-        label="Add new tag"
-        onPress={() => setIsAddTagModalVisible(true)}
-        startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
-        className="mx-auto mt-4"
-      />
+        <Animated.View style={buttonsStyle}>
+          <Button
+            label="Add new Tag"
+            onPress={() => setIsAddTagModalVisible(true)}
+            startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
+            className="mx-auto mt-4"
+          />
+        </Animated.View>
 
-      <SortModal
-        isVisible={isSortModalVisible}
-        setIsVisible={setIsSortModalVisible}
-        actualSortKey={actualSortKey}
-        setActualSortKeys={(key, objKey) => {
-          setSortKey(key);
-          setSortObjKey(objKey);
-        }}
-        actualSortOrder={actualSortOrder}
-        setSortOrder={setSortOrder}
-        sortOptions={defaultSortOptions}
-      />
+        <SortModal
+          isVisible={isSortModalVisible}
+          setIsVisible={setIsSortModalVisible}
+          actualSortKey={actualSortKey}
+          setActualSortKeys={(key, objKey) => {
+            setSortKey(key);
+            setSortObjKey(objKey);
+          }}
+          actualSortOrder={actualSortOrder}
+          setSortOrder={setSortOrder}
+          sortOptions={defaultSortOptions}
+        />
 
-      {isAddTagModalVisible && <AddTagModal isVisible={isAddTagModalVisible} onClose={() => setIsAddTagModalVisible(false)} />}
-    </View>
+        {isAddTagModalVisible && <AddTagModal isVisible={isAddTagModalVisible} onClose={() => setIsAddTagModalVisible(false)} />}
+      </View>
+    </>
   );
 };
 

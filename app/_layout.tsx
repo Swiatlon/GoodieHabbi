@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Host } from 'react-native-portalize';
 import { Provider } from 'react-redux';
 import { useFonts } from 'expo-font';
 import { Slot } from 'expo-router';
@@ -48,28 +49,30 @@ export default function RootLayout() {
   };
 
   return (
-    <SnackbarProvider>
-      <Provider store={store}>
-        <GestureHandlerRootView className="flex-1 bg-white">
-          <PersistLoginMiddleware onLoaded={() => handleLoaded('persistLogin')}>
-            <RoutesPermissionMiddleware>
-              <PrefetchMiddleware onLoaded={() => handleLoaded('prefetch')}>
-                <Drawer
-                  screenOptions={{
-                    header: () => <Header />,
-                    sceneStyle: {
-                      backgroundColor: 'white',
-                    },
-                  }}
-                  drawerContent={props => <CustomDrawerContent {...props} />}
-                >
-                  <Slot />
-                </Drawer>
-              </PrefetchMiddleware>
-            </RoutesPermissionMiddleware>
-          </PersistLoginMiddleware>
-        </GestureHandlerRootView>
-      </Provider>
-    </SnackbarProvider>
+    <Host>
+      <SnackbarProvider>
+        <Provider store={store}>
+          <GestureHandlerRootView className="flex-1 bg-white">
+            <PersistLoginMiddleware onLoaded={() => handleLoaded('persistLogin')}>
+              <RoutesPermissionMiddleware>
+                <PrefetchMiddleware onLoaded={() => handleLoaded('prefetch')}>
+                  <Drawer
+                    screenOptions={{
+                      header: () => <Header />,
+                      sceneStyle: {
+                        backgroundColor: 'white',
+                      },
+                    }}
+                    drawerContent={props => <CustomDrawerContent {...props} />}
+                  >
+                    <Slot />
+                  </Drawer>
+                </PrefetchMiddleware>
+              </RoutesPermissionMiddleware>
+            </PersistLoginMiddleware>
+          </GestureHandlerRootView>
+        </Provider>
+      </SnackbarProvider>
+    </Host>
   );
 }

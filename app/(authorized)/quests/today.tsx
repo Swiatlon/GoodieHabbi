@@ -66,44 +66,46 @@ const TodayQuests: React.FC = () => {
   }
 
   return (
-    <View className="flex-1 p-4">
-      <Header
-        title="Today Quests"
-        isSearchVisible={isSearchVisible}
-        searchQuery={searchQuery}
-        setIsSearchVisible={setIsSearchVisible}
-        setSearchQuery={setSearchQuery}
-        setIsFilterModalVisible={setIsFilterModalVisible}
-        setIsSortModalVisible={setIsSortModalVisible}
-      />
+    <>
+      <View className="flex-1 p-4">
+        <Header
+          title="Today Quests"
+          isSearchVisible={isSearchVisible}
+          searchQuery={searchQuery}
+          setIsSearchVisible={setIsSearchVisible}
+          setSearchQuery={setSearchQuery}
+          setIsFilterModalVisible={setIsFilterModalVisible}
+          setIsSortModalVisible={setIsSortModalVisible}
+        />
 
-      <FlatList
-        data={sortedData}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => <TodayQuestItem quest={item} />}
-        ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
-      />
+        <FlatList
+          data={sortedData}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) => <TodayQuestItem quest={item} />}
+          ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
+        />
 
-      <FilterModal<AllQuestsUnion>
-        isVisible={isFilterModalVisible}
-        setIsVisible={setIsFilterModalVisible}
-        setFilter={setFilter}
-        actualFilterData={actualFilter}
-        filterCategories={TodayQuestsFilterMap}
-      />
+        <FilterModal<AllQuestsUnion>
+          isVisible={isFilterModalVisible}
+          setIsVisible={setIsFilterModalVisible}
+          setFilter={setFilter}
+          actualFilterData={actualFilter}
+          filterCategories={TodayQuestsFilterMap}
+        />
 
-      <SortModal
-        isVisible={isSortModalVisible}
-        setIsVisible={setIsSortModalVisible}
-        actualSortKey={actualSortKey}
-        setActualSortKeys={(key, objKey) => {
-          setSortKey(key);
-          setSortObjKey(objKey);
-        }}
-        actualSortOrder={actualSortOrder}
-        setSortOrder={setSortOrder}
-      />
-    </View>
+        <SortModal
+          isVisible={isSortModalVisible}
+          setIsVisible={setIsSortModalVisible}
+          actualSortKey={actualSortKey}
+          setActualSortKeys={(key, objKey) => {
+            setSortKey(key);
+            setSortObjKey(objKey);
+          }}
+          actualSortOrder={actualSortOrder}
+          setSortOrder={setSortOrder}
+        />
+      </View>
+    </>
   );
 };
 

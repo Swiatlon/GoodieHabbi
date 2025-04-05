@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
 import FilterModal from '@/components/shared/config-modal/filter-modal';
@@ -10,6 +11,7 @@ import OneTimeQuestItem from '@/components/views/quests/one-time/list/one-time-q
 import AddOneTimeQuestModal from '@/components/views/quests/one-time/quest-modals/add-one-time-quest-modal';
 import Header from '@/components/views/quests/reusable/header';
 import { IOneTimeQuest } from '@/contract/quests/quests-types/one-time-quests';
+import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useFilter } from '@/hooks/use-filter';
 import { useSearch } from '@/hooks/use-search';
 import { SortOrderEnum, useSort } from '@/hooks/use-sort';
@@ -20,6 +22,7 @@ const OneTimeQuests: React.FC = () => {
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
   const { data: fetchedQuests = [], isLoading } = useGetAllOneTimeQuestsQuery();
+  const buttonsStyle = useTransformFade({ isContentLoading: isLoading, delay: 200 });
 
   const handleCloseModal = () => setIsAddQuestModalVisible(false);
 
@@ -84,12 +87,14 @@ const OneTimeQuests: React.FC = () => {
         ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
       />
 
-      <Button
-        label="Add new Quest"
-        onPress={() => setIsAddQuestModalVisible(true)}
-        startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
-        className="mx-auto mt-4"
-      />
+      <Animated.View style={buttonsStyle}>
+        <Button
+          label="Add new Quest"
+          onPress={() => setIsAddQuestModalVisible(true)}
+          startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
+          className="mx-auto mt-4"
+        />
+      </Animated.View>
 
       <FilterModal<IOneTimeQuest>
         isVisible={isFilterModalVisible}

@@ -1,7 +1,9 @@
 import React from 'react';
 import { Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import CompleteGoalButton from './goal-completion-button';
 import AllQuestItemGoals from '@/components/views/goals/goal-all-quest-item';
+import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { AllQuestsUnion } from '@/hooks/quests/useGetAllQuests';
 
 interface QuestSectionProps {
@@ -10,8 +12,10 @@ interface QuestSectionProps {
 }
 
 const GoalQuestSection: React.FC<QuestSectionProps> = ({ selectedQuest, onComplete }) => {
+  const goalStyle = useTransformFade({ delay: 500 });
+
   return (
-    <View className="flex-1 py-4 rounded-3xl shadow-lg bg-white border border-gray-100 items-center justify-evenly">
+    <Animated.View className="flex-1 py-4 rounded-3xl shadow-lg bg-white border border-gray-100 items-center justify-evenly" style={goalStyle}>
       <Text className="text-lg font-semibold text-primary uppercase tracking-wider">Quest</Text>
       {selectedQuest ? (
         <>
@@ -23,7 +27,7 @@ const GoalQuestSection: React.FC<QuestSectionProps> = ({ selectedQuest, onComple
           <Text className="text-secondary text-lg px-4 text-center">🎯 Set a goal to get started! 🎯</Text>
         </View>
       )}
-    </View>
+    </Animated.View>
   );
 };
 

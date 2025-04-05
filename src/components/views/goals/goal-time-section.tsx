@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { View, Text } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useFocusEffect } from 'expo-router';
+import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import useTimer, { Frequency } from '@/hooks/useTimer';
 
 interface TimeSectionProps {
@@ -11,6 +13,7 @@ const GoalTimeSection: React.FC<TimeSectionProps> = ({ frequency }) => {
   const [isTimerEnabled, setIsTimerEnabled] = useState(false);
   const { timeLeft, timeColor } = useTimer({ frequency, enabled: isTimerEnabled });
   const timeParts = parseTime(timeLeft);
+  const goalStyle = useTransformFade({ delay: 500 });
 
   useFocusEffect(
     useCallback(() => {
@@ -23,7 +26,7 @@ const GoalTimeSection: React.FC<TimeSectionProps> = ({ frequency }) => {
   );
 
   return (
-    <View className="flex-1 p-4 rounded-3xl bg-white border border-gray-100 shadow-lg gap-6 justify-center">
+    <Animated.View className="flex-1 p-4 rounded-3xl bg-white border border-gray-100 shadow-lg gap-6 justify-center" style={goalStyle}>
       <Text className="text-lg font-semibold text-primary uppercase tracking-wider text-center">Time Left</Text>
       <View className="flex-row flex-wrap justify-center items-center gap-4 mb-6">
         {timeParts.map((part, index) => (
@@ -33,7 +36,7 @@ const GoalTimeSection: React.FC<TimeSectionProps> = ({ frequency }) => {
           </View>
         ))}
       </View>
-    </View>
+    </Animated.View>
   );
 };
 

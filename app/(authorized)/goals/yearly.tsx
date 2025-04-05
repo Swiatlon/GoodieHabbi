@@ -17,7 +17,7 @@ const Yearly = () => {
   const [isGoalSetModalVisible, setIsGoalSetModalVisible] = useState(false);
   const { data: fetchedQuests = [], isLoading } = useGetAllQuests();
   const methods = useForm();
-  const selectedQuest = useMemo(() => fetchedQuests[0] || null, [fetchedQuests]);
+  const selectedQuest = useMemo(() => fetchedQuests[400] || null, [fetchedQuests]);
 
   const openConfirmModal = () => setIsConfirmModalVisible(true);
   const closeConfirmModal = () => setIsConfirmModalVisible(false);
@@ -28,6 +28,7 @@ const Yearly = () => {
   const handleConfirmCompletion = () => {
     closeConfirmModal();
   };
+
   if (isLoading) {
     return <Loader message="Fetching quests..." />;
   }

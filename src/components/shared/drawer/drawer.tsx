@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
-import { DrawerContentComponentProps, DrawerContentScrollView } from '@react-navigation/drawer';
+import { DrawerContentComponentProps, DrawerContentScrollView, useDrawerStatus } from '@react-navigation/drawer';
 import { useRouter } from 'expo-router';
 import Button from '../button/button';
 import DashboardConfig from './routes-configs/dashboard-config';
@@ -10,6 +11,7 @@ import ProfileConfig from './routes-configs/profile-config';
 import LoginConfig from '@/components/shared/drawer/routes-configs/login-config';
 import QuestConfig from '@/components/shared/drawer/routes-configs/quest-config';
 import RegisterConfig from '@/components/shared/drawer/routes-configs/register-config';
+import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useTypedDispatch } from '@/hooks/use-store-hooks';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { logOutAsync } from '@/redux/state/auth/auth-state';
@@ -17,9 +19,12 @@ import { useIsCorrectAccessToken } from '@/utils/jwt-utils';
 
 export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props => {
   const dispatch = useTypedDispatch();
+  const drawerStatus = useDrawerStatus();
   const { isCorrect: isAuthenticated } = useIsCorrectAccessToken();
   const router = useRouter();
   const { showSnackbar } = useSnackbar();
+  const isDrawerOpen = drawerStatus === 'open';
+  const logoutStyle = useTransformFade({ delay: 500, direction: 'right', isContentLoading: !isDrawerOpen, preventOpacity: true });
 
   const handleLogout = () => {
     dispatch(logOutAsync());
@@ -53,12 +58,14 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props 
         </View>
 
         {isAuthenticated && (
-          <Button
-            startIcon={<Ionicons name="log-out-outline" size={20} color="white" />}
-            onPress={handleLogout}
-            label="Logout"
-            className="px-6 mr-auto text-center"
-          />
+          <Animated.View style={logoutStyle}>
+            <Button
+              startIcon={<Ionicons name="log-out-outline" size={20} color="white" />}
+              onPress={handleLogout}
+              label="Logout"
+              className="px-6 mr-auto text-center"
+            />
+          </Animated.View>
         )}
       </View>
     </DrawerContentScrollView>

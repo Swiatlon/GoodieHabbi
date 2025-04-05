@@ -3,10 +3,21 @@ import * as yup from 'yup';
 const passwordRegex = /^[a-zA-Z0-9_#@!-]*$/;
 
 export const profileSchema = yup.object().shape({
-  login: yup.string().optional().max(30, 'Login must be at most 30 characters').nullable().default(null),
-  nickname: yup.string().nullable().default(null),
-  email: yup.string().email('Invalid email').required('Email is required'),
-  bio: yup.string().nullable().default(null),
+  login: yup
+    .string()
+    .optional()
+    .min(3, 'Login must be at least 6 characters')
+    .max(16, 'Login must be at least 6 characters')
+    .nullable()
+    .default(null),
+  nickname: yup.string().nullable().default(null).min(3, 'Nickname must be at least 6 characters').max(16, 'Nickname must be at most 6 characters'),
+  email: yup
+    .string()
+    .email('Invalid email')
+    .required('Email is required')
+    .min(7, 'Email must be at least 7 characters')
+    .max(100, 'Email must be at most 100 characters'),
+  bio: yup.string().max(30, 'Bio mutt be at most 30 characters').nullable().default(null),
 });
 
 export const profilePasswordSchema = yup.object().shape({
