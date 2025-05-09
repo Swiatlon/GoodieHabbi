@@ -24,8 +24,16 @@ const ProfileView: React.FC = () => {
     return <Loader fullscreen />;
   }
 
-  const calculateProgress = () => (data.xp / data.totalXP) * 100;
-  const calculateQuestProgress = () => (data.completedQuests / data.totalQuests) * 100;
+  const calculateProgress = () => (data.userXp / data.nextLevelTotalXpRequired) * 100;
+  const calculateQuestProgress = () => {
+    const percentage = (data.completedQuests / data.totalQuests) * 100;
+
+    if (percentage >= 100) {
+      return 100;
+    }
+
+    return percentage;
+  };
 
   const closeUpdateModal = () => setIsUpdateModalVisible(false);
   const closeDeleteModal = () => setIsDeleteModalVisible(false);
@@ -53,7 +61,7 @@ const ProfileView: React.FC = () => {
                   style={{ width: `${calculateProgress()}%` }}
                 />
                 <Text className="absolute left-1/2 transform -translate-x-1/2 text-white font-bold -top-0.5">
-                  {data.xp} / {data.totalXP} XP
+                  {data.userXp} / {data.nextLevelTotalXpRequired} XP
                 </Text>
               </View>
             </View>

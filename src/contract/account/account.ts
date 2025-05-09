@@ -10,6 +10,8 @@ export interface IBadge {
 }
 
 export interface IAccountDataResponse {
+  userXp: number;
+  nextLevelTotalXpRequired: number;
   login: NullableString;
   email: string;
   nickname: NullableString;
@@ -17,8 +19,6 @@ export interface IAccountDataResponse {
   completedQuests: number;
   totalQuests: number;
   level: number;
-  xp: number;
-  totalXP: number;
   bio: NullableString;
   joinDate: string;
   badges: IBadge[];

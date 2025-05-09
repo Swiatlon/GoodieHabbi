@@ -9,7 +9,7 @@ const getUserTimeZone = () => {
 };
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'https://qy27178fo4.execute-api.eu-central-1.amazonaws.com/Prod/api',
+  baseUrl: 'https://goodiehabits.runasp.net/api',
   credentials: 'include',
 
   prepareHeaders: (headers, { getState }) => {
