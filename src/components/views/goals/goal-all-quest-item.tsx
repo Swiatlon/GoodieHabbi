@@ -38,7 +38,7 @@ const AllQuestItemGoals: React.FC<AllQuestItemProps> = ({ quest }) => {
               <QuestItemPriority priority={quest.priority} />
               {isSeasonalQuest(quest) && <QuestItemSeason season={quest.season} />}
               <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
-              {isWeeklyQuest(quest) && <QuestItemDateWeekly weekdays={quest.weekdays} />}
+              {isWeeklyQuest(quest) && <QuestItemDateWeekly weekdays={quest.weekdays} onPress={openShowModal} />}
               {isMonthlyQuest(quest) && <QuestItemDateMonthly startDay={quest.startDay} endDay={quest.endDay} />}
               <QuestItemTag tags={quest.labels} onPress={openShowModal} />
             </View>

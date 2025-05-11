@@ -34,6 +34,7 @@ const TodayQuestItem: React.FC<TodayQuestItemProps> = ({ quest }) => {
 
   const openShowModal = () => setIsShowQuestModalVisible(true);
   const openUpdateModal = () => setIsUpdateQuestModalVisible(true);
+
   const closeShowModal = () => setIsShowQuestModalVisible(false);
   const closeUpdateModal = () => setIsUpdateQuestModalVisible(false);
 
@@ -52,7 +53,7 @@ const TodayQuestItem: React.FC<TodayQuestItemProps> = ({ quest }) => {
                 <QuestItemPriority priority={quest.priority} />
                 {isSeasonalQuest(quest) && <QuestItemSeason season={quest.season} />}
                 <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
-                {isWeeklyQuest(quest) && <QuestItemDateWeekly weekdays={quest.weekdays} />}
+                {isWeeklyQuest(quest) && <QuestItemDateWeekly weekdays={quest.weekdays} onPress={openShowModal} />}
                 {isMonthlyQuest(quest) && <QuestItemDateMonthly startDay={quest.startDay} endDay={quest.endDay} />}
                 <QuestItemTag tags={quest.labels} onPress={openShowModal} />
               </View>

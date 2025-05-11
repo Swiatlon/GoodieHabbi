@@ -45,7 +45,7 @@ const WeeklyQuestItem: React.FC<WeeklyQuestItemProps> = ({ quest }) => {
                 <QuestItemTitle title={quest.title} description={quest.description} isCompleted={quest.isCompleted} />
                 <QuestItemPriority priority={quest.priority} />
                 <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
-                <QuestItemDateWeekly weekdays={quest.weekdays} />
+                <QuestItemDateWeekly weekdays={quest.weekdays} onPress={openShowModal} />
                 <QuestItemTag tags={quest.labels} onPress={openShowModal} />
               </View>
             </View>

@@ -1,9 +1,10 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { WeekdayEnumType } from '@/contract/quests/base-quests';
 
 interface QuestItemDateWeeklyProps {
   weekdays?: WeekdayEnumType[];
+  onPress?: () => void;
 }
 
 const dayAbbreviations: Record<string, string> = {
@@ -16,7 +17,17 @@ const dayAbbreviations: Record<string, string> = {
   sunday: 'Sun',
 };
 
-const QuestItemDateWeekly: React.FC<QuestItemDateWeeklyProps> = ({ weekdays }) => {
+const QuestItemDateWeekly: React.FC<QuestItemDateWeeklyProps> = ({ weekdays, onPress }) => {
+  const [isScrolling, setIsScrolling] = useState(false);
+
+  const handleScrollBegin = () => {
+    setIsScrolling(true);
+  };
+
+  const handleScrollEnd = () => {
+    setIsScrolling(false);
+  };
+
   if (!weekdays || weekdays.length === 0) {
     return null;
   }
@@ -25,7 +36,7 @@ const QuestItemDateWeekly: React.FC<QuestItemDateWeeklyProps> = ({ weekdays }) =
 
   if (isAllDays) {
     return (
-      <View className="px-3 py-1 mr-auto rounded-full bg-primary justify-center items-center">
+      <View className="px-3 py-2 mr-auto rounded-full bg-primary justify-center items-center">
         <Text className="text-white text-sm font-bold">All Days</Text>
       </View>
     );
@@ -35,7 +46,7 @@ const QuestItemDateWeekly: React.FC<QuestItemDateWeeklyProps> = ({ weekdays }) =
     return (
       <View className="flex-row flex-wrap gap-2">
         {weekdays.map(day => (
-          <View key={day} className="px-3 py-1 rounded-full bg-primary justify-center items-center">
+          <View key={day} className="px-3 py-2 rounded-full bg-primary justify-center items-center">
             <Text className="text-white text-sm font-bold">{dayAbbreviations[day.toLowerCase()] || day[0].toUpperCase()}</Text>
           </View>
         ))}
@@ -44,13 +55,23 @@ const QuestItemDateWeekly: React.FC<QuestItemDateWeeklyProps> = ({ weekdays }) =
   }
 
   return (
-    <View className="flex-row flex-wrap gap-2">
-      {weekdays.map(day => (
-        <View key={day} className="w-6 h-6 rounded-full bg-primary justify-center items-center">
-          <Text className="text-white text-xs font-bold">{dayAbbreviations[day.toLowerCase()][0].toUpperCase() || day[0].toUpperCase()}</Text>
+    <ScrollView
+      className="max-h-[50px] flex-row flex-nowrap"
+      horizontal={true}
+      onScrollBeginDrag={handleScrollBegin}
+      onScrollEndDrag={handleScrollEnd}
+      showsHorizontalScrollIndicator={false}
+    >
+      <TouchableOpacity activeOpacity={isScrolling ? 1 : 0.7} onPress={onPress}>
+        <View className="flex-row flex-nowrap gap-2 mb-2">
+          {weekdays.map(day => (
+            <View key={day} className="px-3 py-2 rounded-full bg-primary justify-center items-center">
+              <Text className="text-white text-xs font-bold">{dayAbbreviations[day.toLowerCase()].toUpperCase() || day[0].toUpperCase()}</Text>
+            </View>
+          ))}
         </View>
-      ))}
-    </View>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
 export default QuestItemDateWeekly;
