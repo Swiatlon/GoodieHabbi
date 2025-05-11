@@ -28,7 +28,7 @@ const DayPickerModal: React.FC<DayPickerModalProps> = ({ isVisible, onClose, onC
               <TouchableOpacity
                 key={day}
                 onPress={() => !isDisabled && onConfirm(day)}
-                className={`w-12 h-12 m-1 rounded-full justify-center items-center ${day === selectedDay ? 'bg-blue-500' : 'bg-gray-200'} ${isDisabled ? 'bg-gray-400' : ''}`}
+                className={`w-12 h-12 m-1 rounded-full justify-center items-center ${day === selectedDay ? 'bg-blue-500' : 'bg-slate-200'} ${isDisabled ? 'opacity-20' : ''}`}
                 disabled={isDisabled}
               >
                 <Text className={`text-sm font-bold ${day === selectedDay ? 'text-white' : 'text-gray-700'} ${isDisabled ? 'text-gray-600' : ''}`}>
