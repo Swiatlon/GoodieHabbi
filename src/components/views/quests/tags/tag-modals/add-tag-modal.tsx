@@ -6,7 +6,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { tagValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
-import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledSwatches from '@/components/shared/swatches/controlled-swatches';
 import { IPostQuestLabelRequest } from '@/contract/quests/labels/labels-quests';
@@ -53,6 +52,8 @@ const AddTagModal: React.FC<AddTagModalProps> = ({ isVisible, onClose }) => {
     <Modal
       isVisible={isVisible}
       onClose={onClose}
+      isLoading={isLoading}
+      loadingMessage="Adding tag..."
       footer={
         <View className="flex-row justify-between">
           <Button
@@ -71,7 +72,6 @@ const AddTagModal: React.FC<AddTagModalProps> = ({ isVisible, onClose }) => {
         </View>
       }
     >
-      {isLoading && <Loader size="large" message="Adding quest..." fullscreen />}
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-8 py-2">
           <Text className="text-xl font-bold text-center">Create a New Tag:</Text>

@@ -9,7 +9,6 @@ import PriorityPicker from '../../reusable/add-quest-modal/priority-picker';
 import { dailyQuestValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
-import Loader from '@/components/shared/loader/loader';
 import Modal from '@/components/shared/modal/modal';
 import ControlledMultiSelect from '@/components/shared/multi-select/controlled-multi-select';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
@@ -65,6 +64,8 @@ const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible
       isVisible={isVisible}
       onClose={() => onClose()}
       key={quest.id}
+      isLoading={isLoading}
+      loadingMessage="Updating quest..."
       footer={
         <View className="flex-row justify-between">
           <Button
@@ -83,7 +84,6 @@ const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible
         </View>
       }
     >
-      {isLoading && <Loader size="large" message="Updating quest..." fullscreen />}
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-5 py-0">
           <Text className="text-lg font-bold text-center">Edit Quest</Text>

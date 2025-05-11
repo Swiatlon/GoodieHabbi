@@ -61,7 +61,6 @@ const AddAllQuestModal = ({ isVisible, onClose }: AddAllQuestModalProps) => {
       <Modal isVisible={isVisible} onClose={onClose}>
         {!isVisibleForAddModals && renderQuestSelection()}
       </Modal>
-
       {selectedQuestType === QuestTypesEnum.ONE_TIME && <AddOneTimeQuestModal isVisible={isVisibleForAddModals} onClose={handleClose} />}
       {selectedQuestType === QuestTypesEnum.SEASONAL && <AddSeasonalQuestModal isVisible={isVisibleForAddModals} onClose={handleClose} />}
       {selectedQuestType === QuestTypesEnum.MONTHLY && <AddMonthlyQuestModal isVisible={isVisibleForAddModals} onClose={handleClose} />}

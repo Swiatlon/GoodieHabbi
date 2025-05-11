@@ -25,7 +25,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isVisible, onCl
       password: '',
     },
   });
-  const [deleteAccount] = useDeleteAccountMutation();
+  const [deleteAccount, { isLoading }] = useDeleteAccountMutation();
 
   const { showSnackbar } = useSnackbar();
   const { handleSubmit } = methods;
@@ -51,6 +51,8 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isVisible, onCl
     <Modal
       isVisible={isVisible}
       onClose={onClose}
+      isLoading={isLoading}
+      loadingMessage="Deleting account..."
       footer={
         <Button
           label="Delete Account"
@@ -64,7 +66,6 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isVisible, onCl
       <View className="bg-white p-6 rounded-lg gap-4">
         <Text className="text-lg font-bold mb-4 text-center">Delete Account</Text>
         <Text className="text-sm mb-4 text-gray-600 text-center">Are you sure you want to delete your account? This action is irreversible.</Text>
-
         <FormProvider {...methods}>
           <View className="flex gap-4">
             <ControlledPasswordInput name="password" label="Enter Password" placeholder="Enter your password" secureTextEntry isRequired />

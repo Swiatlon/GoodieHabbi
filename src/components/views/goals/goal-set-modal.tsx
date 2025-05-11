@@ -3,7 +3,6 @@ import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import GoalQuestSection from './goal-quest-section';
 import Button from '@/components/shared/button/button';
-import Loader from '@/components/shared/loader/loader';
 import Modal from '@/components/shared/modal/modal';
 import Select from '@/components/shared/select/select';
 import { AllQuestsUnion, useGetAllQuests } from '@/hooks/quests/useGetAllQuests';
@@ -32,8 +31,7 @@ const GoalSetModal: React.FC<GoalSetModalProps> = ({ isVisible, onClose }) => {
   );
 
   return (
-    <Modal isVisible={isVisible} onClose={onClose} className="min-h-[200px]">
-      {isLoading && <Loader size="large" message="Loading quests..." fullscreen />}
+    <Modal isVisible={isVisible} onClose={onClose} className="min-h-[200px]" isLoading={isLoading} loadingMessage="Loading quests...">
       <View className="flex gap-4 h-full px-4">
         <Text className="text-lg font-bold text-center">Set goal</Text>
         <Select

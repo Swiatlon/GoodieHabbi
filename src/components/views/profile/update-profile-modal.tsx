@@ -31,7 +31,7 @@ interface UpdateProfileModalProps extends IBaseModalProps {
 
 const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onClose, user }) => {
   const { showSnackbar } = useSnackbar();
-  const [updateProfile] = useUpdateAccountDataMutation();
+  const [updateProfile, { isLoading }] = useUpdateAccountDataMutation();
   const [updatePassword] = useUpdatePasswordMutation();
 
   const profileMethods = useForm({
@@ -81,17 +81,15 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onCl
   };
 
   return (
-    <Modal isVisible={isVisible} onClose={onClose}>
+    <Modal isVisible={isVisible} onClose={onClose} isLoading={isLoading} loadingMessage="Updating profile...">
       <View className="bg-white p-6 rounded-lg">
         <Text className="text-lg font-bold mb-4 text-center">Update Profile</Text>
-
         <FormProvider {...profileMethods}>
           <View className="flex gap-4">
             <ControlledInput name="login" label="Login:" placeholder="Enter login" />
             <ControlledInput name="nickname" label="Nickname:" placeholder="Enter nickname" />
             <ControlledInput name="email" label="Email:" placeholder="Enter email" isRequired keyboardType="email-address" />
             <ControlledInput name="bio" label="Bio:" placeholder="Enter bio" multiline />
-
             <Button
               label="Save Profile"
               onPress={profileMethods.handleSubmit(handleSaveProfile)}
@@ -100,11 +98,8 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onCl
             />
           </View>
         </FormProvider>
-
         <View className="h-0.5 bg-gray-300 my-6" />
-
         <Text className="text-lg font-bold mb-4">Change Password</Text>
-
         <FormProvider {...passwordMethods}>
           <View className="flex gap-4">
             <ControlledPasswordInput name="oldPassword" label="Old Password:" placeholder="Enter new password" secureTextEntry isRequired />
@@ -116,7 +111,6 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onCl
               secureTextEntry
               isRequired
             />
-
             <Button
               label="Change Password"
               onPress={passwordMethods.handleSubmit(handleChangePassword)}

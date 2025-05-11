@@ -28,7 +28,6 @@ const FilterModal = <T,>({ isVisible, setIsVisible, setFilter, actualFilterData,
     <Modal isVisible={isVisible} onClose={() => setIsVisible(false)}>
       <View className="flex gap-4">
         <Text className="text-lg font-semibold text-center">Filter Quests</Text>
-
         {Object.entries(filterCategories).map(([category, filtersMap]) => (
           <View key={category}>
             <Text className="text-md font-semibold ml-4 mb-2">{category}:</Text>
@@ -47,7 +46,6 @@ const FilterModal = <T,>({ isVisible, setIsVisible, setFilter, actualFilterData,
             </View>
           </View>
         ))}
-
         <Button label="Close" onPress={() => setIsVisible(false)} className="mx-auto px-6" />
       </View>
     </Modal>

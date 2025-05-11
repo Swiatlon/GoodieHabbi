@@ -52,13 +52,11 @@ const SortModal: React.FC<SortModalProps> = ({
     <Modal isVisible={isVisible} onClose={() => setIsVisible(false)}>
       <View className="flex gap-4">
         <Text className="text-lg font-semibold text-center">Sort Quests</Text>
-
         <View className="flex gap-2">
           <Text className="text-md font-semibold ml-4">Sort By:</Text>
           <View className="flex-row flex-wrap justify-around">
             {sortOptions.map(({ key, objKey, icon, label, color }) => {
               const isActive = actualSortKey === key;
-
               return (
                 <View key={key} className="flex items-center p-2 w-1/3">
                   <IconButton onPress={() => setActualSortKeys(key, objKey)} className="flex items-center">
@@ -70,7 +68,6 @@ const SortModal: React.FC<SortModalProps> = ({
             })}
           </View>
         </View>
-
         <View className="flex gap-2">
           <Text className="text-md font-semibold ml-4">Sort Order:</Text>
           <View className="flex-row justify-around">
@@ -94,8 +91,6 @@ const SortModal: React.FC<SortModalProps> = ({
             })}
           </View>
         </View>
-
-        {/* Close Button */}
         <Button label="Close" onPress={() => setIsVisible(false)} className="mx-auto px-6" />
       </View>
     </Modal>

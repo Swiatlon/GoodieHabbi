@@ -9,7 +9,6 @@ import ControlledSeasonPicker from '../../reusable/add-quest-modal/season-picker
 import { seasonalQuestValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
-import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledMultiSelect from '@/components/shared/multi-select/controlled-multi-select';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
@@ -68,6 +67,8 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible
     <Modal
       isVisible={isVisible}
       onClose={onClose}
+      isLoading={isLoading}
+      loadingMessage="Adding quest..."
       footer={
         <View className="flex-row justify-between">
           <Button
@@ -86,7 +87,6 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible
         </View>
       }
     >
-      {isLoading && <Loader size="large" message="Adding quest..." fullscreen />}
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-5 py-0">
           <Text className="text-lg font-bold text-center">Add New Quest</Text>

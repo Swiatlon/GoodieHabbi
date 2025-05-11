@@ -6,7 +6,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { tagValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
-import Loader from '@/components/shared/loader/loader';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledSwatches from '@/components/shared/swatches/controlled-swatches';
 import { IPostQuestLabelRequest, IQuestLabel } from '@/contract/quests/labels/labels-quests';
@@ -54,6 +53,8 @@ const UpdateTagModal: React.FC<UpdateTagModalProps> = ({ isVisible, onClose, tag
       isVisible={isVisible}
       onClose={onClose}
       key={tag.id}
+      isLoading={isLoading}
+      loadingMessage="Updating tag..."
       footer={
         <View className="flex-row justify-between">
           <Button
@@ -72,7 +73,6 @@ const UpdateTagModal: React.FC<UpdateTagModalProps> = ({ isVisible, onClose, tag
         </View>
       }
     >
-      {isLoading && <Loader size="large" message="Adding quest..." fullscreen />}
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-8 py-2">
           <Text className="text-xl font-bold text-center">Update Tag:</Text>
