@@ -36,7 +36,7 @@ const ControlledSeasonPicker = ({ isRequired }: { isRequired?: boolean }) => {
           { label: 'Summer', value: SeasonEnum.SUMMER },
           { label: 'Autumn', value: SeasonEnum.AUTUMN },
         ]}
-        isModalVersion={true}
+        isModalVersion
         className={`px-2`}
         textColor={getSeasonStyle(selectedSeason)}
       />

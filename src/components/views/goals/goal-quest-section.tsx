@@ -3,11 +3,11 @@ import { Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import CompleteGoalButton from './goal-completion-button';
 import AllQuestItemGoals from '@/components/views/goals/goal-all-quest-item';
+import { IGetActiveGoalResponse } from '@/contract/goals/goals.contract';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
-import { AllQuestsUnion } from '@/hooks/quests/useGetAllQuests';
 
 interface QuestSectionProps {
-  selectedQuest: AllQuestsUnion | null;
+  selectedQuest: IGetActiveGoalResponse | null;
   onComplete?: () => void;
 }
 
@@ -16,11 +16,11 @@ const GoalQuestSection: React.FC<QuestSectionProps> = ({ selectedQuest, onComple
 
   return (
     <Animated.View className="flex-1 py-4 rounded-3xl shadow-lg bg-white border border-gray-100 items-center justify-evenly" style={goalStyle}>
-      <Text className="text-lg font-semibold text-primary uppercase tracking-wider">Quest</Text>
+      <Text className="text-lg font-semibold text-primary uppercase tracking-wider">Goal</Text>
       {selectedQuest ? (
         <>
           <AllQuestItemGoals quest={selectedQuest} />
-          {onComplete && <CompleteGoalButton onPress={onComplete} disabled={!selectedQuest} />}
+          {onComplete && <CompleteGoalButton onPress={onComplete} disabled={!selectedQuest.isCompleted} />}
         </>
       ) : (
         <View className="p-4 rounded-lg w-full items-center">

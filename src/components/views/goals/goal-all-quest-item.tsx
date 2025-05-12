@@ -10,11 +10,11 @@ import QuestItemDate from '@/components/views/quests/reusable/quest-item/quest-i
 import QuestItemEmoji from '@/components/views/quests/reusable/quest-item/quest-item-emoji';
 import QuestItemPriority from '@/components/views/quests/reusable/quest-item/quest-item-priority';
 import QuestItemTitle from '@/components/views/quests/reusable/quest-item/quest-item-title';
-import { AllQuestsUnion } from '@/hooks/quests/useGetAllQuests';
-import { isSeasonalQuest, isWeeklyQuest, isMonthlyQuest } from '@/utils/quests';
+import { IGetActiveGoalResponse } from '@/contract/goals/goals.contract';
+import { isMonthlyQuest, isSeasonalQuest, isWeeklyQuest } from '@/utils/quests';
 
 interface AllQuestItemProps {
-  quest: AllQuestsUnion | null;
+  quest: IGetActiveGoalResponse | null;
 }
 
 const AllQuestItemGoals: React.FC<AllQuestItemProps> = ({ quest }) => {

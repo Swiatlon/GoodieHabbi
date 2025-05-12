@@ -22,7 +22,7 @@ import { getSeasonalDateLimits } from '@/utils/get-seasonal-date-limits';
 interface AddSeasonalQuestModalProps extends IBaseModalProps {}
 
 interface IFormValues extends Omit<IPostSeasonalQuestRequest, 'season'> {
-  season: SeasonEnumType;
+  season: SeasonEnumType | null;
 }
 
 const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible, onClose }) => {
@@ -40,7 +40,7 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible
       endDate: null,
       isCompleted: false,
       emoji: null,
-      season: null!,
+      season: null,
       labels: [],
     },
   });
@@ -54,7 +54,7 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible
 
   const onSubmit = async (data: IFormValues) => {
     try {
-      await createQuest(data as IPostSeasonalQuestRequest).unwrap();
+      await createQuest({ ...data, season: data.season as SeasonEnumType }).unwrap();
       onClose();
       reset();
       showSnackbar({ text: 'Quest added successfully!', variant: SnackbarVariantEnum.SUCCESS });

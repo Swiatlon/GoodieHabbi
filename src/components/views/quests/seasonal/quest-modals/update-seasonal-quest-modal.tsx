@@ -13,6 +13,7 @@ import ControlledInput from '@/components/shared/input/controlled-input';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledMultiSelect from '@/components/shared/multi-select/controlled-multi-select';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
+import { SeasonEnumType } from '@/contract/quests/base-quests';
 import { ISeasonalQuest, IPostSeasonalQuestRequest } from '@/contract/quests/quests-types/seasonal-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
@@ -23,12 +24,15 @@ interface UpdateSeasonalQuestModalProps extends IBaseModalProps {
   quest: ISeasonalQuest;
 }
 
+interface IFormValues extends Omit<IPostSeasonalQuestRequest, 'season'> {
+  season: SeasonEnumType | null;
+}
 const UpdateSeasonalQuestModal: React.FC<UpdateSeasonalQuestModalProps> = ({ isVisible, onClose, quest }) => {
   const { showSnackbar } = useSnackbar();
   const [updateQuest, { isLoading }] = useUpdateSeasonalQuestMutation();
   const { data: questLabels = [] } = useGetQuestLabelsQuery();
 
-  const methods = useForm<IPostSeasonalQuestRequest>({
+  const methods = useForm<IFormValues>({
     resolver: yupResolver(seasonalQuestValidationSchema),
     defaultValues: {
       title: quest.title,
@@ -50,9 +54,13 @@ const UpdateSeasonalQuestModal: React.FC<UpdateSeasonalQuestModalProps> = ({ isV
 
   const { minStartDate, maxStartDate, minEndDate, maxEndDate } = getSeasonalDateLimits(selectedSeason, watchedStartDate);
 
-  const onSubmit = async (data: IPostSeasonalQuestRequest) => {
+  const onSubmit = async (data: IFormValues) => {
     try {
-      await updateQuest({ id: quest.id, ...data }).unwrap();
+      await updateQuest({
+        ...data,
+        id: quest.id,
+        season: data.season as SeasonEnumType,
+      }).unwrap();
       showSnackbar({ text: 'Quest updated successfully!', variant: SnackbarVariantEnum.SUCCESS });
       onClose();
     } catch {
