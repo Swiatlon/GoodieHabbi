@@ -14,6 +14,7 @@ const Api = createApi({
     'todayQuestsGet',
     'questLabelsGet',
     'account',
+    'goals',
   ],
 });
 

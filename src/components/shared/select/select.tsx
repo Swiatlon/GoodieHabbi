@@ -5,17 +5,19 @@ import Modal from '../modal/modal';
 import dayjs from '@/configs/day-js-config';
 import { fromUTCToLocal, safeDateFormat } from '@/utils/utils';
 
-export interface OptionsItem {
+export type SelectItemValue = string | number | null;
+
+export interface SelectItem {
   label: string;
-  value: string;
+  value: SelectItemValue;
 }
 
 export interface BaseSelectProps {
   placeholder: string;
-  value: string | null;
+  value?: SelectItemValue;
   onPress?: () => void;
   onClear?: () => void;
-  onChange?: (value: string) => void;
+  onChange?: (value: SelectItemValue) => void;
   children?: ReactNode;
   className?: string;
   isDate?: boolean;
@@ -26,7 +28,7 @@ export interface BaseSelectProps {
 
 interface ModalSelectProps extends BaseSelectProps {
   isModalVersion: true;
-  options: OptionsItem[];
+  options: SelectItem[];
 }
 
 interface NonModalSelectProps extends BaseSelectProps {
@@ -37,9 +39,9 @@ interface NonModalSelectProps extends BaseSelectProps {
 export type SelectProps = ModalSelectProps | NonModalSelectProps;
 
 const Select = forwardRef<TextInput, SelectProps>(
-  ({ placeholder, value, onPress, onClear, onChange, className, isDate, error, isModalVersion, options, textColor }, ref) => {
+  ({ placeholder, value = null, onPress, onClear, onChange, className, isDate, error, isModalVersion, options, textColor }, ref) => {
     const [isVisibleModal, setIsVisibleModal] = useState(false);
-    const formattedValue = getFormattedValue(value, isDate);
+    const formattedValue = getFormattedValue(value, isDate, isModalVersion ? options : undefined);
 
     const onClose = () => {
       setIsVisibleModal(false);
@@ -69,7 +71,7 @@ const Select = forwardRef<TextInput, SelectProps>(
                 showSoftInputOnFocus={false}
               />
             </TouchableOpacity>
-            {value && onClear && (
+            {formattedValue && onClear && (
               <TouchableOpacity onPress={onClear} className="pr-4">
                 <Ionicons name="close-circle" size={20} color={error ? '#E53E3E' : '#888'} />
               </TouchableOpacity>
@@ -84,7 +86,7 @@ const Select = forwardRef<TextInput, SelectProps>(
             <ScrollView className="max-h-60">
               {options.map(item => (
                 <TouchableOpacity
-                  key={item.value}
+                  key={String(item.value)}
                   className="ml-1 py-3 border-gray-300"
                   onPress={() => {
                     onChange?.(item.value);
@@ -104,13 +106,18 @@ const Select = forwardRef<TextInput, SelectProps>(
 
 export default Select;
 
-const getFormattedValue = (value: string | null | undefined | number, isDate?: boolean): string => {
-  if (value === null || value === undefined) {
+const getFormattedValue = (value: SelectItemValue, isDate?: boolean, options?: SelectItem[]): string => {
+  if (!value || value === '') {
     return '';
   }
 
   if (isDate && dayjs(value).isValid()) {
     return safeDateFormat(fromUTCToLocal(value as string)) ?? '';
+  }
+
+  if (options) {
+    const matched = options.find(item => item.value === value);
+    return matched?.label ?? '';
   }
 
   return String(value);

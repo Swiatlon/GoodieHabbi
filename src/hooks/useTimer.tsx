@@ -54,10 +54,17 @@ function formatNumber(num: number): string {
 
 function formatTime(time: TimeRemaining): string {
   const units: (keyof TimeRemaining)[] = ['months', 'weeks', 'days', 'hours', 'minutes', 'seconds'];
+  const mandatoryUnits = ['hours', 'minutes', 'seconds'];
 
   return (
     units
-      .filter(unit => time[unit] && time[unit] !== '00')
+      .filter(unit => {
+        if (mandatoryUnits.includes(unit)) {
+          return time[unit];
+        }
+
+        return time[unit] && time[unit] !== '00';
+      })
       .map(unit => `${time[unit]}${unit}`)
       .join(':') || '0s'
   );

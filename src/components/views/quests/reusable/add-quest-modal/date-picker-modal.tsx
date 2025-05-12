@@ -5,8 +5,8 @@ import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
 import Button from '@/components/shared/button/button';
 import Modal from '@/components/shared/modal/modal';
 import ControlledSelect from '@/components/shared/select/controlled-select';
+import { SelectItemValue } from '@/components/shared/select/select';
 import dayjs from '@/configs/day-js-config';
-import { NullableString } from '@/types/global-types';
 import { safeDateFormat, toUTCISOString } from '@/utils/utils';
 
 interface DatePickerModalProps {
@@ -19,7 +19,7 @@ interface DatePickerModalProps {
 }
 
 const DatePickerModal = ({ minDate = null, maxDate = null, label, name, placeholder, isEndDate }: DatePickerModalProps) => {
-  const { setValue, watch } = useFormContext<Record<string, NullableString>>();
+  const { setValue, watch } = useFormContext<Record<string, SelectItemValue>>();
   const [isVisible, setIsVisible] = useState(false);
 
   const handleOpen = () => setIsVisible(true);

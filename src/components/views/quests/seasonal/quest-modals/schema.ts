@@ -12,9 +12,7 @@ interface Parent {
 }
 
 export const seasonalQuestValidationSchema = baseQuestSchema.shape({
-  season: Yup.mixed<SeasonEnumType>()
-    .required('Season is required')
-    .test('required', 'Season is required', value => Boolean(value)),
+  season: Yup.mixed<SeasonEnumType>().nullable().defined('Season is required'),
   startDate: Yup.string()
     .nullable()
     .test('is-not-less-than-today', 'Start date must be today or in the future', function (value) {
@@ -34,7 +32,7 @@ export const seasonalQuestValidationSchema = baseQuestSchema.shape({
         return true;
       }
 
-      const seasonDates = getSeasonalDateLimits(season as SeasonEnumType, value);
+      const seasonDates = getSeasonalDateLimits(season, value);
       const isValid = dayjs(value).isBetween(seasonDates.minStartDate, seasonDates.maxStartDate, 'day', '[]');
 
       return (
@@ -56,7 +54,7 @@ export const seasonalQuestValidationSchema = baseQuestSchema.shape({
         return true;
       }
 
-      const seasonDates = getSeasonalDateLimits(season as SeasonEnumType, startDate);
+      const seasonDates = getSeasonalDateLimits(season, startDate);
       const isValid = dayjs(value).isBetween(seasonDates.minEndDate, seasonDates.maxEndDate, 'day', '[]');
 
       return (

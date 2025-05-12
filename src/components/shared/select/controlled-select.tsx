@@ -1,7 +1,6 @@
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import Select, { SelectProps } from './select';
-import { NullableString } from '@/types/global-types';
+import Select, { SelectItemValue, SelectProps } from './select';
 
 interface ControlledSelectProps extends Omit<SelectProps, 'name' | 'value'> {
   name: string;
@@ -10,7 +9,7 @@ interface ControlledSelectProps extends Omit<SelectProps, 'name' | 'value'> {
 }
 
 const ControlledSelect: React.FC<ControlledSelectProps> = ({ name, isDate, clearAsNull, options, ...props }) => {
-  const { control } = useFormContext<Record<string, NullableString>>();
+  const { control } = useFormContext<Record<string, SelectItemValue>>();
   const isModal = props.isModalVersion;
 
   return (
