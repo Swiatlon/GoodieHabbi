@@ -40,3 +40,13 @@ export function getBestContrastTextColor(hexcolor: string) {
 
   return yiq >= 137 ? 'black' : 'white';
 }
+
+export const calculateProgress = (current: number, total: number): number => {
+  if (total <= 0) {
+    return 0;
+  }
+
+  const percentage = (current / total) * 100;
+
+  return percentage > 100 ? 100 : percentage;
+};
