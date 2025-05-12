@@ -10,15 +10,20 @@ export interface IBadge {
 }
 
 export interface IAccountDataResponse {
-  userXp: number;
-  nextLevelTotalXpRequired: number;
   login: NullableString;
   email: string;
   nickname: NullableString;
   avatar: NullableString;
   completedQuests: number;
   totalQuests: number;
+  completedGoals: number;
+  totalGoals: number;
+  expiredGoals: number;
+  abandonedGoals: number;
   level: number;
+  userXp: number;
+  nextLevelTotalXpRequired: number;
+  isMaxLevel: boolean;
   bio: NullableString;
   joinDate: string;
   badges: IBadge[];
