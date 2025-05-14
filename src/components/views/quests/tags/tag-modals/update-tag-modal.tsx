@@ -12,7 +12,7 @@ import { IPostQuestLabelRequest, IQuestLabel } from '@/contract/quests/labels/la
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useGetQuestLabelsQuery, useUpdateQuestLabelMutation } from '@/redux/api/quests/labels-quests-api';
 import { IApiError } from '@/types/global-types';
-import { getBestContrastTextColor } from '@/utils/utils';
+import { getBestContrastTextColor } from '@/utils/utils/utils';
 
 interface UpdateTagModalProps extends IBaseModalProps {
   tag: IQuestLabel;

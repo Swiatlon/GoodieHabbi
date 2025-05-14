@@ -12,5 +12,6 @@ export function isWeeklyQuest(quest: AllQuestsUnion): quest is IWeeklyQuest {
 }
 
 export function isMonthlyQuest(quest: AllQuestsUnion): quest is IMonthlyQuest {
-  return Boolean((quest as IMonthlyQuest).startDay && (quest as IMonthlyQuest).endDay);
+  const { startDay, endDay } = quest as IMonthlyQuest;
+  return typeof startDay === 'number' && typeof endDay === 'number';
 }

@@ -12,9 +12,9 @@ import SeasonalQuestItem from '@/components/views/quests/seasonal/list/seasonal-
 import AddSeasonalQuestModal from '@/components/views/quests/seasonal/quest-modals/add-seasonal-quest-modal';
 import { ISeasonalQuest } from '@/contract/quests/quests-types/seasonal-quests';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
-import { useFilter } from '@/hooks/use-filter';
-import { useSearch } from '@/hooks/use-search';
-import { SortOrderEnum, useSort } from '@/hooks/use-sort';
+import { useFilter } from '@/hooks/use-filter/use-filter';
+import { useSearch } from '@/hooks/use-search/use-search';
+import { SortOrderEnum, useSort } from '@/hooks/use-sort/use-sort';
 import { useGetAllSeasonalQuestsQuery } from '@/redux/api/seasonal-quests-api';
 
 const SeasonalQuests: React.FC = () => {

@@ -9,8 +9,8 @@ import Header from '@/components/views/quests/reusable/header';
 import TagItem from '@/components/views/quests/tags/list/tag-item';
 import AddTagModal from '@/components/views/quests/tags/tag-modals/add-tag-modal';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
-import { useSearch } from '@/hooks/use-search';
-import { SortOrderEnum, useSort } from '@/hooks/use-sort';
+import { useSearch } from '@/hooks/use-search/use-search';
+import { SortOrderEnum, useSort } from '@/hooks/use-sort/use-sort';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
 
 const defaultSortOptions: SortOption[] = [

@@ -11,7 +11,7 @@ import QuestItemEmoji from '@/components/views/quests/reusable/quest-item/quest-
 import QuestItemPriority from '@/components/views/quests/reusable/quest-item/quest-item-priority';
 import QuestItemTitle from '@/components/views/quests/reusable/quest-item/quest-item-title';
 import { IGetActiveGoalResponse } from '@/contract/goals/goals.contract';
-import { isMonthlyQuest, isSeasonalQuest, isWeeklyQuest } from '@/utils/quests';
+import { isMonthlyQuest, isSeasonalQuest, isWeeklyQuest } from '@/utils/quests/quests';
 
 interface AllQuestItemProps {
   quest: IGetActiveGoalResponse | null;

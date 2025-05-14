@@ -3,7 +3,7 @@ import { TextInput, TouchableOpacity, View, Text, ScrollView } from 'react-nativ
 import { Ionicons } from '@expo/vector-icons';
 import Modal from '../modal/modal';
 import dayjs from '@/configs/day-js-config';
-import { fromUTCToLocal, safeDateFormat } from '@/utils/utils';
+import { fromUTCToLocal, safeDateFormat } from '@/utils/utils/utils';
 
 export type SelectItemValue = string | number | null;
 

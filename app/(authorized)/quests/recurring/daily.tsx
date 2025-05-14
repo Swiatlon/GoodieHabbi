@@ -12,9 +12,9 @@ import AddDailyQuestModal from '@/components/views/quests/daily/quest-modals/add
 import Header from '@/components/views/quests/reusable/header';
 import { IDailyQuest } from '@/contract/quests/quests-types/daily-quests';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
-import { useFilter } from '@/hooks/use-filter';
-import { useSearch } from '@/hooks/use-search';
-import { useSort, SortOrderEnum } from '@/hooks/use-sort';
+import { useFilter } from '@/hooks/use-filter/use-filter';
+import { useSearch } from '@/hooks/use-search/use-search';
+import { useSort, SortOrderEnum } from '@/hooks/use-sort/use-sort';
 import { useGetAllDailyQuestsQuery } from '@/redux/api/daily-quests-api';
 
 const DailyQuests: React.FC = () => {

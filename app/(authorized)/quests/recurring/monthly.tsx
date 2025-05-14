@@ -12,9 +12,9 @@ import AddMonthlyQuestModal from '@/components/views/quests/monthly/quest-modals
 import Header from '@/components/views/quests/reusable/header';
 import { IMonthlyQuest } from '@/contract/quests/quests-types/monthly-quests';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
-import { useFilter } from '@/hooks/use-filter';
-import { useSearch } from '@/hooks/use-search';
-import { useSort, SortOrderEnum } from '@/hooks/use-sort';
+import { useFilter } from '@/hooks/use-filter/use-filter';
+import { useSearch } from '@/hooks/use-search/use-search';
+import { useSort, SortOrderEnum } from '@/hooks/use-sort/use-sort';
 import { useGetAllMonthlyQuestsQuery } from '@/redux/api/monthly-quests-api';
 
 const MonthlyQuests: React.FC = () => {

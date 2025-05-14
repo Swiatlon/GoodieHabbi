@@ -1,4 +1,4 @@
-import { calculateProgress } from '@/utils/utils';
+import { calculateProgress } from '@/utils/utils/utils';
 
 export const calculateGoalPercentages = (completedGoals: number, expiredGoals: number, abandonedGoals: number, totalGoals = 0) => {
   const completed = calculateProgress(completedGoals, totalGoals);

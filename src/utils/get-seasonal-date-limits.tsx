@@ -1,6 +1,6 @@
 import dayjs from '@/configs/day-js-config';
 import { SeasonEnum, SeasonEnumType } from '@/contract/quests/base-quests';
-import { toUTCISOString } from '@/utils/utils';
+import { toUTCISOString } from '@/utils/utils/utils';
 
 const getSeasonDateRange = (season: SeasonEnumType | null) => {
   const today = dayjs.utc();

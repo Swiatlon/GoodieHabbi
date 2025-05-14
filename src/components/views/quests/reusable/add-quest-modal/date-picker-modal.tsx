@@ -7,7 +7,7 @@ import Modal from '@/components/shared/modal/modal';
 import ControlledSelect from '@/components/shared/select/controlled-select';
 import { SelectItemValue } from '@/components/shared/select/select';
 import dayjs from '@/configs/day-js-config';
-import { safeDateFormat, toUTCISOString } from '@/utils/utils';
+import { safeDateFormat, toUTCISOString } from '@/utils/utils/utils';
 
 interface DatePickerModalProps {
   name: string;

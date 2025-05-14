@@ -12,9 +12,9 @@ import AddOneTimeQuestModal from '@/components/views/quests/one-time/quest-modal
 import Header from '@/components/views/quests/reusable/header';
 import { IOneTimeQuest } from '@/contract/quests/quests-types/one-time-quests';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
-import { useFilter } from '@/hooks/use-filter';
-import { useSearch } from '@/hooks/use-search';
-import { SortOrderEnum, useSort } from '@/hooks/use-sort';
+import { useFilter } from '@/hooks/use-filter/use-filter';
+import { useSearch } from '@/hooks/use-search/use-search';
+import { SortOrderEnum, useSort } from '@/hooks/use-sort/use-sort';
 import { useGetAllOneTimeQuestsQuery } from '@/redux/api/one-time-quests-api';
 
 const OneTimeQuests: React.FC = () => {

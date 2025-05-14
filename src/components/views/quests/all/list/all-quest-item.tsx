@@ -18,7 +18,7 @@ import { IOneTimeQuest } from '@/contract/quests/quests-types/one-time-quests';
 import { ISeasonalQuest } from '@/contract/quests/quests-types/seasonal-quests';
 import { IWeeklyQuest } from '@/contract/quests/quests-types/weekly-quests';
 import { AllQuestsUnion, useQuestMutations } from '@/hooks/quests/useGetAllQuests';
-import { isSeasonalQuest, isWeeklyQuest, isMonthlyQuest } from '@/utils/quests';
+import { isSeasonalQuest, isWeeklyQuest, isMonthlyQuest } from '@/utils/quests/quests';
 
 interface AllQuestItemProps {
   quest: AllQuestsUnion;
