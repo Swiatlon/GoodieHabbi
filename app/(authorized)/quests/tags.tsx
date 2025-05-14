@@ -31,10 +31,6 @@ const Tags: React.FC = () => {
     setIsSearchVisible,
   } = useSearch({
     data: questLabels,
-    initialSearch: {
-      key: 'value',
-      value: '',
-    },
   });
 
   const {

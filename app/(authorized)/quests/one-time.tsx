@@ -34,9 +34,7 @@ const OneTimeQuests: React.FC = () => {
     setIsSearchVisible,
   } = useSearch({
     data: fetchedQuests,
-    initialSearch: { key: 'title', value: '' },
   });
-
   const {
     data: filteredQuests,
     setFilter,

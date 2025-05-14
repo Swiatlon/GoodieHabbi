@@ -35,10 +35,6 @@ const WeeklyQuests: React.FC = () => {
     setIsSearchVisible,
   } = useSearch({
     data: fetchedQuests,
-    initialSearch: {
-      key: 'title',
-      value: '',
-    },
   });
 
   const {

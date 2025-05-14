@@ -1,16 +1,14 @@
 import { useState, useMemo } from 'react';
+import dayjs from 'dayjs';
+import _ from 'lodash';
 
 export interface SearchOptions<T> {
   data: T[];
-  initialSearch: {
-    key: keyof T;
-    value: string;
-  };
+  initialSearchValue?: string;
 }
 
-export const useSearch = <T,>({ data, initialSearch: { key, value } }: SearchOptions<T>) => {
-  const [searchQuery, setSearchQuery] = useState(value || '');
-  const [searchKey, setSearchKey] = useState<keyof T>(key);
+export const useSearch = <T,>({ data, initialSearchValue = '' }: SearchOptions<T>) => {
+  const [searchQuery, setSearchQuery] = useState(initialSearchValue);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   const filteredData = useMemo(() => {
@@ -21,23 +19,57 @@ export const useSearch = <T,>({ data, initialSearch: { key, value } }: SearchOpt
     }
 
     return data.filter(item => {
-      const fieldValue = item[searchKey];
+      const searchableTexts: string[] = [];
+      const traversed = new WeakSet();
 
-      if (typeof fieldValue === 'string') {
-        return fieldValue.toLowerCase().includes(query);
-      }
+      const processStringValue = (value: string): void => {
+        searchableTexts.push(value.toLowerCase());
 
-      return false;
+        if (dayjs(value, 'YYYY-MM-DDTHH:mm:ssZ', true).isValid()) {
+          const formatted = dayjs(value).format('DD.MM.YYYY').toLowerCase();
+          searchableTexts.push(formatted);
+        }
+      };
+
+      const traverse = (obj: unknown): void => {
+        if (obj === null || obj === undefined) {
+          return;
+        }
+
+        if (_.isObject(obj)) {
+          if (traversed.has(obj)) {
+            return;
+          }
+
+          traversed.add(obj);
+        }
+
+        if (_.isString(obj)) {
+          processStringValue(obj);
+        } else if (_.isNumber(obj) || _.isBoolean(obj)) {
+          searchableTexts.push(String(obj).toLowerCase());
+        } else if (_.isArray(obj)) {
+          _.forEach(obj, traverse);
+        } else if (_.isObject(obj)) {
+          _.forEach(obj, (value, key) => {
+            searchableTexts.push(key.toLowerCase());
+            traverse(value);
+          });
+        }
+      };
+
+      traverse(item);
+      const searchableText = searchableTexts.join(' ');
+
+      return searchableText.includes(query);
     });
-  }, [data, searchKey, searchQuery]);
+  }, [data, searchQuery]);
 
   return {
     searchQuery,
-    searchKey,
     isSearchVisible,
     data: filteredData,
     setSearchQuery,
-    setSearchKey,
     setIsSearchVisible,
   };
 };
