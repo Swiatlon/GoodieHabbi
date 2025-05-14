@@ -18,7 +18,7 @@ import { IWeeklyQuest, IPostWeeklyQuestRequest } from '@/contract/quests/quests-
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
 import { useUpdateWeeklyQuestMutation } from '@/redux/api/weekly-quests-api';
-import { toUTCISOString } from '@/utils/utils';
+import { toUTCISOString } from '@/utils/utils/utils';
 
 interface UpdateWeeklyQuestModalProps extends IBaseModalProps {
   quest: IWeeklyQuest;

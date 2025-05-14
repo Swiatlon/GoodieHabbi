@@ -12,9 +12,9 @@ import WeeklyQuestItem from '@/components/views/quests/weekly/list/weekly-quest-
 import AddWeeklyQuestModal from '@/components/views/quests/weekly/quest-modals/add-weekly-quest-modal';
 import { IWeeklyQuest } from '@/contract/quests/quests-types/weekly-quests';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
-import { useFilter } from '@/hooks/use-filter';
-import { useSearch } from '@/hooks/use-search';
-import { useSort, SortOrderEnum } from '@/hooks/use-sort';
+import { useFilter } from '@/hooks/use-filter/use-filter';
+import { useSearch } from '@/hooks/use-search/use-search';
+import { useSort, SortOrderEnum } from '@/hooks/use-sort/use-sort';
 import { useGetAllWeeklyQuestsQuery } from '@/redux/api/weekly-quests-api';
 
 const WeeklyQuests: React.FC = () => {

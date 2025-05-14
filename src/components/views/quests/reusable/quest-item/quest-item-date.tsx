@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import dayjs from '@/configs/day-js-config';
 import { NullableString, UndefinedString } from '@/types/global-types';
-import { safeDateFormat } from '@/utils/utils';
+import { safeDateFormat } from '@/utils/utils/utils';
 
 interface QuestItemDateProps {
   startDate: NullableString;

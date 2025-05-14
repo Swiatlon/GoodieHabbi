@@ -4,7 +4,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
 import { IconButton } from '@/components/shared/icon-button/icon-button';
 import Modal from '@/components/shared/modal/modal';
-import { SortOrderEnum, SortOrderEnumType } from '@/hooks/use-sort';
+import { SortOrderEnum, SortOrderEnumType } from '@/hooks/use-sort/use-sort';
 
 interface SortModalProps {
   isVisible: boolean;

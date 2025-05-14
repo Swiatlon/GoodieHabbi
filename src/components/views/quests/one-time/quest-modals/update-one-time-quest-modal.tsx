@@ -17,7 +17,7 @@ import { IOneTimeQuest, IPostOneTimeQuestRequest } from '@/contract/quests/quest
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useUpdateOneTimeQuestMutation } from '@/redux/api/one-time-quests-api';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
-import { toUTCISOString } from '@/utils/utils';
+import { toUTCISOString } from '@/utils/utils/utils';
 
 interface UpdateOneTimeQuestModalProps extends IBaseModalProps {
   quest: IOneTimeQuest;

@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { baseQuestSchema } from '../../reusable/schema/schema';
 import { SeasonEnumType } from '@/contract/quests/base-quests';
 import { getSeasonalDateLimits } from '@/utils/get-seasonal-date-limits';
-import { safeDateFormat } from '@/utils/utils';
+import { safeDateFormat } from '@/utils/utils/utils';
 
 interface Parent {
   season: SeasonEnumType | null;

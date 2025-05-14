@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { View, Text } from 'react-native';
-import { calculateProgress } from '@/utils/utils';
+import { calculateProgress } from '@/utils/utils/utils';
 
 export interface ProgressBarProps {
   current: number;

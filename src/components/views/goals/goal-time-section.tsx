@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useFocusEffect } from 'expo-router';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
-import useTimer, { Frequency } from '@/hooks/useTimer';
+import useTimer, { Frequency } from '@/hooks/use-timer';
 
 interface TimeSectionProps {
   frequency: Frequency;

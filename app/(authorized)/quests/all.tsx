@@ -12,9 +12,9 @@ import AddAllQuestModal from '@/components/views/quests/all/quest-modals/add-all
 import Header from '@/components/views/quests/reusable/header';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { AllQuestsUnion, useGetAllQuests } from '@/hooks/quests/useGetAllQuests';
-import { useFilter } from '@/hooks/use-filter';
-import { useSearch } from '@/hooks/use-search';
-import { useSort, SortOrderEnum } from '@/hooks/use-sort';
+import { useFilter } from '@/hooks/use-filter/use-filter';
+import { useSearch } from '@/hooks/use-search/use-search';
+import { useSort, SortOrderEnum } from '@/hooks/use-sort/use-sort';
 
 const AllQuests: React.FC = () => {
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);

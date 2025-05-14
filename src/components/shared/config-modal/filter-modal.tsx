@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import Button from '@/components/shared/button/button';
 import { IconButton } from '@/components/shared/icon-button/icon-button';
 import Modal from '@/components/shared/modal/modal';
-import { FilterValueType, ActualFilterData } from '@/hooks/use-filter';
+import { FilterValueType, ActualFilterData } from '@/hooks/use-filter/use-filter';
 
 export type QuestKeyType<T> = keyof T;
 

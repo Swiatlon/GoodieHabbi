@@ -7,9 +7,9 @@ import Header from '@/components/views/quests/reusable/header';
 import { TodayQuestsFilterMap } from '@/components/views/quests/today/constants/constants';
 import TodayQuestItem from '@/components/views/quests/today/list/today-quest-item';
 import { AllQuestsUnion } from '@/hooks/quests/useGetAllQuests';
-import { useFilter } from '@/hooks/use-filter';
-import { useSearch } from '@/hooks/use-search';
-import { useSort, SortOrderEnum } from '@/hooks/use-sort';
+import { useFilter } from '@/hooks/use-filter/use-filter';
+import { useSearch } from '@/hooks/use-search/use-search';
+import { useSort, SortOrderEnum } from '@/hooks/use-sort/use-sort';
 import { useGetAllTodayQuestsQuery } from '@/redux/api/today-quests-api';
 
 const TodayQuests: React.FC = () => {

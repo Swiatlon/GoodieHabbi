@@ -17,7 +17,7 @@ import { IPostDailyQuestRequest } from '@/contract/quests/quests-types/daily-que
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateDailyQuestMutation } from '@/redux/api/daily-quests-api';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
-import { toUTCISOString } from '@/utils/utils';
+import { toUTCISOString } from '@/utils/utils/utils';
 
 interface AddDailyQuestModalProps extends IBaseModalProps {}
 

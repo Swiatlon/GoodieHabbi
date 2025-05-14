@@ -1,7 +1,7 @@
 import React, { forwardRef, useRef, useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, LayoutChangeEvent, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useComponentSize } from '@/hooks/use-component-size';
+import { useComponentSize } from '@/hooks/use-component-size/use-component-size';
 
 export interface MultiSelectItem {
   id: number;

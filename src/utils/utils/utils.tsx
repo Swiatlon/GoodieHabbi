@@ -19,6 +19,10 @@ export const fromUTCToDateObject = (date: NullableString) => {
 };
 
 export function getBestContrastTextColor(hexcolor: string) {
+  if (!/^#?[0-9A-Fa-f]{3,6}$/.test(hexcolor)) {
+    return 'black';
+  }
+
   if (hexcolor.slice(0, 1) === '#') {
     hexcolor = hexcolor.slice(1);
   }

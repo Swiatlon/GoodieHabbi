@@ -17,7 +17,7 @@ import { IPostMonthlyQuestRequest } from '@/contract/quests/quests-types/monthly
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useCreateMonthlyQuestMutation } from '@/redux/api/monthly-quests-api';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
-import { toUTCISOString } from '@/utils/utils';
+import { toUTCISOString } from '@/utils/utils/utils';
 
 interface AddMonthlyQuestModalProps extends IBaseModalProps {}
 
