@@ -1,7 +1,8 @@
-import React, { forwardRef, useRef, useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, LayoutChangeEvent, ScrollView } from 'react-native';
+import React, { forwardRef, useState, useCallback, useMemo } from 'react';
+import { View, Text, TouchableOpacity, Modal, SafeAreaView, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useComponentSize } from '@/hooks/use-component-size/use-component-size';
+import Button from '../button/button';
+import { Chip, MoreChip, SelectionOption } from './elements/multi-select-elements';
 
 export interface MultiSelectItem {
   id: number;
@@ -17,132 +18,97 @@ export interface MultiSelectProps {
   onChange: (selectedValues: MultiSelectItem[]) => void;
   error?: string;
   className?: string;
+  modalTitle?: string;
+  maxVisibleChips?: number;
 }
 
-const getVisibleChips = (availableWidth: number, chipWidths: number[], selectedOptions: MultiSelectItem[], counterWidth = 0) => {
-  let widthUsed = 0;
-  let visibleChipsCount = 0;
+const MultiSelect = forwardRef<View, MultiSelectProps>(
+  ({ placeholder, options, selectedOptions, onChange, error, className = '', modalTitle = 'Select Options', maxVisibleChips = 2 }, ref) => {
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
-  for (let i = 0; i < chipWidths.length; i++) {
-    widthUsed += chipWidths[i];
-
-    if (widthUsed + counterWidth > availableWidth) {
-      break;
-    }
-
-    visibleChipsCount = i + 1;
-  }
-
-  return selectedOptions.slice(0, visibleChipsCount);
-};
-
-const MultiSelect = forwardRef<View, MultiSelectProps>(({ placeholder, options, selectedOptions, onChange, error, className }, ref) => {
-  const [containerWidth, onLayoutContainer] = useComponentSize();
-  const [counterWidth, onLayoutCounter] = useComponentSize();
-  const chipWidths = useRef<number[]>([]);
-  const [visibleChips, setVisibleChips] = useState(selectedOptions);
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const difference = selectedOptions.length - visibleChips.length;
-
-  const handleClear = () => {
-    onChange([]);
-  };
-
-  const handleChipLayout = (index: number) => (event: LayoutChangeEvent) => {
-    const { width } = event.nativeEvent.layout;
-    chipWidths.current[index] = width;
-  };
-
-  const toggleOption = (id: number) => {
-    const isSelected = selectedOptions.some(option => option.id === id);
-    let updatedSelectedOptions: MultiSelectItem[];
-
-    if (isSelected) {
-      updatedSelectedOptions = selectedOptions.filter(option => option.id !== id);
-    } else {
-      const optionToAdd = options.find(option => option.id === id);
-      updatedSelectedOptions = [...selectedOptions, optionToAdd!];
-    }
-
-    onChange(updatedSelectedOptions);
-  };
-
-  useEffect(() => {
-    setVisibleChips(selectedOptions);
-  }, [selectedOptions]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      const availableWidth = containerWidth?.width ?? 0;
-
-      if (availableWidth && chipWidths.current.length > 0) {
-        const filteredSelectedChips = getVisibleChips(availableWidth, chipWidths.current, selectedOptions, counterWidth?.width);
-        setVisibleChips(filteredSelectedChips);
+    const { visibleChips, overflowCount } = useMemo(() => {
+      if (selectedOptions.length <= maxVisibleChips) {
+        return {
+          visibleChips: selectedOptions,
+          overflowCount: 0,
+        };
       }
-    });
-  }, [containerWidth, selectedOptions, chipWidths]);
+      return {
+        visibleChips: selectedOptions.slice(0, maxVisibleChips),
+        overflowCount: selectedOptions.length - maxVisibleChips,
+      };
+    }, [selectedOptions, maxVisibleChips]);
 
-  return (
-    <View className="w-full relative">
-      <View className={`flex-row items-center border rounded-lg relative ${error ? 'border-red-500' : 'border-gray-300'} ${className}`}>
-        <TouchableOpacity
-          className="w-[86%] py-3 min-h-10 overflow-hidden pl-3"
-          onLayout={onLayoutContainer}
-          onPress={() => setIsDropdownVisible(prev => !prev)}
-        >
-          <View className="flex-row gap-2 w-full" ref={ref}>
-            {visibleChips.length === 0 && <Text className="text-gray-500">{placeholder}</Text>}
-            {visibleChips.map(({ id, value, backgroundColor, textColor }, index) => {
-              return (
-                <View
-                  key={id}
-                  className="bg-primary rounded-full py-1 px-3"
-                  style={{ backgroundColor: backgroundColor }}
-                  onLayout={handleChipLayout(index)}
-                >
-                  <Text className="text-white text-[12px]" style={{ color: textColor }} numberOfLines={1}>
-                    {value}
-                  </Text>
-                </View>
-              );
-            })}
+    const handleClear = useCallback(() => {
+      onChange([]);
+    }, [onChange]);
 
-            {difference > 0 && (
-              <View className="bg-gray-300 rounded-full py-1 px-4" onLayout={onLayoutCounter}>
-                <Text className="text-white text-[12px]">+{difference} more</Text>
-              </View>
-            )}
-          </View>
-        </TouchableOpacity>
+    const toggleOption = useCallback(
+      (id: number) => {
+        const isCurrentlySelected: boolean = selectedOptions.some((option: { id: number }) => option.id === id);
 
-        {selectedOptions.length > 0 && (
-          <TouchableOpacity onPress={handleClear} className="px-4">
-            <Ionicons name="close-circle" size={20} color={error ? '#E53E3E' : '#888'} />
+        if (isCurrentlySelected) {
+          onChange(selectedOptions.filter((option: { id: number }) => option.id !== id));
+        } else {
+          const optionToAdd: MultiSelectItem | undefined = options.find((option: MultiSelectItem) => option.id === id);
+          onChange(optionToAdd ? [...selectedOptions, optionToAdd] : selectedOptions);
+        }
+      },
+      [options, onChange, selectedOptions]
+    );
+
+    const toggleModal = useCallback(() => setIsModalVisible(prev => !prev), []);
+
+    const renderItem = useCallback(
+      ({ item }: { item: MultiSelectItem }) => {
+        const isSelected = selectedOptions.some(selected => selected.id === item.id);
+
+        return <SelectionOption item={item} isSelected={isSelected} onToggle={() => toggleOption(item.id)} />;
+      },
+      [selectedOptions, toggleOption]
+    );
+
+    return (
+      <View className="w-full relative" ref={ref}>
+        <View className={`flex-row items-center border rounded-lg relative ${error ? 'border-red-500' : 'border-gray-300'} ${className}`}>
+          <TouchableOpacity className="flex-1 py-3 min-h-10 pl-3 flex-row items-center" onPress={toggleModal}>
+            <View className="flex-row flex-wrap gap-2 flex-1">
+              {visibleChips.length === 0 && <Text className="text-gray-500">{placeholder}</Text>}
+              {visibleChips.map(item => (
+                <Chip key={item.id} item={item} />
+              ))}
+              {overflowCount > 0 && <MoreChip count={overflowCount} />}
+            </View>
+            <Ionicons name="chevron-down" size={20} color="#888" className={`${selectedOptions.length > 0 ? '' : 'mr-4'}`} />
           </TouchableOpacity>
-        )}
-      </View>
 
-      {isDropdownVisible && (
-        <View className="fixed top-0 left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
-          <ScrollView className="max-h-30">
-            {options.map(option => {
-              const isChecked = selectedOptions.some(selected => selected.id === option.id);
-
-              return (
-                <TouchableOpacity key={option.id} className="flex-row items-center py-2 px-4" onPress={() => toggleOption(option.id)}>
-                  <Ionicons name={isChecked ? 'checkbox' : 'square-outline'} size={24} color={isChecked ? '#1987EE' : 'gray'} />
-                  <Text className="ml-2">{option.value}</Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
+          {selectedOptions.length > 0 && (
+            <TouchableOpacity onPress={handleClear} className="px-4">
+              <Ionicons name="close-circle" size={20} color={error ? '#E53E3E' : '#888'} />
+            </TouchableOpacity>
+          )}
         </View>
-      )}
 
-      {/* Error message */}
-      {error && <Text className="text-red-500 text-sm mt-1">{error}</Text>}
-    </View>
-  );
-});
+        <Modal visible={isModalVisible} animationType="slide" transparent={true} onRequestClose={toggleModal}>
+          <SafeAreaView className="flex-1 bg-black bg-opacity-50">
+            <View className="flex-1 mt-4 bg-white rounded-t-xl overflow-hidden">
+              <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
+                <Text className="text-lg font-medium">{modalTitle}</Text>
+                <TouchableOpacity onPress={toggleModal} accessibilityRole="button" accessibilityLabel="Close modal">
+                  <Ionicons name="close" size={24} color="#000" />
+                </TouchableOpacity>
+              </View>
+              <FlatList data={options} className="flex-1" renderItem={renderItem} />
+              <View className="p-4 border-t border-gray-200 flex-row justify-between">
+                <Button onPress={handleClear} variant="contained" styleType="secondary" className="px-4" label="Clear All" />
+                <Button onPress={toggleModal} variant="contained" styleType="primary" className="px-4" label="Done" />
+              </View>
+            </View>
+          </SafeAreaView>
+        </Modal>
+      </View>
+    );
+  }
+);
 
 export default MultiSelect;
