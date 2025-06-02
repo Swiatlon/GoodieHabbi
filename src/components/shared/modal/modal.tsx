@@ -9,6 +9,7 @@ import Loader from '../loader/loader';
 export interface IBaseModalProps {
   isVisible: boolean;
   onClose: () => void;
+  testID?: string;
 }
 
 interface ModalProps extends IBaseModalProps {
@@ -19,7 +20,7 @@ interface ModalProps extends IBaseModalProps {
   loadingMessage?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children, className = '', footer, isLoading, loadingMessage }) => {
+const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children, className = '', footer, isLoading, loadingMessage, testID }) => {
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.8);
   const translateY = useSharedValue(50);
@@ -61,7 +62,7 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children, className =
 
   return (
     <Portal>
-      <View className="h-full w-full flex justify-center items-center">
+      <View className="h-full w-full flex justify-center items-center" testID={testID}>
         <TouchableWithoutFeedback onPress={handleBackdropPress}>
           <Animated.View className="bg-black/50 absolute top-0 left-0 h-full w-full" style={backdropStyle} />
         </TouchableWithoutFeedback>

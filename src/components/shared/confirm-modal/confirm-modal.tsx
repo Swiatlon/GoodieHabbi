@@ -20,23 +20,29 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   message = 'Are you sure you want to proceed?',
 }) => {
   return (
-    <Modal isVisible={isVisible} onClose={onClose}>
-      <View className="flex-1 gap-6 px-4">
-        <Text className="text-lg font-bold">{title}</Text>
-        <Text className="text-gray-600">{message}</Text>
-        <View className="flex-row justify-between">
+    <Modal isVisible={isVisible} onClose={onClose} testID="confirm-modal">
+      <View className="flex-1 gap-6 px-4" testID="confirm-modal-content">
+        <Text className="text-lg font-bold" testID="confirm-modal-title">
+          {title}
+        </Text>
+        <Text className="text-gray-600" testID="confirm-modal-message">
+          {message}
+        </Text>
+        <View className="flex-row justify-between" testID="confirm-modal-buttons">
           <Button
             label="Cancel"
             variant="outlined"
             onPress={onClose}
             className="rounded-lg py-2.5"
             startIcon={<Ionicons name="close-circle-outline" size={16} color="#1987EE" />}
+            testID="confirm-modal-cancel-button"
           />
           <Button
             label="Save"
             onPress={onAccept}
             className="rounded-lg py-2.5"
             startIcon={<Ionicons name="checkmark-circle-outline" size={16} color="#fff" />}
+            testID="confirm-modal-accept-button"
           />
         </View>
       </View>

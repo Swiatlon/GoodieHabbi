@@ -17,8 +17,11 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ current, total, activeColor =
 
   return (
     <View className="relative w-full bg-gray-300 h-5 rounded-full mt-2">
-      <View className={`${barColor} h-5 rounded-full`} style={{ width: `${progressPercentage}%` }} />
-      <Text className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white font-bold text-xs">
+      <View className={`${barColor} h-5 rounded-full`} style={{ width: `${progressPercentage}%` }} testID="progress-bar-fill" />
+      <Text
+        testID="progress-bar-label"
+        className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white font-bold text-xs"
+      >
         {label || `${current} / ${total}`}
       </Text>
     </View>

@@ -33,6 +33,7 @@ const Swatches: React.FC<SwatchesProps> = ({ selectedColor, onSelect }) => {
         <TouchableOpacity
           key={color}
           onPress={() => onSelect(color)}
+          testID={`swatch-${color}`}
           className={`w-10 h-10 rounded-full flex justify-center items-center border-2 ${
             color === selectedColor ? 'border-primary border-2' : 'border-transparent'
           }`}

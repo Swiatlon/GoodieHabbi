@@ -21,32 +21,60 @@ interface FilterModalProps<T> {
   filterCategories: Record<string, Map<string, IFilterMapValues<T>>>;
   setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setFilter: (key: QuestKeyType<T>, value: FilterValueType) => void;
+  testID?: string;
 }
 
-const FilterModal = <T,>({ isVisible, setIsVisible, setFilter, actualFilterData, filterCategories }: FilterModalProps<T>) => {
+const FilterModal = <T,>({
+  isVisible,
+  setIsVisible,
+  setFilter,
+  actualFilterData,
+  filterCategories,
+  testID = 'filter-modal',
+}: FilterModalProps<T>) => {
   return (
-    <Modal isVisible={isVisible} onClose={() => setIsVisible(false)}>
-      <View className="flex gap-4">
-        <Text className="text-lg font-semibold text-center">Filter Quests</Text>
-        {Object.entries(filterCategories).map(([category, filtersMap]) => (
-          <View key={category}>
-            <Text className="text-md font-semibold ml-4 mb-2">{category}:</Text>
-            <View className="flex-row flex-wrap justify-around">
-              {Array.from(filtersMap.entries()).map(([filterKey, { value, icon, label, filterMainKey }]) => {
-                const isActive = actualFilterData[filterMainKey as keyof ActualFilterData] === value;
-                return (
-                  <View key={filterKey} className="flex items-center p-2 w-1/3">
-                    <IconButton onPress={() => setFilter(filterMainKey as keyof T, isActive ? null : value)} className="flex items-center">
-                      {icon}
-                      <Text className={`text-sm text-center ${isActive ? 'font-bold text-primary' : ''}`}>{label}</Text>
-                    </IconButton>
-                  </View>
-                );
-              })}
+    <Modal isVisible={isVisible} onClose={() => setIsVisible(false)} testID={`${testID}-modal`}>
+      <View className="flex gap-4" testID={`${testID}-container`}>
+        <Text className="text-lg font-semibold text-center" testID={`${testID}-title`}>
+          Filter Quests
+        </Text>
+
+        <View testID={`${testID}-categories-container`}>
+          {Object.entries(filterCategories).map(([category, filtersMap]) => (
+            <View key={category} testID={`${testID}-category-${category.toLowerCase().replace(/\s+/g, '-')}`}>
+              <Text className="text-md font-semibold ml-4 mb-2" testID={`${testID}-category-title-${category.toLowerCase().replace(/\s+/g, '-')}`}>
+                {category}:
+              </Text>
+
+              <View
+                className="flex-row flex-wrap justify-around"
+                testID={`${testID}-filters-container-${category.toLowerCase().replace(/\s+/g, '-')}`}
+              >
+                {Array.from(filtersMap.entries()).map(([filterKey, { value, icon, label, filterMainKey }]) => {
+                  const isActive = actualFilterData[filterMainKey as keyof ActualFilterData] === value;
+                  const filterTestId = `${testID}-filter-${filterKey.toLowerCase().replace(/\s+/g, '-')}`;
+
+                  return (
+                    <View key={filterKey} className="flex items-center p-2 w-1/3" testID={`${filterTestId}-container`}>
+                      <IconButton
+                        onPress={() => setFilter(filterMainKey as keyof T, isActive ? null : value)}
+                        className="flex items-center"
+                        testID={filterTestId}
+                      >
+                        <View testID={`${filterTestId}-icon`}>{icon}</View>
+                        <Text className={`text-sm text-center ${isActive ? 'font-bold text-primary' : ''}`} testID={`${filterTestId}-label`}>
+                          {label}
+                        </Text>
+                      </IconButton>
+                    </View>
+                  );
+                })}
+              </View>
             </View>
-          </View>
-        ))}
-        <Button label="Close" onPress={() => setIsVisible(false)} className="mx-auto px-6" />
+          ))}
+        </View>
+
+        <Button label="Close" onPress={() => setIsVisible(false)} className="mx-auto px-6" testID={`${testID}-close-button`} />
       </View>
     </Modal>
   );

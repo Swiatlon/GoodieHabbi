@@ -58,10 +58,14 @@ const Button: React.FC<ButtonProps> = ({
       activeOpacity={0.7}
       className={`rounded-3xl flex-row gap-2 items-center p-3 ${buttonStyles} ${className}`}
       disabled={disabled}
-      testID={testID}
+      testID={testID || 'button'}
     >
       {startIcon}
-      {label && <Text className={`font-semibold ${textColor}`}>{label}</Text>}
+      {label && (
+        <Text testID={`${testID || 'button'}-label`} className={`font-semibold ${textColor}`}>
+          {label}
+        </Text>
+      )}
       {endIcon}
     </TouchableOpacity>
   );
