@@ -1,0 +1,76 @@
+appId: com.wiercik.GoodieHabbi
+---
+- clearState
+- launchApp
+
+# Navigate to Register screen
+- runFlow:
+    file: ../commands/go-to.yaml
+    env:
+      navigationText: "Register"
+
+# Assert Register screen UI
+- assertVisible:
+    id: "register-screen"
+- assertVisible:
+    id: "register-title"
+- assertVisible:
+    id: "email-input"
+- assertVisible:
+    id: "password-input"
+- assertVisible:
+    id: "login-link"
+- assertVisible:
+    id: "register-button"
+
+# -----------------------
+# ❌ FAILED REGISTER
+# -----------------------
+
+- runFlow:
+    file: ../commands/fill-auth-form.yaml
+    env:
+        email: "newuser"
+        password: "new"
+        mainScreen: "register-screen"
+
+- tapOn:
+    id: "register-button"
+
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: "register-button"
+
+- tapOn:
+    id: "login-link"
+
+- assertVisible:
+    id: "login-screen"
+
+
+# -----------------------
+# ✅ SUCCESSFUL REGISTER
+# -----------------------
+# - inputText:
+#     id: "email-input"
+#     text: "testuser@example.com"
+
+# - inputText:
+#     id: "password-input"
+#     text: "TestPassword123!"
+
+# - tapOn:
+#     id: "register-button"
+
+# - waitForAnimationToEnd
+# - assertVisible:
+#     text: "Account added successfully!"
+
+# - assertVisible:
+#     id: "dashboard-screen"
+
+# - runFlow:
+#     file: ../commands/go-to.yaml
+#     env:
+#       navigationText: "Register"

@@ -47,22 +47,25 @@ const Login = () => {
   };
 
   return (
-    <View className="flex-1 justify-center px-4">
+    <View className="flex-1 justify-center px-4" testID="login-screen">
       <FormProvider {...methods}>
         <View className="place-self-center items-center place-items-center gap-6 px-8 w-[300px] mx-auto">
           <Image source={userLogo} style={{ width: 80, height: 80 }} resizeMode="contain" />
-          <Text className="text-2xl font-bold text-primary">Login Form</Text>
-          <ControlledInput name="login" placeholder="Login" placeholderTextColor="#aaa" />
-          <ControlledPasswordInput name="password" placeholder="Password" placeholderTextColor="#aaa" />
+          <Text className="text-2xl font-bold text-primary" testID="login-title">
+            Login Form
+          </Text>
+          <ControlledInput name="login" placeholder="Login" placeholderTextColor="#aaa" testID="email-input" />
+          <ControlledPasswordInput name="password" placeholder="Password" placeholderTextColor="#aaa" testID="password-input" />
           <Text
             className="text-sm text-blue-300"
+            testID="register-link"
             onPress={() => {
               navigation.navigate('(not-authorized)/register');
             }}
           >
             You don't have an account?
           </Text>
-          <Button label="Login" disabled={isLoading} onPress={handleSubmit(onSubmit)} className="px-8 py-3" />
+          <Button label="Login" disabled={isLoading} onPress={handleSubmit(onSubmit)} className="px-8 py-3" testID="login-button" />
         </View>
       </FormProvider>
     </View>

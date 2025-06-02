@@ -63,7 +63,7 @@ const TodayQuests: React.FC = () => {
 
   return (
     <>
-      <View className="flex-1 p-4">
+      <View className="flex-1 p-4" testID="today-quests-screen">
         <Header
           title="Today Quests"
           isSearchVisible={isSearchVisible}

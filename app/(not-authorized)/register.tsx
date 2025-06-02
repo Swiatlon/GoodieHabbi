@@ -47,22 +47,25 @@ const Register = () => {
   };
 
   return (
-    <View className="flex-1 justify-center px-4">
+    <View className="flex-1 justify-center px-4" testID="register-screen">
       <FormProvider {...methods}>
         <View className="place-self-center items-center place-items-center gap-6 px-8 w-[300px] mx-auto">
           <Image source={userLogo} style={{ width: 80, height: 80 }} resizeMode="contain" />
-          <Text className="text-2xl font-bold text-primary">Register Form</Text>
-          <ControlledInput name="email" className="py-1" placeholder="Email" placeholderTextColor="#aaa" />
-          <ControlledPasswordInput name="password" className="py-1" placeholder="Password" placeholderTextColor="#aaa" />
+          <Text className="text-2xl font-bold text-primary" testID="register-title">
+            Register Form
+          </Text>
+          <ControlledInput name="email" className="py-1" placeholder="Email" placeholderTextColor="#aaa" testID="email-input" />
+          <ControlledPasswordInput name="password" className="py-1" placeholder="Password" placeholderTextColor="#aaa" testID="password-input" />
           <Text
             className="text-sm text-blue-300"
+            testID="login-link"
             onPress={() => {
               navigation.navigate('(not-authorized)/login');
             }}
           >
             Do you have an account?
           </Text>
-          <Button label="Register" disabled={isLoading} onPress={handleSubmit(onSubmit)} className="px-8 py-3" />
+          <Button label="Register" disabled={isLoading} onPress={handleSubmit(onSubmit)} className="px-8 py-3" testID="register-button" />
         </View>
       </FormProvider>
     </View>

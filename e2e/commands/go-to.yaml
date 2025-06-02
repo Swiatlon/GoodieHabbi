@@ -1,0 +1,8 @@
+appId: com.wiercik.GoodieHabbi
+---
+- tapOn:
+    id: "menu-button"
+
+- tapOn:
+    text: ${navigationText}
+

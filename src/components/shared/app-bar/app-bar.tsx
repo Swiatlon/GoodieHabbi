@@ -37,7 +37,7 @@ const AppBar: React.FC = () => {
   return (
     <View className="bg-primary flex flex-row justify-between items-center px-4 py-2">
       <Animated.View style={animatedMenuStyle}>
-        <TouchableOpacity onPress={handleMenuClick}>
+        <TouchableOpacity onPress={handleMenuClick} testID="menu-button">
           <Ionicons name="menu" size={28} color="white" className="w-[50px]" />
         </TouchableOpacity>
       </Animated.View>

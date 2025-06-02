@@ -1,0 +1,72 @@
+appId: com.wiercik.GoodieHabbi
+---
+
+# 🚀 SETUP & INITIALIZATION
+- clearState
+- launchApp
+
+# 👀 LOGIN SCREEN UI ASSERTIONS
+- assertVisible:
+    id: "login-screen"
+- assertVisible:
+    id: "login-title"
+- assertVisible:
+    id: "email-input"
+- assertVisible:
+    id: "password-input"
+- assertVisible:
+    id: "register-link"
+- assertVisible:
+    id: "login-button"
+
+# 🔄 NAVIGATION TO REGISTER & BACK
+- tapOn:
+    id: 'register-link'
+    waitToSettleTimeoutMs: 1000
+
+- runFlow:
+    file: ../commands/go-to.yaml
+    env:
+      navigationText: "Login"
+
+- waitForAnimationToEnd
+
+# ❌ FAILED LOGIN TEST
+- clearState
+- launchApp
+
+- runFlow:
+    file: ../commands/fill-auth-form.yaml
+    env:
+        email: "invaliduser"
+        password: "baduser"
+        mainScreen: "login-screen"
+
+- tapOn:
+    id: "login-button"
+
+- assertVisible:
+    text: "Invalid credentials."
+
+# ✅ SUCCESSFUL LOGIN TEST
+- clearState
+- launchApp
+
+- runFlow:
+    file: ../commands/fill-auth-form.yaml
+    env:
+        email: "${E2E_EMAIL}"
+        password: "${E2E_PASSWORD}"
+        mainScreen: "login-screen"
+
+# 🔐 Perform login
+- tapOn:
+    id: "login-button"
+
+
+
+# 🎉 Verify successful login
+- assertVisible:
+    text: "Logged successfully!"
+- assertVisible:
+    id: "today-quests-screen"

@@ -1,0 +1,14 @@
+appId: com.wiercik.GoodieHabbi
+---
+- tapOn:
+    id: "email-input"
+- inputText: "${email}"
+
+- tapOn:
+    id: "password-input"
+- inputText: "${password}"
+
+- waitForAnimationToEnd
+
+- tapOn:
+    id: "${mainScreen}"

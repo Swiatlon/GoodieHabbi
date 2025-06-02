@@ -13,6 +13,7 @@ interface ButtonProps {
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   disabled?: boolean;
+  testID?: string;
 }
 const styleTypeColors: Record<StyleType, { contained: string; outlined: string; text: string }> = {
   primary: {
@@ -46,6 +47,7 @@ const Button: React.FC<ButtonProps> = ({
   startIcon,
   endIcon,
   disabled = false,
+  testID,
 }) => {
   const buttonStyles = `${styleTypeColors[styleType][variant]} ${disabled ? 'opacity-50' : ''}`;
   const textColor = variant === 'contained' ? 'text-white' : styleTypeColors[styleType].text;
@@ -56,6 +58,7 @@ const Button: React.FC<ButtonProps> = ({
       activeOpacity={0.7}
       className={`rounded-3xl flex-row gap-2 items-center p-3 ${buttonStyles} ${className}`}
       disabled={disabled}
+      testID={testID}
     >
       {startIcon}
       {label && <Text className={`font-semibold ${textColor}`}>{label}</Text>}
