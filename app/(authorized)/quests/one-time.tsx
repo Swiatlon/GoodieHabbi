@@ -67,7 +67,7 @@ const OneTimeQuests: React.FC = () => {
   }
 
   return (
-    <View className="flex-1 p-4">
+    <View className="flex-1 p-4" testID="one-time-quests-screen">
       <Header
         title="One Time Quests"
         isSearchVisible={isSearchVisible}

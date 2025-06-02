@@ -37,7 +37,7 @@ const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest }) => {
       <QuestItemContainer completed={quest.isCompleted}>
         {isLoading && <Loader fullscreen />}
         <View className="flex-1 flex-row items-center">
-          <TouchableOpacity onPress={openShowModal} className="flex-1">
+          <TouchableOpacity onPress={openShowModal} className="flex-1" testID="quest-item-touchable">
             <View className="flex-row items-center gap-2">
               <QuestItemEmoji emoji={quest.emoji} />
               <View className="flex-1 gap-2">

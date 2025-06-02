@@ -62,28 +62,32 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, 
       isLoading={isLoading}
       loadingMessage="Adding quest..."
       footer={
-        <View className="flex-row justify-between">
+        <View className="flex-row justify-between" testID="modal-footer">
           <Button
             label="Cancel"
             variant="outlined"
             onPress={onClose}
             className="rounded-lg"
             startIcon={<Ionicons name="close-circle-outline" size={20} color="#1987EE" />}
+            testID="btn-cancel"
           />
           <Button
             label="Add Quest"
             onPress={handleSubmit(onSubmit)}
             className="rounded-lg"
             startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
+            testID="btn-add-quest"
           />
         </View>
       }
     >
       <FormProvider {...methods}>
-        <View className="bg-white rounded-lg px-4 gap-5 py-0">
-          <Text className="text-lg font-bold text-center">Add New Quest</Text>
-          <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
-          <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
+        <View className="bg-white rounded-lg px-4 gap-5 py-0" testID="add-quest-modal-content">
+          <Text className="text-lg font-bold text-center" testID="modal-title">
+            Add New Quest
+          </Text>
+          <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired testID="input-title" />
+          <ControlledTextArea name="description" label="Description:" placeholder="Enter description" testID="input-description" />
           <DatePickerModal name="startDate" minDate={toUTCISOString(dayjs())} label="Start Date" placeholder="Tap to pick start date" />
           <DatePickerModal
             name="endDate"
@@ -92,7 +96,7 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, 
             placeholder="Tap to pick end date"
             isEndDate
           />
-          <EmojiPickerComponent />
+          <EmojiPickerComponent testID="emoji-picker" />
           <PriorityPicker />
           <ControlledMultiSelect
             name="labels"

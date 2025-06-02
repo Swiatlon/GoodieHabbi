@@ -34,7 +34,7 @@ const QuestItemCheckmark: React.FC<QuestItemCheckmarkProps> = ({ completed, ques
   };
 
   return (
-    <TouchableOpacity onPress={handlePatch} className="ml-4">
+    <TouchableOpacity onPress={handlePatch} className="ml-4" testID="quest-item-checkmark">
       <Ionicons name={completed ? 'checkmark-circle' : 'ellipse-outline'} size={26} color={completed ? '#4caf50' : '#9e9e9e'} />
     </TouchableOpacity>
   );

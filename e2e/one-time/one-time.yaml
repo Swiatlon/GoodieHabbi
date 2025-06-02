@@ -1,0 +1,330 @@
+appId: com.wiercik.GoodieHabbi
+---
+# 🚀 Setup & Login
+- clearState
+- launchApp
+- runFlow:
+    file: ../commands/login.yaml
+
+# 📍 Navigate to One-Time Quests screen
+- runFlow:
+    file: ../commands/go-to.yaml
+    env:
+      navigationText: "One-Time Quests"
+
+# 👀 Verify One-Time Quests screen & UI elements
+- extendedWaitUntil:
+    visible:
+      id: "one-time-quests-screen"
+    timeout: 7000
+
+- assertVisible:
+    text: "No quests found."
+
+- assertVisible:
+    text: "Add new Quest"
+
+# 🕹 Open Add Quest modal and verify title & description inputs visible
+- tapOn:
+    text: "Add new Quest"
+    waitToSettleTimeoutMs: 1000
+
+- extendedWaitUntil:
+    visible:
+      id: "modal-title"
+    timeout: 5000
+
+- waitForAnimationToEnd
+
+# 🛑 Cancel button test
+- tapOn:
+    id: "btn-cancel"
+
+- assertNotVisible:
+    id: "modal-title"
+
+# 🕹 Open modal again for Add Quest flow
+- tapOn:
+    text: "Add new Quest"
+
+- extendedWaitUntil:
+    visible:
+      id: "modal-title"
+    timeout: 5000
+
+# ✍️ Fill inputs with inputText (focus and type in one step)
+- tapOn:
+    id: "input-title"
+- inputText: "My test quest"
+
+- tapOn:
+    id: "input-description"
+- inputText: "This is a description for the test quest."
+
+# ✅ Submit form
+- tapOn:
+    id: "btn-add-quest"
+
+# ⏳ Wait for loading & modal close
+- extendedWaitUntil:
+    notVisible:
+      id: "modal-title"
+    timeout: 10000
+
+# 🎉 Verify success snackbar
+- assertVisible:
+    text: "Quest added successfully!"
+
+# 📋 QUEST ITEM INTERACTION TESTS
+# ==========================================
+
+# 👀 Verify quest item is now visible
+- assertVisible:
+    id: "quest-item-container"
+
+- assertVisible:
+    text: "My test quest"
+
+# 🔍 Test opening quest details modal by tapping on quest item
+- tapOn:
+    id: "quest-item-touchable"
+    waitToSettleTimeoutMs: 1000
+
+- extendedWaitUntil:
+    visible:
+      id: "show-quest-modal"
+    timeout: 5000
+
+# 👀 Verify quest details modal content
+- assertVisible:
+    text: "My test quest"
+
+- assertVisible:
+    text: "This is a description for the test quest."
+
+- assertVisible:
+    id: "btn-delete-quest"
+
+- assertVisible:
+    id: "btn-edit-quest"
+
+- assertVisible:
+    id: "btn-close-quest-modal"
+
+# 🛑 Close quest details modal
+- tapOn:
+    id: "btn-close-quest-modal"
+
+- extendedWaitUntil:
+    notVisible:
+      id: "show-quest-modal"
+    timeout: 5000
+
+# ✏️ Test opening edit modal
+- tapOn:
+    id: "quest-item-touchable"
+
+- extendedWaitUntil:
+    visible:
+      id: "show-quest-modal"
+    timeout: 5000
+
+- tapOn:
+    id: "btn-edit-quest"
+
+- waitForAnimationToEnd
+
+# ✍️ Update quest details
+- tapOn:
+    id: "input-title"
+- inputText: " - Updated"
+
+- tapOn:
+    id: "input-description"
+- inputText: " Updated description."
+
+# ✅ Save changes
+- tapOn:
+    id: "btn-update-quest"
+
+# ⏳ Wait for update to complete
+- extendedWaitUntil:
+    notVisible:
+      id: "update-quest-modal"
+    timeout: 10000
+
+# 🎉 Verify update success
+- assertVisible:
+    text: "Quest updated successfully!"
+
+- assertVisible:
+    text: "My test quest - Updated"
+
+# ✅ Test quest completion checkbox
+- tapOn:
+    id: "quest-checkmark"
+    waitToSettleTimeoutMs: 2000
+
+# 👀 Verify quest is marked as completed (visual change)
+- assertVisible:
+    id: "quest-item-completed"
+
+# 🎉 Verify completion success message
+- assertVisible:
+    text: "Quest completed!"
+
+# ❌ Test unchecking quest
+- tapOn:
+    id: "quest-checkmark"
+    waitToSettleTimeoutMs: 2000
+
+# 👀 Verify quest is unmarked as completed
+- assertNotVisible:
+    id: "quest-item-completed"
+
+# 🗑️ Test quest deletion
+- tapOn:
+    id: "quest-item-touchable"
+
+- extendedWaitUntil:
+    visible:
+      id: "show-quest-modal"
+    timeout: 5000
+
+- tapOn:
+    id: "btn-delete-quest"
+
+# ⏳ Wait for deletion to complete
+- extendedWaitUntil:
+    notVisible:
+      id: "show-quest-modal"
+    timeout: 10000
+
+# 🎉 Verify deletion success
+- assertVisible:
+    text: "Quest deleted successfully!"
+
+# 👀 Verify quest is removed from list
+- assertVisible:
+    text: "No quests found."
+
+- assertNotVisible:
+    text: "My test quest - Updated"
+
+# 🧪 EDGE CASE TESTS
+# ==========================================
+
+# 📱 Test multiple quest creation and interaction
+- tapOn:
+    text: "Add new Quest"
+
+- extendedWaitUntil:
+    visible:
+      id: "modal-title"
+    timeout: 5000
+
+- tapOn:
+    id: "input-title"
+- inputText: "Quest 1"
+
+- tapOn:
+    id: "input-description"
+- inputText: "First quest description"
+
+- tapOn:
+    id: "btn-add-quest"
+
+- extendedWaitUntil:
+    notVisible:
+      id: "modal-title"
+    timeout: 10000
+
+# Add second quest
+- tapOn:
+    text: "Add new Quest"
+
+- extendedWaitUntil:
+    visible:
+      id: "modal-title"
+    timeout: 5000
+
+- tapOn:
+    id: "input-title"
+- inputText: "Quest 2"
+
+- tapOn:
+    id: "input-description"
+- inputText: "Second quest description"
+
+- tapOn:
+    id: "btn-add-quest"
+
+- extendedWaitUntil:
+    notVisible:
+      id: "modal-title"
+    timeout: 10000
+
+# 👀 Verify both quests are visible
+- assertVisible:
+    text: "Quest 1"
+
+- assertVisible:
+    text: "Quest 2"
+
+# 🔄 Test interaction with multiple quests
+- tapOn:
+    text: "Quest 1"
+    waitToSettleTimeoutMs: 1000
+
+- extendedWaitUntil:
+    visible:
+      id: "show-quest-modal"
+    timeout: 5000
+
+- assertVisible:
+    text: "First quest description"
+
+- tapOn:
+    id: "btn-close-quest-modal"
+
+- extendedWaitUntil:
+    notVisible:
+      id: "show-quest-modal"
+    timeout: 3000
+
+# 🧹 Cleanup - delete all test quests
+- tapOn:
+    text: "Quest 1"
+
+- extendedWaitUntil:
+    visible:
+      id: "show-quest-modal"
+    timeout: 5000
+
+- tapOn:
+    id: "btn-delete-quest"
+
+- extendedWaitUntil:
+    notVisible:
+      id: "show-quest-modal"
+    timeout: 10000
+
+- tapOn:
+    text: "Quest 2"
+
+- extendedWaitUntil:
+    visible:
+      id: "show-quest-modal"
+    timeout: 5000
+
+- tapOn:
+    id: "btn-delete-quest"
+
+- extendedWaitUntil:
+    notVisible:
+      id: "show-quest-modal"
+    timeout: 10000
+
+# 🏁 Final verification
+- assertVisible:
+    text: "No quests found."

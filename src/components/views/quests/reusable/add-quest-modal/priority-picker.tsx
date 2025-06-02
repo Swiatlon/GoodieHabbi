@@ -17,6 +17,10 @@ const getPriorityStyle = (priority: PriorityEnumType | null) => {
   }
 };
 
+interface ControlledPriorityPickerProps {
+  testID?: string;
+}
+
 const ControlledPriorityPicker: React.FC = () => {
   const { watch } = useFormContext();
   const selectedPriority = watch('priority') as PriorityEnumType | null;

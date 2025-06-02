@@ -38,7 +38,7 @@ const ShowQuestItemModal: React.FC<QuestShowItemModalProps> = ({ quest, isVisibl
 
   return (
     <Modal isVisible={isVisible} onClose={onClose} className="min-h-[200px]">
-      <View className="flex gap-4 h-full">
+      <View className="flex gap-4 h-full" testID="show-quest-modal">
         <View className="flex-row items-center gap-2">
           <Text className="text-lg font-bold">{quest.title}</Text>
           {quest.emoji && <Text className="text-2xl">{quest.emoji}</Text>}
@@ -54,10 +54,28 @@ const ShowQuestItemModal: React.FC<QuestShowItemModalProps> = ({ quest, isVisibl
         </View>
         <View className="flex-row justify-between mt-auto">
           <View className="flex-row gap-2">
-            <Button label="Delete" styleType="danger" onPress={handleDelete} startIcon={<Ionicons name="trash-outline" size={18} color="white" />} />
-            <Button label="Edit" styleType="accent" onPress={onUpdate} startIcon={<Ionicons name="create-outline" size={18} color="white" />} />
+            <Button
+              label="Delete"
+              styleType="danger"
+              onPress={handleDelete}
+              testID="btn-delete-quest"
+              startIcon={<Ionicons name="trash-outline" size={18} color="white" />}
+            />
+            <Button
+              label="Edit"
+              styleType="accent"
+              onPress={onUpdate}
+              testID="btn-edit-quest"
+              startIcon={<Ionicons name="create-outline" size={18} color="white" />}
+            />
           </View>
-          <Button label="Close" styleType="primary" onPress={onClose} startIcon={<Ionicons name="close-outline" size={18} color="white" />} />
+          <Button
+            label="Close"
+            styleType="primary"
+            onPress={onClose}
+            testID="btn-close-quest-modal"
+            startIcon={<Ionicons name="close-outline" size={18} color="white" />}
+          />
         </View>
       </View>
     </Modal>

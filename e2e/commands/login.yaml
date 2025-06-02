@@ -1,0 +1,16 @@
+appId: com.wiercik.GoodieHabbi
+---
+# 🧹 Clear app state & 🚀 Launch app
+- clearState
+- launchApp
+
+- runFlow:
+    file: ../commands/fill-auth-form.yaml
+    env:
+        email: "${E2E_EMAIL}"
+        password: "${E2E_PASSWORD}"
+        mainScreen: "login-screen"
+
+# 🔐 Perform login
+- tapOn:
+    id: "login-button"
