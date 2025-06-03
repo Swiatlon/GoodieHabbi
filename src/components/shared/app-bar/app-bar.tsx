@@ -42,14 +42,14 @@ const AppBar: React.FC = () => {
         </TouchableOpacity>
       </Animated.View>
       <Animated.View style={animatedLogoStyle}>
-        <TouchableOpacity onPress={handleLogoClick}>
-          <Image source={logoHeader} style={{ width: 50, height: 50 }} resizeMode="contain" />
+        <TouchableOpacity onPress={handleLogoClick} testID="logo-container">
+          <Image source={logoHeader} style={{ width: 50, height: 50 }} resizeMode="contain" testID="logo-image" />
         </TouchableOpacity>
       </Animated.View>
-      <View className={`${isAuthenticated ? 'opacity-100' : 'opacity-0'}`}>
+      <View className={`${isAuthenticated ? 'opacity-100' : 'opacity-0'}`} testID="profile-section">
         <Animated.View style={animatedProfileStyle}>
-          <TouchableOpacity onPress={handleProfileClick} style={animatedProfileStyle}>
-            <Image source={exampleUserIcon} style={{ width: 50, height: 50 }} resizeMode="contain" />
+          <TouchableOpacity onPress={handleProfileClick} testID="profile-container">
+            <Image source={exampleUserIcon} style={{ width: 50, height: 50 }} resizeMode="contain" testID="profile-image" />
           </TouchableOpacity>
         </Animated.View>
       </View>
