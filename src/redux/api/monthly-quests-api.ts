@@ -39,7 +39,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet', 'account'],
     }),
 
     updateMonthlyQuest: builder.mutation<void, IPutMonthlyQuestRequest>({
@@ -71,7 +71,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
           body: transformedPatchData,
         };
       },
-      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet', 'account'],
     }),
 
     deleteMonthlyQuest: builder.mutation<void, IDeleteMonthlyQuestRequest>({
@@ -79,7 +79,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
         url: `/monthly-quests/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet', 'account'],
     }),
   }),
 });

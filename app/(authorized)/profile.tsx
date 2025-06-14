@@ -25,37 +25,36 @@ const Profile: FC = () => {
     return <Loader fullscreen />;
   }
 
+  const {
+    email,
+    profile: { nickname, avatar, bio, joinDate, questsStats, goalsStats, xpProgress, badges },
+  } = data;
+
   return (
     <>
       <ScrollView className="flex-1 bg-white">
         <View className="flex-1 py-6 px-4 bg-white rounded-lg items-center">
-          <ProfileHeader
-            email={data.email}
-            nickname={data.nickname}
-            avatar={data.avatar}
-            bio={data.bio}
-            joinDate={data.joinDate}
-            isLoading={isLoading}
-          />
+          <ProfileHeader email={email} nickname={nickname} avatar={avatar} bio={bio} joinDate={joinDate} isLoading={isLoading} />
           <LevelExperienceSection
-            level={data.level}
-            userXp={data.userXp}
-            nextLevelTotalXpRequired={data.nextLevelTotalXpRequired}
-            isMaxLevel={data.isMaxLevel}
-            completedQuests={data.completedQuests}
-            totalQuests={data.totalQuests}
+            level={xpProgress.level}
+            userXp={xpProgress.currentXp}
+            nextLevelTotalXpRequired={xpProgress.nextLevelXpRequirement}
+            isMaxLevel={xpProgress.isMaxLevel}
+            completedQuests={questsStats.completedExistingQuests}
+            totalQuests={questsStats.existingQuests}
             isLoading={isLoading}
           />
           <GoalsSection
-            completedGoals={data.completedGoals}
-            totalGoals={data.totalGoals}
-            expiredGoals={data.expiredGoals}
-            abandonedGoals={data.abandonedGoals}
+            completed={goalsStats.completed}
+            totalCreated={goalsStats.totalCreated}
+            expired={goalsStats.expired}
+            active={goalsStats.active}
             isLoading={isLoading}
           />
-          <BadgesSection badges={data.badges} isLoading={isLoading} />
+          <BadgesSection badges={badges} isLoading={isLoading} />
         </View>
       </ScrollView>
+
       <ActionButtons onUpdatePress={handleUpdatePress} onDeletePress={handleDeletePress} isLoading={isLoading} />
 
       {isUpdateModalVisible && <UpdateProfileModal isVisible={isUpdateModalVisible} onClose={closeUpdateModal} user={data} />}

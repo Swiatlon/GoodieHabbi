@@ -39,7 +39,7 @@ export const questSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet', 'account'],
     }),
 
     updateOneTimeQuest: builder.mutation<void, IPutOneTimeQuestRequest>({
@@ -71,7 +71,7 @@ export const questSlice = Api.injectEndpoints({
           body: transformedPatchData,
         };
       },
-      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet', 'account'],
     }),
 
     deleteOneTimeQuest: builder.mutation<void, IDeleteOneTimeQuestRequest>({
@@ -79,7 +79,7 @@ export const questSlice = Api.injectEndpoints({
         url: `/one-time-quests/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet', 'account'],
     }),
   }),
 });

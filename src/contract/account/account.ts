@@ -9,24 +9,43 @@ export interface IBadge {
   text: string;
 }
 
+export interface IQuestsStats {
+  totalCreated: number;
+  completed: number;
+  existingQuests: number;
+  completedExistingQuests: number;
+}
+
+export interface IGoalsStats {
+  totalCreated: number;
+  completed: number;
+  expired: number;
+  active: number;
+}
+
+export interface IXpProgress {
+  currentXp: number;
+  level: number;
+  nextLevelXpRequirement: number;
+  isMaxLevel: boolean;
+}
+
+export interface IProfile {
+  nickname: NullableString;
+  avatar: NullableString;
+  bio: NullableString;
+  joinDate: string;
+  questsStats: IQuestsStats;
+  goalsStats: IGoalsStats;
+  xpProgress: IXpProgress;
+  badges: IBadge[];
+}
+
 export interface IAccountDataResponse {
   login: NullableString;
   email: string;
-  nickname: NullableString;
-  avatar: NullableString;
-  completedQuests: number;
-  totalQuests: number;
-  completedGoals: number;
-  totalGoals: number;
-  expiredGoals: number;
-  abandonedGoals: number;
-  level: number;
-  userXp: number;
-  nextLevelTotalXpRequired: number;
-  isMaxLevel: boolean;
-  bio: NullableString;
-  joinDate: string;
-  badges: IBadge[];
+  profile: IProfile;
+  preferences: {};
 }
 
 // PUT

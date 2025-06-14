@@ -1,20 +1,20 @@
 import { calculateProgress } from '@/utils/utils/utils';
 
-export const calculateGoalPercentages = (completedGoals: number, expiredGoals: number, abandonedGoals: number, totalGoals = 0) => {
+export const calculateGoalPercentages = (completedGoals: number, expiredGoals: number, activeGoals: number, totalGoals = 0) => {
   const completed = calculateProgress(completedGoals, totalGoals);
   const expired = calculateProgress(expiredGoals, totalGoals);
-  const abandoned = calculateProgress(abandonedGoals, totalGoals);
+  const active = calculateProgress(activeGoals, totalGoals);
 
   return {
     percentages: {
       completed,
       expired,
-      abandoned,
+      active,
     },
   };
 };
 
-export type GoalType = 'completed' | 'expired' | 'abandoned';
+export type GoalType = 'completed' | 'expired' | 'active';
 
 export interface GoalData {
   type: GoalType;
@@ -29,5 +29,5 @@ export interface GoalTypeStyle {
 export const goalTypeStyles: Record<GoalType, GoalTypeStyle> = {
   completed: { color: 'bg-green-500', name: 'Completed' },
   expired: { color: 'bg-red-500', name: 'Expired' },
-  abandoned: { color: 'bg-gray-500', name: 'Abandoned' },
+  active: { color: 'bg-gray-500', name: 'Active' },
 };

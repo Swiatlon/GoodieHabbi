@@ -39,7 +39,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet', 'account'],
     }),
 
     updateDailyQuest: builder.mutation<void, IPutDailyQuestRequest>({
@@ -71,7 +71,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
           body: transformedPatchData,
         };
       },
-      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet', 'account'],
     }),
 
     deleteDailyQuest: builder.mutation<void, IDeleteDailyQuestRequest>({
@@ -79,7 +79,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
         url: `/daily-quests/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet', 'account'],
     }),
   }),
 });
