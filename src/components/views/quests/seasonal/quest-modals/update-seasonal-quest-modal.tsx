@@ -27,6 +27,7 @@ interface UpdateSeasonalQuestModalProps extends IBaseModalProps {
 interface IFormValues extends Omit<IPostSeasonalQuestRequest, 'season'> {
   season: SeasonEnumType | null;
 }
+
 const UpdateSeasonalQuestModal: React.FC<UpdateSeasonalQuestModalProps> = ({ isVisible, onClose, quest }) => {
   const { showSnackbar } = useSnackbar();
   const [updateQuest, { isLoading }] = useUpdateSeasonalQuestMutation();
@@ -102,6 +103,7 @@ const UpdateSeasonalQuestModal: React.FC<UpdateSeasonalQuestModalProps> = ({ isV
             name="labels"
             label="Tags:"
             placeholder="Select quest tags"
+            noContentMessage="No tags available, please create some first"
             options={questLabels.map(item => ({ ...item, label: item.value }))}
           />
         </View>

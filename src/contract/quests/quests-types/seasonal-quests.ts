@@ -8,9 +8,9 @@ export interface IGetSeasonalQuestRequest {
   id: number;
 }
 
-export interface IPostSeasonalQuestRequest extends Omit<ISeasonalQuest, 'id' | 'type'> {}
+export interface IPostSeasonalQuestRequest extends Omit<ISeasonalQuest, 'id' | 'type' | 'statistics'> {}
 
-export interface IPutSeasonalQuestRequest extends Omit<ISeasonalQuest, 'type'> {}
+export interface IPutSeasonalQuestRequest extends Omit<ISeasonalQuest, 'type' | 'statistics'> {}
 
 export interface IPatchSeasonalQuestRequest extends Partial<Omit<ISeasonalQuest, 'type'>> {
   id: number;

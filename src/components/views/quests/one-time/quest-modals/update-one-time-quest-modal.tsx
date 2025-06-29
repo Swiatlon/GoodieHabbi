@@ -105,6 +105,7 @@ const UpdateOneTimeQuestModal: React.FC<UpdateOneTimeQuestModalProps> = ({ isVis
             name="labels"
             label="Tags:"
             placeholder="Select quest tags"
+            noContentMessage="No tags available, please create some first"
             options={questLabels.map(item => ({ ...item, label: item.value }))}
           />
         </View>

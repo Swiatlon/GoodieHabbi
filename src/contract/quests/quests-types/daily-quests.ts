@@ -8,9 +8,9 @@ export interface IGetDailyQuestRequest {
   id: number;
 }
 
-export interface IPostDailyQuestRequest extends Omit<IDailyQuest, 'id' | 'type'> {}
+export interface IPostDailyQuestRequest extends Omit<IDailyQuest, 'id' | 'type' | 'statistics'> {}
 
-export interface IPutDailyQuestRequest extends Omit<IDailyQuest, 'type'> {}
+export interface IPutDailyQuestRequest extends Omit<IDailyQuest, 'type' | 'statistics'> {}
 
 export interface IPatchDailyQuestRequest extends Partial<Omit<IDailyQuest, 'type'>> {
   id: number;

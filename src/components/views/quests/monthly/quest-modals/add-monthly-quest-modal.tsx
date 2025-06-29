@@ -101,6 +101,7 @@ const AddMonthlyQuestModal: React.FC<AddMonthlyQuestModalProps> = ({ isVisible, 
             name="labels"
             label="Tags:"
             placeholder="Select quest tags"
+            noContentMessage="No tags available, please create some first"
             options={questLabels.map(item => ({ ...item, label: item.value }))}
           />
           <DayPicker label="Start Day:" name="startDay" isRequired placeholder="Select start day" />

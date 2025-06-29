@@ -9,6 +9,7 @@ interface ControlledMultiSelectProps {
   label?: string;
   error?: string;
   className?: string;
+  noContentMessage?: string;
 }
 
 const ControlledMultiSelect: React.FC<ControlledMultiSelectProps> = ({ label, name, ...props }) => {

@@ -9,9 +9,9 @@ export interface IGetWeeklyQuestRequest {
   id: number;
 }
 
-export interface IPostWeeklyQuestRequest extends Omit<IWeeklyQuest, 'id' | 'type'> {}
+export interface IPostWeeklyQuestRequest extends Omit<IWeeklyQuest, 'id' | 'type' | 'statistics'> {}
 
-export interface IPutWeeklyQuestRequest extends Omit<IWeeklyQuest, 'type'> {}
+export interface IPutWeeklyQuestRequest extends Omit<IWeeklyQuest, 'type' | 'statistics'> {}
 
 export interface IPatchWeeklyQuestRequest extends Partial<Omit<IWeeklyQuest, 'type'>> {
   id: number;

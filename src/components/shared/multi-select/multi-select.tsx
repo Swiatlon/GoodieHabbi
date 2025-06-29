@@ -20,10 +20,14 @@ export interface MultiSelectProps {
   className?: string;
   modalTitle?: string;
   maxVisibleChips?: number;
+  noContentMessage?: string;
 }
 
 const MultiSelect = forwardRef<View, MultiSelectProps>(
-  ({ placeholder, options, selectedOptions, onChange, error, className = '', modalTitle = 'Select Options', maxVisibleChips = 2 }, ref) => {
+  (
+    { placeholder, options, selectedOptions, onChange, error, className = '', modalTitle = 'Select Options', maxVisibleChips = 2, noContentMessage },
+    ref
+  ) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
 
     const { visibleChips, overflowCount } = useMemo(() => {
@@ -98,7 +102,16 @@ const MultiSelect = forwardRef<View, MultiSelectProps>(
                   <Ionicons name="close" size={24} color="#000" />
                 </TouchableOpacity>
               </View>
-              <FlatList data={options} className="flex-1" renderItem={renderItem} />
+
+              {options.length === 0 ? (
+                <View className="flex-1 items-center justify-center py-12 px-6">
+                  <Ionicons name="information-circle-outline" size={40} color="#9CA3AF" />
+                  <Text className="text-gray-400 text-base mt-4 text-center">{noContentMessage || 'No options available, add some data'}</Text>
+                </View>
+              ) : (
+                <FlatList data={options} className="flex-1" renderItem={renderItem} />
+              )}
+
               <View className="p-4 border-t border-gray-200 flex-row justify-between">
                 <Button onPress={handleClear} variant="contained" styleType="secondary" className="px-4" label="Clear All" />
                 <Button onPress={toggleModal} variant="contained" styleType="primary" className="px-4" label="Done" />
