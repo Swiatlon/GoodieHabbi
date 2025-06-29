@@ -1,7 +1,8 @@
-import { IQuest, WeekdayEnumType } from '../base-quests';
+import { IQuest, IRecurringQuestStats, WeekdayEnumType } from '../base-quests';
 
 export interface IWeeklyQuest extends IQuest {
   weekdays: WeekdayEnumType[];
+  statistics: IRecurringQuestStats;
 }
 
 export interface IGetWeeklyQuestRequest {

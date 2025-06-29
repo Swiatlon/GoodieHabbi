@@ -1,6 +1,8 @@
-import { IQuest } from '../base-quests';
+import { IQuest, IRecurringQuestStats } from '../base-quests';
 
-export interface IDailyQuest extends IQuest {}
+export interface IDailyQuest extends IQuest {
+  statistics: IRecurringQuestStats;
+}
 
 export interface IGetDailyQuestRequest {
   id: number;

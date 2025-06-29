@@ -1,8 +1,9 @@
-import { IQuest } from '../base-quests';
+import { IQuest, IRecurringQuestStats } from '../base-quests';
 
 export interface IMonthlyQuest extends IQuest {
   startDay: number;
   endDay: number;
+  statistics: IRecurringQuestStats;
 }
 
 export interface IGetMonthlyQuestRequest {

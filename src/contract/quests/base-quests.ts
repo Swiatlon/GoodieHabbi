@@ -1,4 +1,5 @@
 import { IQuestLabel } from './labels/labels-quests';
+import { NullableString } from '@/types/global-types';
 
 export const PriorityEnum = {
   LOW: 'Low',
@@ -46,6 +47,15 @@ export const QuestTypesEnum = {
 } as const;
 
 export type QuestTypesEnumType = (typeof QuestTypesEnum)[keyof typeof QuestTypesEnum];
+
+export interface IRecurringQuestStats {
+  completionCount: number;
+  failureCount: number;
+  occurrenceCount: number;
+  currentStreak: number;
+  longestStreak: number;
+  lastCompletedAt: NullableString;
+}
 
 export interface IQuest {
   id: number;
