@@ -1,6 +1,6 @@
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import Button from '@/components/shared/button/button';
 import { WeekdayEnum, WeekdayEnumType } from '@/contract/quests/base-quests';
 
@@ -33,17 +33,19 @@ const WeeklyPicker: React.FC = () => {
             <Text className="text-sm font-semibold text-gray-500">
               Days:<Text className="text-red-500">*</Text>
             </Text>
-            <View className="flex-row flex-wrap gap-2">
-              {DAYS_OF_WEEK.map(({ label, value: dayValue }) => (
-                <Button
-                  key={dayValue}
-                  label={label}
-                  onPress={() => onChange(toggleSelection(selectedDays, dayValue))}
-                  styleType={selectedDays.includes(dayValue) ? 'primary' : 'secondary'}
-                  className="px-3 py-2 rounded-lg"
-                />
-              ))}
-            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-2">
+              <View className="flex-row gap-2">
+                {DAYS_OF_WEEK.map(({ label, value: dayValue }) => (
+                  <Button
+                    key={dayValue}
+                    label={label}
+                    onPress={() => onChange(toggleSelection(selectedDays, dayValue))}
+                    styleType={selectedDays.includes(dayValue) ? 'primary' : 'secondary'}
+                    className="px-3 py-2 rounded-lg"
+                  />
+                ))}
+              </View>
+            </ScrollView>
             {error && <Text className="text-red-500 text-xs">{error.message}</Text>}
           </View>
         );

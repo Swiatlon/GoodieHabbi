@@ -17,7 +17,7 @@ const frequency = 'weekly';
 const Weekly = () => {
   const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
   const [isGoalSetModalVisible, setIsGoalSetModalVisible] = useState(false);
-  const { data: WeeklyGoal = null } = useGetActiveGoalQuery(frequency);
+  const { data: weeklyGoal = null } = useGetActiveGoalQuery(frequency);
   const { isLoading } = useGetAllQuests();
   const { showSnackbar } = useSnackbar();
   const [updateActiveGoal] = useUpdateActiveGoalMutation();
@@ -32,8 +32,8 @@ const Weekly = () => {
   const handleConfirmCompletion = async () => {
     try {
       await updateActiveGoal({
-        goalType: frequency,
-        data: frequency,
+        id: weeklyGoal!.id,
+        isCompleted: !weeklyGoal!.isCompleted,
       }).unwrap();
 
       showSnackbar({
@@ -60,8 +60,8 @@ const Weekly = () => {
         <View className="flex-1 p-6 bg-white gap-6">
           <GoalHeader title="Weekly goal" />
           <GoalTimeSection frequency={frequency} />
-          <GoalQuestSection selectedQuest={WeeklyGoal} onComplete={openConfirmModal} />
-          <GoalSetButton onPress={openSetGoalModal} disabled={!!WeeklyGoal} />
+          <GoalQuestSection selectedQuest={weeklyGoal} onComplete={openConfirmModal} />
+          <GoalSetButton onPress={openSetGoalModal} disabled={!!weeklyGoal} />
         </View>
       </FormProvider>
 

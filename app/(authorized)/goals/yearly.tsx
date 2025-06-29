@@ -17,7 +17,7 @@ const frequency = 'yearly';
 const Yearly = () => {
   const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
   const [isGoalSetModalVisible, setIsGoalSetModalVisible] = useState(false);
-  const { data: YearlyGoal = null } = useGetActiveGoalQuery(frequency);
+  const { data: yearlyGoal = null } = useGetActiveGoalQuery(frequency);
   const { isLoading } = useGetAllQuests();
   const { showSnackbar } = useSnackbar();
   const [updateActiveGoal] = useUpdateActiveGoalMutation();
@@ -32,8 +32,8 @@ const Yearly = () => {
   const handleConfirmCompletion = async () => {
     try {
       await updateActiveGoal({
-        goalType: frequency,
-        data: frequency,
+        id: yearlyGoal!.id,
+        isCompleted: !yearlyGoal!.isCompleted,
       }).unwrap();
 
       showSnackbar({
@@ -60,8 +60,8 @@ const Yearly = () => {
         <View className="flex-1 p-6 bg-white gap-6">
           <GoalHeader title="Yearly goal" />
           <GoalTimeSection frequency={frequency} />
-          <GoalQuestSection selectedQuest={YearlyGoal} onComplete={openConfirmModal} />
-          <GoalSetButton onPress={openSetGoalModal} disabled={!!YearlyGoal} />
+          <GoalQuestSection selectedQuest={yearlyGoal} onComplete={openConfirmModal} />
+          <GoalSetButton onPress={openSetGoalModal} disabled={!!yearlyGoal} />
         </View>
       </FormProvider>
 

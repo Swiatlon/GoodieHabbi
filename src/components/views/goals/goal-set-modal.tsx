@@ -6,9 +6,9 @@ import Button from '@/components/shared/button/button';
 import Modal from '@/components/shared/modal/modal';
 import Select, { SelectItemValue } from '@/components/shared/select/select';
 import { IGetActiveGoalResponse } from '@/contract/goals/goals.contract';
-import { useGetAllQuests } from '@/hooks/quests/useGetAllQuests';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateGoalMutation } from '@/redux/api/goals/goals-api';
+import { useGetEligibleQuestsForGoalsQuery } from '@/redux/api/today-quests-api';
 
 interface GoalSetModalProps {
   isVisible: boolean;
@@ -17,10 +17,11 @@ interface GoalSetModalProps {
 }
 
 const GoalSetModal: React.FC<GoalSetModalProps> = ({ isVisible, onClose, frequency }) => {
-  const { data: fetchedQuests = [], isLoading } = useGetAllQuests();
+  const { data: fetchedQuests = [], isLoading } = useGetEligibleQuestsForGoalsQuery();
   const [selectedQuest, setSelectedQuest] = useState<IGetActiveGoalResponse | null>(null);
   const { showSnackbar } = useSnackbar();
   const [sendGoal] = useCreateGoalMutation();
+  console.log('fetchedQuests', fetchedQuests);
 
   const options = useMemo(
     () =>

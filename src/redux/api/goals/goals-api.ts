@@ -20,11 +20,13 @@ export const goalSliceAPI = Api.injectEndpoints({
       providesTags: ['goals'],
     }),
 
-    updateActiveGoal: builder.mutation<void, { goalType: string; data: string }>({
-      query: ({ goalType, data }) => ({
-        url: `goals/active/${goalType}`,
+    updateActiveGoal: builder.mutation<void, { id: number; isCompleted: boolean }>({
+      query: ({ id, isCompleted }) => ({
+        url: `goals/${id}/complete`,
         method: 'PATCH',
-        body: data,
+        body: {
+          isCompleted,
+        },
       }),
       invalidatesTags: ['goals', 'statsProfile'],
     }),

@@ -32,8 +32,8 @@ const Daily = () => {
   const handleConfirmCompletion = async () => {
     try {
       await updateActiveGoal({
-        goalType: frequency,
-        data: frequency,
+        id: dailyGoal!.id,
+        isCompleted: !dailyGoal!.isCompleted,
       }).unwrap();
 
       showSnackbar({

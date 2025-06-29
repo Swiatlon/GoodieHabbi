@@ -32,8 +32,8 @@ const Monthly = () => {
   const handleConfirmCompletion = async () => {
     try {
       await updateActiveGoal({
-        goalType: frequency,
-        data: frequency,
+        id: MonthlyGoal!.id,
+        isCompleted: !MonthlyGoal!.isCompleted,
       }).unwrap();
 
       showSnackbar({

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import React from 'react';
 import { Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -35,7 +36,7 @@ const ShowQuestItemModalGoals: React.FC<GoalShowItemModalProps> = ({ quest, isVi
           </View>
         )}
 
-        {'statistics' in quest && (
+        {'statistics' in quest && quest.statistics !== null && (
           <View className="flex-row justify-evenly gap-6 w-full pt-6 border-t border-gray-200">
             <View className="items-center">
               <Ionicons name="checkmark-done-circle-outline" size={28} color="green" />
