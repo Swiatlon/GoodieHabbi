@@ -27,7 +27,7 @@ const GoalSetModal: React.FC<GoalSetModalProps> = ({ isVisible, onClose, frequen
       fetchedQuests
         .filter(item => !item.isCompleted)
         .map(quest => ({
-          label: `${quest.emoji} ${quest.title}`,
+          label: `${quest.emoji ?? ''} ${quest.title}`,
           value: quest.id,
         })),
     [fetchedQuests]
