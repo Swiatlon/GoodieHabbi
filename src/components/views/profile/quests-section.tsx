@@ -5,14 +5,14 @@ import RatioBar from '@/components/shared/ratio-bar/ratio-bar';
 import { IStatsProfileResponse } from '@/contract/stats/stats.contract';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 
-interface GoalsSectionProps {
-  goals: IStatsProfileResponse['goals'];
+interface QuestsSectionProps {
+  quests: IStatsProfileResponse['quests'];
   isLoading: boolean;
 }
 
-const GoalsSection: React.FC<GoalsSectionProps> = ({ goals, isLoading }) => {
+const QuestsSection: React.FC<QuestsSectionProps> = ({ quests, isLoading }) => {
   const animationStyle = useTransformFade({ isContentLoading: isLoading, delay: 500 });
-  const { completed, inProgress, currentTotal } = goals;
+  const { completed, inProgress, currentTotal } = quests;
 
   const segments = [
     { label: 'In Progress', value: inProgress, color: '#3b82f6' },
@@ -21,7 +21,7 @@ const GoalsSection: React.FC<GoalsSectionProps> = ({ goals, isLoading }) => {
 
   return (
     <Animated.View style={animationStyle} className="px-4 py-6 bg-gray-100 rounded-lg shadow-lg w-full mb-6">
-      <Text className="text-lg font-bold text-center mb-4">Goals Overview</Text>
+      <Text className="text-lg font-bold text-center mb-4">Quests Overview</Text>
 
       <View className="flex-row justify-around mb-4">
         <View className="items-center flex-1">
@@ -43,4 +43,4 @@ const GoalsSection: React.FC<GoalsSectionProps> = ({ goals, isLoading }) => {
   );
 };
 
-export default GoalsSection;
+export default QuestsSection;

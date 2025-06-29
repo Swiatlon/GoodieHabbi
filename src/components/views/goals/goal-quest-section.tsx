@@ -20,7 +20,7 @@ const GoalQuestSection: React.FC<QuestSectionProps> = ({ selectedQuest, onComple
       {selectedQuest ? (
         <>
           <AllQuestItemGoals quest={selectedQuest} />
-          {onComplete && <CompleteGoalButton onPress={onComplete} disabled={!selectedQuest.isCompleted} />}
+          {onComplete && <CompleteGoalButton onPress={onComplete} disabled={selectedQuest.isCompleted} />}
         </>
       ) : (
         <View className="p-4 rounded-lg w-full items-center">

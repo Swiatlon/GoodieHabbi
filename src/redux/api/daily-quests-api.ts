@@ -71,7 +71,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
           body: transformedPatchData,
         };
       },
-      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet', 'statsProfile'],
     }),
 
     deleteDailyQuest: builder.mutation<void, IDeleteDailyQuestRequest>({

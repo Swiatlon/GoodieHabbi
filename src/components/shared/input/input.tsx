@@ -22,10 +22,12 @@ const Input = forwardRef<TextInput, InputProps>(
     return (
       <View className="flex gap-2" testID={`${testID}-container`}>
         {label && (
-          <Text testID={`${testID}-label`} className="text-sm font-semibold text-gray-500">
-            {label}
-            {isRequired ? ' *' : ''}
-          </Text>
+          <View className="flex-row items-center">
+            <Text testID={`${testID}-label`} className="text-sm font-semibold text-gray-500">
+              {label}
+            </Text>
+            {isRequired && <Text className="text-red-500 text-xs"> *</Text>}
+          </View>
         )}
         <View testID={`${testID}-wrapper`} className={`pl-1 flex-row items-center border rounded-md ${error ? 'border-red-500' : 'border-gray-300'}`}>
           <TextInput

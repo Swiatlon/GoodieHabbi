@@ -2,14 +2,20 @@ import React, { useMemo } from 'react';
 import { Text, Image } from 'react-native';
 import Animated from 'react-native-reanimated';
 import userLogo from '@/assets/images/exampleUserIconLogin.png';
-import { IAccountDataResponse } from '@/contract/account/account';
+import { IUserProfile } from '@/contract/account/account';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 
-interface ProfileHeaderProps extends Pick<IAccountDataResponse, 'email' | 'nickname' | 'avatar' | 'bio' | 'joinDate'> {
+interface ProfileHeaderProps {
+  login: string;
+  email: string;
+  joinDate: string;
+  profile: IUserProfile;
   isLoading: boolean;
 }
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ email, nickname, avatar, bio, joinDate, isLoading }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ email, joinDate, profile, isLoading }) => {
+  const { nickname, avatar, bio } = profile;
+
   const avatarSource = useMemo(() => (avatar ? { uri: avatar } : userLogo), [avatar]);
   const animationStyle = useTransformFade({ isContentLoading: isLoading, delay: 100 });
 

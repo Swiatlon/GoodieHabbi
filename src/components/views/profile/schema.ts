@@ -38,4 +38,8 @@ export const profilePasswordSchema = yup.object().shape({
 
 export const deleteAccountPasswordSchema = yup.object().shape({
   password: passwordValidation,
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('password')], 'Passwords do not match')
+    .required('Confirm Password is required'),
 });

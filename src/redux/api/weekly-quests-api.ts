@@ -64,7 +64,7 @@ export const weeklyQuestSlice = Api.injectEndpoints({
         method: 'PATCH',
         body: patchData,
       }),
-      invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet', 'statsProfile'],
     }),
 
     deleteWeeklyQuest: builder.mutation<void, IDeleteWeeklyQuestRequest>({

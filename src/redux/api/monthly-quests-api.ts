@@ -71,7 +71,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
           body: transformedPatchData,
         };
       },
-      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet', 'statsProfile'],
     }),
 
     deleteMonthlyQuest: builder.mutation<void, IDeleteMonthlyQuestRequest>({

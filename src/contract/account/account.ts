@@ -1,35 +1,28 @@
 import { NullableString } from '@/types/global-types';
 
-export interface IUserPreferences {}
-
-// GET
 export interface IGetAccountRequest {}
 
 export interface IBadge {
   text: string;
 }
 
-export interface IAccountDataResponse {
-  login: NullableString;
-  email: string;
+export type UserPreferencesType = Record<string, unknown>;
+
+export interface IUserProfile {
   nickname: NullableString;
   avatar: NullableString;
-  completedQuests: number;
-  totalQuests: number;
-  completedGoals: number;
-  totalGoals: number;
-  expiredGoals: number;
-  abandonedGoals: number;
-  level: number;
-  userXp: number;
-  nextLevelTotalXpRequired: number;
-  isMaxLevel: boolean;
   bio: NullableString;
-  joinDate: string;
   badges: IBadge[];
 }
 
-// PUT
+export interface IAccountDataResponse {
+  login: string;
+  email: string;
+  joinDate: string;
+  profile: IUserProfile;
+  preferences: UserPreferencesType[];
+}
+
 export interface IUpdateAccountRequest {
   login: NullableString;
   nickname: NullableString;
@@ -50,4 +43,12 @@ export interface IDeleteAccountResponse {}
 
 export interface IDeleteAccountRequest {
   password: string;
+  confirmPassword: string;
 }
+
+export interface IWipeoutDataRequest {
+  password: string;
+  confirmPassword: string;
+}
+
+export interface IWipeoutDataResponse {}

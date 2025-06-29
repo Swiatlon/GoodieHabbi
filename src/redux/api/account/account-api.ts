@@ -1,4 +1,4 @@
-import Api from '../../config/api';
+import Api, { allTags } from '../../config/api';
 import {
   IAccountDataResponse,
   IGetAccountRequest,
@@ -8,6 +8,8 @@ import {
   IUpdatePasswordRequest,
   IUpdatePasswordResponse,
   IDeleteAccountRequest,
+  IWipeoutDataResponse,
+  IWipeoutDataRequest,
 } from '@/contract/account/account';
 import { RootStateType } from '@/redux/config/store';
 
@@ -40,16 +42,31 @@ export const accountSliceAPI = Api.injectEndpoints({
     }),
 
     deleteAccount: builder.mutation<IDeleteAccountResponse, IDeleteAccountRequest>({
-      query: ({ password }) => ({
+      query: ({ password, confirmPassword }) => ({
         url: `/accounts/me`,
         method: 'DELETE',
-        body: { password },
+        body: { password, confirmPassword },
       }),
-      invalidatesTags: ['account'],
+      invalidatesTags: allTags,
+    }),
+
+    wipeoutAccountData: builder.mutation<IWipeoutDataResponse, IWipeoutDataRequest>({
+      query: ({ password, confirmPassword }) => ({
+        url: `/accounts/me/wipeout-data`,
+        method: 'POST',
+        body: { password, confirmPassword },
+      }),
+      invalidatesTags: allTags,
     }),
   }),
 });
 
-export const { useGetAccountDataQuery, useUpdateAccountDataMutation, useUpdatePasswordMutation, useDeleteAccountMutation } = accountSliceAPI;
+export const {
+  useGetAccountDataQuery,
+  useUpdateAccountDataMutation,
+  useUpdatePasswordMutation,
+  useDeleteAccountMutation,
+  useWipeoutAccountDataMutation,
+} = accountSliceAPI;
 
 export const selectAccountData = (state: RootStateType) => state.api.queries;

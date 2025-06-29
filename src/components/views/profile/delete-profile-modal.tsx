@@ -23,6 +23,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isVisible, onCl
     resolver: yupResolver(deleteAccountPasswordSchema),
     defaultValues: {
       password: '',
+      confirmPassword: '',
     },
   });
   const [deleteAccount, { isLoading }] = useDeleteAccountMutation();
@@ -30,9 +31,9 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isVisible, onCl
   const { showSnackbar } = useSnackbar();
   const { handleSubmit } = methods;
 
-  const handleDeleteAccount = async (data: { password: string }) => {
+  const handleDeleteAccount = async (data: { password: string; confirmPassword: string }) => {
     try {
-      await deleteAccount({ password: data.password }).unwrap();
+      await deleteAccount({ password: data.password, confirmPassword: data.confirmPassword }).unwrap();
       onClose();
       showSnackbar({ text: 'Account deleted successfully!', variant: 'success' });
       handleLogout();
@@ -69,6 +70,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isVisible, onCl
         <FormProvider {...methods}>
           <View className="flex gap-4">
             <ControlledPasswordInput name="password" label="Enter Password" placeholder="Enter your password" secureTextEntry isRequired />
+            <ControlledPasswordInput name="confirmPassword" label="Confirm Password" placeholder="Confirm your password" secureTextEntry isRequired />
           </View>
         </FormProvider>
       </View>

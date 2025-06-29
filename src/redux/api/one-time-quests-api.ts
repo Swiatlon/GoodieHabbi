@@ -71,7 +71,7 @@ export const questSlice = Api.injectEndpoints({
           body: transformedPatchData,
         };
       },
-      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet', 'statsProfile'],
     }),
 
     deleteOneTimeQuest: builder.mutation<void, IDeleteOneTimeQuestRequest>({

@@ -13,10 +13,10 @@ import { useUpdateAccountDataMutation, useUpdatePasswordMutation } from '@/redux
 import { IApiError, NullableString } from '@/types/global-types';
 
 interface FormDataProfile {
+  login: NullableString;
   nickname: NullableString;
   email: string;
   bio: NullableString;
-  login: NullableString;
 }
 
 interface FormDataPassword {
@@ -25,11 +25,9 @@ interface FormDataPassword {
   confirmNewPassword: string;
 }
 
-interface UpdateProfileModalProps extends IBaseModalProps {
-  user: FormDataProfile;
-}
+interface UpdateProfileModalProps extends IBaseModalProps, FormDataProfile {}
 
-const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onClose, user }) => {
+const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onClose, login, nickname, email, bio }) => {
   const { showSnackbar } = useSnackbar();
   const [updateProfile, { isLoading }] = useUpdateAccountDataMutation();
   const [updatePassword] = useUpdatePasswordMutation();
@@ -37,10 +35,10 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onCl
   const profileMethods = useForm({
     resolver: yupResolver(profileSchema),
     defaultValues: {
-      login: user.login,
-      nickname: user.nickname,
-      email: user.email,
-      bio: user.bio,
+      login: login,
+      nickname: nickname,
+      email: email,
+      bio: bio,
     },
   });
 
@@ -83,7 +81,7 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onCl
   return (
     <Modal isVisible={isVisible} onClose={onClose} isLoading={isLoading} loadingMessage="Updating profile...">
       <View className="bg-white p-6 rounded-lg">
-        <Text className="text-lg font-bold mb-4 text-center">Update Profile</Text>
+        <Text className="text-lg font-bold mb-2 text-center">Update Profile</Text>
         <FormProvider {...profileMethods}>
           <View className="flex gap-4">
             <ControlledInput name="login" label="Login:" placeholder="Enter login" />
@@ -93,13 +91,13 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onCl
             <Button
               label="Save Profile"
               onPress={profileMethods.handleSubmit(handleSaveProfile)}
-              className="mx-auto"
+              className="mx-auto my-2"
               startIcon={<Ionicons name="save" size={20} color="#fff" />}
             />
           </View>
         </FormProvider>
         <View className="h-0.5 bg-gray-300 my-6" />
-        <Text className="text-lg font-bold mb-4">Change Password</Text>
+        <Text className="text-lg font-bold mb-2">Change Password</Text>
         <FormProvider {...passwordMethods}>
           <View className="flex gap-4">
             <ControlledPasswordInput name="oldPassword" label="Old Password:" placeholder="Enter new password" secureTextEntry isRequired />
@@ -114,7 +112,7 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onCl
             <Button
               label="Change Password"
               onPress={passwordMethods.handleSubmit(handleChangePassword)}
-              className="mx-auto"
+              className="mx-auto my-2"
               startIcon={<Ionicons name="lock-closed" size={20} color="#fff" />}
             />
           </View>

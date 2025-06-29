@@ -64,7 +64,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
         method: 'PATCH',
         body: patchData,
       }),
-      invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet', 'statsProfile'],
     }),
 
     deleteSeasonalQuest: builder.mutation<void, IDeleteSeasonalQuestRequest>({
