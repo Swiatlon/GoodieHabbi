@@ -26,7 +26,12 @@ const Input = forwardRef<TextInput, InputProps>(
             <Text testID={`${testID}-label`} className="text-sm font-semibold text-gray-500">
               {label}
             </Text>
-            {isRequired && <Text className="text-red-500 text-xs"> *</Text>}
+            {isRequired && (
+              <Text className="text-red-500 text-xs" testID="asteriks">
+                {' '}
+                *
+              </Text>
+            )}
           </View>
         )}
         <View testID={`${testID}-wrapper`} className={`pl-1 flex-row items-center border rounded-md ${error ? 'border-red-500' : 'border-gray-300'}`}>

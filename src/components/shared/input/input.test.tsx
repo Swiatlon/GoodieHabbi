@@ -2,8 +2,8 @@ import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react-native';
 import Input from './input';
 
-// Mock Ionicons for Jest to avoid errors during testing
 jest.mock('@expo/vector-icons', () => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports
   const { Text } = require('react-native');
   return {
     Ionicons: () => <Text>Icon</Text>,
@@ -26,10 +26,13 @@ describe('Input Component', () => {
 
     const label = screen.getByTestId('input-label');
     expect(label).toBeTruthy();
-
-    // Label text should contain the asterisk if required
     expect(label.props.children).toContain('Username');
-    expect(label.props.children).toContain(' *');
+
+    const asterisk = screen.getByTestId('asteriks');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const asteriskText = Array.isArray(asterisk.props.children) ? asterisk.props.children.join('') : asterisk.props.children;
+
+    expect(asteriskText).toBe(' *');
   });
 
   it('calls onChange when typing', () => {
