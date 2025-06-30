@@ -1,4 +1,3 @@
-import Api from '../config/api';
 import {
   IWeeklyQuest,
   IPostWeeklyQuestRequest,
@@ -7,6 +6,7 @@ import {
   IGetWeeklyQuestRequest,
   IDeleteWeeklyQuestRequest,
 } from '@/contract/quests/quests-types/weekly-quests';
+import Api from '@/redux/config/api';
 
 export const weeklyQuestSlice = Api.injectEndpoints({
   endpoints: builder => ({
@@ -39,7 +39,7 @@ export const weeklyQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
 
     updateWeeklyQuest: builder.mutation<void, IPutWeeklyQuestRequest>({
@@ -55,7 +55,7 @@ export const weeklyQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet', 'goals'],
     }),
 
     patchWeeklyQuest: builder.mutation<void, IPatchWeeklyQuestRequest>({
@@ -64,7 +64,7 @@ export const weeklyQuestSlice = Api.injectEndpoints({
         method: 'PATCH',
         body: patchData,
       }),
-      invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet', 'statsProfile'],
+      invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
 
     deleteWeeklyQuest: builder.mutation<void, IDeleteWeeklyQuestRequest>({
@@ -72,7 +72,7 @@ export const weeklyQuestSlice = Api.injectEndpoints({
         url: `/weekly-quests/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
   }),
 });

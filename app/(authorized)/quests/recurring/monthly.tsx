@@ -15,7 +15,7 @@ import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useFilter } from '@/hooks/use-filter/use-filter';
 import { useSearch } from '@/hooks/use-search/use-search';
 import { useSort, SortOrderEnum } from '@/hooks/use-sort/use-sort';
-import { useGetAllMonthlyQuestsQuery } from '@/redux/api/monthly-quests-api';
+import { useGetAllMonthlyQuestsQuery } from '@/redux/api/quests/monthly-quests-api';
 
 const MonthlyQuests: React.FC = () => {
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);

@@ -17,7 +17,7 @@ import { SeasonEnumType } from '@/contract/quests/base-quests';
 import { ISeasonalQuest, IPostSeasonalQuestRequest } from '@/contract/quests/quests-types/seasonal-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
-import { useUpdateSeasonalQuestMutation } from '@/redux/api/seasonal-quests-api';
+import { useUpdateSeasonalQuestMutation } from '@/redux/api/quests/seasonal-quests-api';
 import { getSeasonalDateLimits } from '@/utils/get-seasonal-date-limits';
 
 interface UpdateSeasonalQuestModalProps extends IBaseModalProps {

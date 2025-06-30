@@ -1,4 +1,3 @@
-import Api from '../config/api';
 import {
   IDailyQuest,
   IPostDailyQuestRequest,
@@ -7,6 +6,7 @@ import {
   IGetDailyQuestRequest,
   IDeleteDailyQuestRequest,
 } from '@/contract/quests/quests-types/daily-quests';
+import Api from '@/redux/config/api';
 
 export const dailyQuestSlice = Api.injectEndpoints({
   endpoints: builder => ({
@@ -39,7 +39,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
 
     updateDailyQuest: builder.mutation<void, IPutDailyQuestRequest>({
@@ -55,7 +55,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet', 'goals'],
     }),
 
     patchDailyQuest: builder.mutation<void, IPatchDailyQuestRequest>({
@@ -71,7 +71,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
           body: transformedPatchData,
         };
       },
-      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet', 'statsProfile'],
+      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
 
     deleteDailyQuest: builder.mutation<void, IDeleteDailyQuestRequest>({
@@ -79,7 +79,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
         url: `/daily-quests/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
   }),
 });

@@ -13,6 +13,7 @@ export const allTags = [
   'goals',
   'statsProfile',
   'statsExtended',
+  'eligibleQuestsForGoals',
 ];
 
 const Api = createApi({

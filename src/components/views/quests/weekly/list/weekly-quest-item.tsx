@@ -12,7 +12,7 @@ import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal'
 import UpdateWeeklyQuestModal from '../quest-modals/update-weekly-quest-modal';
 import Loader from '@/components/shared/loader/loader';
 import { IWeeklyQuest } from '@/contract/quests/quests-types/weekly-quests';
-import { usePatchWeeklyQuestMutation, useDeleteWeeklyQuestMutation } from '@/redux/api/weekly-quests-api';
+import { usePatchWeeklyQuestMutation, useDeleteWeeklyQuestMutation } from '@/redux/api/quests/weekly-quests-api';
 
 interface WeeklyQuestItemProps {
   quest: IWeeklyQuest;

@@ -1,4 +1,4 @@
-import Api from '../../config/api';
+import Api, { allTags } from '../../config/api';
 import {
   IPostLoginRequest,
   IPostLoginResponse,
@@ -24,6 +24,7 @@ export const authSlice = Api.injectEndpoints({
         method: 'POST',
         body: credentials,
       }),
+      invalidatesTags: allTags,
     }),
 
     refreshAccessToken: builder.mutation<IPostRefreshResponse, IPostRefreshRequest>({
@@ -31,6 +32,7 @@ export const authSlice = Api.injectEndpoints({
         url: 'auth/refresh-token',
         method: 'POST',
         body: data,
+        invalidatesTags: allTags,
       }),
     }),
   }),

@@ -17,7 +17,7 @@ import dayjs from '@/configs/day-js-config';
 import { IWeeklyQuest, IPostWeeklyQuestRequest } from '@/contract/quests/quests-types/weekly-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
-import { useUpdateWeeklyQuestMutation } from '@/redux/api/weekly-quests-api';
+import { useUpdateWeeklyQuestMutation } from '@/redux/api/quests/weekly-quests-api';
 import { toUTCISOString } from '@/utils/utils/utils';
 
 interface UpdateWeeklyQuestModalProps extends IBaseModalProps {

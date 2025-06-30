@@ -1,4 +1,3 @@
-import Api from '../config/api';
 import {
   ISeasonalQuest,
   IPostSeasonalQuestRequest,
@@ -7,6 +6,7 @@ import {
   IGetSeasonalQuestRequest,
   IDeleteSeasonalQuestRequest,
 } from '@/contract/quests/quests-types/seasonal-quests';
+import Api from '@/redux/config/api';
 
 export const seasonalQuestSlice = Api.injectEndpoints({
   endpoints: builder => ({
@@ -39,7 +39,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
 
     updateSeasonalQuest: builder.mutation<void, IPutSeasonalQuestRequest>({
@@ -55,7 +55,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet', 'goals'],
     }),
 
     patchSeasonalQuest: builder.mutation<void, IPatchSeasonalQuestRequest>({
@@ -64,7 +64,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
         method: 'PATCH',
         body: patchData,
       }),
-      invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet', 'statsProfile'],
+      invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
 
     deleteSeasonalQuest: builder.mutation<void, IDeleteSeasonalQuestRequest>({
@@ -72,7 +72,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
         url: `/seasonal-quests/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
   }),
 });

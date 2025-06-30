@@ -8,7 +8,7 @@ import Select, { SelectItemValue } from '@/components/shared/select/select';
 import { IGetActiveGoalResponse } from '@/contract/goals/goals.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateGoalMutation } from '@/redux/api/goals/goals-api';
-import { useGetEligibleQuestsForGoalsQuery } from '@/redux/api/today-quests-api';
+import { useGetEligibleQuestsForGoalsQuery } from '@/redux/api/quests/today-quests-api';
 
 interface GoalSetModalProps {
   isVisible: boolean;
@@ -21,7 +21,6 @@ const GoalSetModal: React.FC<GoalSetModalProps> = ({ isVisible, onClose, frequen
   const [selectedQuest, setSelectedQuest] = useState<IGetActiveGoalResponse | null>(null);
   const { showSnackbar } = useSnackbar();
   const [sendGoal] = useCreateGoalMutation();
-  console.log('fetchedQuests', fetchedQuests);
 
   const options = useMemo(
     () =>

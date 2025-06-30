@@ -15,7 +15,7 @@ import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useFilter } from '@/hooks/use-filter/use-filter';
 import { useSearch } from '@/hooks/use-search/use-search';
 import { useSort, SortOrderEnum } from '@/hooks/use-sort/use-sort';
-import { useGetAllDailyQuestsQuery } from '@/redux/api/daily-quests-api';
+import { useGetAllDailyQuestsQuery } from '@/redux/api/quests/daily-quests-api';
 
 const DailyQuests: React.FC = () => {
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);

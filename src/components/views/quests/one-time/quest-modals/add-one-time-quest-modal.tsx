@@ -15,8 +15,8 @@ import ControlledTextArea from '@/components/shared/text-area/controlled-text-ar
 import dayjs from '@/configs/day-js-config';
 import { IPostOneTimeQuestRequest } from '@/contract/quests/quests-types/one-time-quests';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import { useCreateOneTimeQuestMutation } from '@/redux/api/one-time-quests-api';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
+import { useCreateOneTimeQuestMutation } from '@/redux/api/quests/one-time-quests-api';
 import { toUTCISOString } from '@/utils/utils/utils';
 
 interface AddOneTimeQuestModalProps extends IBaseModalProps {}

@@ -12,7 +12,7 @@ import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal'
 import UpdateMonthlyQuestModal from '../quest-modals/update-monthly-quest-modal';
 import Loader from '@/components/shared/loader/loader';
 import { IMonthlyQuest } from '@/contract/quests/quests-types/monthly-quests';
-import { useDeleteMonthlyQuestMutation, usePatchMonthlyQuestMutation } from '@/redux/api/monthly-quests-api';
+import { useDeleteMonthlyQuestMutation, usePatchMonthlyQuestMutation } from '@/redux/api/quests/monthly-quests-api';
 
 interface MonthlyQuestItemProps {
   quest: IMonthlyQuest;

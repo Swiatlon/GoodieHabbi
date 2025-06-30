@@ -15,7 +15,7 @@ import ControlledTextArea from '@/components/shared/text-area/controlled-text-ar
 import dayjs from '@/configs/day-js-config';
 import { IPostDailyQuestRequest } from '@/contract/quests/quests-types/daily-quests';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import { useCreateDailyQuestMutation } from '@/redux/api/daily-quests-api';
+import { useCreateDailyQuestMutation } from '@/redux/api/quests/daily-quests-api';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
 import { toUTCISOString } from '@/utils/utils/utils';
 

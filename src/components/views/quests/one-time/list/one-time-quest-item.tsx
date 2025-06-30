@@ -11,7 +11,7 @@ import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal'
 import UpdateOneTimeQuestModal from '../quest-modals/update-one-time-quest-modal';
 import Loader from '@/components/shared/loader/loader';
 import { IOneTimeQuest } from '@/contract/quests/quests-types/one-time-quests';
-import { useDeleteOneTimeQuestMutation, usePatchOneTimeQuestMutation } from '@/redux/api/one-time-quests-api';
+import { useDeleteOneTimeQuestMutation, usePatchOneTimeQuestMutation } from '@/redux/api/quests/one-time-quests-api';
 
 interface OneTimeQuestItemProps {
   quest: IOneTimeQuest;

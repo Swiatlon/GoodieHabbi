@@ -10,7 +10,7 @@ import { AllQuestsUnion } from '@/hooks/quests/useGetAllQuests';
 import { useFilter } from '@/hooks/use-filter/use-filter';
 import { useSearch } from '@/hooks/use-search/use-search';
 import { useSort, SortOrderEnum } from '@/hooks/use-sort/use-sort';
-import { useGetAllTodayQuestsQuery } from '@/redux/api/today-quests-api';
+import { useGetAllTodayQuestsQuery } from '@/redux/api/quests/today-quests-api';
 
 const TodayQuests: React.FC = () => {
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);

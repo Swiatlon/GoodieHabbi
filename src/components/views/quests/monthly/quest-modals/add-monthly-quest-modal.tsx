@@ -15,8 +15,8 @@ import ControlledTextArea from '@/components/shared/text-area/controlled-text-ar
 import dayjs from '@/configs/day-js-config';
 import { IPostMonthlyQuestRequest } from '@/contract/quests/quests-types/monthly-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
-import { useCreateMonthlyQuestMutation } from '@/redux/api/monthly-quests-api';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
+import { useCreateMonthlyQuestMutation } from '@/redux/api/quests/monthly-quests-api';
 import { toUTCISOString } from '@/utils/utils/utils';
 
 interface AddMonthlyQuestModalProps extends IBaseModalProps {}

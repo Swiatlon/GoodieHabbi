@@ -15,7 +15,7 @@ import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useFilter } from '@/hooks/use-filter/use-filter';
 import { useSearch } from '@/hooks/use-search/use-search';
 import { SortOrderEnum, useSort } from '@/hooks/use-sort/use-sort';
-import { useGetAllSeasonalQuestsQuery } from '@/redux/api/seasonal-quests-api';
+import { useGetAllSeasonalQuestsQuery } from '@/redux/api/quests/seasonal-quests-api';
 
 const SeasonalQuests: React.FC = () => {
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);

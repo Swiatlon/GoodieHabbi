@@ -1,4 +1,3 @@
-import Api from '../config/api';
 import {
   IOneTimeQuest,
   IPostOneTimeQuestRequest,
@@ -7,6 +6,7 @@ import {
   IDeleteOneTimeQuestRequest,
   IPatchOneTimeQuestRequest,
 } from '@/contract/quests/quests-types/one-time-quests';
+import Api from '@/redux/config/api';
 
 export const questSlice = Api.injectEndpoints({
   endpoints: builder => ({
@@ -39,7 +39,7 @@ export const questSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
 
     updateOneTimeQuest: builder.mutation<void, IPutOneTimeQuestRequest>({
@@ -55,7 +55,7 @@ export const questSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet', 'goals'],
     }),
 
     patchOneTimeQuest: builder.mutation<void, IPatchOneTimeQuestRequest>({
@@ -71,7 +71,7 @@ export const questSlice = Api.injectEndpoints({
           body: transformedPatchData,
         };
       },
-      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet', 'statsProfile'],
+      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet', 'statsProfile', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
 
     deleteOneTimeQuest: builder.mutation<void, IDeleteOneTimeQuestRequest>({
@@ -79,7 +79,7 @@ export const questSlice = Api.injectEndpoints({
         url: `/one-time-quests/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
   }),
 });

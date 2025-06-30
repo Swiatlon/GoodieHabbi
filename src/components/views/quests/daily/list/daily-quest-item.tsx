@@ -11,7 +11,7 @@ import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal'
 import UpdateDailyQuestModal from '../quest-modals/update-daily-quest-modal';
 import Loader from '@/components/shared/loader/loader';
 import { IDailyQuest } from '@/contract/quests/quests-types/daily-quests';
-import { useDeleteDailyQuestMutation, usePatchDailyQuestMutation } from '@/redux/api/daily-quests-api';
+import { useDeleteDailyQuestMutation, usePatchDailyQuestMutation } from '@/redux/api/quests/daily-quests-api';
 
 interface DailyQuestItemProps {
   quest: IDailyQuest;

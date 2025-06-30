@@ -1,4 +1,3 @@
-import Api from '../config/api';
 import {
   IMonthlyQuest,
   IPostMonthlyQuestRequest,
@@ -7,6 +6,7 @@ import {
   IGetMonthlyQuestRequest,
   IDeleteMonthlyQuestRequest,
 } from '@/contract/quests/quests-types/monthly-quests';
+import Api from '@/redux/config/api';
 
 export const monthlyQuestSlice = Api.injectEndpoints({
   endpoints: builder => ({
@@ -39,7 +39,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
 
     updateMonthlyQuest: builder.mutation<void, IPutMonthlyQuestRequest>({
@@ -55,7 +55,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet', 'goals'],
     }),
 
     patchMonthlyQuest: builder.mutation<void, IPatchMonthlyQuestRequest>({
@@ -71,7 +71,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
           body: transformedPatchData,
         };
       },
-      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet', 'statsProfile'],
+      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
 
     deleteMonthlyQuest: builder.mutation<void, IDeleteMonthlyQuestRequest>({
@@ -79,7 +79,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
         url: `/monthly-quests/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet'],
+      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
   }),
 });

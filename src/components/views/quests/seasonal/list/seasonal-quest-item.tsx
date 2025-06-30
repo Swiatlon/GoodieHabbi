@@ -12,7 +12,7 @@ import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal'
 import UpdateSeasonalQuestModal from '../quest-modals/update-seasonal-quest-modal';
 import Loader from '@/components/shared/loader/loader';
 import { ISeasonalQuest } from '@/contract/quests/quests-types/seasonal-quests';
-import { usePatchSeasonalQuestMutation, useDeleteSeasonalQuestMutation } from '@/redux/api/seasonal-quests-api';
+import { usePatchSeasonalQuestMutation, useDeleteSeasonalQuestMutation } from '@/redux/api/quests/seasonal-quests-api';
 
 interface SeasonalQuestItemProps {
   quest: ISeasonalQuest;

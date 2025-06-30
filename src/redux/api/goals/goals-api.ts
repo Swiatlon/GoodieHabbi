@@ -9,7 +9,7 @@ export const goalSliceAPI = Api.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['goals', 'statsProfile'],
+      invalidatesTags: ['goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
     }),
 
     getActiveGoal: builder.query<IGetActiveGoalResponse, string>({
@@ -28,7 +28,17 @@ export const goalSliceAPI = Api.injectEndpoints({
           isCompleted,
         },
       }),
-      invalidatesTags: ['goals', 'statsProfile'],
+      invalidatesTags: [
+        'goals',
+        'statsProfile',
+        'statsExtended',
+        'dailyQuestsGet',
+        'monthlyQuestsGet',
+        'oneTimeQuestsGet',
+        'seasonalQuestsGet',
+        'weeklyQuestsGet',
+        'todayQuestsGet',
+      ],
     }),
   }),
 });

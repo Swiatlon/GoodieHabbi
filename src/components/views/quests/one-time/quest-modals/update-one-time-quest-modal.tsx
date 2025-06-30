@@ -15,8 +15,8 @@ import { oneTimeQuestValidationSchema } from '@/components/views/quests/one-time
 import dayjs from '@/configs/day-js-config';
 import { IOneTimeQuest, IPostOneTimeQuestRequest } from '@/contract/quests/quests-types/one-time-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
-import { useUpdateOneTimeQuestMutation } from '@/redux/api/one-time-quests-api';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
+import { useUpdateOneTimeQuestMutation } from '@/redux/api/quests/one-time-quests-api';
 import { toUTCISOString } from '@/utils/utils/utils';
 
 interface UpdateOneTimeQuestModalProps extends IBaseModalProps {

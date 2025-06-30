@@ -1,5 +1,5 @@
-import Api from '../config/api';
 import { AllQuestsUnion } from '@/hooks/quests/useGetAllQuests';
+import Api from '@/redux/config/api';
 
 export const todayQuestSlice = Api.injectEndpoints({
   endpoints: builder => ({

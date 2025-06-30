@@ -15,7 +15,7 @@ import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useFilter } from '@/hooks/use-filter/use-filter';
 import { useSearch } from '@/hooks/use-search/use-search';
 import { SortOrderEnum, useSort } from '@/hooks/use-sort/use-sort';
-import { useGetAllOneTimeQuestsQuery } from '@/redux/api/one-time-quests-api';
+import { useGetAllOneTimeQuestsQuery } from '@/redux/api/quests/one-time-quests-api';
 
 const OneTimeQuests: React.FC = () => {
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
