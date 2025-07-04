@@ -10,6 +10,7 @@ import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledPasswordInput from '@/components/shared/password/controlled-password-input';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useUpdateAccountDataMutation, useUpdatePasswordMutation } from '@/redux/api/account/account-api';
+import { useLazyGetRandomNicknameQuery } from '@/redux/api/nickname/nickname-api';
 import { IApiError, NullableString } from '@/types/global-types';
 
 interface FormDataProfile {
@@ -31,6 +32,7 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onCl
   const { showSnackbar } = useSnackbar();
   const [updateProfile, { isLoading }] = useUpdateAccountDataMutation();
   const [updatePassword] = useUpdatePasswordMutation();
+  const [fetchNickname] = useLazyGetRandomNicknameQuery();
 
   const profileMethods = useForm({
     resolver: yupResolver(profileSchema),
@@ -78,6 +80,18 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onCl
     }
   };
 
+  const handleRefreshNickname = async () => {
+    try {
+      const result = await fetchNickname().unwrap();
+      profileMethods.setValue('nickname', result.nickname);
+    } catch {
+      showSnackbar({
+        text: 'Failed to fetch nickname',
+        variant: SnackbarVariantEnum.ERROR,
+      });
+    }
+  };
+
   return (
     <Modal isVisible={isVisible} onClose={onClose} isLoading={isLoading} loadingMessage="Updating profile...">
       <View className="bg-white p-6 rounded-lg">
@@ -85,9 +99,17 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onCl
         <FormProvider {...profileMethods}>
           <View className="flex gap-4">
             <ControlledInput name="login" label="Login:" placeholder="Enter login" />
-            <ControlledInput name="nickname" label="Nickname:" placeholder="Enter nickname" />
+
+            <View>
+              <View className="flex-row items-center gap-1 mb-1">
+                <Text className="text-sm font-semibold text-gray-500">Nickname:</Text>
+                <Ionicons name="refresh" size={16} color="#007AFF" onPress={handleRefreshNickname} />
+              </View>
+              <ControlledInput name="" placeholder="Enter nickname" />
+            </View>
             <ControlledInput name="email" label="Email:" placeholder="Enter email" isRequired keyboardType="email-address" />
             <ControlledInput name="bio" label="Bio:" placeholder="Enter bio" multiline />
+
             <Button
               label="Save Profile"
               onPress={profileMethods.handleSubmit(handleSaveProfile)}
@@ -96,11 +118,13 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onCl
             />
           </View>
         </FormProvider>
+
         <View className="h-0.5 bg-gray-300 my-6" />
+
         <Text className="text-lg font-bold mb-2">Change Password</Text>
         <FormProvider {...passwordMethods}>
           <View className="flex gap-4">
-            <ControlledPasswordInput name="oldPassword" label="Old Password:" placeholder="Enter new password" secureTextEntry isRequired />
+            <ControlledPasswordInput name="oldPassword" label="Old Password:" placeholder="Enter old password" secureTextEntry isRequired />
             <ControlledPasswordInput name="newPassword" label="New Password:" placeholder="Enter new password" secureTextEntry isRequired />
             <ControlledPasswordInput
               name="confirmNewPassword"

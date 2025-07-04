@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import Button from '../button/button';
 import DashboardConfig from './routes-configs/dashboard-config';
 import GoalConfig from './routes-configs/goal-config';
+import LeaderboardConfig from './routes-configs/leaderboard-config';
 import ProfileConfig from './routes-configs/profile-config';
 import LoginConfig from '@/components/shared/drawer/routes-configs/login-config';
 import QuestConfig from '@/components/shared/drawer/routes-configs/quest-config';
@@ -51,6 +52,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props 
             <>
               <DashboardConfig />
               <QuestConfig />
+              <LeaderboardConfig />
               <ProfileConfig />
               <GoalConfig />
             </>
