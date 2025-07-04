@@ -63,7 +63,7 @@ const QuestItemDateWeekly: React.FC<QuestItemDateWeeklyProps> = ({ weekdays, onP
       showsHorizontalScrollIndicator={false}
     >
       <TouchableOpacity activeOpacity={isScrolling ? 1 : 0.7} onPress={onPress}>
-        <View className="flex-row flex-nowrap gap-2 mb-2">
+        <View className="flex-row flex-nowrap gap-2">
           {weekdays.map(day => (
             <View key={day} className="px-3 py-2 rounded-full bg-primary justify-center items-center">
               <Text className="text-white text-xs font-bold">{dayAbbreviations[day.toLowerCase()].toUpperCase() || day[0].toUpperCase()}</Text>

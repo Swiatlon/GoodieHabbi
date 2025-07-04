@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
+import ShowDailyQuestItemModal from '../../daily/quest-modals/show-daily-quest-modal';
 import QuestItemDate from '../../reusable/quest-item/quest-item-date';
 import QuestItemDateMonthly from '../../reusable/quest-item/quest-item-date-monthly';
+import QuestItemDifficulty from '../../reusable/quest-item/quest-item-difficulty';
+import QuestItemScheduledTime from '../../reusable/quest-item/quest-item-scheduled-time';
 import QuestItemSeason from '../../reusable/quest-item/quest-item-season';
 import QuestItemTag from '../../reusable/quest-item/quest-item-tag';
 import QuestItemDateWeekly from '../../reusable/quest-item/quest-item-weekly';
@@ -11,7 +14,6 @@ import QuestItemContainer from '@/components/views/quests/reusable/quest-item/qu
 import QuestItemEmoji from '@/components/views/quests/reusable/quest-item/quest-item-emoji';
 import QuestItemPriority from '@/components/views/quests/reusable/quest-item/quest-item-priority';
 import QuestItemTitle from '@/components/views/quests/reusable/quest-item/quest-item-title';
-import ShowQuestItemModal from '@/components/views/quests/reusable/quest-item/quest-show-item-modal';
 import { IDailyQuest } from '@/contract/quests/quests-types/daily-quests';
 import { IMonthlyQuest } from '@/contract/quests/quests-types/monthly-quests';
 import { IOneTimeQuest } from '@/contract/quests/quests-types/one-time-quests';
@@ -49,12 +51,14 @@ const TodayQuestItem: React.FC<TodayQuestItemProps> = ({ quest }) => {
             <View className="flex-row items-center gap-2">
               <QuestItemEmoji emoji={quest.emoji} />
               <View className="flex-1 gap-2">
-                <QuestItemTitle title={quest.title} description={quest.description} isCompleted={quest.isCompleted} />
-                <QuestItemPriority priority={quest.priority} />
+                <QuestItemTitle title={quest.title} isCompleted={quest.isCompleted} />
                 {isSeasonalQuest(quest) && <QuestItemSeason season={quest.season} />}
-                <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
                 {isWeeklyQuest(quest) && <QuestItemDateWeekly weekdays={quest.weekdays} onPress={openShowModal} />}
                 {isMonthlyQuest(quest) && <QuestItemDateMonthly startDay={quest.startDay} endDay={quest.endDay} />}
+                <QuestItemPriority priority={quest.priority} />
+                <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
+                <QuestItemScheduledTime scheduledTime={quest.scheduledTime} />
+                <QuestItemDifficulty difficulty={quest.difficulty} />
                 <QuestItemTag tags={quest.labels} onPress={openShowModal} />
               </View>
             </View>
@@ -62,7 +66,7 @@ const TodayQuestItem: React.FC<TodayQuestItemProps> = ({ quest }) => {
           <QuestItemCheckmark completed={quest.isCompleted} questId={quest.id} patchQuest={patchQuestMutation} isLoading={isLoading} />
         </View>
       </QuestItemContainer>
-      <ShowQuestItemModal
+      <ShowDailyQuestItemModal
         quest={quest}
         isVisible={isShowQuestModalVisible}
         onClose={closeShowModal}

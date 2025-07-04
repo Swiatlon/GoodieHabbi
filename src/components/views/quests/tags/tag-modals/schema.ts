@@ -16,6 +16,5 @@ export const tagValidationSchema = (questsLabels: IQuestLabel[], previousValue?:
         return questsLabels.every(label => label.value.toLowerCase() !== value.toLowerCase());
       }),
     backgroundColor: yup.string().default('#1987EE'),
-    textColor: yup.string().default('#FFFFFF'),
   });
 };

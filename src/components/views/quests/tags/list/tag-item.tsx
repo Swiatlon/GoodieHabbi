@@ -6,13 +6,14 @@ import Button from '@/components/shared/button/button';
 import { IQuestLabel } from '@/contract/quests/labels/labels-quests';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useDeleteQuestLabelMutation } from '@/redux/api/quests/labels-quests-api';
+import { getBestContrastTextColor } from '@/utils/utils/utils';
 
 interface TagItemProps {
   tag: IQuestLabel;
 }
 
 const TagItem: React.FC<TagItemProps> = ({ tag }) => {
-  const { id, value, backgroundColor, textColor } = tag;
+  const { id, value, backgroundColor } = tag;
 
   const { showSnackbar } = useSnackbar();
   const [deleteQuestLabel] = useDeleteQuestLabelMutation();
@@ -46,8 +47,13 @@ const TagItem: React.FC<TagItemProps> = ({ tag }) => {
           backgroundColor,
         }}
       >
-        <Ionicons name="pricetag-outline" size={20} color={textColor} className="mr-4" />
-        <Text className="text-sm font-medium max-w-[140px]" numberOfLines={2} ellipsizeMode="tail" style={{ color: textColor }}>
+        <Ionicons name="pricetag-outline" size={20} color={getBestContrastTextColor(backgroundColor)} className="mr-4" />
+        <Text
+          className="text-sm font-medium max-w-[140px]"
+          numberOfLines={2}
+          ellipsizeMode="tail"
+          style={{ color: getBestContrastTextColor(backgroundColor) }}
+        >
           {value}
         </Text>
       </View>

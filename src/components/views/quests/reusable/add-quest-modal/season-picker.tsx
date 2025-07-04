@@ -25,7 +25,7 @@ const ControlledSeasonPicker = ({ isRequired }: { isRequired?: boolean }) => {
 
   return (
     <View className="flex gap-2">
-      <Text className="text-sm font-semibold text-gray-500">Season:{isRequired && <Text className="text-red-500">*</Text>}</Text>
+      <Text className="text-sm font-semibold text-gray-500">🌦️ Season:{isRequired && <Text className="text-red-500">*</Text>}</Text>
       <ControlledSelect
         clearAsNull
         name="season"

@@ -28,13 +28,11 @@ const UpdateTagModal: React.FC<UpdateTagModalProps> = ({ isVisible, onClose, tag
     defaultValues: {
       value: tag.value,
       backgroundColor: tag.backgroundColor,
-      textColor: tag.textColor,
     },
   });
 
-  const { handleSubmit, watch, setValue } = methods;
+  const { handleSubmit, watch } = methods;
   const selectedBackgroundColor = watch('backgroundColor');
-  const selectedTextColor = watch('textColor');
   const newTagValue = watch('value');
 
   const onSubmit = async (data: IPostQuestLabelRequest) => {
@@ -77,13 +75,7 @@ const UpdateTagModal: React.FC<UpdateTagModalProps> = ({ isVisible, onClose, tag
         <View className="bg-white rounded-lg px-4 gap-8 py-2">
           <Text className="text-xl font-bold text-center">Update Tag:</Text>
           <ControlledInput name="value" label="Tag Name" placeholder="Enter tag name" isRequired />
-          <ControlledSwatches
-            name="backgroundColor"
-            label="Pick a Background Color:"
-            onChange={color => {
-              setValue('textColor', getBestContrastTextColor(color));
-            }}
-          />
+          <ControlledSwatches name="backgroundColor" label="Pick a Background Color:" />
 
           <View>
             <Text className="text-base font-semibold mb-2">Tag Preview:</Text>
@@ -91,7 +83,12 @@ const UpdateTagModal: React.FC<UpdateTagModalProps> = ({ isVisible, onClose, tag
               className="py-2 px-6 rounded-full flex-row justify-center items-center overflow-hidden max-w-[200px]"
               style={{ backgroundColor: selectedBackgroundColor, alignSelf: 'flex-start' }}
             >
-              <Text className="text-lg font-medium" numberOfLines={2} ellipsizeMode="tail" style={{ color: selectedTextColor }}>
+              <Text
+                className="text-lg font-medium"
+                numberOfLines={2}
+                ellipsizeMode="tail"
+                style={{ color: getBestContrastTextColor(selectedBackgroundColor) }}
+              >
                 {newTagValue || 'Example Tag'}
               </Text>
             </View>

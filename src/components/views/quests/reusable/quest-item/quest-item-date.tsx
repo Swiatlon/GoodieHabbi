@@ -10,6 +10,10 @@ interface QuestItemDateProps {
 }
 
 const QuestItemDate: React.FC<QuestItemDateProps> = ({ startDate, endDate }) => {
+  if (!startDate && !endDate) {
+    return null;
+  }
+
   const formattedStartDate = safeDateFormat(startDate);
   const formattedEndDate = safeDateFormat(endDate);
 
@@ -24,16 +28,26 @@ const QuestItemDate: React.FC<QuestItemDateProps> = ({ startDate, endDate }) => 
     return <Text className="text-sm text-green-500">({daysLeft} days left)</Text>;
   };
 
+  if (startDate && endDate) {
+    return (
+      <View className="gap-1">
+        <View className="grid gap-1">
+          <Text className="text-sm text-gray-600">{getDaysLeftBadge()}</Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View className="gap-1">
       {startDate && (
         <View className="flex-row items-center gap-1">
-          <Text className="text-base text-gray-600">📅 Start: {formattedStartDate}</Text>
+          <Text className="text-sm text-gray-600">📅 Start: {formattedStartDate}</Text>
         </View>
       )}
       {endDate && (
         <View className="flex-row items-center gap-2">
-          <Text className="text-base text-gray-600">⏳ End: {formattedEndDate}</Text>
+          <Text className="text-sm text-gray-600">⏳ End: {formattedEndDate}</Text>
           {getDaysLeftBadge()}
         </View>
       )}

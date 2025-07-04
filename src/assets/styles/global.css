@@ -9,11 +9,3 @@ body {
 input:focus {
   @apply outline-none focus:border-primary;
 }
-
-/* .btn {
-  @apply bg-blue-500 rounded-full shadow-lg flex-row items-center w-max self-center;
-}
-
-.btn-primary-text {
-  @apply text-white font-bold;
-} */

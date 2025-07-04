@@ -20,7 +20,7 @@ const QuestItemPriority: React.FC<QuestItemPriorityProps> = ({ priority }) => {
   return (
     <View className="flex-row items-center gap-2">
       <Text className={`text-sm font-bold ${meta.color}`}>
-        {meta.icon} Priority: {meta.label}
+        {meta.icon} {meta.label}
       </Text>
     </View>
   );

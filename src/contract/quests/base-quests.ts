@@ -48,6 +48,15 @@ export const QuestTypesEnum = {
 
 export type QuestTypesEnumType = (typeof QuestTypesEnum)[keyof typeof QuestTypesEnum];
 
+export const DifficultyEnum = {
+  EASY: 'Easy',
+  MEDIUM: 'Medium',
+  HARD: 'Hard',
+  IMPOSSIBLE: 'Impossible',
+} as const;
+
+export type DifficultyEnumType = (typeof DifficultyEnum)[keyof typeof DifficultyEnum];
+
 export interface IRecurringQuestStats {
   completionCount: number;
   failureCount: number;
@@ -68,4 +77,6 @@ export interface IQuest {
   emoji: string | null;
   type: QuestTypesEnumType;
   labels: IQuestLabel[];
+  difficulty: DifficultyEnumType | null;
+  scheduledTime: string | null;
 }

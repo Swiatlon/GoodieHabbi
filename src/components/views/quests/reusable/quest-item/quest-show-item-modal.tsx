@@ -1,12 +1,23 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import QuestItemDate from './quest-item-date';
-import QuestItemPriority from './quest-item-priority';
+import QuestDatesExtended from '../show-quest-modal/quest-dates-extended';
+import QuestDescriptionExtended from '../show-quest-modal/quest-description-extended';
+import QuestDifficultyExtended from '../show-quest-modal/quest-difficulty-extended';
+import QuestMonthDaysExtended from '../show-quest-modal/quest-monthly-extended';
+import QuestPriorityExtended from '../show-quest-modal/quest-priority-extended';
+import QuestScheduledTimeExtended from '../show-quest-modal/quest-scheduled-extended';
+import QuestSeasonExtended from '../show-quest-modal/quest-seasons-extended';
+import QuestStatisticsExtended from '../show-quest-modal/quest-statistics-extended';
+import QuestStatusExtended from '../show-quest-modal/quest-status-extended';
+import QuestTagsExtended from '../show-quest-modal/quest-tags-extended';
+import QuestTitleExtended from '../show-quest-modal/quest-title-extended';
+import QuestWeekdaysExtended from '../show-quest-modal/quest-weekly-extended';
 import Button from '@/components/shared/button/button';
 import Modal from '@/components/shared/modal/modal';
 import { AllQuestsUnion } from '@/hooks/quests/useGetAllQuests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
+import { isSeasonalQuest, isWeeklyQuest, isMonthlyQuest } from '@/utils/quests/quests';
 
 interface QuestShowItemModalProps {
   quest: AllQuestsUnion;
@@ -37,74 +48,44 @@ const ShowQuestItemModal: React.FC<QuestShowItemModalProps> = ({ quest, isVisibl
   };
 
   return (
-    <Modal isVisible={isVisible} onClose={onClose} className="min-h-[200px]">
-      <View className="flex h-full gap-6 items-center px-4 py-4" testID="show-quest-modal">
-        <View className="flex-row items-center gap-4 w-full justify-center">
-          <Text className="text-lg font-bold text-center">{quest.title}</Text>
-          {quest.emoji && <Text className="text-2xl">{quest.emoji}</Text>}
-        </View>
+    <Modal isVisible={isVisible} onClose={onClose} className="max-h-[80%] p-4 rounded-lg">
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 16 }}>
+        <QuestTitleExtended title={quest.title} emoji={quest.emoji} />
+        <QuestStatusExtended isCompleted={quest.isCompleted} />
+        <QuestDescriptionExtended description={quest.description} />
+        {isSeasonalQuest(quest) && <QuestSeasonExtended season={quest.season} />}
+        {isWeeklyQuest(quest) && <QuestWeekdaysExtended weekdays={quest.weekdays} />}
+        {isMonthlyQuest(quest) && <QuestMonthDaysExtended startDay={quest.startDay} endDay={quest.endDay} />}
+        {'statistics' in quest && <QuestStatisticsExtended statistics={quest.statistics} />}
+        <QuestPriorityExtended priority={quest.priority} />
+        <QuestDifficultyExtended difficulty={quest.difficulty} />
+        <QuestDatesExtended startDate={quest.startDate} endDate={quest.endDate} />
+        <QuestScheduledTimeExtended scheduledTime={quest.scheduledTime} />
+        <QuestTagsExtended tags={quest.labels} />
+      </ScrollView>
 
-        {(quest.priority || quest.startDate || quest.endDate) && (
-          <View className="flex w-full gap-2 px-2">
-            {quest.description && (
-              <View className="flex-row items-center gap-1">
-                <Ionicons name="chatbubble-ellipses-outline" size={16} color="#F59E0B" />
-                <Text className="text-base text-gray-600">{quest.description}</Text>
-              </View>
-            )}
-            <QuestItemPriority priority={quest.priority} />
-            <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
-          </View>
-        )}
-
-        {'statistics' in quest && (
-          <View className="flex-row justify-evenly gap-6 w-full pt-6 border-t border-gray-200">
-            <View className="items-center">
-              <Ionicons name="checkmark-done-circle-outline" size={28} color="green" />
-              <Text className="text-xs text-gray-600 mt-1">Completed</Text>
-              <Text className="font-bold text-base">{(quest.statistics as { completionCount: number }).completionCount}</Text>
-            </View>
-            <View className="items-center">
-              <Ionicons name="calendar-outline" size={28} color="blue" />
-              <Text className="text-xs text-gray-600 mt-1">Occurrences</Text>
-              <Text className="font-bold text-base">{(quest.statistics as { occurrenceCount: number }).occurrenceCount}</Text>
-            </View>
-            <View className="items-center">
-              <Ionicons name="close-circle-outline" size={28} color="red" />
-              <Text className="text-xs text-gray-600 mt-1">Failures</Text>
-              <Text className="font-bold text-base">{(quest.statistics as { failureCount: number }).failureCount}</Text>
-            </View>
-            <View className="items-center">
-              <Ionicons name="flame-outline" size={28} color="orange" />
-              <Text className="text-xs text-gray-600 mt-1">Streak</Text>
-              <Text className="font-bold text-base">{(quest.statistics as { currentStreak: number }).currentStreak}</Text>
-            </View>
-          </View>
-        )}
-
-        <View className="flex-row flex-wrap justify-between mt-2 w-full">
-          <Button
-            label="Delete"
-            styleType="danger"
-            onPress={handleDelete}
-            testID="btn-delete-quest"
-            startIcon={<Ionicons name="trash-outline" size={18} color="white" />}
-          />
-          <Button
-            label="Edit"
-            styleType="accent"
-            onPress={onUpdate}
-            testID="btn-edit-quest"
-            startIcon={<Ionicons name="create-outline" size={18} color="white" />}
-          />
-          <Button
-            label="Close"
-            styleType="primary"
-            onPress={onClose}
-            testID="btn-close-quest-modal"
-            startIcon={<Ionicons name="close-outline" size={18} color="white" />}
-          />
-        </View>
+      <View className="flex-row flex-wrap justify-between mt-4 w-full">
+        <Button
+          label="Close"
+          styleType="primary"
+          onPress={onClose}
+          testID="btn-close-quest-modal"
+          startIcon={<Ionicons name="close-outline" size={18} color="white" />}
+        />
+        <Button
+          label="Edit"
+          styleType="accent"
+          onPress={onUpdate}
+          testID="btn-edit-quest"
+          startIcon={<Ionicons name="create-outline" size={18} color="white" />}
+        />
+        <Button
+          label="Delete"
+          styleType="danger"
+          onPress={handleDelete}
+          testID="btn-delete-quest"
+          startIcon={<Ionicons name="trash-outline" size={18} color="white" />}
+        />
       </View>
     </Modal>
   );

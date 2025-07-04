@@ -4,8 +4,10 @@ import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import DatePickerModal from '../../reusable/add-quest-modal/date-picker-modal';
+import DifficultyPicker from '../../reusable/add-quest-modal/difficulty-picker';
 import EmojiPickerComponent from '../../reusable/add-quest-modal/emoji-picker';
 import PriorityPicker from '../../reusable/add-quest-modal/priority-picker';
+import TimePickerModal from '../../reusable/add-quest-modal/time-picker-modal';
 import { dailyQuestValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
@@ -36,6 +38,8 @@ const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onCl
       endDate: null,
       isCompleted: false,
       emoji: null,
+      difficulty: null,
+      scheduledTime: null,
       labels: [],
     },
   });
@@ -82,21 +86,23 @@ const AddDailyQuestModal: React.FC<AddDailyQuestModalProps> = ({ isVisible, onCl
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-5 py-0">
           <Text className="text-lg font-bold text-center">Add New Quest</Text>
-          <ControlledInput name="title" label="Title:" placeholder="Enter the title" isRequired />
-          <ControlledTextArea name="description" label="Description:" placeholder="Enter description" />
-          <DatePickerModal name="startDate" minDate={toUTCISOString(dayjs())} label="Start Date" placeholder="Tap to pick start date" />
+          <ControlledInput name="title" label="📝 Title:" placeholder="Enter the title" isRequired testID="input-title" />
+          <ControlledTextArea name="description" label="📖 Description:" placeholder="Enter description" testID="input-description" />
+          <DatePickerModal name="startDate" minDate={toUTCISOString(dayjs())} label="📅 Start Date:" placeholder="Tap to pick start date" />
           <DatePickerModal
             name="endDate"
             minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(dayjs())}
-            label="End Date"
+            label="📅 End Date:"
             placeholder="Tap to pick end date"
             isEndDate
           />
           <EmojiPickerComponent />
           <PriorityPicker />
+          <DifficultyPicker />
+          <TimePickerModal name="scheduledTime" label="⏰ Scheduled Time:" placeholder="Select time" />
           <ControlledMultiSelect
             name="labels"
-            label="Tags:"
+            label="🏷️ Tags:"
             placeholder="Select quest tags"
             noContentMessage="No tags available, please create some first"
             options={questLabels.map(item => ({ ...item, label: item.value }))}

@@ -17,20 +17,17 @@ const getPriorityStyle = (priority: PriorityEnumType | null) => {
   }
 };
 
-interface ControlledPriorityPickerProps {
-  testID?: string;
-}
-
 const ControlledPriorityPicker: React.FC = () => {
   const { watch } = useFormContext();
   const selectedPriority = watch('priority') as PriorityEnumType | null;
 
   return (
     <View className="flex gap-2">
-      <Text className="text-sm font-semibold text-gray-500">Priority:</Text>
+      <Text className="text-sm font-semibold text-gray-500">⚡ Priority:</Text>
       <ControlledSelect
         name="priority"
         placeholder="Select priority"
+        clearAsNull
         options={[
           { label: 'High', value: PriorityEnum.HIGH },
           { label: 'Medium', value: PriorityEnum.MEDIUM },

@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import dayjs from '@/configs/day-js-config';
-import { PriorityEnumType } from '@/contract/quests/base-quests';
+import { DifficultyEnumType, PriorityEnumType } from '@/contract/quests/base-quests';
 
 export const baseQuestSchema = Yup.object().shape({
   title: Yup.string().required('Title is required').min(3, 'Title must be at least 3 characters'),
@@ -10,19 +10,22 @@ export const baseQuestSchema = Yup.object().shape({
     .test('is-not-less-than-allowed', 'Start date is invalid', function (value) {
       const { initialStartDate } = this.options.context || {};
 
-      if (!value) {
-        return true;
-      }
+      if (!value) return true;
 
-      const startDate = dayjs(value).local();
-      const today = dayjs().local();
+      const inputDate = dayjs(value).startOf('day');
+      const today = dayjs().startOf('day');
+
+      let minDate = today;
 
       if (initialStartDate) {
-        const transformedInitialStartDate = dayjs(initialStartDate).local();
-        return startDate.isSameOrAfter(transformedInitialStartDate, 'day');
+        const initial = dayjs(initialStartDate).startOf('day');
+
+        if (initial.isBefore(today)) {
+          minDate = initial;
+        }
       }
 
-      return startDate.isSameOrAfter(today, 'day');
+      return inputDate.isSameOrAfter(minDate, 'day');
     })
     .default(null),
   endDate: Yup.string()
@@ -48,9 +51,10 @@ export const baseQuestSchema = Yup.object().shape({
         id: Yup.number().required('ID is required'),
         value: Yup.string().trim().required('Tag cannot be empty').max(25, 'Tag is too long. Please keep it under 25 characters.'),
         backgroundColor: Yup.string().default('#1987EE'),
-        textColor: Yup.string().default('#FFFFFF'),
       })
     )
     .default([]),
   emoji: Yup.string().nullable().default(null),
+  difficulty: Yup.mixed<DifficultyEnumType>().nullable().default(null),
+  scheduledTime: Yup.string().nullable().default(null),
 });

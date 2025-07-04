@@ -38,20 +38,15 @@ const DatePickerModal = ({ minDate = null, maxDate = null, label, name, placehol
 
   return (
     <View className="flex gap-2">
-      <Text className="text-sm font-semibold text-gray-500">{label}:</Text>
+      <Text className="text-sm font-semibold text-gray-500">{label}</Text>
       <ControlledSelect name={name} placeholder={placeholder} onPress={handleOpen} isDate />
       <Modal isVisible={isVisible} onClose={handleClose} className="pt-14 px-6">
         <DateTimePicker
           classNames={{
             ...defaultClassNames,
-            // Header styles
             header: 'flex-row justify-between items-center mb-2',
-
-            // Weekdays
             weekdays: 'border-b border-gray-200 flex-row justify-between my-2 pb-2',
             weekday_label: 'text-gray-500 text-sm font-semibold',
-
-            // Day cells
             today: 'bg-white border border-primary rounded-full m-1',
             selected: 'bg-primary border-primary rounded-full m-1',
             selected_label: 'text-white font-bold',

@@ -31,7 +31,7 @@ const WeeklyPicker: React.FC = () => {
         return (
           <View className="flex gap-2">
             <Text className="text-sm font-semibold text-gray-500">
-              Days:<Text className="text-red-500">*</Text>
+              7️⃣ Days:<Text className="text-red-500">*</Text>
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-2">
               <View className="flex-row gap-2">

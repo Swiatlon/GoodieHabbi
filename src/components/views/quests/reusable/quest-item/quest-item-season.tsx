@@ -40,7 +40,7 @@ const QuestItemSeason: React.FC<QuestItemSeasonProps> = ({ season }) => {
   return (
     <View className="flex-row items-center gap-2 mt-1">
       {icon}
-      <Text className="text-xs text-gray-600 capitalize">{label}</Text>
+      <Text className="text-sm text-gray-600 capitalize">{label}</Text>
     </View>
   );
 };

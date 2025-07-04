@@ -4,8 +4,10 @@ import QuestItemCheckmark from '../../reusable/quest-item/quest-item-checkmark';
 import QuestItemContainer from '../../reusable/quest-item/quest-item-container';
 import QuestItemDate from '../../reusable/quest-item/quest-item-date';
 import QuestItemDateMonthly from '../../reusable/quest-item/quest-item-date-monthly';
+import QuestItemDifficulty from '../../reusable/quest-item/quest-item-difficulty';
 import QuestItemEmoji from '../../reusable/quest-item/quest-item-emoji';
 import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
+import QuestItemScheduledTime from '../../reusable/quest-item/quest-item-scheduled-time';
 import QuestItemTag from '../../reusable/quest-item/quest-item-tag';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
 import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
@@ -13,6 +15,7 @@ import UpdateMonthlyQuestModal from '../quest-modals/update-monthly-quest-modal'
 import Loader from '@/components/shared/loader/loader';
 import { IMonthlyQuest } from '@/contract/quests/quests-types/monthly-quests';
 import { useDeleteMonthlyQuestMutation, usePatchMonthlyQuestMutation } from '@/redux/api/quests/monthly-quests-api';
+import ShowMonthlyQuestItemModal from '../quest-modals/show-monthly-quest-modal';
 
 interface MonthlyQuestItemProps {
   quest: IMonthlyQuest;
@@ -42,10 +45,12 @@ const MonthlyQuestItem: React.FC<MonthlyQuestItemProps> = ({ quest }) => {
             <View className="flex-row items-center gap-2">
               <QuestItemEmoji emoji={quest.emoji} />
               <View className="flex-1 gap-2">
-                <QuestItemTitle title={quest.title} description={quest.description} isCompleted={quest.isCompleted} />
+                <QuestItemTitle title={quest.title} isCompleted={quest.isCompleted} />
+                <QuestItemDateMonthly startDay={quest.startDay} endDay={quest.endDay} />
                 <QuestItemPriority priority={quest.priority} />
                 <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
-                <QuestItemDateMonthly startDay={quest.startDay} endDay={quest.endDay} />
+                <QuestItemScheduledTime scheduledTime={quest.scheduledTime} />
+                <QuestItemDifficulty difficulty={quest.difficulty} />
                 <QuestItemTag tags={quest.labels} onPress={openShowModal} />
               </View>
             </View>
@@ -53,7 +58,7 @@ const MonthlyQuestItem: React.FC<MonthlyQuestItemProps> = ({ quest }) => {
           <QuestItemCheckmark completed={quest.isCompleted} questId={quest.id} patchQuest={patchQuest} isLoading={isPatching} />
         </View>
       </QuestItemContainer>
-      <ShowQuestItemModal
+      <ShowMonthlyQuestItemModal
         quest={quest}
         isVisible={isShowQuestModalVisible}
         onClose={closeShowModal}
