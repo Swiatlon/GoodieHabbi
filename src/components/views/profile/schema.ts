@@ -17,7 +17,7 @@ export const profileSchema = yup.object().shape({
     .max(16, 'Login must be at least 6 characters')
     .nullable()
     .default(null),
-  nickname: yup.string().nullable().default(null).min(3, 'Nickname must be at least 6 characters').max(16, 'Nickname must be at most 6 characters'),
+  nickname: yup.string().nullable().default(null).min(3, 'Nickname must be at least 3 characters').max(25, 'Nickname must be at most 25 characters'),
   email: yup
     .string()
     .email('Invalid email')

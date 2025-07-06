@@ -105,7 +105,7 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ isVisible, onCl
                 <Text className="text-sm font-semibold text-gray-500">Nickname:</Text>
                 <Ionicons name="refresh" size={16} color="#007AFF" onPress={handleRefreshNickname} />
               </View>
-              <ControlledInput name="" placeholder="Enter nickname" />
+              <ControlledInput name="nickname" placeholder="Enter nickname" />
             </View>
             <ControlledInput name="email" label="Email:" placeholder="Enter email" isRequired keyboardType="email-address" />
             <ControlledInput name="bio" label="Bio:" placeholder="Enter bio" multiline />
