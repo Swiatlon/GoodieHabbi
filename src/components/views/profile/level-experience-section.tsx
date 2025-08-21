@@ -6,12 +6,12 @@ import { IStatsProfileResponse } from '@/contract/stats/stats.contract';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 
 interface LevelExperienceSectionProps {
-  xpProgress: IStatsProfileResponse['xpProgress'];
+  xpStats: IStatsProfileResponse['xpStats'];
   isLoading: boolean;
 }
 
-const LevelExperienceSection: React.FC<LevelExperienceSectionProps> = ({ xpProgress, isLoading }) => {
-  const { level, currentXp, nextLevelXpRequirement, isMaxLevel } = xpProgress;
+const LevelExperienceSection: React.FC<LevelExperienceSectionProps> = ({ xpStats, isLoading }) => {
+  const { level, currentXp, nextLevelXpRequirement, isMaxLevel } = xpStats;
   const animationStyle = useTransformFade({ isContentLoading: isLoading, delay: 300 });
 
   return (

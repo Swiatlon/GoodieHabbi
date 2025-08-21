@@ -10,11 +10,11 @@ export interface IGetMonthlyQuestRequest {
   id: number;
 }
 
-export interface IPostMonthlyQuestRequest extends Omit<IMonthlyQuest, 'id' | 'type' | 'statistics'> {}
+export interface IPostMonthlyQuestRequest extends Omit<IMonthlyQuest, 'id' | 'questType' | 'statistics'> {}
 
-export interface IPutMonthlyQuestRequest extends Omit<IMonthlyQuest, 'type' | 'statistics'> {}
+export interface IPutMonthlyQuestRequest extends Omit<IMonthlyQuest, 'questType' | 'statistics'> {}
 
-export interface IPatchMonthlyQuestRequest extends Partial<Omit<IMonthlyQuest, 'type'>> {
+export interface IPatchMonthlyQuestRequest extends Partial<Omit<IMonthlyQuest, 'questType'>> {
   id: number;
 }
 

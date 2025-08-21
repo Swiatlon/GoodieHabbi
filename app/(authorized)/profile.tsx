@@ -46,9 +46,9 @@ const Profile: FC = () => {
             profile={profileData.profile}
             isLoading={isLoading}
           />
-          <LevelExperienceSection xpProgress={statsData.xpProgress} isLoading={isLoading} />
-          <QuestsSection quests={statsData.quests} isLoading={isLoading} />
-          <GoalsSection goals={statsData.goals} isLoading={isLoading} />
+          <LevelExperienceSection xpStats={statsData.xpStats} isLoading={isLoading} />
+          <QuestsSection quests={statsData.questStats} isLoading={isLoading} />
+          <GoalsSection goals={statsData.goalStats} isLoading={isLoading} />
           <BadgesSection badges={profileData.profile.badges} isLoading={isLoading} />
           <DangerActionsSection isLoading={isLoading} onDeleteAccount={handleDeletePress} onWipeoutData={handleWipeoutDataPress} />
         </View>

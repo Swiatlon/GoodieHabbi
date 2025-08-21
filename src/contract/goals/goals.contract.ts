@@ -18,7 +18,7 @@ export interface IUserGoal {
 
 export interface ICreateGoalRequest {
   goalType: string;
-  questType: string;
+  questId: number;
 }
 
 export interface IGetActiveGoalResponse extends IUserGoal {}

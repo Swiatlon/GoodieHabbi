@@ -75,7 +75,7 @@ export interface IQuest {
   priority: PriorityEnumType | null;
   isCompleted: boolean;
   emoji: string | null;
-  type: QuestTypesEnumType;
+  questType: QuestTypesEnumType;
   labels: IQuestLabel[];
   difficulty: DifficultyEnumType | null;
   scheduledTime: string | null;

@@ -30,7 +30,7 @@ const AllQuestItem: React.FC<AllQuestItemProps> = ({ quest }) => {
   const [isShowQuestModalVisible, setIsShowQuestModalVisible] = useState(false);
   const [isUpdateQuestModalVisible, setIsUpdateQuestModalVisible] = useState(false);
 
-  const { patchQuest, deleteQuest, updateModal: UpdateQuestModal } = useQuestMutations(quest.type);
+  const { patchQuest, deleteQuest, updateModal: UpdateQuestModal } = useQuestMutations(quest.questType);
   const [patchQuestMutation, { isLoading: isPatching }] = patchQuest();
   const [delteQuestMutation, { isLoading: isDeleting }] = deleteQuest();
 

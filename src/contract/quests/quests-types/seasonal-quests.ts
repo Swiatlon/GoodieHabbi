@@ -8,11 +8,11 @@ export interface IGetSeasonalQuestRequest {
   id: number;
 }
 
-export interface IPostSeasonalQuestRequest extends Omit<ISeasonalQuest, 'id' | 'type' | 'statistics'> {}
+export interface IPostSeasonalQuestRequest extends Omit<ISeasonalQuest, 'id' | 'questType' | 'statistics'> {}
 
-export interface IPutSeasonalQuestRequest extends Omit<ISeasonalQuest, 'type' | 'statistics'> {}
+export interface IPutSeasonalQuestRequest extends Omit<ISeasonalQuest, 'questType' | 'statistics'> {}
 
-export interface IPatchSeasonalQuestRequest extends Partial<Omit<ISeasonalQuest, 'type'>> {
+export interface IPatchSeasonalQuestRequest extends Partial<Omit<ISeasonalQuest, 'questType'>> {
   id: number;
 }
 

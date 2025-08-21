@@ -13,7 +13,7 @@ export const questSlice = Api.injectEndpoints({
     getOneTimeQuestById: builder.query<IOneTimeQuest, IGetOneTimeQuestRequest>({
       query: ({ id }) => ({
         method: 'GET',
-        url: `/one-time-quests/${id}`,
+        url: `/quests/one-time/${id}`,
       }),
       providesTags: ['oneTimeQuestsGet', 'questLabelsGet'],
     }),
@@ -21,7 +21,7 @@ export const questSlice = Api.injectEndpoints({
     getAllOneTimeQuests: builder.query<IOneTimeQuest[], void>({
       query: () => ({
         method: 'GET',
-        url: '/one-time-quests',
+        url: '/quests/one-time',
       }),
       providesTags: ['oneTimeQuestsGet', 'questLabelsGet'],
     }),
@@ -34,7 +34,7 @@ export const questSlice = Api.injectEndpoints({
         };
 
         return {
-          url: '/one-time-quests',
+          url: '/quests/one-time',
           method: 'POST',
           body: transformedQuest,
         };
@@ -50,7 +50,7 @@ export const questSlice = Api.injectEndpoints({
         };
 
         return {
-          url: `/one-time-quests/${updatedQuest.id}`,
+          url: `/quests/one-time/${updatedQuest.id}`,
           method: 'PUT',
           body: transformedQuest,
         };
@@ -66,7 +66,7 @@ export const questSlice = Api.injectEndpoints({
         };
 
         return {
-          url: `/one-time-quests/${patchData.id}/completion`,
+          url: `/quests/oneTime/${patchData.id}/completion`,
           method: 'PATCH',
           body: transformedPatchData,
         };
@@ -76,7 +76,7 @@ export const questSlice = Api.injectEndpoints({
 
     deleteOneTimeQuest: builder.mutation<void, IDeleteOneTimeQuestRequest>({
       query: ({ id }) => ({
-        url: `/one-time-quests/${id}`,
+        url: `/quests/one-time/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['oneTimeQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],

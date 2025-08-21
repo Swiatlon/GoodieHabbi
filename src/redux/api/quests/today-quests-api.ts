@@ -6,7 +6,7 @@ export const todayQuestSlice = Api.injectEndpoints({
     getAllTodayQuests: builder.query<AllQuestsUnion[], void>({
       query: () => ({
         method: 'GET',
-        url: '/all-quests',
+        url: '/quests/active',
       }),
       providesTags: ['todayQuestsGet', 'questLabelsGet'],
     }),
@@ -14,7 +14,7 @@ export const todayQuestSlice = Api.injectEndpoints({
     getEligibleQuestsForGoals: builder.query<AllQuestsUnion[], void>({
       query: () => ({
         method: 'GET',
-        url: '/all-quests/eligible-for-goals',
+        url: '/quests/eligible-for-goal',
       }),
       providesTags: ['eligibleQuestsForGoals'],
     }),

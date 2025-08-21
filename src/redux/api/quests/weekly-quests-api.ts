@@ -13,7 +13,7 @@ export const weeklyQuestSlice = Api.injectEndpoints({
     getWeeklyQuestById: builder.query<IWeeklyQuest, IGetWeeklyQuestRequest>({
       query: ({ id }) => ({
         method: 'GET',
-        url: `/weekly-quests/${id}`,
+        url: `/quests/weekly/${id}`,
       }),
       providesTags: ['weeklyQuestsGet', 'questLabelsGet'],
     }),
@@ -21,7 +21,7 @@ export const weeklyQuestSlice = Api.injectEndpoints({
     getAllWeeklyQuests: builder.query<IWeeklyQuest[], void>({
       query: () => ({
         method: 'GET',
-        url: '/weekly-quests',
+        url: '/quests/weekly',
       }),
       providesTags: ['weeklyQuestsGet', 'questLabelsGet'],
     }),
@@ -34,7 +34,7 @@ export const weeklyQuestSlice = Api.injectEndpoints({
         };
 
         return {
-          url: '/weekly-quests',
+          url: '/quests/weekly',
           method: 'POST',
           body: transformedQuest,
         };
@@ -50,7 +50,7 @@ export const weeklyQuestSlice = Api.injectEndpoints({
         };
 
         return {
-          url: `/weekly-quests/${newQuest.id}`,
+          url: `/quests/weekly/${newQuest.id}`,
           method: 'PUT',
           body: transformedQuest,
         };
@@ -60,7 +60,7 @@ export const weeklyQuestSlice = Api.injectEndpoints({
 
     patchWeeklyQuest: builder.mutation<void, IPatchWeeklyQuestRequest>({
       query: patchData => ({
-        url: `/weekly-quests/${patchData.id}/completion`,
+        url: `/quests/weekly/${patchData.id}/completion`,
         method: 'PATCH',
         body: patchData,
       }),
@@ -69,7 +69,7 @@ export const weeklyQuestSlice = Api.injectEndpoints({
 
     deleteWeeklyQuest: builder.mutation<void, IDeleteWeeklyQuestRequest>({
       query: ({ id }) => ({
-        url: `/weekly-quests/${id}`,
+        url: `/quests/weekly/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],

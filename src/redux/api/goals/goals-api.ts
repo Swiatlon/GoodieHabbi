@@ -22,7 +22,7 @@ export const goalSliceAPI = Api.injectEndpoints({
 
     updateActiveGoal: builder.mutation<void, { id: number; isCompleted: boolean }>({
       query: ({ id, isCompleted }) => ({
-        url: `goals/${id}/complete`,
+        url: `goals/${id}/completion`,
         method: 'PATCH',
         body: {
           isCompleted,

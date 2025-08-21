@@ -1,15 +1,15 @@
 export interface IStatsProfileResponse {
-  quests: {
+  questStats: {
     completed: number;
     inProgress: number;
     currentTotal: number;
   };
-  goals: {
+  goalStats: {
     completed: number;
     inProgress: number;
     currentTotal: number;
   };
-  xpProgress: {
+  xpStats: {
     currentXp: number;
     level: number;
     nextLevelXpRequirement: number;

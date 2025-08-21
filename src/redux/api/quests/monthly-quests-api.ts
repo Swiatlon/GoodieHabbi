@@ -13,7 +13,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
     getMonthlyQuestById: builder.query<IMonthlyQuest, IGetMonthlyQuestRequest>({
       query: ({ id }) => ({
         method: 'GET',
-        url: `/monthly-quests/${id}`,
+        url: `/quests/monthly/${id}`,
       }),
       providesTags: ['monthlyQuestsGet', 'questLabelsGet'],
     }),
@@ -21,7 +21,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
     getAllMonthlyQuests: builder.query<IMonthlyQuest[], void>({
       query: () => ({
         method: 'GET',
-        url: '/monthly-quests',
+        url: '/quests/monthly',
       }),
       providesTags: ['monthlyQuestsGet', 'questLabelsGet'],
     }),
@@ -34,7 +34,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
         };
 
         return {
-          url: '/monthly-quests',
+          url: '/quests/monthly',
           method: 'POST',
           body: transformedQuest,
         };
@@ -50,7 +50,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
         };
 
         return {
-          url: `/monthly-quests/${updatedQuest.id}`,
+          url: `/quests/monthly/${updatedQuest.id}`,
           method: 'PUT',
           body: transformedQuest,
         };
@@ -66,7 +66,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
         };
 
         return {
-          url: `/monthly-quests/${patchData.id}/completion`,
+          url: `/quests/monthly/${patchData.id}/completion`,
           method: 'PATCH',
           body: transformedPatchData,
         };
@@ -76,7 +76,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
 
     deleteMonthlyQuest: builder.mutation<void, IDeleteMonthlyQuestRequest>({
       query: ({ id }) => ({
-        url: `/monthly-quests/${id}`,
+        url: `/quests/monthly/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],

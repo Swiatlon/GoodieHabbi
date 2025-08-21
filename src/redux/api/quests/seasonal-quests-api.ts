@@ -13,7 +13,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
     getSeasonalQuestById: builder.query<ISeasonalQuest, IGetSeasonalQuestRequest>({
       query: ({ id }) => ({
         method: 'GET',
-        url: `/seasonal-quests/${id}`,
+        url: `/quests/seasonal/${id}`,
       }),
       providesTags: ['seasonalQuestsGet', 'questLabelsGet'],
     }),
@@ -21,7 +21,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
     getAllSeasonalQuests: builder.query<ISeasonalQuest[], void>({
       query: () => ({
         method: 'GET',
-        url: '/seasonal-quests',
+        url: '/quests/seasonal',
       }),
       providesTags: ['seasonalQuestsGet', 'questLabelsGet'],
     }),
@@ -34,7 +34,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
         };
 
         return {
-          url: '/seasonal-quests',
+          url: '/quests/seasonal',
           method: 'POST',
           body: transformedQuest,
         };
@@ -50,7 +50,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
         };
 
         return {
-          url: `/seasonal-quests/${newQuest.id}`,
+          url: `/quests/seasonal/${newQuest.id}`,
           method: 'PUT',
           body: transformedQuest,
         };
@@ -60,7 +60,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
 
     patchSeasonalQuest: builder.mutation<void, IPatchSeasonalQuestRequest>({
       query: patchData => ({
-        url: `/seasonal-quests/${patchData.id}/completion`,
+        url: `/quests/seasonal/${patchData.id}/completion`,
         method: 'PATCH',
         body: patchData,
       }),
@@ -69,7 +69,7 @@ export const seasonalQuestSlice = Api.injectEndpoints({
 
     deleteSeasonalQuest: builder.mutation<void, IDeleteSeasonalQuestRequest>({
       query: ({ id }) => ({
-        url: `/seasonal-quests/${id}`,
+        url: `/quests/seasonal/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['seasonalQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],

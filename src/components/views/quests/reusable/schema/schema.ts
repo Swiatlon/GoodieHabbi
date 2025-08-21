@@ -43,7 +43,10 @@ export const baseQuestSchema = Yup.object().shape({
       return end.isSameOrAfter(start, 'day');
     })
     .default(null),
-  priority: Yup.mixed<PriorityEnumType>().nullable().default(null),
+  priority: Yup.mixed<PriorityEnumType>()
+    .transform((value: PriorityEnumType | null, originalValue: unknown): PriorityEnumType | null => (originalValue === '' ? null : value))
+    .nullable()
+    .default(null),
   isCompleted: Yup.boolean().default(false),
   labels: Yup.array()
     .of(
@@ -55,6 +58,9 @@ export const baseQuestSchema = Yup.object().shape({
     )
     .default([]),
   emoji: Yup.string().nullable().default(null),
-  difficulty: Yup.mixed<DifficultyEnumType>().nullable().default(null),
+  difficulty: Yup.mixed<DifficultyEnumType>()
+    .transform((value: DifficultyEnumType | null, originalValue: unknown): DifficultyEnumType | null => (originalValue === '' ? null : value))
+    .nullable()
+    .default(null),
   scheduledTime: Yup.string().nullable().default(null),
 });

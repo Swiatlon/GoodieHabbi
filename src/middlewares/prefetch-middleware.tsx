@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useGetAccountDataQuery } from '@/redux/api/account/account-api';
-import { setUserData } from '@/redux/state/account/account-state';
 import { useIsCorrectAccessToken } from '@/utils/jwt-utils';
 
 const PrefetchMiddleware = ({ children, onLoaded }: { children: React.JSX.Element; onLoaded: () => void }) => {
@@ -17,7 +16,6 @@ const PrefetchMiddleware = ({ children, onLoaded }: { children: React.JSX.Elemen
 
   useEffect(() => {
     if (data) {
-      dispatch(setUserData(data));
       onLoaded();
     }
   }, [data, dispatch]);

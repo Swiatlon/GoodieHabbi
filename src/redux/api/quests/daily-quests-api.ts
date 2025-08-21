@@ -13,7 +13,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
     getDailyQuestById: builder.query<IDailyQuest, IGetDailyQuestRequest>({
       query: ({ id }) => ({
         method: 'GET',
-        url: `/daily-quests/${id}`,
+        url: `/quests/daily/${id}`,
       }),
       providesTags: ['dailyQuestsGet', 'questLabelsGet'],
     }),
@@ -21,7 +21,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
     getAllDailyQuests: builder.query<IDailyQuest[], void>({
       query: () => ({
         method: 'GET',
-        url: '/daily-quests',
+        url: '/quests/daily',
       }),
       providesTags: ['dailyQuestsGet', 'questLabelsGet'],
     }),
@@ -34,7 +34,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
         };
 
         return {
-          url: '/daily-quests',
+          url: '/quests/daily',
           method: 'POST',
           body: transformedQuest,
         };
@@ -50,7 +50,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
         };
 
         return {
-          url: `/daily-quests/${updatedQuest.id}`,
+          url: `/quests/daily/${updatedQuest.id}`,
           method: 'PUT',
           body: transformedQuest,
         };
@@ -66,7 +66,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
         };
 
         return {
-          url: `/daily-quests/${patchData.id}/completion`,
+          url: `/quests/daily/${patchData.id}/completion`,
           method: 'PATCH',
           body: transformedPatchData,
         };
@@ -76,7 +76,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
 
     deleteDailyQuest: builder.mutation<void, IDeleteDailyQuestRequest>({
       query: ({ id }) => ({
-        url: `/daily-quests/${id}`,
+        url: `/quests/daily/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],

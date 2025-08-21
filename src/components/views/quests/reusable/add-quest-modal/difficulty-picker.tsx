@@ -29,6 +29,7 @@ const ControlledDifficultyPicker: React.FC = () => {
       <ControlledSelect
         name="difficulty"
         placeholder="Select difficulty"
+        clearAsNull
         options={[
           { label: 'Easy', value: DifficultyEnum.EASY },
           { label: 'Medium', value: DifficultyEnum.MEDIUM },
