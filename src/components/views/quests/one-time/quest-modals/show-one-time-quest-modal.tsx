@@ -80,7 +80,7 @@ const ShowOneTimeQuestItemModal: React.FC<ShowOneTimeQuestItemModalProps> = ({ q
         <QuestPriorityExtended priority={quest.priority} />
         <QuestDifficultyExtended difficulty={quest.difficulty} />
         <QuestDatesExtended startDate={quest.startDate} endDate={quest.endDate} />
-        <QuestScheduledTimeExtended scheduledTime={quest.scheduledTime} />
+        <QuestScheduledTimeExtended scheduledTime={quest.scheduledTime} endDate={quest.endDate} />
         <QuestTagsExtended tags={quest.labels} />
       </ScrollView>
     </Modal>

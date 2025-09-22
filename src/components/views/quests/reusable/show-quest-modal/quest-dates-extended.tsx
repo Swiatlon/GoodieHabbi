@@ -16,7 +16,7 @@ const QuestDatesExtended: React.FC<QuestDatesExtendedProps> = ({ startDate, endD
   const formattedStartDate = startDate ? safeDateFormat(startDate) : 'Not set';
   const formattedEndDate = endDate ? safeDateFormat(endDate) : 'Not set';
 
-  const daysLeft = endDate ? Math.ceil(dayjs(endDate).diff(dayjs(), 'day', true)) : null;
+  const daysLeft = endDate ? Math.floor(dayjs(endDate).diff(dayjs(), 'day', true)) : null;
 
   const renderDaysLeftBadge = () => {
     if (daysLeft == null) return <Text className="text-sm text-gray-500">(No deadline)</Text>;

@@ -17,10 +17,10 @@ const QuestItemDate: React.FC<QuestItemDateProps> = ({ startDate, endDate }) => 
   const formattedStartDate = safeDateFormat(startDate);
   const formattedEndDate = safeDateFormat(endDate);
 
-  const daysLeft = endDate ? Math.ceil(dayjs(endDate).diff(dayjs(), 'day', true)) : null;
+  const daysLeft = endDate ? Math.floor(dayjs(endDate).diff(dayjs(), 'day', true)) : null;
 
   const getDaysLeftBadge = () => {
-    if (daysLeft == null) return null;
+    if (daysLeft == null) return <Text className="text-sm text-gray-500">(No deadline)</Text>;
     if (daysLeft < 0) return <Text className="text-sm text-red-500">(⏰ Expired)</Text>;
     if (daysLeft === 0) return <Text className="text-sm text-yellow-600">(⚡ Last day!)</Text>;
     if (daysLeft <= 5) return <Text className="text-sm text-red-500">(⏳ {daysLeft} days left)</Text>;

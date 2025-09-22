@@ -48,7 +48,7 @@ const SeasonalQuestItem: React.FC<SeasonalQuestItemProps> = ({ quest }) => {
                 <QuestItemSeason season={quest.season} />
                 <QuestItemPriority priority={quest.priority} />
                 <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
-                <QuestItemScheduledTime scheduledTime={quest.scheduledTime} />
+                <QuestItemScheduledTime scheduledTime={quest.scheduledTime} endDate={quest.endDate} />
                 <QuestItemDifficulty difficulty={quest.difficulty} />
                 <QuestItemTag tags={quest.labels} onPress={openShowModal} />
               </View>

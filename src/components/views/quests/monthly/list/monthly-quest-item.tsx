@@ -49,7 +49,7 @@ const MonthlyQuestItem: React.FC<MonthlyQuestItemProps> = ({ quest }) => {
                 <QuestItemDateMonthly startDay={quest.startDay} endDay={quest.endDay} />
                 <QuestItemPriority priority={quest.priority} />
                 <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
-                <QuestItemScheduledTime scheduledTime={quest.scheduledTime} />
+                <QuestItemScheduledTime scheduledTime={quest.scheduledTime} endDate={quest.endDate} />
                 <QuestItemDifficulty difficulty={quest.difficulty} />
                 <QuestItemTag tags={quest.labels} onPress={openShowModal} />
               </View>
