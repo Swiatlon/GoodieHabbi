@@ -4,6 +4,9 @@ export interface IGetAccountRequest {}
 
 export interface IBadge {
   text: string;
+  type: string;
+  colorHex: string;
+  description: string;
 }
 
 export type UserPreferencesType = Record<string, unknown>;
