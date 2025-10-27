@@ -6,7 +6,7 @@ import { IStatsProfileResponse } from '@/contract/stats/stats.contract';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 
 interface GoalsSectionProps {
-  goals: IStatsProfileResponse['goals'];
+  goals: IStatsProfileResponse['goalStats'];
   isLoading: boolean;
 }
 
@@ -25,12 +25,12 @@ const GoalsSection: React.FC<GoalsSectionProps> = ({ goals, isLoading }) => {
 
       <View className="flex-row justify-around mb-4">
         <View className="items-center flex-1">
-          <Text className="text-green-600 font-bold text-xl">{completed}</Text>
-          <Text className="text-xs text-gray-600">Completed</Text>
-        </View>
-        <View className="items-center flex-1">
           <Text className="text-blue-600 font-bold text-xl">{inProgress}</Text>
           <Text className="text-xs text-gray-600">In Progress</Text>
+        </View>
+        <View className="items-center flex-1">
+          <Text className="text-green-600 font-bold text-xl">{completed}</Text>
+          <Text className="text-xs text-gray-600">Completed</Text>
         </View>
         <View className="items-center flex-1">
           <Text className="text-gray-800 font-bold text-xl">{currentTotal}</Text>
