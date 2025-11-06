@@ -14,6 +14,7 @@ export const allTags = [
   'statsProfile',
   'statsExtended',
   'eligibleQuestsForGoals',
+  'notifications',
 ];
 
 const Api = createApi({

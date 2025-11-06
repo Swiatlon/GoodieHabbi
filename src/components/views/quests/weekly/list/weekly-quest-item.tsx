@@ -14,6 +14,7 @@ import ShowWeeklyQuestItemModal from '../quest-modals/show-weekly-quest-modal';
 import UpdateWeeklyQuestModal from '../quest-modals/update-weekly-quest-modal';
 import Loader from '@/components/shared/loader/loader';
 import { IWeeklyQuest } from '@/contract/quests/quests-types/weekly-quests';
+import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { usePatchWeeklyQuestMutation, useDeleteWeeklyQuestMutation } from '@/redux/api/quests/weekly-quests-api';
 
 interface WeeklyQuestItemProps {
@@ -34,11 +35,12 @@ const WeeklyQuestItem: React.FC<WeeklyQuestItemProps> = ({ quest }) => {
   const closeUpdateModal = () => setIsUpdateQuestModalVisible(false);
 
   const isLoading = isPatching || isDeleting;
+  const animatedStyle = useTransformFade({});
 
   return (
     <>
       {isLoading && <Loader fullscreen />}
-      <QuestItemContainer completed={quest.isCompleted}>
+      <QuestItemContainer style={animatedStyle} completed={quest.isCompleted}>
         <View className="flex-1 flex-row items-center">
           <TouchableOpacity onPress={openShowModal} className="flex-1">
             <View className="flex-row items-center gap-2">

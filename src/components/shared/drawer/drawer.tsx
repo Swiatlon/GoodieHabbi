@@ -10,6 +10,7 @@ import GoalConfig from './routes-configs/goal-config';
 import LeaderboardConfig from './routes-configs/leaderboard-config';
 import ProfileConfig from './routes-configs/profile-config';
 import LoginConfig from '@/components/shared/drawer/routes-configs/login-config';
+import NotificationsConfig from '@/components/shared/drawer/routes-configs/notifications-config';
 import QuestConfig from '@/components/shared/drawer/routes-configs/quest-config';
 import RegisterConfig from '@/components/shared/drawer/routes-configs/register-config';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
@@ -53,6 +54,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props 
               <DashboardConfig />
               <QuestConfig />
               <LeaderboardConfig />
+              <NotificationsConfig />
               <ProfileConfig />
               <GoalConfig />
             </>

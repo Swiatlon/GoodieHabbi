@@ -69,7 +69,9 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children, className =
         <Animated.View className={`w-11/12 bg-white rounded-lg shadow-lg max-h-[90vh] m-auto py-6 px-4 ${className}`} style={modalStyle}>
           {isLoading && <Loader size="large" message={loadingMessage || 'Loading...'} fullscreen />}
           <View className="absolute top-[14px] right-2 z-20">
-            <IconButton onPress={handleBackdropPress} icon={<Ionicons name="close-outline" size={24} color="#1987EE" />} />
+            <IconButton onPress={handleBackdropPress}>
+              <Ionicons name="close-outline" size={24} color="#1987EE" />
+            </IconButton>
           </View>
           <ScrollView contentContainerStyle={{ padding: 0, position: 'relative', display: 'flex', flexGrow: 1 }}>
             <View className="h-full">{children}</View>

@@ -13,6 +13,7 @@ import ShowDailyQuestItemModal from '../quest-modals/show-daily-quest-modal';
 import UpdateDailyQuestModal from '../quest-modals/update-daily-quest-modal';
 import Loader from '@/components/shared/loader/loader';
 import { IDailyQuest } from '@/contract/quests/quests-types/daily-quests';
+import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useDeleteDailyQuestMutation, usePatchDailyQuestMutation } from '@/redux/api/quests/daily-quests-api';
 
 interface DailyQuestItemProps {
@@ -33,11 +34,12 @@ const DailyQuestItem: React.FC<DailyQuestItemProps> = ({ quest }) => {
   const closeUpdateModal = () => setIsUpdateQuestModalVisible(false);
 
   const isLoading = isPatching || isDeleting;
+  const animatedStyle = useTransformFade({});
 
   return (
     <>
       {isLoading && <Loader fullscreen />}
-      <QuestItemContainer completed={quest.isCompleted}>
+      <QuestItemContainer style={animatedStyle} completed={quest.isCompleted}>
         <View className="flex-1 flex-row items-center">
           <TouchableOpacity onPress={openShowModal} className="flex-1">
             <View className="flex-row items-center gap-2">

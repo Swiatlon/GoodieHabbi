@@ -9,7 +9,7 @@ describe('IconButton Component', () => {
   });
 
   it('renders correctly', () => {
-    render(<IconButton onPress={mockOnPress} testID="icon-button" className="custom-class" icon={<></>} />);
+    render(<IconButton onPress={mockOnPress} testID="icon-button" className="custom-class" />);
 
     const button = screen.getByTestId('icon-button');
     expect(button).toBeTruthy();
@@ -18,7 +18,7 @@ describe('IconButton Component', () => {
   });
 
   it('calls onPress when pressed', () => {
-    render(<IconButton onPress={mockOnPress} testID="icon-button-press" icon={<></>} />);
+    render(<IconButton onPress={mockOnPress} testID="icon-button-press" />);
 
     const button = screen.getByTestId('icon-button-press');
     fireEvent.press(button);

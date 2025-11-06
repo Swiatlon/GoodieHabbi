@@ -10,12 +10,12 @@ import QuestItemPriority from '../../reusable/quest-item/quest-item-priority';
 import QuestItemScheduledTime from '../../reusable/quest-item/quest-item-scheduled-time';
 import QuestItemTag from '../../reusable/quest-item/quest-item-tag';
 import QuestItemTitle from '../../reusable/quest-item/quest-item-title';
-import ShowQuestItemModal from '../../reusable/quest-item/quest-show-item-modal';
+import ShowMonthlyQuestItemModal from '../quest-modals/show-monthly-quest-modal';
 import UpdateMonthlyQuestModal from '../quest-modals/update-monthly-quest-modal';
 import Loader from '@/components/shared/loader/loader';
 import { IMonthlyQuest } from '@/contract/quests/quests-types/monthly-quests';
+import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useDeleteMonthlyQuestMutation, usePatchMonthlyQuestMutation } from '@/redux/api/quests/monthly-quests-api';
-import ShowMonthlyQuestItemModal from '../quest-modals/show-monthly-quest-modal';
 
 interface MonthlyQuestItemProps {
   quest: IMonthlyQuest;
@@ -35,11 +35,12 @@ const MonthlyQuestItem: React.FC<MonthlyQuestItemProps> = ({ quest }) => {
   const closeUpdateModal = () => setIsUpdateQuestModalVisible(false);
 
   const isLoading = isPatching || isDeleting;
+  const animatedStyle = useTransformFade({});
 
   return (
     <>
       {isLoading && <Loader fullscreen />}
-      <QuestItemContainer completed={quest.isCompleted}>
+      <QuestItemContainer style={animatedStyle} completed={quest.isCompleted}>
         <View className="flex-1 flex-row items-center">
           <TouchableOpacity onPress={openShowModal} className="flex-1">
             <View className="flex-row items-center gap-2">

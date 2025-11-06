@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import UpdateTagModal from '../tag-modals/update-tag-modal';
 import Button from '@/components/shared/button/button';
 import { IQuestLabel } from '@/contract/quests/labels/labels-quests';
+import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useDeleteQuestLabelMutation } from '@/redux/api/quests/labels-quests-api';
 import { getBestContrastTextColor } from '@/utils/utils/utils';
@@ -39,8 +40,10 @@ const TagItem: React.FC<TagItemProps> = ({ tag }) => {
       });
   };
 
+  const animatedStyle = useTransformFade({});
+
   return (
-    <View className={`flex flex-row items-center justify-between py-2 mx-4 border-b border-gray-300`}>
+    <View className={`flex flex-row items-center justify-between py-2 mx-4 border-b border-gray-300`} style={animatedStyle}>
       <View
         className={`flex-row items-center justify-between my-3 py-2 mr-auto rounded-3xl pl-4 pr-6 shadow-lg max-w-[200px]`}
         style={{

@@ -22,6 +22,7 @@ interface FilterModalProps<T> {
   setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setFilter: (key: QuestKeyType<T>, value: FilterValueType) => void;
   testID?: string;
+  title?: string;
 }
 
 const FilterModal = <T,>({
@@ -31,12 +32,13 @@ const FilterModal = <T,>({
   actualFilterData,
   filterCategories,
   testID = 'filter-modal',
+  title = 'Filter',
 }: FilterModalProps<T>) => {
   return (
     <Modal isVisible={isVisible} onClose={() => setIsVisible(false)} testID={`${testID}-modal`}>
       <View className="flex gap-4" testID={`${testID}-container`}>
         <Text className="text-lg font-semibold text-center" testID={`${testID}-title`}>
-          Filter Quests
+          {title}
         </Text>
 
         <View testID={`${testID}-categories-container`}>

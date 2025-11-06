@@ -1,5 +1,6 @@
-import React from 'react';
-import { GestureResponderEvent, TouchableOpacity } from 'react-native';
+import React, { FC, ReactNode } from 'react';
+import { GestureResponderEvent, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 interface BaseProps {
   onPress: (event: GestureResponderEvent) => void;
@@ -7,13 +8,32 @@ interface BaseProps {
   testID?: string;
 }
 
-type IconButtonProps = (BaseProps & { icon: React.ReactNode; children?: never }) | (BaseProps & { children: React.ReactNode; icon?: never });
+interface IconButtonPropsWithIcon extends BaseProps {
+  iconName: 'close' | 'search-outline' | 'filter-outline';
+  size?: number;
+  color?: string;
+  children?: never;
+}
 
-export const IconButton: React.FC<IconButtonProps> = ({ onPress, icon, className = '', testID, children }) => {
+interface IconButtonPropsWithChildren extends BaseProps {
+  children?: ReactNode;
+  iconName?: never;
+  size?: never;
+  color?: never;
+}
+
+type IconButtonProps = IconButtonPropsWithIcon | IconButtonPropsWithChildren;
+
+export const IconButton: FC<IconButtonProps> = ({ onPress, iconName, size = 24, color = '#1987EE', className = '', testID, children }) => {
   return (
     <TouchableOpacity onPress={onPress} className={`p-2 ${className}`} testID={testID}>
-      {icon}
-      {children}
+      {iconName ? (
+        <View>
+          <Ionicons name={iconName} size={size} color={color} />
+        </View>
+      ) : (
+        children
+      )}
     </TouchableOpacity>
   );
 };

@@ -19,6 +19,7 @@ import { IMonthlyQuest } from '@/contract/quests/quests-types/monthly-quests';
 import { IOneTimeQuest } from '@/contract/quests/quests-types/one-time-quests';
 import { ISeasonalQuest } from '@/contract/quests/quests-types/seasonal-quests';
 import { IWeeklyQuest } from '@/contract/quests/quests-types/weekly-quests';
+import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { AllQuestsUnion, useQuestMutations } from '@/hooks/quests/useGetAllQuests';
 import { isSeasonalQuest, isWeeklyQuest, isMonthlyQuest } from '@/utils/quests/quests';
 
@@ -41,11 +42,12 @@ const AllQuestItem: React.FC<AllQuestItemProps> = ({ quest }) => {
   const closeUpdateModal = () => setIsUpdateQuestModalVisible(false);
 
   const isLoading = isPatching || isDeleting;
+  const animatedStyle = useTransformFade({});
 
   return (
     <>
       {isLoading && <Loader fullscreen />}
-      <QuestItemContainer completed={quest.isCompleted}>
+      <QuestItemContainer style={animatedStyle} completed={quest.isCompleted}>
         <View className="flex-1 flex-row items-center">
           <TouchableOpacity onPress={openShowModal} className="flex-1">
             <View className="flex-row items-center gap-2">

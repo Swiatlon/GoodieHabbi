@@ -13,6 +13,7 @@ import ShowOneTimeQuestItemModal from '../quest-modals/show-one-time-quest-modal
 import UpdateOneTimeQuestModal from '../quest-modals/update-one-time-quest-modal';
 import Loader from '@/components/shared/loader/loader';
 import { IOneTimeQuest } from '@/contract/quests/quests-types/one-time-quests';
+import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useDeleteOneTimeQuestMutation, usePatchOneTimeQuestMutation } from '@/redux/api/quests/one-time-quests-api';
 
 interface OneTimeQuestItemProps {
@@ -33,10 +34,11 @@ const OneTimeQuestItem: React.FC<OneTimeQuestItemProps> = ({ quest }) => {
   const closeUpdateModal = () => setIsUpdateQuestModalVisible(false);
 
   const isLoading = isPatching || isDeleting;
+  const animatedStyle = useTransformFade({});
 
   return (
     <>
-      <QuestItemContainer completed={quest.isCompleted}>
+      <QuestItemContainer style={animatedStyle} completed={quest.isCompleted}>
         {isLoading && <Loader fullscreen />}
         <View className="flex-1 flex-row items-center">
           <TouchableOpacity onPress={openShowModal} className="flex-1" testID="quest-item-touchable">
