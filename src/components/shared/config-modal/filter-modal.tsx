@@ -32,7 +32,7 @@ const FilterModal = <T,>({
   actualFilterData,
   filterCategories,
   testID = 'filter-modal',
-  title = 'Filter',
+  title = 'Filter Quests',
 }: FilterModalProps<T>) => {
   return (
     <Modal isVisible={isVisible} onClose={() => setIsVisible(false)} testID={`${testID}-modal`}>

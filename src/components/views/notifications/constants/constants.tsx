@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { IFilterMapValues } from '../../../shared/config-modal/filter-modal';
+import { SortOption } from '@/components/shared/config-modal/sort-modal';
 import { NotificationDto } from '@/contract/notifications/notifications';
 
 export const NotificationsFilterMap = {
@@ -36,3 +37,20 @@ export const NotificationsFilterMap = {
     ],
   ]),
 } as Record<string, Map<string, IFilterMapValues<NotificationDto>>>;
+
+export const sortNotificationsOptions: SortOption[] = [
+  {
+    key: 'title',
+    objKey: 'title',
+    icon: <Ionicons name="text-outline" size={28} />,
+    label: 'Title',
+    color: '#000000',
+  },
+  {
+    key: 'isRead',
+    objKey: 'isRead',
+    icon: <Ionicons name="checkmark-done-outline" size={28} />,
+    label: 'Read Status',
+    color: '#32CD32',
+  },
+];

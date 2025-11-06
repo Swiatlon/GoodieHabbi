@@ -3,7 +3,7 @@ import { Image, TouchableOpacity } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { ParamListBase, useNavigation } from '@react-navigation/native';
-import exampleUserIcon from '@/assets/images/exampleUserIcon.png';
+import logoHeader from '@/assets/images/logoheader.png';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 
 export const LogoButton = () => {
@@ -17,7 +17,7 @@ export const LogoButton = () => {
   return (
     <Animated.View style={animatedStyle}>
       <TouchableOpacity onPress={handlePress} testID="logo-button">
-        <Image source={exampleUserIcon} className="w-[50px] h-[50px]" resizeMode="contain" />
+        <Image source={logoHeader} className="w-[50px] h-[50px]" resizeMode="contain" />
       </TouchableOpacity>
     </Animated.View>
   );

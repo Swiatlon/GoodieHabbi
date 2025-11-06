@@ -14,6 +14,7 @@ interface SortModalProps {
   actualSortOrder: SortOrderEnumType;
   setSortOrder: (order: SortOrderEnumType) => void;
   sortOptions?: SortOption[];
+  title?: string;
 }
 
 export interface SortOption {
@@ -47,11 +48,12 @@ const SortModal: React.FC<SortModalProps> = ({
   actualSortOrder,
   setSortOrder,
   sortOptions = defaultSortOptions,
+  title = 'Sort Quests',
 }) => {
   return (
     <Modal isVisible={isVisible} onClose={() => setIsVisible(false)}>
       <View className="flex gap-4">
-        <Text className="text-lg font-semibold text-center">Sort Quests</Text>
+        <Text className="text-lg font-semibold text-center">{title}</Text>
         <View className="flex gap-2">
           <Text className="text-md font-semibold ml-4">Sort By:</Text>
           <View className="flex-row flex-wrap justify-around">

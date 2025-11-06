@@ -6,7 +6,7 @@ import Button from '@/components/shared/button/button';
 import FilterModal from '@/components/shared/config-modal/filter-modal';
 import SortModal from '@/components/shared/config-modal/sort-modal';
 import Loader from '@/components/shared/loader/loader';
-import { NotificationsFilterMap } from '@/components/views/notifications/constants/constants';
+import { NotificationsFilterMap, sortNotificationsOptions } from '@/components/views/notifications/constants/constants';
 import { Header } from '@/components/views/notifications/header';
 import NotificationItem from '@/components/views/notifications/notification-item';
 import { NotificationDto } from '@/contract/notifications/notifications';
@@ -127,12 +127,14 @@ export const Notifications: FC = () => {
           setSortKey(key);
           setSortObjKey(objKey);
         }}
+        title="Sort Notifications"
         actualSortOrder={actualSortOrder}
         setSortOrder={setSortOrder}
+        sortOptions={sortNotificationsOptions}
       />
 
       {unreadCount > 0 && (
-        <Animated.View style={buttonsStyle}>
+        <Animated.View style={buttonsStyle} className="w-full h-[75px]">
           <Button
             label={'Mark all as read ' + `(${unreadCount})`}
             onPress={handleMarkAllAsRead}
