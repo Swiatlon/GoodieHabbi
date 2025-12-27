@@ -19,8 +19,8 @@ const LevelExperienceSection: React.FC<LevelExperienceSectionProps> = ({ xpStats
       <Text className="text-lg font-bold text-center mb-3">Experience Overview</Text>
 
       <View className="flex items-center mb-4">
-        <View className="flex-row items-center justify-between w-full">
-          <Text className="text-primary text-lg font-semibold text-center w-full">Level: {level}</Text>
+        <View className="flex-row items-center justify-center w-full gap-2">
+          <Text className="text-primary text-lg font-semibold text-center">Level: {level}</Text>
           {isMaxLevel && (
             <View className="bg-yellow-500 px-3 py-1 rounded-full">
               <Text className="text-white font-bold text-xs">MAX LEVEL</Text>

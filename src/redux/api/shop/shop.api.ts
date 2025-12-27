@@ -23,7 +23,7 @@ export const shopSliceAPI = Api.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['shopItems', 'statsProfile', 'account'],
+      invalidatesTags: ['shopItems', 'statsProfile', 'account', 'inventory'],
     }),
   }),
 });

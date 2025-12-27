@@ -9,7 +9,7 @@ import { useGetShopItemsQuery, usePurchaseShopItemMutation } from '@/redux/api/s
 import { useGetStatsProfileQuery } from '@/redux/api/stats/stats-api';
 
 const Shop = () => {
-  const { data: items = [], isLoading, refetch } = useGetShopItemsQuery({});
+  const { data: items = [], isLoading, isFetching, refetch } = useGetShopItemsQuery({});
   const { data: account, isLoading: isLoadingAccount } = useGetAccountDataQuery({});
   const { data: statsData, isLoading: isStatsLoading } = useGetStatsProfileQuery();
   const [purchaseShopItem, { isLoading: isPurchasing }] = usePurchaseShopItemMutation();
@@ -59,7 +59,7 @@ const Shop = () => {
       <FlatList
         data={items}
         keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => <ShopItem item={item} isPurchasing={isPurchasing} onPurchase={handlePurchase} />}
+        renderItem={({ item }) => <ShopItem item={item} isPurchasing={isPurchasing || isFetching} onPurchase={handlePurchase} />}
       />
     </View>
   );

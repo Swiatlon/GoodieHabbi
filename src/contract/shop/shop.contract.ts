@@ -1,6 +1,7 @@
 export type ShopSortBy = 'id' | 'name' | 'price' | 'levelRequirement';
 export type ShopSortOrder = 'asc' | 'desc';
 export type ShopCategory = 'avatarFrames' | 'avatars' | 'nameEffects' | 'consumables' | 'pets' | 'titles';
+export type ShopItemType = 'Title' | 'VisualEffect' | 'Consumable' | 'Pet' | 'Cosmetic';
 
 export interface IShopItemUserContext {
   isOwned: boolean;
@@ -16,7 +17,7 @@ export interface IShopItem {
   name?: string | null;
   description?: string | null;
   imageUrl?: string | null;
-  itemType?: string | null;
+  itemType?: ShopItemType | null;
   category?: string | null;
   price: number;
   currencyType?: string | null;

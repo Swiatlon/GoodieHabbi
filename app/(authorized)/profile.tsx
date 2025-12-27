@@ -45,6 +45,7 @@ const Profile: FC = () => {
             joinDate={profileData.joinDate}
             profile={profileData.profile}
             isLoading={isLoading}
+            activeCosmetics={profileData.preferences.activeCosmetics}
           />
           <LevelExperienceSection xpStats={statsData.xpStats} isLoading={isLoading} />
           <QuestsSection quests={statsData.questStats} isLoading={isLoading} />

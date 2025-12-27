@@ -38,7 +38,7 @@ export interface IAccountDataResponse {
   email: string;
   joinDate: string;
   profile: IUserProfile;
-  preferences: UserPreferences[];
+  preferences: UserPreferences;
 }
 
 export interface IUpdateAccountRequest {

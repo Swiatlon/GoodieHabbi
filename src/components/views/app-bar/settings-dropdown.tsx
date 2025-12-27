@@ -33,6 +33,12 @@ export const SettingsDropdown = () => {
         </View>
       ),
     },
+    {
+      title: 'Inventory',
+      icon: 'cube-outline' as const,
+      route: '(authorized)/inventory',
+      testID: 'inventory-button',
+    },
   ];
 
   return (
