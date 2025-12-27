@@ -8,9 +8,10 @@ import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 interface NotificationItemProps {
   notification: NotificationDto;
   onPress: () => void;
+  isFetching?: boolean;
 }
 
-export const NotificationItem: FC<NotificationItemProps> = ({ notification, onPress }) => {
+export const NotificationItem: FC<NotificationItemProps> = ({ notification, onPress, isFetching }) => {
   const animatedStyle = useTransformFade({});
 
   const handleToggleRead = (e: { stopPropagation: () => void }) => {
@@ -69,6 +70,7 @@ export const NotificationItem: FC<NotificationItemProps> = ({ notification, onPr
           {!notification.isRead && (
             <TouchableOpacity
               onPress={handleToggleRead}
+              disabled={isFetching}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               className="p-2 rounded-full mt-0.5 bg-white shadow-md shadow-blue-100"
             >

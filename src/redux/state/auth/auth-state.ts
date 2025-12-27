@@ -67,4 +67,5 @@ export const handleAuthSuccess = createAsyncThunk(
 );
 
 export const { setCredentials } = authSlice.actions;
+export const { selectCurrentToken, selectTokenExpirationTime, selectAccountId } = authSlice.selectors;
 export default authSlice.reducer;

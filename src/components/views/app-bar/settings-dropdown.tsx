@@ -5,13 +5,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
 import { Dropdown } from '@/components/shared/dropdown/dropdown';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
-import { useGetNotificationsQuery } from '@/redux/api/notifications/notifications-api';
+import { useNotificationsWithHub } from '@/hooks/useNotificationsWithHub';
 
 export const SettingsDropdown = () => {
-  const { data: notifications = [] } = useGetNotificationsQuery({});
+  const { unreadCount } = useNotificationsWithHub();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const animatedStyle = useTransformFade({ direction: 'left' });
-  const unreadCount = notifications.filter(n => !n.isRead).length;
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownAnchorRef = useRef<View>(null);
 
@@ -44,8 +43,19 @@ export const SettingsDropdown = () => {
   return (
     <Animated.View style={animatedStyle} className="flex-row items-center">
       <View ref={dropdownAnchorRef}>
-        <TouchableOpacity onPress={() => setIsDropdownOpen(true)} className="p-2" testID="settings-button">
+        <TouchableOpacity onPress={() => setIsDropdownOpen(true)} className="p-2 relative w-full">
           <Ionicons name="settings-outline" size={24} color="white" />
+          {unreadCount > 0 && (
+            <View
+              className="absolute bg-red-500 rounded-full"
+              style={{
+                right: 6,
+                top: 6,
+                width: 10,
+                height: 10,
+              }}
+            />
+          )}
         </TouchableOpacity>
       </View>
 
