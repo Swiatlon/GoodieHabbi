@@ -1,0 +1,91 @@
+import React, { FC, useState } from 'react';
+import { View, TouchableOpacity } from 'react-native';
+import QuestItemDateMonthly from '../../reusable/quest-item/quest-item-date-monthly';
+import QuestItemDifficulty from '../../reusable/quest-item/quest-item-difficulty';
+import QuestItemScheduledTime from '../../reusable/quest-item/quest-item-scheduled-time';
+import QuestItemTag from '../../reusable/quest-item/quest-item-tag';
+import QuestItemDateWeekly from '../../reusable/quest-item/quest-item-weekly';
+import Loader from '@/components/shared/loader/loader';
+import QuestItemCheckmark from '@/components/views/quests/reusable/quest-item/quest-item-checkmark';
+import QuestItemContainer from '@/components/views/quests/reusable/quest-item/quest-item-container';
+import QuestItemDate from '@/components/views/quests/reusable/quest-item/quest-item-date';
+import QuestItemEmoji from '@/components/views/quests/reusable/quest-item/quest-item-emoji';
+import QuestItemPriority from '@/components/views/quests/reusable/quest-item/quest-item-priority';
+import QuestItemTitle from '@/components/views/quests/reusable/quest-item/quest-item-title';
+import ShowQuestItemModal from '@/components/views/quests/reusable/quest-item/quest-show-item-modal';
+import { IDailyQuest } from '@/contract/quests/quests-types/daily-quests';
+import { IMonthlyQuest } from '@/contract/quests/quests-types/monthly-quests';
+import { IOneTimeQuest } from '@/contract/quests/quests-types/one-time-quests';
+import { ISeasonalQuest } from '@/contract/quests/quests-types/seasonal-quests';
+import { IWeeklyQuest } from '@/contract/quests/quests-types/weekly-quests';
+import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
+import { useQuestMutations } from '@/hooks/quests/useGetAllQuests';
+import { AllRecurringQuestsUnion } from '@/hooks/quests/useGetAllRecurrings';
+import { isWeeklyQuest, isMonthlyQuest } from '@/utils/quests/quests';
+
+interface AllQuestItemProps {
+  quest: AllRecurringQuestsUnion;
+}
+
+const AllRecurringsQuestItem: FC<AllQuestItemProps> = ({ quest }) => {
+  const [isShowQuestModalVisible, setIsShowQuestModalVisible] = useState(false);
+  const [isUpdateQuestModalVisible, setIsUpdateQuestModalVisible] = useState(false);
+
+  const { patchQuest, deleteQuest, updateModal: UpdateQuestModal } = useQuestMutations(quest.questType);
+  const [patchQuestMutation, { isLoading: isPatching }] = patchQuest();
+  const [delteQuestMutation, { isLoading: isDeleting }] = deleteQuest();
+
+  const openShowModal = () => setIsShowQuestModalVisible(true);
+  const openUpdateModal = () => setIsUpdateQuestModalVisible(true);
+
+  const closeShowModal = () => setIsShowQuestModalVisible(false);
+  const closeUpdateModal = () => setIsUpdateQuestModalVisible(false);
+
+  const isLoading = isPatching || isDeleting;
+  const animatedStyle = useTransformFade({});
+
+  return (
+    <>
+      {isLoading && <Loader fullscreen />}
+      <QuestItemContainer style={animatedStyle} completed={quest.isCompleted}>
+        <View className="flex-1 flex-row items-center">
+          <TouchableOpacity onPress={openShowModal} className="flex-1">
+            <View className="flex-row items-center gap-2">
+              <QuestItemEmoji emoji={quest.emoji} />
+              <View className="flex-1 gap-2">
+                <QuestItemTitle title={quest.title} isCompleted={quest.isCompleted} />
+                {isWeeklyQuest(quest) && <QuestItemDateWeekly weekdays={quest.weekdays} onPress={openShowModal} />}
+                {isMonthlyQuest(quest) && <QuestItemDateMonthly startDay={quest.startDay} endDay={quest.endDay} />}
+                <QuestItemPriority priority={quest.priority} />
+                <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
+                <QuestItemScheduledTime scheduledTime={quest.scheduledTime} endDate={quest.endDate} />
+                <QuestItemDifficulty difficulty={quest.difficulty} />
+                <QuestItemTag tags={quest.labels} onPress={openShowModal} />
+              </View>
+            </View>
+          </TouchableOpacity>
+          <QuestItemCheckmark completed={quest.isCompleted} questId={quest.id} patchQuest={patchQuestMutation} isLoading={isLoading} />
+        </View>
+      </QuestItemContainer>
+      <ShowQuestItemModal
+        quest={quest}
+        isVisible={isShowQuestModalVisible}
+        onClose={closeShowModal}
+        deleteQuest={delteQuestMutation}
+        onUpdate={() => {
+          closeShowModal();
+          openUpdateModal();
+        }}
+      />
+      {isUpdateQuestModalVisible && (
+        <UpdateQuestModal
+          isVisible={isUpdateQuestModalVisible}
+          onClose={closeUpdateModal}
+          quest={quest as IOneTimeQuest & ISeasonalQuest & IMonthlyQuest & IDailyQuest & IWeeklyQuest}
+        />
+      )}
+    </>
+  );
+};
+
+export default AllRecurringsQuestItem;

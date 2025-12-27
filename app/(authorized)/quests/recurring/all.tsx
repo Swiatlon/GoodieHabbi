@@ -1,0 +1,130 @@
+import React, { FC, useState } from 'react';
+import { View, FlatList, Text } from 'react-native';
+import Animated from 'react-native-reanimated';
+import { Ionicons } from '@expo/vector-icons';
+import Button from '@/components/shared/button/button';
+import FilterModal from '@/components/shared/config-modal/filter-modal';
+import SortModal from '@/components/shared/config-modal/sort-modal';
+import Loader from '@/components/shared/loader/loader';
+import { AllQuestsFilterMap } from '@/components/views/quests/all/constants/constants';
+import AllRecurringsQuestItem from '@/components/views/quests/all/list/all-recurring-quest-item';
+import AddAllRecurringQuestModal from '@/components/views/quests/all/quest-modals/add-all-recurring-quests.modal';
+import Header from '@/components/views/quests/reusable/header';
+import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
+import { AllQuestsUnion } from '@/hooks/quests/useGetAllQuests';
+import { AllRecurringQuestsUnion, useGetAllRecurringQuests } from '@/hooks/quests/useGetAllRecurrings';
+import { useFilter } from '@/hooks/use-filter/use-filter';
+import { useSearch } from '@/hooks/use-search/use-search';
+import { useSort, SortOrderEnum } from '@/hooks/use-sort/use-sort';
+
+const AllRecurringQuests: FC = () => {
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+  const [isSortModalVisible, setIsSortModalVisible] = useState(false);
+  const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
+
+  const { data: fetchedQuests = [], isLoading } = useGetAllRecurringQuests();
+  const buttonsStyle = useTransformFade({ isContentLoading: isLoading, delay: 200 });
+
+  const handleCloseModal = () => setIsAddQuestModalVisible(false);
+  console.log(fetchedQuests);
+
+  const {
+    data: searchedData,
+    searchQuery,
+    isSearchVisible,
+    setSearchQuery,
+    setIsSearchVisible,
+  } = useSearch({
+    data: fetchedQuests,
+  });
+
+  const {
+    data: filteredQuests,
+    setFilter,
+    actualFilter,
+  } = useFilter<AllRecurringQuestsUnion>({
+    secureStorageName: 'FilterAllRecurringQuests',
+    data: searchedData,
+    initialFilter: {
+      isCompleted: false,
+      priority: null,
+    },
+  });
+
+  const {
+    data: sortedData,
+    actualSortKey,
+    actualSortOrder,
+    setSortOrder,
+    setSortKey,
+    setSortObjKey,
+  } = useSort({
+    secureStorageName: 'SortAllRecurringQuests',
+    data: filteredQuests,
+    initialSort: {
+      key: 'title',
+      objKey: 'title',
+      order: SortOrderEnum.ASC,
+    },
+  });
+
+  if (isLoading) {
+    return <Loader message="Fetching quests..." />;
+  }
+
+  return (
+    <>
+      <View className="flex-1 p-4">
+        <Header
+          title="All Recurring Quests"
+          isSearchVisible={isSearchVisible}
+          searchQuery={searchQuery}
+          setIsSearchVisible={setIsSearchVisible}
+          setIsFilterModalVisible={setIsFilterModalVisible}
+          setIsSortModalVisible={setIsSortModalVisible}
+          setSearchQuery={setSearchQuery}
+        />
+
+        <FlatList
+          data={sortedData}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) => <AllRecurringsQuestItem quest={item} />}
+          ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
+        />
+
+        <Animated.View style={buttonsStyle}>
+          <Button
+            label="Add new Quest"
+            onPress={() => setIsAddQuestModalVisible(true)}
+            startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
+            className="mx-auto mt-4"
+          />
+        </Animated.View>
+
+        <FilterModal<AllQuestsUnion>
+          isVisible={isFilterModalVisible}
+          setIsVisible={setIsFilterModalVisible}
+          setFilter={setFilter}
+          actualFilterData={actualFilter}
+          filterCategories={AllQuestsFilterMap}
+        />
+
+        <SortModal
+          isVisible={isSortModalVisible}
+          setIsVisible={setIsSortModalVisible}
+          actualSortKey={actualSortKey}
+          setActualSortKeys={(key, objKey) => {
+            setSortKey(key);
+            setSortObjKey(objKey);
+          }}
+          actualSortOrder={actualSortOrder}
+          setSortOrder={setSortOrder}
+        />
+
+        <AddAllRecurringQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
+      </View>
+    </>
+  );
+};
+
+export default AllRecurringQuests;
