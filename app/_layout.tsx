@@ -8,15 +8,16 @@ import { Drawer } from 'expo-router/drawer';
 import * as SplashScreen from 'expo-splash-screen';
 import '@/assets/styles/global.css';
 import SpaceMonoFont from '../src/assets/fonts/Rubik-VariableFont_wght.ttf';
+import { AchievementOverlay } from '@/components/shared/achievements-overlay/achievements-overlay';
 import Header from '@/components/shared/app-bar/app-bar';
 import { CustomDrawerContent } from '@/components/shared/drawer/drawer';
 import PersistLoginMiddleware from '@/middlewares/persist-login-middleware';
 import PrefetchMiddleware from '@/middlewares/prefetch-middleware';
 import RoutesPermissionMiddleware from '@/middlewares/routes-permission-middleware';
+import { NotificationsProvider } from '@/providers/notification-provider/notification-provider';
 import SnackbarProvider from '@/providers/snackbar/snackbar-provider';
 import { store } from '@/redux/config/store';
 import '@/configs/day-js-config';
-
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -56,17 +57,20 @@ export default function RootLayout() {
             <PersistLoginMiddleware onLoaded={() => handleLoaded('persistLogin')}>
               <RoutesPermissionMiddleware>
                 <PrefetchMiddleware onLoaded={() => handleLoaded('prefetch')}>
-                  <Drawer
-                    screenOptions={{
-                      header: () => <Header />,
-                      sceneStyle: {
-                        backgroundColor: 'white',
-                      },
-                    }}
-                    drawerContent={props => <CustomDrawerContent {...props} />}
-                  >
-                    <Slot />
-                  </Drawer>
+                  <NotificationsProvider>
+                    <AchievementOverlay />
+                    <Drawer
+                      screenOptions={{
+                        header: () => <Header />,
+                        sceneStyle: {
+                          backgroundColor: 'white',
+                        },
+                      }}
+                      drawerContent={props => <CustomDrawerContent {...props} />}
+                    >
+                      <Slot />
+                    </Drawer>
+                  </NotificationsProvider>
                 </PrefetchMiddleware>
               </RoutesPermissionMiddleware>
             </PersistLoginMiddleware>

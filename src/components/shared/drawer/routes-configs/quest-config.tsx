@@ -28,6 +28,11 @@ const QuestConfig = () => {
           icon: <Ionicons name="repeat-outline" />,
           children: [
             {
+              label: 'All Quests',
+              icon: <Ionicons name="trophy-outline" />,
+              route: '(authorized)/quests/recurring/all',
+            },
+            {
               label: 'Daily Quests',
               route: '(authorized)/quests/recurring/daily',
               icon: <Ionicons name="sunny-outline" />,
@@ -48,11 +53,6 @@ const QuestConfig = () => {
           label: 'One-Time Quests',
           route: '(authorized)/quests/one-time',
           icon: <Ionicons name="checkmark-done-outline" />,
-        },
-        {
-          label: 'Quest Tags',
-          route: '(authorized)/quests/tags',
-          icon: <Ionicons name="pricetag-outline" />,
         },
       ]}
     />

@@ -1,7 +1,7 @@
 {
   "name": "goodiehabbi",
   "main": "expo-router/entry",
-  "version": "1.10.0",
+  "version": "2.0.0",
   "scripts": {
     "start": "expo start -c",
     "android": "expo run:android",
@@ -20,6 +20,7 @@
     "@expo/config-plugins": "^9.0.14",
     "@expo/vector-icons": "^14.0.2",
     "@hookform/resolvers": "^3.10.0",
+    "@microsoft/signalr": "^10.0.0",
     "@react-native-async-storage/async-storage": "^2.1.1",
     "@react-native-picker/picker": "^2.11.0",
     "@react-navigation/bottom-tabs": "^7.2.0",

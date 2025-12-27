@@ -15,11 +15,14 @@ export const allTags = [
   'statsExtended',
   'eligibleQuestsForGoals',
   'notifications',
+  'shopItems',
+  'inventory',
 ];
 
 const Api = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   endpoints: builder => ({}),
   tagTypes: allTags,
 });

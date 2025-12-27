@@ -5,12 +5,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { DrawerContentComponentProps, DrawerContentScrollView, useDrawerStatus } from '@react-navigation/drawer';
 import { useRouter } from 'expo-router';
 import Button from '../button/button';
+import AccountConfig from './routes-configs/account-config';
 import DashboardConfig from './routes-configs/dashboard-config';
-import GoalConfig from './routes-configs/goal-config';
-import LeaderboardConfig from './routes-configs/leaderboard-config';
-import ProfileConfig from './routes-configs/profile-config';
+import PlanningConfig from './routes-configs/planning-config';
+import ProgressConfig from './routes-configs/progress-config';
+import StoreConfig from './routes-configs/store-config';
 import LoginConfig from '@/components/shared/drawer/routes-configs/login-config';
-import NotificationsConfig from '@/components/shared/drawer/routes-configs/notifications-config';
 import QuestConfig from '@/components/shared/drawer/routes-configs/quest-config';
 import RegisterConfig from '@/components/shared/drawer/routes-configs/register-config';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
@@ -43,7 +43,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props 
           </TouchableOpacity>
         </View>
 
-        <View className="flex gap-4 flex-grow">
+        <View className="flex gap-6 flex-grow">
           {!isAuthenticated ? (
             <>
               <RegisterConfig />
@@ -53,10 +53,10 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props 
             <>
               <DashboardConfig />
               <QuestConfig />
-              <LeaderboardConfig />
-              <NotificationsConfig />
-              <ProfileConfig />
-              <GoalConfig />
+              <ProgressConfig />
+              <StoreConfig />
+              <PlanningConfig />
+              <AccountConfig />
             </>
           )}
         </View>
@@ -67,7 +67,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props 
               startIcon={<Ionicons name="log-out-outline" size={20} color="white" />}
               onPress={handleLogout}
               label="Logout"
-              className="px-6 mr-auto text-center"
+              className="px-6 mr-auto text-center mt-4"
             />
           </Animated.View>
         )}

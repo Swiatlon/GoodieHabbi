@@ -9,21 +9,36 @@ export interface IBadge {
   description: string;
 }
 
-export type UserPreferencesType = Record<string, unknown>;
+export interface IUserActiveCosmetics {
+  avatarFrameUrl?: NullableString;
+  pet?: {
+    petUrl?: NullableString;
+    animation?: NullableString;
+  } | null;
+  title?: NullableString;
+  nameEffect?: {
+    effectStyle?: NullableString;
+    colorHex?: NullableString;
+  } | null;
+}
+
+export interface UserPreferences {
+  activeCosmetics?: IUserActiveCosmetics | null;
+}
 
 export interface IUserProfile {
   nickname: NullableString;
   avatar: NullableString;
   bio: NullableString;
+  coins: number;
   badges: IBadge[];
 }
-
 export interface IAccountDataResponse {
   login: string;
   email: string;
   joinDate: string;
   profile: IUserProfile;
-  preferences: UserPreferencesType[];
+  preferences: UserPreferences;
 }
 
 export interface IUpdateAccountRequest {

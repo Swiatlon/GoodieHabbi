@@ -14,19 +14,16 @@ import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useFilter } from '@/hooks/use-filter/use-filter';
 import { useSearch } from '@/hooks/use-search/use-search';
 import { SortOrderEnum, useSort } from '@/hooks/use-sort/use-sort';
-import {
-  useGetNotificationsQuery,
-  useMarkAllNotificationsReadMutation,
-  useMarkNotificationReadMutation,
-} from '@/redux/api/notifications/notifications-api';
+import { useNotificationsWithHub } from '@/hooks/useNotificationsWithHub';
+import { useMarkAllNotificationsReadMutation, useMarkNotificationReadMutation } from '@/redux/api/notifications/notifications-api';
 
 export const Notifications: FC = () => {
-  const { data: notifications = [], isLoading } = useGetNotificationsQuery({});
+  const { notifications, isFetching, isLoading } = useNotificationsWithHub();
   const [markAsRead] = useMarkNotificationReadMutation();
   const [markAllRead] = useMarkAllNotificationsReadMutation();
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
-  const buttonsStyle = useTransformFade({ isContentLoading: isLoading, delay: 200 });
+  const buttonsStyle = useTransformFade({ isContentLoading: isFetching, delay: 200 });
 
   const {
     data: searchedData,
@@ -105,7 +102,9 @@ export const Notifications: FC = () => {
       <FlatList
         data={sortedData}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => <NotificationItem key={item.id} notification={item} onPress={async () => await handleNotificationPress(item)} />}
+        renderItem={({ item }) => (
+          <NotificationItem key={item.id} notification={item} onPress={async () => await handleNotificationPress(item)} isFetching={isFetching} />
+        )}
         ListEmptyComponent={<Text className="text-center text-gray-500">No notifications found.</Text>}
         className="flex-1"
       />
@@ -141,6 +140,7 @@ export const Notifications: FC = () => {
             className="absolute bottom-[14px] z-20 self-center"
             startIcon={<Ionicons name="checkmark-done" size={20} color="#fff" />}
             testID="btn-add-quest"
+            disabled={isFetching}
           />
         </Animated.View>
       )}
