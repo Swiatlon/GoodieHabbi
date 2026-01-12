@@ -4,9 +4,12 @@ import { Ionicons } from '@expo/vector-icons';
 import CustomDrawerItem from '../elements/custom-drawer-item';
 import { useNotificationsWithHub } from '@/hooks/useNotificationsWithHub';
 
-const AccountIcon = ({ hasUnread }: { hasUnread: boolean }) => (
+const ACTIVE_COLOR = '#007AFF';
+const INACTIVE_COLOR = '#636363';
+
+const AccountIcon = ({ hasUnread, color }: { hasUnread: boolean; color: string }) => (
   <View style={{ position: 'relative' }}>
-    <Ionicons name="person-circle-outline" size={26} />
+    <Ionicons name="person-circle-outline" size={24} color={color} />
     {hasUnread && (
       <View
         style={{
@@ -23,9 +26,9 @@ const AccountIcon = ({ hasUnread }: { hasUnread: boolean }) => (
   </View>
 );
 
-const NotificationsIcon = ({ count }: { count: number }) => (
+const NotificationsIcon = ({ count, color }: { count: number; color: string }) => (
   <View style={{ position: 'relative' }}>
-    <Ionicons name="notifications-outline" size={22} />
+    <Ionicons name="notifications-outline" size={22} color={color} />
     {count > 0 && (
       <View
         style={{
@@ -41,7 +44,15 @@ const NotificationsIcon = ({ count }: { count: number }) => (
           paddingHorizontal: 4,
         }}
       >
-        <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>{count}</Text>
+        <Text
+          style={{
+            color: 'white',
+            fontSize: 10,
+            fontWeight: 'bold',
+          }}
+        >
+          {count}
+        </Text>
       </View>
     )}
   </View>
@@ -52,25 +63,26 @@ const AccountConfig = () => {
   return (
     <CustomDrawerItem
       label="Account"
-      icon={<AccountIcon hasUnread={unreadCount > 0} />}
+      icon={(active: boolean) => <AccountIcon hasUnread={unreadCount > 0} color={active ? ACTIVE_COLOR : INACTIVE_COLOR} />}
       items={[
         {
           label: 'Profile',
-          icon: <Ionicons name="person-outline" size={22} />,
           route: '(authorized)/profile',
+          icon: (active: boolean) => <Ionicons name="person-outline" size={22} color={active ? ACTIVE_COLOR : INACTIVE_COLOR} />,
         },
         {
           label: 'Notifications',
-          icon: <NotificationsIcon count={unreadCount} />,
           route: '(authorized)/notifications',
+          icon: (active: boolean) => <NotificationsIcon count={unreadCount} color={active ? ACTIVE_COLOR : INACTIVE_COLOR} />,
         },
         {
           label: 'Inventory',
-          icon: <Ionicons name="cube-outline" size={22} />,
           route: '(authorized)/inventory',
+          icon: (active: boolean) => <Ionicons name="cube-outline" size={22} color={active ? ACTIVE_COLOR : INACTIVE_COLOR} />,
         },
       ]}
     />
   );
 };
+
 export default AccountConfig;

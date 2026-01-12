@@ -3,9 +3,9 @@ import Api from '@/redux/config/api';
 
 export const goalSliceAPI = Api.injectEndpoints({
   endpoints: builder => ({
-    createGoal: builder.mutation<void, { id: number; data: ICreateGoalRequest }>({
-      query: ({ id, data }) => ({
-        url: `goals/${id}`,
+    createGoal: builder.mutation<void, { data: ICreateGoalRequest }>({
+      query: ({ data }) => ({
+        url: `goals`,
         method: 'POST',
         body: data,
       }),

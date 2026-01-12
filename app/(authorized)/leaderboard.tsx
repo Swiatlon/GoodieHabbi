@@ -1,14 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FlatList, Text, View } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import Loader from '@/components/shared/loader/loader';
 import PodiumUser from '@/components/views/leaderboard/podium-user';
 import RegularLeaderboardItem from '@/components/views/leaderboard/regular-leaderboard-item';
 import { useGetLeaderboardXPQuery } from '@/redux/api/leaderboard/leaderboard-api';
 
 const Leaderboard = () => {
-  const { data = [], isLoading } = useGetLeaderboardXPQuery();
+  const isFocused = useIsFocused();
+  const { data = [], isLoading, refetch } = useGetLeaderboardXPQuery();
 
-  if (isLoading) return <Loader message="Loading leaderboard..." />;
+  useEffect(() => {
+    if (isFocused) {
+      refetch();
+    }
+  }, [isFocused]);
+
+  if (isLoading) {
+    return <Loader message="Loading leaderboard..." />;
+  }
+
   if (!Array.isArray(data) || data.length === 0) {
     return <Text className="text-center text-gray-500 mt-8">No users found.</Text>;
   }

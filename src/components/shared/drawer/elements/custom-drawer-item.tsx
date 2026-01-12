@@ -5,14 +5,14 @@ import { useNavigation, ParamListBase, NavigationProp } from '@react-navigation/
 
 interface DropdownItem {
   label: string;
-  icon: JSX.Element;
+  icon: JSX.Element | ((active: boolean) => JSX.Element);
   route?: string;
   children?: DropdownItem[];
 }
 
 interface CustomDrawerProps {
   label: string;
-  icon: JSX.Element;
+  icon: JSX.Element | ((active: boolean) => JSX.Element);
   route?: string;
   items?: DropdownItem[];
   depth?: number;
@@ -27,11 +27,16 @@ const DEPTH_MARGIN_CLASSES: Record<number, string> = {
   4: 'ml-16',
 };
 
-const renderIcon = (iconElement: JSX.Element, active: boolean) =>
-  React.cloneElement(iconElement, {
+const renderIcon = (icon: JSX.Element | ((active: boolean) => JSX.Element), active: boolean) => {
+  if (typeof icon === 'function') {
+    return icon(active);
+  }
+
+  return React.cloneElement(icon, {
     size: ICON_SIZE,
     color: active ? '#1987EE' : '#4b465d',
   });
+};
 
 const renderLabel = (text: string, active: boolean) => <Text className={`flex-1 text-base ${active ? 'text-primary' : 'text-black'}`}>{text}</Text>;
 
@@ -40,7 +45,7 @@ const renderExtendArrow = (isOpen: boolean) => (
 );
 
 const CustomDrawerItem: React.FC<CustomDrawerProps> = ({ label, icon, items = [], route, depth = 0 }) => {
-  const [isOpen, setIsOpen] = useState(label === 'Quests' ? true : false);
+  const [isOpen, setIsOpen] = useState(label === 'Quests');
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const currentRoute = navigation.getState().routes[navigation.getState().index]?.name;

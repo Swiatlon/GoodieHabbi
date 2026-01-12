@@ -1,6 +1,5 @@
-import React, { FC } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import Animated from 'react-native-reanimated';
+import { FC } from 'react';
+import { Animated, TouchableOpacity, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { NotificationDto } from '@/contract/notifications/notifications';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
@@ -8,15 +7,21 @@ import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 interface NotificationItemProps {
   notification: NotificationDto;
   onPress: () => void;
+  onDelete?: (id: string) => void;
   isFetching?: boolean;
 }
 
-export const NotificationItem: FC<NotificationItemProps> = ({ notification, onPress, isFetching }) => {
+export const NotificationItem: FC<NotificationItemProps> = ({ notification, onPress, onDelete, isFetching }) => {
   const animatedStyle = useTransformFade({});
 
   const handleToggleRead = (e: { stopPropagation: () => void }) => {
     e.stopPropagation();
     onPress();
+  };
+
+  const handleDelete = (e: { stopPropagation: () => void }) => {
+    e.stopPropagation();
+    if (onDelete) onDelete(notification.id);
   };
 
   return (
@@ -30,35 +35,19 @@ export const NotificationItem: FC<NotificationItemProps> = ({ notification, onPr
           }`}
         >
           <View className="relative mr-3.5 mt-0.5">
-            <View className={`p-2.5 rounded-xl ${notification.isRead ? 'bg-gray-200/60' : 'bg-white shadow-lg shadow-blue-200/50'}`}>
+            <View className={`p-2.5 rounded-xl bg-white shadow-lg shadow-blue-200/50`}>
               <Ionicons
-                name={notification.isRead ? 'mail-open-outline' : 'mail-unread'}
+                name={notification.isRead ? 'checkmark-done-circle-outline' : 'mail-unread'}
                 size={22}
-                color={notification.isRead ? '#9CA3AF' : '#3B82F6'}
+                color={notification.isRead ? '#10B981' : '#3B82F6'}
               />
             </View>
-
-            {!notification.isRead && (
-              <View className="absolute -top-0.5 -right-0.5">
-                <View className="h-3 w-3 rounded-full bg-red-500 border-2 border-white" />
-                <View className="absolute inset-0 h-3 w-3 rounded-full bg-red-400 animate-ping opacity-75" />
-              </View>
-            )}
           </View>
 
           <View className="flex-1 mr-2">
-            <View className="flex-row items-center mb-1">
-              <Text className={`text-base flex-1 ${notification.isRead ? 'text-gray-600 font-normal' : 'text-gray-900 font-bold'}`} numberOfLines={1}>
-                {notification.title}
-              </Text>
-
-              {!notification.isRead && (
-                <View className="ml-2 px-2 py-0.5 rounded-full bg-blue-500">
-                  <Text className="text-[10px] font-bold text-white uppercase tracking-wide">New</Text>
-                </View>
-              )}
-            </View>
-
+            <Text className={`text-base ${notification.isRead ? 'text-gray-600 font-normal' : 'text-gray-900 font-bold'}`} numberOfLines={1}>
+              {notification.title}
+            </Text>
             <Text
               className={`text-[13px] leading-[19px] ${notification.isRead ? 'text-gray-500 font-normal' : 'text-gray-700 font-medium'}`}
               numberOfLines={2}
@@ -67,20 +56,28 @@ export const NotificationItem: FC<NotificationItemProps> = ({ notification, onPr
             </Text>
           </View>
 
-          {!notification.isRead && (
+          <View className="flex-row items-start">
+            {!notification.isRead && (
+              <TouchableOpacity
+                onPress={handleToggleRead}
+                disabled={isFetching}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                className="p-2 rounded-full mt-0.5 bg-white shadow-md shadow-blue-100"
+              >
+                <Ionicons name="checkmark-done" size={18} color="#10B981" />
+              </TouchableOpacity>
+            )}
             <TouchableOpacity
-              onPress={handleToggleRead}
-              disabled={isFetching}
+              onPress={handleDelete}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              className="p-2 rounded-full mt-0.5 bg-white shadow-md shadow-blue-100"
+              disabled={isFetching}
+              className="p-2 rounded-full mt-0.5 ml-2 bg-white shadow-md shadow-gray-200"
             >
-              <Ionicons name="checkmark-done" size={18} color="#10B981" />
+              <Ionicons name="trash-outline" size={18} color="#EF4444" />
             </TouchableOpacity>
-          )}
+          </View>
         </View>
       </TouchableOpacity>
     </Animated.View>
   );
 };
-
-export default NotificationItem;

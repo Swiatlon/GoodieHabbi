@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,22 +8,33 @@ import SortModal from '@/components/shared/config-modal/sort-modal';
 import Loader from '@/components/shared/loader/loader';
 import { NotificationsFilterMap, sortNotificationsOptions } from '@/components/views/notifications/constants/constants';
 import { Header } from '@/components/views/notifications/header';
-import NotificationItem from '@/components/views/notifications/notification-item';
+import { NotificationItem } from '@/components/views/notifications/notification-item';
 import { NotificationDto } from '@/contract/notifications/notifications';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useFilter } from '@/hooks/use-filter/use-filter';
 import { useSearch } from '@/hooks/use-search/use-search';
 import { SortOrderEnum, useSort } from '@/hooks/use-sort/use-sort';
 import { useNotificationsWithHub } from '@/hooks/useNotificationsWithHub';
-import { useMarkAllNotificationsReadMutation, useMarkNotificationReadMutation } from '@/redux/api/notifications/notifications-api';
+import { useSnackbar } from '@/providers/snackbar/snackbar-context';
+import {
+  useDeleteNotificationMutation,
+  useMarkAllNotificationsReadMutation,
+  useMarkNotificationReadMutation,
+} from '@/redux/api/notifications/notifications-api';
 
 export const Notifications: FC = () => {
   const { notifications, isFetching, isLoading } = useNotificationsWithHub();
-  const [markAsRead] = useMarkNotificationReadMutation();
-  const [markAllRead] = useMarkAllNotificationsReadMutation();
+  const [markAsRead, { isLoading: isMarkAsRead }] = useMarkNotificationReadMutation();
+  const [markAllRead, { isLoading: isMarkAllRead }] = useMarkAllNotificationsReadMutation();
+  const [deleteNotification, { isLoading: isDeleting }] = useDeleteNotificationMutation();
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const buttonsStyle = useTransformFade({ isContentLoading: isFetching, delay: 200 });
+  const { showSnackbar } = useSnackbar();
+
+  const isProcessing = useMemo(() => {
+    return isMarkAsRead || isMarkAllRead || isDeleting || isFetching;
+  }, [isMarkAsRead, isMarkAllRead, isDeleting, isFetching]);
 
   const {
     data: searchedData,
@@ -64,12 +75,31 @@ export const Notifications: FC = () => {
 
   const handleNotificationPress = async (notification: NotificationDto) => {
     if (!notification.isRead) {
-      await markAsRead({ id: notification.id });
+      try {
+        await markAsRead({ id: notification.id }).unwrap();
+        showSnackbar({ text: 'Notification marked as read!', variant: 'success' });
+      } catch {
+        showSnackbar({ text: "Couldn't mark notification as read.", variant: 'error' });
+      }
     }
   };
 
   const handleMarkAllAsRead = async () => {
-    await markAllRead();
+    try {
+      await markAllRead().unwrap();
+      showSnackbar({ text: 'All notifications marked as read!', variant: 'success' });
+    } catch {
+      showSnackbar({ text: "Couldn't mark all as read.", variant: 'error' });
+    }
+  };
+
+  const handleDeleteNotification = async (id: string) => {
+    try {
+      await deleteNotification(id).unwrap();
+      showSnackbar({ text: 'Notification deleted!', variant: 'success' });
+    } catch {
+      showSnackbar({ text: "Couldn't delete notification.", variant: 'error' });
+    }
   };
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
@@ -103,7 +133,13 @@ export const Notifications: FC = () => {
         data={sortedData}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <NotificationItem key={item.id} notification={item} onPress={async () => await handleNotificationPress(item)} isFetching={isFetching} />
+          <NotificationItem
+            key={item.id}
+            notification={item}
+            onPress={async () => await handleNotificationPress(item)}
+            onDelete={handleDeleteNotification}
+            isFetching={isProcessing}
+          />
         )}
         ListEmptyComponent={<Text className="text-center text-gray-500">No notifications found.</Text>}
         className="flex-1"
@@ -140,7 +176,7 @@ export const Notifications: FC = () => {
             className="absolute bottom-[14px] z-20 self-center"
             startIcon={<Ionicons name="checkmark-done" size={20} color="#fff" />}
             testID="btn-add-quest"
-            disabled={isFetching}
+            disabled={isProcessing}
           />
         </Animated.View>
       )}

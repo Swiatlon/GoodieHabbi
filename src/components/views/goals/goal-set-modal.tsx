@@ -45,8 +45,7 @@ const GoalSetModal: React.FC<GoalSetModalProps> = ({ isVisible, onClose, frequen
 
     try {
       await sendGoal({
-        id: selectedQuest.id,
-        data: { questType: selectedQuest.type, goalType: frequency },
+        data: { questId: selectedQuest.id, goalType: frequency },
       }).unwrap();
 
       showSnackbar({ text: 'Goal set successfully!', variant: SnackbarVariantEnum.SUCCESS });

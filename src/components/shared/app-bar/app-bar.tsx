@@ -10,7 +10,7 @@ export const AppBar = () => {
     <View className="flex-row justify-between items-center bg-primary px-4 py-2 w-full">
       <MenuButton />
       <LogoButton />
-      {isAuthenticated && <SettingsDropdown />}
+      <View>{isAuthenticated && <SettingsDropdown />}</View>
     </View>
   );
 };
