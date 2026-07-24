@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import DateTimePicker, { DateType, useDefaultClassNames } from 'react-native-ui-datepicker';
 import Button from '@/components/shared/button/button';
@@ -22,6 +23,7 @@ interface DatePickerModalProps {
 const formatOfDate = 'YYYY-MM-DD';
 
 const DatePickerModal = ({ minDate = null, maxDate = null, label, name, placeholder, isEndDate }: DatePickerModalProps) => {
+  const { t } = useTranslation();
   const defaultClassNames = useDefaultClassNames();
   const { setValue, watch } = useFormContext<Record<string, SelectItemValue>>();
   const [isVisible, setIsVisible] = useState(false);
@@ -59,7 +61,7 @@ const DatePickerModal = ({ minDate = null, maxDate = null, label, name, placehol
           onChange={({ date }) => handleDateChange(date)}
         />
         <View className="flex-row justify-between mt-2">
-          <Button label="Close" onPress={handleClose} className="px-6" />
+          <Button label={t('quests.reusable.showModal.closeButton')} onPress={handleClose} className="px-6" />
         </View>
       </Modal>
     </View>

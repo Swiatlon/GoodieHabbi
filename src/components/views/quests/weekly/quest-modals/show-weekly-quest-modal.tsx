@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import QuestDatesExtended from '../../reusable/show-quest-modal/quest-dates-extended';
@@ -25,20 +26,21 @@ interface ShowWeeklyQuestItemModalProps {
 }
 
 const ShowWeeklyQuestItemModal: React.FC<ShowWeeklyQuestItemModalProps> = ({ quest, isVisible, onClose, deleteQuest, onUpdate }) => {
+  const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
 
   const handleDelete = () => {
     deleteQuest({ id: quest.id })
       .then(() => {
         showSnackbar({
-          text: 'Quest deleted successfully.',
+          text: t('quests.weekly.showModal.deletedSuccess'),
           variant: SnackbarVariantEnum.SUCCESS,
         });
         onClose();
       })
       .catch(() => {
         showSnackbar({
-          text: 'Failed to delete quest. Please try again.',
+          text: t('quests.weekly.showModal.deletedError'),
           variant: SnackbarVariantEnum.ERROR,
         });
       });
@@ -52,21 +54,21 @@ const ShowWeeklyQuestItemModal: React.FC<ShowWeeklyQuestItemModalProps> = ({ que
       footer={
         <View className="flex-row flex-wrap justify-between mt-4 w-full">
           <Button
-            label="Close"
+            label={t('quests.weekly.showModal.closeButton')}
             styleType="primary"
             onPress={onClose}
             testID="btn-close-quest-modal"
             startIcon={<Ionicons name="close-outline" size={18} color="white" />}
           />
           <Button
-            label="Edit"
+            label={t('quests.weekly.showModal.editButton')}
             styleType="accent"
             onPress={onUpdate}
             testID="btn-edit-quest"
             startIcon={<Ionicons name="create-outline" size={18} color="white" />}
           />
           <Button
-            label="Delete"
+            label={t('quests.weekly.showModal.deleteButton')}
             styleType="danger"
             onPress={handleDelete}
             testID="btn-delete-quest"

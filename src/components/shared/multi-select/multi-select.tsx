@@ -1,4 +1,5 @@
 import React, { forwardRef, useState, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, TouchableOpacity, Modal, SafeAreaView, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '../button/button';
@@ -24,11 +25,11 @@ export interface MultiSelectProps {
 }
 
 const MultiSelect = forwardRef<View, MultiSelectProps>(
-  (
-    { placeholder, options, selectedOptions, onChange, error, className = '', modalTitle = 'Select Options', maxVisibleChips = 2, noContentMessage },
-    ref
-  ) => {
+  ({ placeholder, options, selectedOptions, onChange, error, className = '', modalTitle, maxVisibleChips = 2, noContentMessage }, ref) => {
+    const { t } = useTranslation();
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const resolvedModalTitle = modalTitle ?? t('shared.multiSelect.modalTitle');
+    const resolvedNoContentMessage = noContentMessage ?? t('shared.multiSelect.noContent');
 
     const { visibleChips, overflowCount } = useMemo(() => {
       if (selectedOptions.length <= maxVisibleChips) {
@@ -97,8 +98,8 @@ const MultiSelect = forwardRef<View, MultiSelectProps>(
           <SafeAreaView className="flex-1 bg-black bg-opacity-50">
             <View className="flex-1 mt-4 bg-white rounded-t-xl overflow-hidden">
               <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
-                <Text className="text-lg font-medium">{modalTitle}</Text>
-                <TouchableOpacity onPress={toggleModal} accessibilityRole="button" accessibilityLabel="Close modal">
+                <Text className="text-lg font-medium">{resolvedModalTitle}</Text>
+                <TouchableOpacity onPress={toggleModal} accessibilityRole="button" accessibilityLabel={t('shared.multiSelect.closeModal')}>
                   <Ionicons name="close" size={24} color="#000" />
                 </TouchableOpacity>
               </View>
@@ -106,15 +107,15 @@ const MultiSelect = forwardRef<View, MultiSelectProps>(
               {options.length === 0 ? (
                 <View className="flex-1 items-center justify-center py-12 px-6">
                   <Ionicons name="information-circle-outline" size={40} color="#9CA3AF" />
-                  <Text className="text-gray-400 text-base mt-4 text-center">{noContentMessage || 'No options available, add some data'}</Text>
+                  <Text className="text-gray-400 text-base mt-4 text-center">{resolvedNoContentMessage}</Text>
                 </View>
               ) : (
                 <FlatList data={options} className="flex-1" renderItem={renderItem} />
               )}
 
               <View className="p-4 border-t border-gray-200 flex-row justify-between">
-                <Button onPress={handleClear} variant="contained" styleType="secondary" className="px-4" label="Clear All" />
-                <Button onPress={toggleModal} variant="contained" styleType="primary" className="px-4" label="Done" />
+                <Button onPress={handleClear} variant="contained" styleType="secondary" className="px-4" label={t('shared.multiSelect.clearAll')} />
+                <Button onPress={toggleModal} variant="contained" styleType="primary" className="px-4" label={t('shared.multiSelect.done')} />
               </View>
             </View>
           </SafeAreaView>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 
 interface QuestStatusExtendedProps {
@@ -6,10 +7,11 @@ interface QuestStatusExtendedProps {
 }
 
 const QuestStatusExtended: React.FC<QuestStatusExtendedProps> = ({ isCompleted }) => {
+  const { t } = useTranslation();
   const emoji = isCompleted ? '✅' : '⏳';
-  const title = isCompleted ? 'Completed' : 'In Progress';
+  const title = isCompleted ? t('quests.reusable.status.completedTitle') : t('quests.reusable.status.inProgressTitle');
   const titleColor = isCompleted ? 'text-green-600' : 'text-yellow-600';
-  const description = isCompleted ? 'Well done! This quest has been completed.' : 'This quest is currently active. Keep pushing toward completion!';
+  const description = isCompleted ? t('quests.reusable.status.completedDescription') : t('quests.reusable.status.inProgressDescription');
 
   return (
     <View className="bg-white rounded-md p-4 shadow-sm border border-gray-200 flex-row items-start gap-4">

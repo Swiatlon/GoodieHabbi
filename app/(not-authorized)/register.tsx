@@ -1,5 +1,6 @@
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { View, Text, Image } from 'react-native';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
@@ -8,7 +9,7 @@ import userLogo from '@/assets/images/exampleUserIconLogin.png';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import ControlledPasswordInput from '@/components/shared/password/controlled-password-input';
-import { registerValidationSchema } from '@/components/views/register/schema/schema';
+import { useRegisterValidationSchema } from '@/components/views/register/schema/schema';
 import { IPostRegisterRequest } from '@/contract/auth/auth';
 import { useTypedDispatch } from '@/hooks/use-store-hooks';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
@@ -17,10 +18,12 @@ import { handleAuthSuccess } from '@/redux/state/auth/auth-state';
 import { IApiError } from '@/types/global-types';
 
 const Register = () => {
+  const { t } = useTranslation();
   const dispatch = useTypedDispatch();
   const { showSnackbar } = useSnackbar();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const [createAccount, { isLoading }] = useRegisterAccountMutation();
+  const registerValidationSchema = useRegisterValidationSchema();
 
   const methods = useForm<IPostRegisterRequest>({
     resolver: yupResolver(registerValidationSchema),
@@ -35,13 +38,13 @@ const Register = () => {
   const onSubmit = async (data: IPostRegisterRequest) => {
     try {
       const response = await createAccount(data).unwrap();
-      showSnackbar({ text: 'Account added successfully!', variant: SnackbarVariantEnum.SUCCESS });
+      showSnackbar({ text: t('auth.register.success'), variant: SnackbarVariantEnum.SUCCESS });
       await dispatch(handleAuthSuccess(response));
       navigation.navigate('(authorized)/dashboard');
       reset();
     } catch (error: unknown) {
       const typedError = error as IApiError;
-      const errorMessage = typedError.data?.message || 'Failed to add account. Please try again.';
+      const errorMessage = typedError.data?.message || t('auth.register.error');
       showSnackbar({ text: errorMessage, variant: SnackbarVariantEnum.ERROR });
     }
   };
@@ -52,10 +55,22 @@ const Register = () => {
         <View className="place-self-center items-center place-items-center gap-6 px-8 w-[300px] mx-auto">
           <Image source={userLogo} style={{ width: 80, height: 80 }} resizeMode="contain" />
           <Text className="text-2xl font-bold text-primary" testID="register-title">
-            Register Form
+            {t('auth.register.title')}
           </Text>
-          <ControlledInput name="email" className="py-1" placeholder="Email" placeholderTextColor="#aaa" testID="email-input" />
-          <ControlledPasswordInput name="password" className="py-1" placeholder="Password" placeholderTextColor="#aaa" testID="password-input" />
+          <ControlledInput
+            name="email"
+            className="py-1"
+            placeholder={t('auth.register.emailPlaceholder')}
+            placeholderTextColor="#aaa"
+            testID="email-input"
+          />
+          <ControlledPasswordInput
+            name="password"
+            className="py-1"
+            placeholder={t('auth.register.passwordPlaceholder')}
+            placeholderTextColor="#aaa"
+            testID="password-input"
+          />
           <Text
             className="text-sm text-blue-300"
             testID="login-link"
@@ -63,9 +78,15 @@ const Register = () => {
               navigation.navigate('(not-authorized)/login');
             }}
           >
-            Do you have an account?
+            {t('auth.register.hasAccount')}
           </Text>
-          <Button label="Register" disabled={isLoading} onPress={handleSubmit(onSubmit)} className="px-8 py-3" testID="register-button" />
+          <Button
+            label={t('auth.register.submit')}
+            disabled={isLoading}
+            onPress={handleSubmit(onSubmit)}
+            className="px-8 py-3"
+            testID="register-button"
+          />
         </View>
       </FormProvider>
     </View>

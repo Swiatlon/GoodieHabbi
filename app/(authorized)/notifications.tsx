@@ -1,4 +1,5 @@
 import { FC, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, FlatList } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,6 +24,7 @@ import {
 } from '@/redux/api/notifications/notifications-api';
 
 export const Notifications: FC = () => {
+  const { t } = useTranslation();
   const { notifications, isFetching, isLoading } = useNotificationsWithHub();
   const [markAsRead, { isLoading: isMarkAsRead }] = useMarkNotificationReadMutation();
   const [markAllRead, { isLoading: isMarkAllRead }] = useMarkAllNotificationsReadMutation();
@@ -77,9 +79,9 @@ export const Notifications: FC = () => {
     if (!notification.isRead) {
       try {
         await markAsRead({ id: notification.id }).unwrap();
-        showSnackbar({ text: 'Notification marked as read!', variant: 'success' });
+        showSnackbar({ text: t('notifications.markedAsReadSuccess'), variant: 'success' });
       } catch {
-        showSnackbar({ text: "Couldn't mark notification as read.", variant: 'error' });
+        showSnackbar({ text: t('notifications.markedAsReadError'), variant: 'error' });
       }
     }
   };
@@ -87,32 +89,32 @@ export const Notifications: FC = () => {
   const handleMarkAllAsRead = async () => {
     try {
       await markAllRead().unwrap();
-      showSnackbar({ text: 'All notifications marked as read!', variant: 'success' });
+      showSnackbar({ text: t('notifications.markAllAsReadSuccess'), variant: 'success' });
     } catch {
-      showSnackbar({ text: "Couldn't mark all as read.", variant: 'error' });
+      showSnackbar({ text: t('notifications.markAllAsReadError'), variant: 'error' });
     }
   };
 
   const handleDeleteNotification = async (id: string) => {
     try {
       await deleteNotification(id).unwrap();
-      showSnackbar({ text: 'Notification deleted!', variant: 'success' });
+      showSnackbar({ text: t('notifications.deletedSuccess'), variant: 'success' });
     } catch {
-      showSnackbar({ text: "Couldn't delete notification.", variant: 'error' });
+      showSnackbar({ text: t('notifications.deletedError'), variant: 'error' });
     }
   };
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
   if (isLoading) {
-    return <Loader message="Loading notifications..." fullscreen />;
+    return <Loader message={t('notifications.loading')} fullscreen />;
   }
 
   if (notifications.length === 0) {
     return (
       <View className="flex-1 p-4">
         <View className="flex-1 items-center justify-center">
-          <Text className="text-gray-500 text-base text-center">No notifications yet.</Text>
+          <Text className="text-gray-500 text-base text-center">{t('notifications.noNotificationsYet')}</Text>
         </View>
       </View>
     );
@@ -141,7 +143,7 @@ export const Notifications: FC = () => {
             isFetching={isProcessing}
           />
         )}
-        ListEmptyComponent={<Text className="text-center text-gray-500">No notifications found.</Text>}
+        ListEmptyComponent={<Text className="text-center text-gray-500">{t('notifications.noNotificationsFound')}</Text>}
         className="flex-1"
       />
 
@@ -150,7 +152,7 @@ export const Notifications: FC = () => {
         setIsVisible={setIsFilterModalVisible}
         setFilter={setFilter}
         actualFilterData={actualFilter}
-        title="Filter Notifications"
+        title={t('notifications.filterTitle')}
         filterCategories={NotificationsFilterMap}
       />
 
@@ -162,7 +164,7 @@ export const Notifications: FC = () => {
           setSortKey(key);
           setSortObjKey(objKey);
         }}
-        title="Sort Notifications"
+        title={t('notifications.sortTitle')}
         actualSortOrder={actualSortOrder}
         setSortOrder={setSortOrder}
         sortOptions={sortNotificationsOptions}
@@ -171,7 +173,7 @@ export const Notifications: FC = () => {
       {unreadCount > 0 && (
         <Animated.View style={buttonsStyle} className="w-full h-[75px]">
           <Button
-            label={'Mark all as read ' + `(${unreadCount})`}
+            label={t('notifications.markAllAsRead', { count: unreadCount })}
             onPress={handleMarkAllAsRead}
             className="absolute bottom-[14px] z-20 self-center"
             startIcon={<Ionicons name="checkmark-done" size={20} color="#fff" />}

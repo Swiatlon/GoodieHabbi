@@ -3,7 +3,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Host } from 'react-native-portalize';
 import { Provider } from 'react-redux';
 import { useFonts } from 'expo-font';
-import { Slot } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
 import * as SplashScreen from 'expo-splash-screen';
 import '@/assets/styles/global.css';
@@ -18,6 +17,7 @@ import { NotificationsProvider } from '@/providers/notification-provider/notific
 import SnackbarProvider from '@/providers/snackbar/snackbar-provider';
 import { store } from '@/redux/config/store';
 import '@/configs/day-js-config';
+import '@/i18n/i18n';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -67,9 +67,7 @@ export default function RootLayout() {
                         },
                       }}
                       drawerContent={props => <CustomDrawerContent {...props} />}
-                    >
-                      <Slot />
-                    </Drawer>
+                    />
                   </NotificationsProvider>
                 </PrefetchMiddleware>
               </RoutesPermissionMiddleware>

@@ -1,5 +1,6 @@
+import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
-import { baseQuestSchema } from '../../reusable/schema/schema';
+import { useBaseQuestSchema } from '../../reusable/schema/schema';
 import { IMonthlyQuest } from '@/contract/quests/quests-types/monthly-quests';
 
 export interface IMonthlyQuestFormValues extends Omit<IMonthlyQuest, 'id' | 'startDay' | 'endDay'> {
@@ -7,24 +8,29 @@ export interface IMonthlyQuestFormValues extends Omit<IMonthlyQuest, 'id' | 'sta
   endDay: number | null;
 }
 
-export const monthlyQuestValidationSchema = baseQuestSchema.shape({
-  startDay: Yup.number()
-    .integer('Start day must be an integer')
-    .min(1, 'Start day must be at least 1')
-    .max(31, 'Start day cannot be more than 31')
-    .required('Start day is required'),
-  endDay: Yup.number()
-    .integer('End day must be an integer')
-    .min(1, 'End day must be at least 1')
-    .max(31, 'End day cannot be more than 31')
-    .required('End day is required')
-    .test('is-greater', 'End day must be greater than or equal to start day', function (value) {
-      const { startDay } = this.parent as { startDay?: number };
+export const useMonthlyQuestValidationSchema = () => {
+  const { t } = useTranslation();
+  const baseQuestSchema = useBaseQuestSchema();
 
-      if (startDay === undefined) {
-        return true;
-      }
+  return baseQuestSchema.shape({
+    startDay: Yup.number()
+      .integer(t('quests.monthly.schema.startDayInteger'))
+      .min(1, t('quests.monthly.schema.startDayMin'))
+      .max(31, t('quests.monthly.schema.startDayMax'))
+      .required(t('quests.monthly.schema.startDayRequired')),
+    endDay: Yup.number()
+      .integer(t('quests.monthly.schema.endDayInteger'))
+      .min(1, t('quests.monthly.schema.endDayMin'))
+      .max(31, t('quests.monthly.schema.endDayMax'))
+      .required(t('quests.monthly.schema.endDayRequired'))
+      .test('is-greater', t('quests.monthly.schema.endDayGreater'), function (value) {
+        const { startDay } = this.parent as { startDay?: number };
 
-      return value >= startDay;
-    }),
-});
+        if (startDay === undefined) {
+          return true;
+        }
+
+        return value >= startDay;
+      }),
+  });
+};

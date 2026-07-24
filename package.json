@@ -14,7 +14,8 @@
     "test:e2e": "powershell -ExecutionPolicy Bypass -File ./scripts/run-e2e-tests.ps1"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"]
   },
   "dependencies": {
     "@expo/config-plugins": "^9.0.14",
@@ -35,6 +36,7 @@
     "expo-haptics": "~14.0.1",
     "expo-linear-gradient": "^14.0.2",
     "expo-linking": "~7.0.4",
+    "expo-localization": "~16.0.1",
     "expo-router": "~4.0.18",
     "expo-secure-store": "~14.0.1",
     "expo-splash-screen": "~0.29.20",
@@ -43,21 +45,25 @@
     "expo-system-ui": "~4.0.7",
     "expo-updates": "~0.27.4",
     "expo-web-browser": "~14.0.2",
+    "i18next": "^26.3.6",
     "lodash": "^4.17.21",
     "nativewind": "^4.1.23",
     "qs": "^6.14.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-hook-form": "^7.54.2",
+    "react-i18next": "^17.0.11",
     "react-native": "0.76.6",
     "react-native-emoji-modal": "^0.2.4",
     "react-native-emoji-selector": "^0.2.0",
     "react-native-gesture-handler": "^2.25.0",
+    "react-native-gifted-charts": "^1.4.77",
     "react-native-picker-select": "^9.3.1",
     "react-native-portalize": "^1.0.7",
     "react-native-reanimated": "3.16.0",
     "react-native-safe-area-context": "^4.12.0",
     "react-native-screens": "~4.4.0",
+    "react-native-svg": "15.8.0",
     "react-native-timer-picker": "^2.2.0",
     "react-native-ui-datepicker": "^3.1.2",
     "react-native-web": "~0.19.13",

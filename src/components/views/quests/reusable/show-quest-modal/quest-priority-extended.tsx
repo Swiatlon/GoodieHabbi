@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { PriorityEnum, PriorityEnumType } from '@/contract/quests/base-quests';
 
@@ -8,26 +9,28 @@ interface QuestPriorityExtendedProps {
 
 const priorityMeta = {
   [PriorityEnum.HIGH]: {
-    label: 'High',
+    labelKey: 'quests.reusable.form.priorities.high',
     icon: '🔥',
     colorClass: 'text-red-500',
-    description: 'Requires immediate attention',
+    descriptionKey: 'quests.reusable.priority.descriptions.high',
   },
   [PriorityEnum.MEDIUM]: {
-    label: 'Medium',
+    labelKey: 'quests.reusable.form.priorities.medium',
     icon: '⚡',
     colorClass: 'text-yellow-500',
-    description: 'Moderate importance',
+    descriptionKey: 'quests.reusable.priority.descriptions.medium',
   },
   [PriorityEnum.LOW]: {
-    label: 'Low',
+    labelKey: 'quests.reusable.form.priorities.low',
     icon: '🧘',
     colorClass: 'text-green-500',
-    description: 'Low priority, can wait',
+    descriptionKey: 'quests.reusable.priority.descriptions.low',
   },
 };
 
 const QuestPriorityExtended: React.FC<QuestPriorityExtendedProps> = ({ priority }) => {
+  const { t } = useTranslation();
+
   if (!priority) return null;
 
   const meta = priorityMeta[priority];
@@ -36,8 +39,10 @@ const QuestPriorityExtended: React.FC<QuestPriorityExtendedProps> = ({ priority 
     <View className="bg-white rounded-md p-4 shadow-sm border border-gray-200 flex-row items-center gap-4">
       <Text className={`${meta.colorClass} text-2xl my-auto`}>{meta.icon}</Text>
       <View>
-        <Text className={`${meta.colorClass} font-semibold text-base`}>Priority: {meta.label}</Text>
-        <Text className="text-gray-500 text-xs">{meta.description}</Text>
+        <Text className={`${meta.colorClass} font-semibold text-base`}>
+          {t('quests.reusable.priority.prefix')} {t(meta.labelKey)}
+        </Text>
+        <Text className="text-gray-500 text-xs">{t(meta.descriptionKey)}</Text>
       </View>
     </View>
   );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import Animated from 'react-native-reanimated';
 import RatioBar from '@/components/shared/ratio-bar/ratio-bar';
@@ -11,30 +12,31 @@ interface GoalsSectionProps {
 }
 
 const GoalsSection: React.FC<GoalsSectionProps> = ({ goals, isLoading }) => {
+  const { t } = useTranslation();
   const animationStyle = useTransformFade({ isContentLoading: isLoading, delay: 500 });
   const { completed, inProgress, currentTotal } = goals;
 
   const segments = [
-    { label: 'In Progress', value: inProgress, color: '#3b82f6' },
-    { label: 'Completed', value: completed, color: '#22c55e' },
+    { label: t('profile.goals.inProgress'), value: inProgress, color: '#3b82f6' },
+    { label: t('profile.goals.completed'), value: completed, color: '#22c55e' },
   ];
 
   return (
     <Animated.View style={animationStyle} className="px-4 py-6 bg-gray-100 rounded-lg shadow-lg w-full mb-6">
-      <Text className="text-lg font-bold text-center mb-4">Goals Overview</Text>
+      <Text className="text-lg font-bold text-center mb-4">{t('profile.goals.title')}</Text>
 
       <View className="flex-row justify-around mb-4">
         <View className="items-center flex-1">
           <Text className="text-blue-600 font-bold text-xl">{inProgress}</Text>
-          <Text className="text-xs text-gray-600">In Progress</Text>
+          <Text className="text-xs text-gray-600">{t('profile.goals.inProgress')}</Text>
         </View>
         <View className="items-center flex-1">
           <Text className="text-green-600 font-bold text-xl">{completed}</Text>
-          <Text className="text-xs text-gray-600">Completed</Text>
+          <Text className="text-xs text-gray-600">{t('profile.goals.completed')}</Text>
         </View>
         <View className="items-center flex-1">
           <Text className="text-gray-800 font-bold text-xl">{currentTotal}</Text>
-          <Text className="text-xs text-gray-600">Total</Text>
+          <Text className="text-xs text-gray-600">{t('profile.goals.total')}</Text>
         </View>
       </View>
 

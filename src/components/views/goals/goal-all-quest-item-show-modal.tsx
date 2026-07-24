@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import QuestItemDate from '../quests/reusable/quest-item/quest-item-date';
@@ -15,6 +16,8 @@ interface GoalShowItemModalProps {
 }
 
 const ShowQuestItemModalGoals: React.FC<GoalShowItemModalProps> = ({ quest, isVisible, onClose }) => {
+  const { t } = useTranslation();
+
   return (
     <Modal isVisible={isVisible} onClose={onClose} className="min-h-[200px]">
       <View className="flex gap-6 h-full items-center px-4 py-4">
@@ -40,29 +43,34 @@ const ShowQuestItemModalGoals: React.FC<GoalShowItemModalProps> = ({ quest, isVi
           <View className="flex-row justify-evenly gap-6 w-full pt-6 border-t border-gray-200">
             <View className="items-center">
               <Ionicons name="checkmark-done-circle-outline" size={28} color="green" />
-              <Text className="text-xs text-gray-600 mt-1">Completed</Text>
+              <Text className="text-xs text-gray-600 mt-1">{t('goals.questItemModal.completed')}</Text>
               <Text className="font-bold text-base">{(quest.statistics as { completionCount: number }).completionCount}</Text>
             </View>
             <View className="items-center">
               <Ionicons name="calendar-outline" size={28} color="blue" />
-              <Text className="text-xs text-gray-600 mt-1">Occurrences</Text>
+              <Text className="text-xs text-gray-600 mt-1">{t('goals.questItemModal.occurrences')}</Text>
               <Text className="font-bold text-base">{(quest.statistics as { occurrenceCount: number }).occurrenceCount}</Text>
             </View>
             <View className="items-center">
               <Ionicons name="close-circle-outline" size={28} color="red" />
-              <Text className="text-xs text-gray-600 mt-1">Failures</Text>
+              <Text className="text-xs text-gray-600 mt-1">{t('goals.questItemModal.failures')}</Text>
               <Text className="font-bold text-base">{(quest.statistics as { failureCount: number }).failureCount}</Text>
             </View>
             <View className="items-center">
               <Ionicons name="flame-outline" size={28} color="orange" />
-              <Text className="text-xs text-gray-600 mt-1">Streak</Text>
+              <Text className="text-xs text-gray-600 mt-1">{t('goals.questItemModal.streak')}</Text>
               <Text className="font-bold text-base">{(quest.statistics as { currentStreak: number }).currentStreak}</Text>
             </View>
           </View>
         )}
 
         <View className="flex-row justify-center mt-auto w-full">
-          <Button label="Close" styleType="primary" onPress={onClose} startIcon={<Ionicons name="close-outline" size={18} color="white" />} />
+          <Button
+            label={t('common.close')}
+            styleType="primary"
+            onPress={onClose}
+            startIcon={<Ionicons name="close-outline" size={18} color="white" />}
+          />
         </View>
       </View>
     </Modal>

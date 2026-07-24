@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useFocusEffect } from 'expo-router';
@@ -10,6 +11,7 @@ interface TimeSectionProps {
 }
 
 const GoalTimeSection: React.FC<TimeSectionProps> = ({ frequency }) => {
+  const { t } = useTranslation();
   const [isTimerEnabled, setIsTimerEnabled] = useState(false);
   const { timeLeft, timeColor } = useTimer({ frequency, enabled: isTimerEnabled });
   const timeParts = parseTime(timeLeft);
@@ -27,12 +29,12 @@ const GoalTimeSection: React.FC<TimeSectionProps> = ({ frequency }) => {
 
   return (
     <Animated.View className="flex-1 p-4 rounded-3xl bg-white border border-gray-100 shadow-lg gap-6 justify-center" style={goalStyle}>
-      <Text className="text-lg font-semibold text-primary uppercase tracking-wider text-center">Time Left</Text>
+      <Text className="text-lg font-semibold text-primary uppercase tracking-wider text-center">{t('goals.timeSection.title')}</Text>
       <View className="flex-row flex-wrap justify-center items-center gap-4 mb-6">
         {timeParts.map((part, index) => (
           <View key={index} className="items-center my-auto">
             <Text className={`text-3xl font-bold ${timeColor}`}>{part?.value.split(/(\d+)/)[1]}</Text>
-            <Text className="text-sm text-gray-500 uppercase tracking-wide mt-1">{part?.type}</Text>
+            <Text className="text-sm text-gray-500 uppercase tracking-wide mt-1">{t(`goals.timeSection.units.${part?.type}`)}</Text>
           </View>
         ))}
       </View>

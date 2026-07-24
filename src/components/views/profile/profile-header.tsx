@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Text, Image, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import userLogo from '@/assets/images/exampleUserIconLogin.png';
@@ -15,6 +16,7 @@ interface ProfileHeaderProps {
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({ email, joinDate, profile, isLoading, activeCosmetics }) => {
+  const { t } = useTranslation();
   const { nickname, avatar, bio } = profile;
   const avatarSource = useMemo(() => (avatar ? { uri: avatar } : userLogo), [avatar]);
   const animationStyle = useTransformFade({ isContentLoading: isLoading, delay: 100 });
@@ -77,11 +79,12 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ email, joinDate, profile,
       {joinDate && (
         <View className="flex-row items-center">
           <Text className="text-gray-400 text-xs">
-            🎁 Member since{' '}
-            {new Date(joinDate).toLocaleDateString('en-US', {
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric',
+            {t('profile.header.memberSince', {
+              date: new Date(joinDate).toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+              }),
             })}
           </Text>
         </View>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, FlatList, Text } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,6 +19,7 @@ import { useSort, SortOrderEnum } from '@/hooks/use-sort/use-sort';
 import { useGetAllWeeklyQuestsQuery } from '@/redux/api/quests/weekly-quests-api';
 
 const WeeklyQuests: React.FC = () => {
+  const { t } = useTranslation();
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
@@ -68,14 +70,14 @@ const WeeklyQuests: React.FC = () => {
   });
 
   if (isLoading) {
-    return <Loader message="Fetching quests..." />;
+    return <Loader message={t('quests.weekly.fetchingQuests')} />;
   }
 
   return (
     <>
       <View className="flex-1 p-4">
         <Header
-          title="Weekly Quests"
+          title={t('quests.weekly.title')}
           isSearchVisible={isSearchVisible}
           searchQuery={searchQuery}
           setIsSearchVisible={setIsSearchVisible}
@@ -88,12 +90,12 @@ const WeeklyQuests: React.FC = () => {
           data={sortedData}
           keyExtractor={item => item.id.toString()}
           renderItem={({ item }) => <WeeklyQuestItem quest={item} />}
-          ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
+          ListEmptyComponent={<Text className="text-center text-gray-500">{t('quests.weekly.noQuestsFound')}</Text>}
         />
 
         <Animated.View style={buttonsStyle}>
           <Button
-            label="Add new Quest"
+            label={t('quests.weekly.addNewQuest')}
             onPress={() => setIsAddQuestModalVisible(true)}
             startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
             className="mx-auto mt-4"

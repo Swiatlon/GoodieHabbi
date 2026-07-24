@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Loader from '@/components/shared/loader/loader';
@@ -9,6 +10,7 @@ import { useGetShopItemsQuery, usePurchaseShopItemMutation } from '@/redux/api/s
 import { useGetStatsProfileQuery } from '@/redux/api/stats/stats-api';
 
 const Shop = () => {
+  const { t } = useTranslation();
   const { data: items = [], isLoading, isFetching, refetch } = useGetShopItemsQuery({});
   const { data: account, isLoading: isLoadingAccount } = useGetAccountDataQuery({});
   const { data: statsData, isLoading: isStatsLoading } = useGetStatsProfileQuery();
@@ -19,39 +21,39 @@ const Shop = () => {
     try {
       await purchaseShopItem({ shopItemId: itemId }).unwrap();
       refetch();
-      showSnackbar({ text: 'Purchase successful!', variant: 'success' });
+      showSnackbar({ text: t('shop.purchaseSuccess'), variant: 'success' });
     } catch {
-      showSnackbar({ text: 'Purchase failed. Please try again.', variant: 'error' });
+      showSnackbar({ text: t('shop.purchaseError'), variant: 'error' });
     }
   };
 
   if (isLoading || isLoadingAccount || isStatsLoading) {
-    return <Loader message="Loading items..." />;
+    return <Loader message={t('shop.loadingItems')} />;
   }
 
   if (items.length === 0) {
     return (
       <View className="flex-1 items-center justify-center">
-        <Text className="text-gray-500 text-lg">No items available in the shop.</Text>
+        <Text className="text-gray-500 text-lg">{t('shop.noItems')}</Text>
       </View>
     );
   }
 
   return (
     <View className="flex-1 p-4">
-      <Text className="text-2xl font-bold text-primary text-center">Shop</Text>
+      <Text className="text-2xl font-bold text-primary text-center">{t('shop.title')}</Text>
       {account?.profile.coins && statsData?.xpStats.level && (
         <View className="flex-row items-center justify-center mb-4">
           <View className="flex-row bg-white rounded-xl shadow p-4 gap-8 items-center">
             <View className="flex-row items-center gap-1">
               <Ionicons name="cash-outline" size={22} color="#85BB65" />
               <Text className="text-lg font-bold text-gray-800">{account.profile.coins}</Text>
-              <Text className="text-sm text-gray-500 ml-1">coins</Text>
+              <Text className="text-sm text-gray-500 ml-1">{t('shop.coins')}</Text>
             </View>
             <View className="flex-row items-center gap-1">
               <Ionicons name="star-outline" size={22} color="#FFD700" />
               <Text className="text-lg font-bold text-gray-800">{statsData.xpStats.level}</Text>
-              <Text className="text-sm text-gray-500 ml-1">level</Text>
+              <Text className="text-sm text-gray-500 ml-1">{t('shop.level')}</Text>
             </View>
           </View>
         </View>

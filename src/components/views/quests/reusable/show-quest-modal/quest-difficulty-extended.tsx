@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { DifficultyEnum, DifficultyEnumType } from '@/contract/quests/base-quests';
 
@@ -8,32 +9,34 @@ interface QuestDifficultyExtendedProps {
 
 const difficultyMeta = {
   [DifficultyEnum.EASY]: {
-    label: 'Easy',
+    labelKey: 'quests.reusable.form.difficulties.easy',
     icon: '🍃',
     colorClass: 'text-green-500',
-    description: 'Low effort, beginner friendly',
+    descriptionKey: 'quests.reusable.difficulty.descriptions.easy',
   },
   [DifficultyEnum.MEDIUM]: {
-    label: 'Medium',
+    labelKey: 'quests.reusable.form.difficulties.medium',
     icon: '🧗‍♂️',
     colorClass: 'text-yellow-500',
-    description: 'Moderate challenge',
+    descriptionKey: 'quests.reusable.difficulty.descriptions.medium',
   },
   [DifficultyEnum.HARD]: {
-    label: 'Hard',
+    labelKey: 'quests.reusable.form.difficulties.hard',
     icon: '💀',
     colorClass: 'text-red-500',
-    description: 'High difficulty, advanced level',
+    descriptionKey: 'quests.reusable.difficulty.descriptions.hard',
   },
   [DifficultyEnum.IMPOSSIBLE]: {
-    label: 'Impossible',
+    labelKey: 'quests.reusable.form.difficulties.impossible',
     icon: '☠️',
     colorClass: 'text-red-500 font-extrabold',
-    description: 'Near impossible, extreme challenge',
+    descriptionKey: 'quests.reusable.difficulty.descriptions.impossible',
   },
 };
 
 const QuestDifficultyExtended: React.FC<QuestDifficultyExtendedProps> = ({ difficulty }) => {
+  const { t } = useTranslation();
+
   if (!difficulty) return null;
 
   const meta = difficultyMeta[difficulty];
@@ -42,8 +45,10 @@ const QuestDifficultyExtended: React.FC<QuestDifficultyExtendedProps> = ({ diffi
     <View className="bg-white rounded-md p-4 shadow-sm border border-gray-200 flex-row items-center gap-4">
       <Text className={`${meta.colorClass} text-2xl my-auto`}>{meta.icon}</Text>
       <View>
-        <Text className={`${meta.colorClass} font-semibold text-base`}>Difficulty: {meta.label}</Text>
-        <Text className="text-gray-500 text-xs">{meta.description}</Text>
+        <Text className={`${meta.colorClass} font-semibold text-base`}>
+          {t('quests.reusable.difficulty.prefix')} {t(meta.labelKey)}
+        </Text>
+        <Text className="text-gray-500 text-xs">{t(meta.descriptionKey)}</Text>
       </View>
     </View>
   );

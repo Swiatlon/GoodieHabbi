@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,6 +13,7 @@ interface BadgesSectionProps {
 }
 
 const BadgesSection: React.FC<BadgesSectionProps> = ({ badges, isLoading }) => {
+  const { t } = useTranslation();
   const animationStyle = useTransformFade({ isContentLoading: isLoading, delay: 700 });
   const [isVisible, setIsVisible] = useState(false);
   const [selectedBadge, setSelectedBadge] = useState<IAccountDataResponse['profile']['badges'][number] | null>(null);
@@ -24,7 +26,7 @@ const BadgesSection: React.FC<BadgesSectionProps> = ({ badges, isLoading }) => {
   return (
     <>
       <Animated.View style={animationStyle} className="px-4 py-6 bg-gray-100 rounded-lg shadow-lg flex w-full mb-6">
-        <Text className="text-lg font-bold text-center mb-2">Achievements & Badges</Text>
+        <Text className="text-lg font-bold text-center mb-2">{t('profile.badges.title')}</Text>
         {badges.length > 0 ? (
           <ScrollView horizontal className="flex-row flex-nowrap mt-2" showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
             <View className="flex-row flex-nowrap gap-3 py-2">
@@ -40,7 +42,7 @@ const BadgesSection: React.FC<BadgesSectionProps> = ({ badges, isLoading }) => {
         ) : (
           <View className="py-4 items-center">
             <Ionicons name="trophy-outline" size={32} color="#CBD5E0" />
-            <Text className="text-center text-gray-400 mt-2">✨ No badges yet! Keep going!</Text>
+            <Text className="text-center text-gray-400 mt-2">{t('profile.badges.emptyState')}</Text>
           </View>
         )}
       </Animated.View>

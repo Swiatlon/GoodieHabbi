@@ -1,14 +1,22 @@
+import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const passwordRegex = /^[a-zA-Z0-9_#@!-]*$/;
 
-export const registerValidationSchema = Yup.object().shape({
-  email: Yup.string().required('Email is required').max(100, 'Email must be at most 100 characters').matches(emailRegex, 'Invalid email format'),
+export const useRegisterValidationSchema = () => {
+  const { t } = useTranslation();
 
-  password: Yup.string()
-    .required('Password is required')
-    .min(6, 'Password must be at least 6 characters')
-    .max(50, 'Password must be at most 50 characters')
-    .matches(passwordRegex, 'Password can only contain letters, numbers, and _#@-'),
-});
+  return Yup.object().shape({
+    email: Yup.string()
+      .required(t('auth.register.schema.emailRequired'))
+      .max(100, t('auth.register.schema.emailMaxLength'))
+      .matches(emailRegex, t('auth.register.schema.emailInvalidFormat')),
+
+    password: Yup.string()
+      .required(t('auth.register.schema.passwordRequired'))
+      .min(6, t('auth.register.schema.passwordMinLength'))
+      .max(50, t('auth.register.schema.passwordMaxLength'))
+      .matches(passwordRegex, t('auth.register.schema.passwordInvalidChars')),
+  });
+};

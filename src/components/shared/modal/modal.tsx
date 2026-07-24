@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { View, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { View, TouchableWithoutFeedback, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Portal } from 'react-native-portalize';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring, runOnJS } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
@@ -21,6 +22,7 @@ interface ModalProps extends IBaseModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children, className = '', footer, isLoading, loadingMessage, testID }) => {
+  const { t } = useTranslation();
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.8);
   const translateY = useSharedValue(50);
@@ -67,16 +69,21 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children, className =
           <Animated.View className="bg-black/50 absolute top-0 left-0 h-full w-full" style={backdropStyle} />
         </TouchableWithoutFeedback>
         <Animated.View className={`w-11/12 bg-white rounded-lg shadow-lg max-h-[90vh] m-auto py-6 px-4 ${className}`} style={modalStyle}>
-          {isLoading && <Loader size="large" message={loadingMessage || 'Loading...'} fullscreen />}
+          {isLoading && <Loader size="large" message={loadingMessage || t('common.loading')} fullscreen />}
           <View className="absolute top-[14px] right-2 z-20">
             <IconButton onPress={handleBackdropPress}>
               <Ionicons name="close-outline" size={24} color="#1987EE" />
             </IconButton>
           </View>
-          <ScrollView contentContainerStyle={{ padding: 0, position: 'relative', display: 'flex', flexGrow: 1 }}>
-            <View className="h-full">{children}</View>
-          </ScrollView>
-          {footer && !isLoading && <View className="mt-4 px-4">{footer}</View>}
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flexShrink: 1 }}>
+            <ScrollView
+              keyboardShouldPersistTaps="handled"
+              contentContainerStyle={{ padding: 0, position: 'relative', display: 'flex', flexGrow: 1 }}
+            >
+              <View className="h-full">{children}</View>
+            </ScrollView>
+            {footer && !isLoading && <View className="mt-4 px-4">{footer}</View>}
+          </KeyboardAvoidingView>
         </Animated.View>
       </View>
     </Portal>

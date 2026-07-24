@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import UpdateTagModal from '../tag-modals/update-tag-modal';
@@ -16,6 +17,7 @@ interface TagItemProps {
 const TagItem: React.FC<TagItemProps> = ({ tag }) => {
   const { id, value, backgroundColor } = tag;
 
+  const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
   const [deleteQuestLabel] = useDeleteQuestLabelMutation();
 
@@ -28,13 +30,13 @@ const TagItem: React.FC<TagItemProps> = ({ tag }) => {
     deleteQuestLabel({ id: id })
       .then(() => {
         showSnackbar({
-          text: 'Tag deleted successfully.',
+          text: t('quests.tags.deletedSuccess'),
           variant: SnackbarVariantEnum.SUCCESS,
         });
       })
       .catch(() => {
         showSnackbar({
-          text: 'Failed to delete tag. Please try again.',
+          text: t('quests.tags.deletedError'),
           variant: SnackbarVariantEnum.ERROR,
         });
       });

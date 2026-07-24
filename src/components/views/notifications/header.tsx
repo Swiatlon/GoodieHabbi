@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, TextInput } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
@@ -24,6 +25,7 @@ export const Header: FC<HeaderProps> = ({
   setIsSortModalVisible,
   setSearchQuery,
 }) => {
+  const { t } = useTranslation();
   const animatedSearchStyle = useTransformFade({ direction: 'left' });
   const animatedFilterStyle = useTransformFade({ direction: 'right' });
 
@@ -39,10 +41,8 @@ export const Header: FC<HeaderProps> = ({
           )}
         </Animated.View>
         <View>
-          <Text className="text-2xl font-bold text-primary text-center">Notifications</Text>
-          <Text className="text-sm text-gray-500 text-center">
-            {unreadCount} unread message{unreadCount !== 1 ? 's' : ''}
-          </Text>
+          <Text className="text-2xl font-bold text-primary text-center">{t('notifications.title')}</Text>
+          <Text className="text-sm text-gray-500 text-center">{t('notifications.unreadMessages', { count: unreadCount })}</Text>
         </View>
         <Animated.View style={animatedSearchStyle}>
           <IconButton onPress={() => setIsSearchVisible(prev => !prev)} iconName={isSearchVisible ? 'close' : 'search-outline'} />
@@ -51,7 +51,7 @@ export const Header: FC<HeaderProps> = ({
 
       {isSearchVisible && (
         <View className="flex-row items-center w-full border border-gray-300 rounded-md mb-4 px-2">
-          <TextInput className="flex-1 p-2" placeholder="Search notifications..." value={searchQuery} onChangeText={setSearchQuery} />
+          <TextInput className="flex-1 p-2" placeholder={t('notifications.searchPlaceholder')} value={searchQuery} onChangeText={setSearchQuery} />
           <Ionicons name="search-outline" size={20} color="#9e9e9e" />
         </View>
       )}

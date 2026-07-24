@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 
 interface QuestMonthDaysExtendedProps {
@@ -13,6 +14,8 @@ const DayPill = ({ day }: { day: number }) => (
 );
 
 const QuestMonthDaysExtended: React.FC<QuestMonthDaysExtendedProps> = ({ startDay, endDay }) => {
+  const { t } = useTranslation();
+
   if (!startDay && !endDay) return null;
 
   const isRange = startDay && endDay && startDay !== endDay;
@@ -22,7 +25,7 @@ const QuestMonthDaysExtended: React.FC<QuestMonthDaysExtendedProps> = ({ startDa
     <View className="bg-white rounded-md p-4 shadow-sm border border-gray-200">
       <View className="flex-row items-center mb-2 gap-2">
         <Text className="text-2xl">📅</Text>
-        <Text className="font-semibold text-gray-700">Occurs On</Text>
+        <Text className="font-semibold text-gray-700">{t('quests.reusable.monthly.heading')}</Text>
       </View>
 
       <View className="flex-row items-center justify-start gap-2 pl-8">

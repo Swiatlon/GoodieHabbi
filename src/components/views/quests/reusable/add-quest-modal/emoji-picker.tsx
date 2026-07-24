@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 import EmojiPicker, { EmojiType } from 'rn-emoji-keyboard';
 import ControlledSelect from '@/components/shared/select/controlled-select';
@@ -9,6 +10,7 @@ interface EmojiPickerProps {
 }
 
 const EmojiPickerComponent: React.FC<EmojiPickerProps> = ({ testID }) => {
+  const { t } = useTranslation();
   const { setValue } = useFormContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -19,8 +21,8 @@ const EmojiPickerComponent: React.FC<EmojiPickerProps> = ({ testID }) => {
 
   return (
     <View className="flex gap-2" testID={testID}>
-      <Text className="text-sm font-semibold text-gray-500">😄 Emoji:</Text>
-      <ControlledSelect name="emoji" placeholder="Tap to pick emoji for quest" onPress={() => setIsOpen(true)} />
+      <Text className="text-sm font-semibold text-gray-500">{t('quests.reusable.form.emojiLabel')}</Text>
+      <ControlledSelect name="emoji" placeholder={t('quests.reusable.form.emojiPlaceholder')} onPress={() => setIsOpen(true)} />
       <EmojiPicker
         open={isOpen}
         onEmojiSelected={handlePick}

@@ -1,6 +1,7 @@
+import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import * as Yup from 'yup';
-import { baseQuestSchema } from '../../reusable/schema/schema';
+import { useBaseQuestSchema } from '../../reusable/schema/schema';
 import { SeasonEnumType } from '@/contract/quests/base-quests';
 import { getSeasonalDateLimits } from '@/utils/get-seasonal-date-limits';
 import { safeDateFormat } from '@/utils/utils/utils';
@@ -11,76 +12,87 @@ interface Parent {
   endDate: string | null;
 }
 
-export const seasonalQuestValidationSchema = baseQuestSchema.shape({
-  season: Yup.mixed<SeasonEnumType>().nullable().defined('Season is required'),
-  startDate: Yup.string()
-    .nullable()
-    .test('is-not-less-than-today', 'Start date must be today or in the future', function (value) {
-      if (!value) {
-        return true;
-      }
+export const useSeasonalQuestSchema = () => {
+  const { t } = useTranslation();
+  const baseQuestSchema = useBaseQuestSchema();
 
-      const today = dayjs.utc().startOf('day');
-      const startDate = dayjs(value);
+  return baseQuestSchema.shape({
+    season: Yup.mixed<SeasonEnumType>().nullable().defined(t('quests.seasonal.schema.seasonRequired')),
+    startDate: Yup.string()
+      .nullable()
+      .test('is-not-less-than-today', t('quests.seasonal.schema.startDateFuture'), function (value) {
+        if (!value) {
+          return true;
+        }
 
-      return startDate.isSameOrAfter(today, 'day');
-    })
-    .test('is-within-season', 'Start date must be within the valid season range', function (value) {
-      const { season } = this.parent as Parent;
+        const today = dayjs.utc().startOf('day');
+        const startDate = dayjs(value);
 
-      if (!season || !value) {
-        return true;
-      }
+        return startDate.isSameOrAfter(today, 'day');
+      })
+      .test('is-within-season', t('quests.seasonal.schema.startDateWithinSeason'), function (value) {
+        const { season } = this.parent as Parent;
 
-      const seasonDates = getSeasonalDateLimits(season, value);
-      const isValid = dayjs(value).isBetween(seasonDates.minStartDate, seasonDates.maxStartDate, 'day', '[]');
+        if (!season || !value) {
+          return true;
+        }
 
-      return (
-        isValid ||
-        this.createError({
-          message: `Start date must be within the season range: ${safeDateFormat(seasonDates.minStartDate)} to ${safeDateFormat(seasonDates.maxStartDate)}`,
-          path: 'startDate',
-        })
-      );
-    })
-    .default(null),
+        const seasonDates = getSeasonalDateLimits(season, value);
+        const isValid = dayjs(value).isBetween(seasonDates.minStartDate, seasonDates.maxStartDate, 'day', '[]');
 
-  endDate: Yup.string()
-    .nullable()
-    .test('is-within-season', 'End date must be within the valid season range', function (value) {
-      const { season, startDate } = this.parent as Parent;
+        return (
+          isValid ||
+          this.createError({
+            message: t('quests.seasonal.schema.startDateRangeDetail', {
+              min: safeDateFormat(seasonDates.minStartDate),
+              max: safeDateFormat(seasonDates.maxStartDate),
+            }),
+            path: 'startDate',
+          })
+        );
+      })
+      .default(null),
 
-      if (!season || !value) {
-        return true;
-      }
+    endDate: Yup.string()
+      .nullable()
+      .test('is-within-season', t('quests.seasonal.schema.endDateWithinSeason'), function (value) {
+        const { season, startDate } = this.parent as Parent;
 
-      const seasonDates = getSeasonalDateLimits(season, startDate);
-      const isValid = dayjs(value).isBetween(seasonDates.minEndDate, seasonDates.maxEndDate, 'day', '[]');
+        if (!season || !value) {
+          return true;
+        }
 
-      return (
-        isValid ||
-        this.createError({
-          message: `End date must be within the season range: ${safeDateFormat(seasonDates.minEndDate)} to ${safeDateFormat(seasonDates.maxEndDate)}`,
-          path: 'endDate',
-        })
-      );
-    })
-    .test('is-after-or-equal-start', 'End date must be after or equal to start date', function (value) {
-      const { startDate } = this.parent as Parent;
+        const seasonDates = getSeasonalDateLimits(season, startDate);
+        const isValid = dayjs(value).isBetween(seasonDates.minEndDate, seasonDates.maxEndDate, 'day', '[]');
 
-      if (!startDate || !value) {
-        return true;
-      }
+        return (
+          isValid ||
+          this.createError({
+            message: t('quests.seasonal.schema.endDateRangeDetail', {
+              min: safeDateFormat(seasonDates.minEndDate),
+              max: safeDateFormat(seasonDates.maxEndDate),
+            }),
+            path: 'endDate',
+          })
+        );
+      })
+      .test('is-after-or-equal-start', t('quests.seasonal.schema.endDateAfterStart'), function (value) {
+        const { startDate } = this.parent as Parent;
 
-      const isValid = dayjs(value).isSameOrAfter(dayjs(startDate));
+        if (!startDate || !value) {
+          return true;
+        }
 
-      return (
-        isValid ||
-        this.createError({
-          message: `End date must be on or after the start date: ${safeDateFormat(startDate)}`,
-          path: 'endDate',
-        })
-      );
-    })
-    .default(null),
-});
+        const isValid = dayjs(value).isSameOrAfter(dayjs(startDate));
+
+        return (
+          isValid ||
+          this.createError({
+            message: t('quests.seasonal.schema.endDateAfterStartDetail', { startDate: safeDateFormat(startDate) }),
+            path: 'endDate',
+          })
+        );
+      })
+      .default(null),
+  });
+};

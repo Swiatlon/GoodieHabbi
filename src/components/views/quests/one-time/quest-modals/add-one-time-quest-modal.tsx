@@ -1,5 +1,6 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -8,7 +9,7 @@ import DifficultyPicker from '../../reusable/add-quest-modal/difficulty-picker';
 import EmojiPickerComponent from '../../reusable/add-quest-modal/emoji-picker';
 import PriorityPicker from '../../reusable/add-quest-modal/priority-picker';
 import TimePickerModal from '../../reusable/add-quest-modal/time-picker-modal';
-import { oneTimeQuestValidationSchema } from './schema';
+import { useOneTimeQuestValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
@@ -24,9 +25,11 @@ import { toUTCISOString } from '@/utils/utils/utils';
 interface AddOneTimeQuestModalProps extends IBaseModalProps {}
 
 const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, onClose }) => {
+  const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
   const [createQuest, { isLoading }] = useCreateOneTimeQuestMutation();
   const { data: questLabels = [] } = useGetQuestLabelsQuery();
+  const oneTimeQuestValidationSchema = useOneTimeQuestValidationSchema();
 
   const methods = useForm<IPostOneTimeQuestRequest>({
     resolver: yupResolver(oneTimeQuestValidationSchema),
@@ -51,9 +54,9 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, 
       await createQuest(data).unwrap();
       onClose();
       reset();
-      showSnackbar({ text: 'Quest added successfully!', variant: SnackbarVariantEnum.SUCCESS });
+      showSnackbar({ text: t('quests.oneTime.addModal.addedSuccess'), variant: SnackbarVariantEnum.SUCCESS });
     } catch {
-      showSnackbar({ text: 'Failed to add quest. Please try again.', variant: SnackbarVariantEnum.ERROR });
+      showSnackbar({ text: t('quests.oneTime.addModal.addedError'), variant: SnackbarVariantEnum.ERROR });
     }
   };
 
@@ -64,11 +67,11 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, 
       isVisible={isVisible}
       onClose={onClose}
       isLoading={isLoading}
-      loadingMessage="Adding quest..."
+      loadingMessage={t('quests.oneTime.addModal.loadingMessage')}
       footer={
         <View className="flex-row justify-between" testID="modal-footer">
           <Button
-            label="Cancel"
+            label={t('quests.oneTime.form.cancelButton')}
             variant="outlined"
             onPress={onClose}
             className="rounded-lg"
@@ -76,7 +79,7 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, 
             testID="btn-cancel"
           />
           <Button
-            label="Add Quest"
+            label={t('quests.oneTime.addModal.submitButton')}
             onPress={handleSubmit(onSubmit)}
             className="rounded-lg"
             startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
@@ -88,27 +91,47 @@ const AddOneTimeQuestModal: React.FC<AddOneTimeQuestModalProps> = ({ isVisible, 
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-5 py-0" testID="add-quest-modal-content">
           <Text className="text-lg font-bold text-center" testID="modal-title">
-            Add New Quest
+            {t('quests.oneTime.addModal.heading')}
           </Text>
-          <ControlledInput name="title" label="📝 Title:" placeholder="Enter the title" isRequired testID="input-title" />
-          <ControlledTextArea name="description" label="📖 Description:" placeholder="Enter description" testID="input-description" />
-          <DatePickerModal name="startDate" minDate={toUTCISOString(dayjs())} label="📅 Start Date:" placeholder="Tap to pick start date" />
+          <ControlledInput
+            name="title"
+            label={t('quests.oneTime.form.titleLabel')}
+            placeholder={t('quests.oneTime.form.titlePlaceholder')}
+            isRequired
+            testID="input-title"
+          />
+          <ControlledTextArea
+            name="description"
+            label={t('quests.oneTime.form.descriptionLabel')}
+            placeholder={t('quests.oneTime.form.descriptionPlaceholder')}
+            testID="input-description"
+          />
+          <DatePickerModal
+            name="startDate"
+            minDate={toUTCISOString(dayjs())}
+            label={t('quests.oneTime.form.startDateLabel')}
+            placeholder={t('quests.oneTime.form.startDatePlaceholder')}
+          />
           <DatePickerModal
             name="endDate"
             minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(dayjs())}
-            label="📅 End Date:"
-            placeholder="Tap to pick end date"
+            label={t('quests.oneTime.form.endDateLabel')}
+            placeholder={t('quests.oneTime.form.endDatePlaceholder')}
             isEndDate
           />
           <EmojiPickerComponent testID="emoji-picker" />
           <PriorityPicker />
           <DifficultyPicker />
-          <TimePickerModal name="scheduledTime" label="⏰ Scheduled Time:" placeholder="Select time" />
+          <TimePickerModal
+            name="scheduledTime"
+            label={t('quests.oneTime.form.scheduledTimeLabel')}
+            placeholder={t('quests.oneTime.form.scheduledTimePlaceholder')}
+          />
           <ControlledMultiSelect
             name="labels"
-            label="🏷️ Tags:"
-            placeholder="Select quest tags"
-            noContentMessage="No tags available, please create some first"
+            label={t('quests.oneTime.form.tagsLabel')}
+            placeholder={t('quests.oneTime.form.tagsPlaceholder')}
+            noContentMessage={t('quests.oneTime.form.tagsNoContent')}
             options={questLabels.map(item => ({ ...item, label: item.value }))}
           />
         </View>

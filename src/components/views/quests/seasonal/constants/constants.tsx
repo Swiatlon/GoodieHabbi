@@ -15,7 +15,7 @@ export const SeasonalQuestsFilterMap = {
         value: SeasonEnum.WINTER,
         icon: <Ionicons name="snow" size={28} color="#00bcd4" />,
         color: '#00bcd4',
-        label: 'Winter',
+        labelKey: 'quests.seasonal.seasons.winter',
       },
     ],
     [
@@ -25,7 +25,7 @@ export const SeasonalQuestsFilterMap = {
         value: SeasonEnum.SPRING,
         icon: <Ionicons name="flower" size={28} color="#4caf50" />,
         color: '#4caf50',
-        label: 'Spring',
+        labelKey: 'quests.seasonal.seasons.spring',
       },
     ],
     [
@@ -35,7 +35,7 @@ export const SeasonalQuestsFilterMap = {
         value: SeasonEnum.SUMMER,
         icon: <Ionicons name="sunny" size={28} color="#ffeb3b" />,
         color: '#ffeb3b',
-        label: 'Summer',
+        labelKey: 'quests.seasonal.seasons.summer',
       },
     ],
     [
@@ -45,7 +45,7 @@ export const SeasonalQuestsFilterMap = {
         value: SeasonEnum.AUTUMN,
         icon: <Ionicons name="leaf" size={28} color="#ff9800" />,
         color: '#ff9800',
-        label: 'Autumn',
+        labelKey: 'quests.seasonal.seasons.autumn',
       },
     ],
   ]),

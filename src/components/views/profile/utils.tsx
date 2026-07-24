@@ -23,11 +23,11 @@ export interface GoalData {
 
 export interface GoalTypeStyle {
   color: string;
-  name: string;
+  labelKey: string;
 }
 
 export const goalTypeStyles: Record<GoalType, GoalTypeStyle> = {
-  completed: { color: 'bg-green-500', name: 'Completed' },
-  expired: { color: 'bg-red-500', name: 'Expired' },
-  abandoned: { color: 'bg-gray-500', name: 'Abandoned' },
+  completed: { color: 'bg-green-500', labelKey: 'profile.goals.completed' },
+  expired: { color: 'bg-red-500', labelKey: 'profile.goals.expired' },
+  abandoned: { color: 'bg-gray-500', labelKey: 'profile.goals.abandoned' },
 };

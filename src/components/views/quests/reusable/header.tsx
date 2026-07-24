@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, TextInput } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
@@ -24,6 +25,7 @@ const Header: React.FC<HeaderProps> = ({
   setIsSortModalVisible,
   setSearchQuery,
 }) => {
+  const { t } = useTranslation();
   const animatedSearchStyle = useTransformFade({ direction: 'left' });
   const animatedFilterStyle = useTransformFade({ direction: 'right' });
 
@@ -52,7 +54,12 @@ const Header: React.FC<HeaderProps> = ({
 
       {isSearchVisible && (
         <View className="flex-row items-center w-full border border-gray-300 rounded-md mb-4 px-2">
-          <TextInput className="flex-1 p-2" placeholder="Search..." value={searchQuery} onChangeText={setSearchQuery} />
+          <TextInput
+            className="flex-1 p-2"
+            placeholder={t('quests.reusable.header.searchPlaceholder')}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
           <Ionicons name="search-outline" size={20} color="#9e9e9e" />
         </View>
       )}
