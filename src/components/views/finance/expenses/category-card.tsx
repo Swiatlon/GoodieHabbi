@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import SwipeableRow from '@/components/shared/swipeable-row/swipeable-row';
+import AddTransactionModal from '@/components/views/finance/add-transaction-modal';
 import { IFinanceCategory, ITransaction } from '@/contract/finance/finance.contract';
 import { useDeleteTransactionMutation } from '@/redux/api/finance/finance-api';
 import { DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
@@ -20,6 +21,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
   const { t } = useTranslation();
   const [deleteTransaction] = useDeleteTransactionMutation();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<ITransaction | null>(null);
 
   const color = category.color ?? DEFAULT_CATEGORY_COLOR;
   const icon = resolveCategoryIcon(category.icon);
@@ -95,7 +97,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
           ) : (
             transactions.map((transaction, idx) => (
               <SwipeableRow key={transaction.id} onDelete={() => handleDelete(transaction.id)}>
-                <View
+                <TouchableOpacity
+                  onPress={() => setEditingTransaction(transaction)}
+                  activeOpacity={0.7}
                   className={`flex-row items-center px-4 py-3 bg-white ${idx < transactions.length - 1 ? 'border-b border-gray-50' : ''}`}
                   style={{ borderLeftWidth: 3, borderLeftColor: color }}
                 >
@@ -122,7 +126,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
                   >
                     <Ionicons name="trash-outline" size={16} color="#d1d5db" />
                   </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
               </SwipeableRow>
             ))
           )}
@@ -136,6 +140,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
           )}
         </View>
       )}
+
+      <AddTransactionModal isVisible={editingTransaction !== null} onClose={() => setEditingTransaction(null)} transaction={editingTransaction} />
     </View>
   );
 };

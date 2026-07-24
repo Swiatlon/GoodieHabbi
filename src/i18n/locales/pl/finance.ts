@@ -47,6 +47,7 @@ const finance = {
   },
   addTransaction: {
     title: 'Dodaj transakcję',
+    editTitle: 'Edytuj transakcję',
     expense: 'Wydatek',
     income: 'Przychód',
     recentlyUsed: 'Ostatnio używane',
@@ -55,10 +56,15 @@ const finance = {
     source: 'Źródło',
     date: 'Data',
     addButton: 'Dodaj',
+    saveButton: 'Zapisz',
     adding: 'Dodawanie transakcji...',
+    updating: 'Zapisywanie zmian...',
     expenseAddedSuccess: 'Wydatek dodany!',
     incomeAddedSuccess: 'Przychód dodany!',
+    expenseUpdatedSuccess: 'Wydatek zaktualizowany!',
+    incomeUpdatedSuccess: 'Przychód zaktualizowany!',
     addedError: 'Nie udało się dodać transakcji.',
+    updatedError: 'Nie udało się zaktualizować transakcji.',
   },
   expenses: {
     deleteTitle: 'Usuń wydatek',

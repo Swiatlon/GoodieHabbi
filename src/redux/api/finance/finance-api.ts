@@ -12,6 +12,7 @@ import {
   ITransactionPagedResult,
   IUpdateBudgetRequest,
   IUpdateFinanceCategoryRequest,
+  IUpdateTransactionRequest,
   IYearlySummary,
 } from '@/contract/finance/finance.contract';
 import Api from '@/redux/config/api';
@@ -72,6 +73,15 @@ export const FinanceApi = Api.injectEndpoints({
       query: data => ({
         url: '/finance/transactions',
         method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['financeTransactions', 'financeAnalytics'],
+    }),
+
+    updateTransaction: builder.mutation<ITransaction, { id: number; data: IUpdateTransactionRequest }>({
+      query: ({ id, data }) => ({
+        url: `/finance/transactions/${id}`,
+        method: 'PUT',
         body: data,
       }),
       invalidatesTags: ['financeTransactions', 'financeAnalytics'],
@@ -148,6 +158,7 @@ export const {
   useDeleteFinanceCategoriesMutation,
   useGetTransactionsQuery,
   useCreateTransactionMutation,
+  useUpdateTransactionMutation,
   useDeleteTransactionMutation,
   useGetBudgetsQuery,
   useCreateBudgetMutation,

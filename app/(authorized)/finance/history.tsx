@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, TouchableOpacity, ActivityIndicator, RefreshControl, ScrollView, TextInput, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,6 +23,7 @@ const History = () => {
   const { t } = useTranslation();
   const { year, month, setYear, setMonth } = useFinanceMonth();
   const [addModalVisible, setAddModalVisible] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<ITransaction | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
@@ -47,7 +48,7 @@ const History = () => {
   });
   const [deleteTransaction] = useDeleteTransactionMutation();
 
-  const categoriesById = buildCategoriesById([...expenseCategories, ...incomeCategories]);
+  const categoriesById = useMemo(() => buildCategoriesById([...expenseCategories, ...incomeCategories]), [expenseCategories, incomeCategories]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -71,15 +72,24 @@ const History = () => {
     };
   };
 
-  const filteredTransactions = allTransactions.filter(transaction => {
-    if (typeFilter !== 'all' && transaction.type !== typeFilter) return false;
-    if (!search.trim()) return true;
-    const query = search.trim().toLowerCase();
-    return getLabel(transaction).toLowerCase().includes(query) || (transaction.note ?? '').toLowerCase().includes(query);
-  });
+  const filteredTransactions = useMemo(() => {
+    return allTransactions.filter(transaction => {
+      if (typeFilter !== 'all' && transaction.type !== typeFilter) return false;
+      if (!search.trim()) return true;
+      const query = search.trim().toLowerCase();
+      return getLabel(transaction).toLowerCase().includes(query) || (transaction.note ?? '').toLowerCase().includes(query);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allTransactions, typeFilter, search, categoriesById]);
 
-  const totalIncome = allTransactions.filter(tx => tx.type === FinanceTransactionTypeEnum.Income).reduce((sum, tx) => sum + tx.amount, 0);
-  const totalExpenses = allTransactions.filter(tx => tx.type === FinanceTransactionTypeEnum.Expense).reduce((sum, tx) => sum + tx.amount, 0);
+  const totalIncome = useMemo(
+    () => allTransactions.filter(tx => tx.type === FinanceTransactionTypeEnum.Income).reduce((sum, tx) => sum + tx.amount, 0),
+    [allTransactions]
+  );
+  const totalExpenses = useMemo(
+    () => allTransactions.filter(tx => tx.type === FinanceTransactionTypeEnum.Expense).reduce((sum, tx) => sum + tx.amount, 0),
+    [allTransactions]
+  );
 
   const handleDelete = (transaction: ITransaction) => {
     Alert.alert(t('finance.history.deleteTitle'), t('finance.history.deleteMessage'), [
@@ -161,7 +171,9 @@ const History = () => {
                 const isExpense = transaction.type === FinanceTransactionTypeEnum.Expense;
                 return (
                   <SwipeableRow key={transaction.id} onDelete={() => handleDelete(transaction)}>
-                    <View
+                    <TouchableOpacity
+                      onPress={() => setEditingTransaction(transaction)}
+                      activeOpacity={0.7}
                       className={`flex-row items-center px-4 py-3 bg-white ${idx < filteredTransactions.length - 1 ? 'border-b border-gray-50' : ''}`}
                     >
                       <View className="w-10 h-10 rounded-xl items-center justify-center mr-3" style={{ backgroundColor: `${meta.color}20` }}>
@@ -191,7 +203,7 @@ const History = () => {
                       >
                         <Ionicons name="trash-outline" size={16} color="#d1d5db" />
                       </TouchableOpacity>
-                    </View>
+                    </TouchableOpacity>
                   </SwipeableRow>
                 );
               })}
@@ -210,6 +222,7 @@ const History = () => {
       </TouchableOpacity>
 
       <AddTransactionModal isVisible={addModalVisible} onClose={() => setAddModalVisible(false)} />
+      <AddTransactionModal isVisible={editingTransaction !== null} onClose={() => setEditingTransaction(null)} transaction={editingTransaction} />
     </View>
   );
 };

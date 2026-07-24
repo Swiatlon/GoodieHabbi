@@ -2,6 +2,7 @@ const common = {
   cancel: 'Anuluj',
   save: 'Zapisz',
   delete: 'Usuń',
+  edit: 'Edytuj',
   add: 'Dodaj',
   close: 'Zamknij',
   loading: 'Ładowanie...',

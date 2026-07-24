@@ -47,6 +47,7 @@ const finance = {
   },
   addTransaction: {
     title: 'Add Transaction',
+    editTitle: 'Edit Transaction',
     expense: 'Expense',
     income: 'Income',
     recentlyUsed: 'Recently used',
@@ -55,10 +56,15 @@ const finance = {
     source: 'Source',
     date: 'Date',
     addButton: 'Add',
+    saveButton: 'Save',
     adding: 'Adding transaction...',
+    updating: 'Saving changes...',
     expenseAddedSuccess: 'Expense added!',
     incomeAddedSuccess: 'Income added!',
+    expenseUpdatedSuccess: 'Expense updated!',
+    incomeUpdatedSuccess: 'Income updated!',
     addedError: 'Failed to add transaction.',
+    updatedError: 'Failed to update transaction.',
   },
   expenses: {
     deleteTitle: 'Delete Expense',

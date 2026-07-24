@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { Control, FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import ControlledInput from '@/components/shared/input/controlled-input';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import { BudgetPeriodEnum, IBudget, IFinanceCategory } from '@/contract/finance/finance.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
@@ -15,25 +17,55 @@ interface BudgetModalProps extends IBaseModalProps {
   month: number;
 }
 
+interface BudgetFormValues {
+  amount: string;
+}
+
+const parseAmount = (value: string) => parseFloat(value.replace(',', '.'));
+
+interface SubmitButtonProps {
+  control: Control<BudgetFormValues>;
+  hasCategory: boolean;
+  onPress: () => void;
+}
+
+const SubmitButton: React.FC<SubmitButtonProps> = ({ control, hasCategory, onPress }) => {
+  const { t } = useTranslation();
+  const amount = useWatch({ control, name: 'amount' });
+  const parsedAmount = parseAmount(amount);
+  const canSubmit = hasCategory && !isNaN(parsedAmount) && parsedAmount >= 0;
+
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      disabled={!canSubmit}
+      className={`flex-row items-center gap-1 rounded-lg px-4 py-2 ${canSubmit ? 'bg-primary' : 'bg-gray-300'}`}
+    >
+      <Ionicons name="checkmark-circle-outline" size={18} color="white" />
+      <Text className="text-white font-semibold">{t('common.save')}</Text>
+    </TouchableOpacity>
+  );
+};
+
 const BudgetModal: React.FC<BudgetModalProps> = ({ isVisible, onClose, category, currentBudget, year, month }) => {
   const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
   const [createBudget, { isLoading: isCreating }] = useCreateBudgetMutation();
   const [updateBudget, { isLoading: isUpdating }] = useUpdateBudgetMutation();
-  const [amount, setAmount] = useState('');
+
+  const methods = useForm<BudgetFormValues>({ defaultValues: { amount: '' } });
+  const { control, handleSubmit, reset: resetForm } = methods;
 
   useEffect(() => {
-    if (isVisible) setAmount(currentBudget ? String(currentBudget.limitAmount) : '');
-  }, [isVisible, currentBudget]);
+    if (isVisible) resetForm({ amount: currentBudget ? String(currentBudget.limitAmount) : '' });
+  }, [isVisible, currentBudget, resetForm]);
 
   const color = category?.color ?? DEFAULT_CATEGORY_COLOR;
   const icon = resolveCategoryIcon(category?.icon);
 
-  const parsedAmount = parseFloat(amount.replace(',', '.'));
-  const canSubmit = !!category && !isNaN(parsedAmount) && parsedAmount >= 0;
-
-  const handleSave = async () => {
-    if (!canSubmit) return;
+  const onSubmit = async (values: BudgetFormValues) => {
+    const parsedAmount = parseAmount(values.amount);
+    if (!category || isNaN(parsedAmount) || parsedAmount < 0) return;
 
     try {
       if (currentBudget) {
@@ -60,14 +92,7 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isVisible, onClose, category,
             <Ionicons name="close-circle-outline" size={18} color="#1987EE" />
             <Text className="text-primary font-semibold">{t('common.cancel')}</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleSave}
-            disabled={!canSubmit}
-            className={`flex-row items-center gap-1 rounded-lg px-4 py-2 ${canSubmit ? 'bg-primary' : 'bg-gray-300'}`}
-          >
-            <Ionicons name="checkmark-circle-outline" size={18} color="white" />
-            <Text className="text-white font-semibold">{t('common.save')}</Text>
-          </TouchableOpacity>
+          <SubmitButton control={control} hasCategory={!!category} onPress={handleSubmit(onSubmit)} />
         </View>
       }
     >
@@ -81,15 +106,16 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isVisible, onClose, category,
         {category && <Text className="text-sm text-gray-500">{category.name}</Text>}
       </View>
 
-      <Text className="text-sm font-semibold text-gray-600 mb-2">{t('finance.expenses.monthlyBudget')}</Text>
-      <TextInput
-        className="border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-800 bg-white"
-        placeholder="0.00"
-        keyboardType="decimal-pad"
-        value={amount}
-        onChangeText={setAmount}
-        autoFocus
-      />
+      <FormProvider {...methods}>
+        <ControlledInput
+          name="amount"
+          label={t('finance.expenses.monthlyBudget')}
+          placeholder="0.00"
+          keyboardType="decimal-pad"
+          autoFocus
+          testID="budget-amount-input"
+        />
+      </FormProvider>
     </Modal>
   );
 };
