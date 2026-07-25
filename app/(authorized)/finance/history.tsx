@@ -15,7 +15,7 @@ import { formatPLN } from '@/utils/finance/format-pln';
 
 type TypeFilter = 'all' | FinanceTransactionTypeEnum;
 
-const TRANSACTIONS_PAGE_SIZE = 200;
+const TRANSACTIONS_PAGE_SIZE = 100;
 const EXPENSE_DEFAULT_COLOR = '#6b7280';
 const INCOME_DEFAULT_COLOR = '#10B981';
 

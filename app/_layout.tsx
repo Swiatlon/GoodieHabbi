@@ -13,6 +13,7 @@ import { CustomDrawerContent } from '@/components/shared/drawer/drawer';
 import PersistLoginMiddleware from '@/middlewares/persist-login-middleware';
 import PrefetchMiddleware from '@/middlewares/prefetch-middleware';
 import RoutesPermissionMiddleware from '@/middlewares/routes-permission-middleware';
+import { ApiErrorListener } from '@/providers/api-error/api-error-listener';
 import { NotificationsProvider } from '@/providers/notification-provider/notification-provider';
 import SnackbarProvider from '@/providers/snackbar/snackbar-provider';
 import { store } from '@/redux/config/store';
@@ -53,6 +54,7 @@ export default function RootLayout() {
     <Host>
       <SnackbarProvider>
         <Provider store={store}>
+          <ApiErrorListener />
           <GestureHandlerRootView className="flex-1 bg-white">
             <PersistLoginMiddleware onLoaded={() => handleLoaded('persistLogin')}>
               <RoutesPermissionMiddleware>

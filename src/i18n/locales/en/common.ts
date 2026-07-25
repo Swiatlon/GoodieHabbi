@@ -12,6 +12,7 @@ const common = {
   amountPLN: 'Amount (PLN)',
   descriptionOptional: 'Description (optional)',
   addNote: 'Add a note...',
+  dataLoadError: 'Failed to load data',
   positions: '{{count}} pos.',
 };
 

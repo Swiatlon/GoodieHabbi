@@ -9,6 +9,7 @@ import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ToggleTab from '@/components/shared/toggle-tab/toggle-tab';
 import dayjs from '@/configs/day-js-config';
 import { FinanceTransactionTypeEnum, IFinanceCategory, ITransaction } from '@/contract/finance/finance.contract';
+import { useFinanceMonth } from '@/providers/finance/finance-month-context';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateTransactionMutation, useGetFinanceCategoriesQuery, useUpdateTransactionMutation } from '@/redux/api/finance/finance-api';
 import { DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
@@ -30,6 +31,14 @@ const chipClass = (active: boolean) => (active ? CHIP_ACTIVE_CLASS : CHIP_INACTI
 const chipTextClass = (active: boolean) => (active ? 'text-primary' : 'text-gray-600');
 const todayString = () => dayjs().format(DATE_FORMAT);
 const parseAmount = (value: string) => parseFloat(value.replace(',', '.'));
+const getViewedMonthDefaultDate = (year: number, month: number) => {
+  const monthStart = dayjs()
+    .year(year)
+    .month(month - 1)
+    .date(1);
+  const today = dayjs();
+  return (monthStart.isAfter(today, 'day') ? today : monthStart).format(DATE_FORMAT);
+};
 
 interface SubmitButtonProps {
   control: Control<TransactionFormValues>;
@@ -64,6 +73,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
   const [updateTransaction, { isLoading: isUpdating }] = useUpdateTransactionMutation();
   const isLoading = isCreating || isUpdating;
   const isEditMode = transaction != null;
+  const { year: viewedYear, month: viewedMonth } = useFinanceMonth();
 
   const methods = useForm<TransactionFormValues>({ defaultValues: { amount: '', description: '' } });
   const { control, handleSubmit, reset: resetForm } = methods;
@@ -71,7 +81,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
   const [type, setType] = useState<FinanceTransactionTypeEnum>(FinanceTransactionTypeEnum.Expense);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<number | null>(null);
-  const [occurredOn, setOccurredOn] = useState(todayString);
+  const [occurredOn, setOccurredOn] = useState(() => getViewedMonthDefaultDate(viewedYear, viewedMonth));
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
   const { data: categories = [] } = useGetFinanceCategoriesQuery({ type });
@@ -88,10 +98,10 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
       setSelectedCategoryId(null);
       setSelectedSubcategoryId(null);
       resetForm({ amount: '', description: '' });
-      setOccurredOn(todayString());
+      setOccurredOn(getViewedMonthDefaultDate(viewedYear, viewedMonth));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isVisible, transaction]);
+  }, [isVisible, transaction, viewedYear, viewedMonth]);
 
   useEffect(() => {
     if (!isVisible || !transaction || categories.length === 0) return;
@@ -126,7 +136,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
     setSelectedCategoryId(null);
     setSelectedSubcategoryId(null);
     resetForm({ amount: '', description: '' });
-    setOccurredOn(todayString());
+    setOccurredOn(getViewedMonthDefaultDate(viewedYear, viewedMonth));
   };
 
   const handleClose = () => {

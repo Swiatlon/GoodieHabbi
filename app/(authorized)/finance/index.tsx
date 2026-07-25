@@ -21,7 +21,7 @@ import { collectCategoryIds, getSavingsCategoryIds } from '@/utils/finance/categ
 import { formatPLN } from '@/utils/finance/format-pln';
 
 const RECENT_CATEGORIES_LIMIT = 4;
-const TRANSACTIONS_PAGE_SIZE = 200;
+const TRANSACTIONS_PAGE_SIZE = 100;
 
 const Dashboard = () => {
   const { t } = useTranslation();

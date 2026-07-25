@@ -12,6 +12,7 @@ const common = {
   amountPLN: 'Kwota (PLN)',
   descriptionOptional: 'Opis (opcjonalny)',
   addNote: 'Dodaj notatkę...',
+  dataLoadError: 'Nie udało się pobrać danych',
   positions: '{{count}} poz.',
 };
 
