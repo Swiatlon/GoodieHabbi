@@ -71,10 +71,16 @@ const Dashboard = () => {
   const totalSaved = expenseByCategory
     .filter(item => item.categoryId != null && savingsCategoryIds.has(item.categoryId))
     .reduce((sum, item) => sum + item.amount, 0);
+  // Two different questions, two different numbers. `totalSpent` is consumption — savings are excluded so
+  // investing doesn't read as burning money. `totalCommitted` is everything that actually left the account,
+  // savings included, because money moved into an ETF is no longer free to spend this month. Budget headroom
+  // must be measured against the second, or "remaining" tells you that you can spend money you already moved.
   const totalSpent = (summary?.totalExpense ?? 0) - totalSaved;
+  const totalCommitted = summary?.totalExpense ?? 0;
   const totalBudget = totalIncome;
-  const progress = totalBudget > 0 ? Math.min(totalSpent / totalBudget, 1) : 0;
-  const isOver = totalBudget > 0 && totalSpent > totalBudget;
+  const progress = totalBudget > 0 ? Math.min(totalCommitted / totalBudget, 1) : 0;
+  const spentProgress = totalBudget > 0 ? Math.min(totalSpent / totalBudget, 1) : 0;
+  const isOver = totalBudget > 0 && totalCommitted > totalBudget;
 
   const spendingBudgets = budgets.filter(b => b.categoryId != null && !savingsCategoryIds.has(b.categoryId));
   const sumCategoryBudgets = spendingBudgets.reduce((sum, b) => sum + b.limitAmount, 0);
@@ -133,9 +139,12 @@ const Dashboard = () => {
           <SwipeMonthArea onSwipeLeft={goToNextMonth} onSwipeRight={goToPreviousMonth}>
             <MonthlyOverviewCard
               totalSpent={totalSpent}
+              totalSaved={totalSaved}
+              totalCommitted={totalCommitted}
               totalBudget={totalBudget}
               isOver={isOver}
               progress={progress}
+              spentProgress={spentProgress}
               sumCategoryBudgets={sumCategoryBudgets}
               allocationDiff={allocationDiff}
             />

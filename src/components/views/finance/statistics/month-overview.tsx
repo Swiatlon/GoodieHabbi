@@ -30,7 +30,10 @@ const MonthOverview: React.FC<MonthOverviewProps> = ({ summary, prevSummary, bud
   const totalSaved = getSavedAmount(summary);
   const totalSpent = summary.totalExpense - totalSaved;
   const totalIncome = summary.totalIncome;
-  const balance = totalIncome - totalSpent;
+  // Balance is money left over, so it has to net off savings as well as spending — `net` is already
+  // income minus every expense, savings included. Subtracting only `totalSpent` counted money moved into
+  // investments as if it were still available.
+  const balance = summary.net;
   const hasData = totalIncome > 0 || totalSpent > 0 || totalSaved > 0;
 
   const prevTotalSpent = prevSummary ? prevSummary.totalExpense - getSavedAmount(prevSummary) : 0;

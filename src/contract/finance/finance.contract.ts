@@ -40,6 +40,17 @@ export interface IDeleteFinanceCategoriesRequest {
   categoryIds: number[];
 }
 
+/**
+ * A correction is money coming back against an earlier transaction (a refund, a friend paying you back,
+ * an employer reimbursing an expense — and the mirror direction too). It is a relation, not a type: the
+ * correction is itself a transaction pointing at its parent via `correctsTransactionId`, and it inherits the
+ * parent's `type` and `categoryId`.
+ *
+ * `GET /transactions` returns parents only — corrections arrive nested in `corrections`, never as their own
+ * row, so a correction dated in a different month than its parent can never be paged away from it.
+ * Render `netAmount`, never `amount`: any client-side total built from `amount` will disagree with every
+ * server aggregate. Analytics already arrive net.
+ */
 export interface ITransaction {
   id: number;
   type: FinanceTransactionTypeEnum;
@@ -47,8 +58,18 @@ export interface ITransaction {
   categoryId: number | null;
   occurredOn: string;
   note?: string | null;
+  correctsTransactionId: number | null;
+  correctedAmount: number;
+  netAmount: number;
+  corrections: ITransaction[];
   createdAt: string;
   updatedAt?: string | null;
+}
+
+export interface IAddCorrectionRequest {
+  amount: number;
+  occurredOn: string;
+  note?: string | null;
 }
 
 export interface ICreateTransactionRequest {

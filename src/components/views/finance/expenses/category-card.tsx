@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import SwipeableRow from '@/components/shared/swipeable-row/swipeable-row';
 import AddTransactionModal from '@/components/views/finance/add-transaction-modal';
+import CorrectionSummary from '@/components/views/finance/shared/correction-summary';
 import { IFinanceCategory, ITransaction } from '@/contract/finance/finance.contract';
 import { useDeleteTransactionMutation } from '@/redux/api/finance/finance-api';
 import { DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
@@ -115,9 +116,12 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
                         </Text>
                       ) : null}
                     </View>
+                    {/* Informational only here — refunds are added and managed from History, which keeps the
+                        dashboard to a single reading of "where does my budget stand". */}
+                    <CorrectionSummary transaction={transaction} />
                   </View>
                   <Text className="text-sm font-bold mr-3" style={{ color }}>
-                    {formatPLN(transaction.amount)}
+                    {formatPLN(transaction.netAmount)}
                   </Text>
                   <TouchableOpacity
                     onPress={() => handleDelete(transaction.id)}

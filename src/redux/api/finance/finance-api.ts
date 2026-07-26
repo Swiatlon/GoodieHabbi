@@ -1,5 +1,6 @@
 import {
   FinanceTransactionTypeEnum,
+  IAddCorrectionRequest,
   IBudget,
   ICreateBudgetRequest,
   ICreateFinanceCategoryRequest,
@@ -87,6 +88,17 @@ export const FinanceApi = Api.injectEndpoints({
       invalidatesTags: ['financeTransactions', 'financeAnalytics'],
     }),
 
+    // Returns the PARENT transaction with the new correction already embedded, since corrections are
+    // never rendered as standalone rows.
+    addCorrection: builder.mutation<ITransaction, { id: number; data: IAddCorrectionRequest }>({
+      query: ({ id, data }) => ({
+        url: `/finance/transactions/${id}/corrections`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['financeTransactions', 'financeAnalytics'],
+    }),
+
     deleteTransaction: builder.mutation<void, { id: number }>({
       query: ({ id }) => ({
         url: `/finance/transactions/${id}`,
@@ -118,6 +130,14 @@ export const FinanceApi = Api.injectEndpoints({
         url: `/finance/budgets/${id}`,
         method: 'PUT',
         body: data,
+      }),
+      invalidatesTags: ['financeBudgets', 'financeAnalytics'],
+    }),
+
+    deleteBudget: builder.mutation<void, { id: number }>({
+      query: ({ id }) => ({
+        url: `/finance/budgets/${id}`,
+        method: 'DELETE',
       }),
       invalidatesTags: ['financeBudgets', 'financeAnalytics'],
     }),
@@ -159,10 +179,12 @@ export const {
   useGetTransactionsQuery,
   useCreateTransactionMutation,
   useUpdateTransactionMutation,
+  useAddCorrectionMutation,
   useDeleteTransactionMutation,
   useGetBudgetsQuery,
   useCreateBudgetMutation,
   useUpdateBudgetMutation,
+  useDeleteBudgetMutation,
   useGetMonthlySummaryQuery,
   useGetYearlySummaryQuery,
   useGetBudgetProgressQuery,

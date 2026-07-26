@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { Control, FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import { BudgetPeriodEnum, IBudget, IFinanceCategory } from '@/contract/finance/finance.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import { useCreateBudgetMutation, useUpdateBudgetMutation } from '@/redux/api/finance/finance-api';
+import { useCreateBudgetMutation, useDeleteBudgetMutation, useUpdateBudgetMutation } from '@/redux/api/finance/finance-api';
 import { DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
 
 interface BudgetModalProps extends IBaseModalProps {
@@ -52,6 +52,7 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isVisible, onClose, category,
   const { showSnackbar } = useSnackbar();
   const [createBudget, { isLoading: isCreating }] = useCreateBudgetMutation();
   const [updateBudget, { isLoading: isUpdating }] = useUpdateBudgetMutation();
+  const [deleteBudget, { isLoading: isDeleting }] = useDeleteBudgetMutation();
 
   const methods = useForm<BudgetFormValues>({ defaultValues: { amount: '' } });
   const { control, handleSubmit, reset: resetForm } = methods;
@@ -80,12 +81,33 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isVisible, onClose, category,
     }
   };
 
+  const handleDelete = () => {
+    if (!currentBudget) return;
+
+    Alert.alert(t('finance.expenses.deleteBudgetTitle'), t('finance.expenses.deleteBudgetMessage'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      {
+        text: t('common.delete'),
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await deleteBudget({ id: currentBudget.id }).unwrap();
+            showSnackbar({ text: t('finance.expenses.budgetDeleted'), variant: SnackbarVariantEnum.SUCCESS });
+            onClose();
+          } catch {
+            showSnackbar({ text: t('finance.expenses.budgetDeleteError'), variant: SnackbarVariantEnum.ERROR });
+          }
+        },
+      },
+    ]);
+  };
+
   return (
     <Modal
       isVisible={isVisible}
       onClose={onClose}
-      isLoading={isCreating || isUpdating}
-      loadingMessage={t('finance.expenses.savingBudget')}
+      isLoading={isCreating || isUpdating || isDeleting}
+      loadingMessage={isDeleting ? t('finance.expenses.deletingBudget') : t('finance.expenses.savingBudget')}
       footer={
         <View className="flex-row justify-between">
           <TouchableOpacity onPress={onClose} className="flex-row items-center gap-1 border border-primary rounded-lg px-4 py-2">
@@ -116,6 +138,15 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isVisible, onClose, category,
           testID="budget-amount-input"
         />
       </FormProvider>
+
+      {/* Removing the budget is different from setting it to 0: a 0 limit still shows a progress bar that is
+          instantly over, whereas no budget falls back to the plain "no budget set" hint. */}
+      {currentBudget && (
+        <TouchableOpacity onPress={handleDelete} className="flex-row items-center justify-center gap-1.5 mt-4 py-2" testID="budget-delete-button">
+          <Ionicons name="trash-outline" size={16} color="#EF4444" />
+          <Text className="text-sm font-semibold text-red-500">{t('finance.expenses.deleteBudget')}</Text>
+        </TouchableOpacity>
+      )}
     </Modal>
   );
 };
