@@ -7,6 +7,7 @@ import { IBudgetProgressItem, IFinanceCategory, IMonthlySummary } from '@/contra
 import { buildCategoriesById, getCategoryVisual, getSavingsCategoryIds } from '@/utils/finance/category-helpers';
 import { formatK } from '@/utils/finance/format-k';
 import { formatPLN } from '@/utils/finance/format-pln';
+import { getSavingsAmount } from '@/utils/finance/summary-helpers';
 
 interface MonthOverviewProps {
   summary: IMonthlySummary;
@@ -22,21 +23,15 @@ const MonthOverview: React.FC<MonthOverviewProps> = ({ summary, prevSummary, bud
   const categoriesById = buildCategoriesById(categories);
   const savingsCategoryIds = getSavingsCategoryIds(categories);
 
-  const getSavedAmount = (s: IMonthlySummary) =>
-    s.expenseByCategory
-      .filter(item => item.categoryId != null && savingsCategoryIds.has(item.categoryId))
-      .reduce((sum, item) => sum + item.amount, 0);
+  const getSavedAmount = (s: IMonthlySummary) => getSavingsAmount(s.expenseByCategory, savingsCategoryIds);
 
   const totalSaved = getSavedAmount(summary);
-  const totalSpent = summary.totalExpense - totalSaved;
+  const totalSpent = summary.totalExpense;
   const totalIncome = summary.totalIncome;
-  // Balance is money left over, so it has to net off savings as well as spending — `net` is already
-  // income minus every expense, savings included. Subtracting only `totalSpent` counted money moved into
-  // investments as if it were still available.
   const balance = summary.net;
   const hasData = totalIncome > 0 || totalSpent > 0 || totalSaved > 0;
 
-  const prevTotalSpent = prevSummary ? prevSummary.totalExpense - getSavedAmount(prevSummary) : 0;
+  const prevTotalSpent = prevSummary ? prevSummary.totalExpense : 0;
   const spentDelta = totalSpent - prevTotalSpent;
   const spentDeltaText =
     !prevSummary || spentDelta === 0

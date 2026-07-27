@@ -71,15 +71,11 @@ const Dashboard = () => {
   const totalSaved = expenseByCategory
     .filter(item => item.categoryId != null && savingsCategoryIds.has(item.categoryId))
     .reduce((sum, item) => sum + item.amount, 0);
-  // Two different questions, two different numbers. `totalSpent` is consumption — savings are excluded so
-  // investing doesn't read as burning money. `totalCommitted` is everything that actually left the account,
-  // savings included, because money moved into an ETF is no longer free to spend this month. Budget headroom
-  // must be measured against the second, or "remaining" tells you that you can spend money you already moved.
-  const totalSpent = (summary?.totalExpense ?? 0) - totalSaved;
-  const totalCommitted = summary?.totalExpense ?? 0;
+  // Show the full expense total in the top "Spent" card, including money moved into savings/investments.
+  const totalSpent = summary?.totalExpense ?? 0;
+  const totalCommitted = totalSpent;
   const totalBudget = totalIncome;
   const progress = totalBudget > 0 ? Math.min(totalCommitted / totalBudget, 1) : 0;
-  const spentProgress = totalBudget > 0 ? Math.min(totalSpent / totalBudget, 1) : 0;
   const isOver = totalBudget > 0 && totalCommitted > totalBudget;
 
   const spendingBudgets = budgets.filter(b => b.categoryId != null && !savingsCategoryIds.has(b.categoryId));
@@ -144,7 +140,6 @@ const Dashboard = () => {
               totalBudget={totalBudget}
               isOver={isOver}
               progress={progress}
-              spentProgress={spentProgress}
               sumCategoryBudgets={sumCategoryBudgets}
               allocationDiff={allocationDiff}
             />

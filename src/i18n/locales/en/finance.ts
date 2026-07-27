@@ -28,7 +28,7 @@ const finance = {
     remaining: '{{amount}} remaining',
     categoriesOverAllocated: 'Category budgets exceed your income by {{amount}}',
     categoriesUnallocated: '{{amount}} unallocated',
-    includingSaved: 'includes {{amount}} moved to savings',
+    includingSaved: 'includes {{amount}} marked as savings',
     savedThisMonth: 'Saved this month',
     savingsGoal: 'Goal: {{amount}}',
     categories: 'Categories',

@@ -8,6 +8,7 @@ import { IBudgetProgressItem, IFinanceCategory, IYearlySummary } from '@/contrac
 import { buildCategoriesById, getCategoryVisual, getSavingsCategoryIds } from '@/utils/finance/category-helpers';
 import { formatK } from '@/utils/finance/format-k';
 import { formatPLN } from '@/utils/finance/format-pln';
+import { getSavingsAmount } from '@/utils/finance/summary-helpers';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CHART_WIDTH = SCREEN_WIDTH - 48;
@@ -42,10 +43,8 @@ const YearOverview: React.FC<YearOverviewProps> = ({ year, summary, budgetProgre
     );
   }
 
-  const totalSaved = summary.expenseByCategory
-    .filter(item => item.categoryId != null && savingsCategoryIds.has(item.categoryId))
-    .reduce((sum, item) => sum + item.amount, 0);
-  const totalSpent = summary.totalExpense - totalSaved;
+  const totalSaved = getSavingsAmount(summary.expenseByCategory, savingsCategoryIds);
+  const totalSpent = summary.totalExpense;
   const yearBalance = summary.totalIncome - totalSpent;
   const savingsPercent = summary.totalIncome > 0 ? Math.round(((summary.totalIncome - totalSpent) / summary.totalIncome) * 100) : 0;
 

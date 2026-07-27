@@ -10,7 +10,6 @@ interface MonthlyOverviewCardProps {
   totalBudget: number;
   isOver: boolean;
   progress: number;
-  spentProgress: number;
   sumCategoryBudgets: number;
   allocationDiff: number;
 }
@@ -22,14 +21,12 @@ const MonthlyOverviewCard: React.FC<MonthlyOverviewCardProps> = ({
   totalBudget,
   isOver,
   progress,
-  spentProgress,
   sumCategoryBudgets,
   allocationDiff,
 }) => {
   const { t } = useTranslation();
-  // The saved slice sits on top of the spent slice, so the bar fills by everything that left the account
-  // while still showing at a glance how much of that was put aside rather than consumed.
-  const savedProgress = Math.max(progress - spentProgress, 0);
+  // The bar shows the portion of the budget actually committed this month,
+  // including savings/investments, while the spent amount remains the true consumption figure.
 
   return (
     <View className="bg-white rounded-2xl shadow-sm p-4 mb-4">
@@ -47,9 +44,8 @@ const MonthlyOverviewCard: React.FC<MonthlyOverviewCardProps> = ({
       </View>
       {totalBudget > 0 && (
         <>
-          <View className="h-2.5 bg-gray-100 rounded-full overflow-hidden flex-row">
-            <View className="h-full" style={{ width: `${spentProgress * 100}%`, backgroundColor: isOver ? '#EF4444' : '#1987EE' }} />
-            {savedProgress > 0 && <View className="h-full" style={{ width: `${savedProgress * 100}%`, backgroundColor: '#10B981' }} />}
+          <View className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+            <View className="h-full" style={{ width: `${progress * 100}%`, backgroundColor: isOver ? '#EF4444' : '#1987EE' }} />
           </View>
           <View className="flex-row justify-between mt-1.5">
             <Text className="text-xs text-gray-500">{t('finance.dashboard.percentUsed', { percent: Math.round(progress * 100) })}</Text>
