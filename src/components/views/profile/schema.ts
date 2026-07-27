@@ -1,45 +1,46 @@
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 
 const passwordRegex = /^[a-zA-Z0-9_#@!-]*$/;
 
-const passwordValidation = yup
-  .string()
-  .required('Password is required')
-  .min(6, 'Password must be at least 6 characters')
-  .max(50, 'Password must be at most 50 characters')
-  .matches(passwordRegex, 'Password can only contain letters, numbers, and _#@-');
+export const useProfileSchema = () => {
+  const { t } = useTranslation();
 
-export const profileSchema = yup.object().shape({
-  login: yup
+  const passwordValidation = yup
     .string()
-    .optional()
-    .min(3, 'Login must be at least 6 characters')
-    .max(16, 'Login must be at least 6 characters')
-    .nullable()
-    .default(null),
-  nickname: yup.string().nullable().default(null).min(3, 'Nickname must be at least 3 characters').max(25, 'Nickname must be at most 25 characters'),
-  email: yup
-    .string()
-    .email('Invalid email')
-    .required('Email is required')
-    .min(7, 'Email must be at least 7 characters')
-    .max(100, 'Email must be at most 100 characters'),
-  bio: yup.string().max(30, 'Bio must be at most 30 characters').nullable().default(null),
-});
+    .required(t('profile.schema.passwordRequired'))
+    .min(6, t('profile.schema.passwordMin'))
+    .max(50, t('profile.schema.passwordMax'))
+    .matches(passwordRegex, t('profile.schema.passwordPattern'));
 
-export const profilePasswordSchema = yup.object().shape({
-  oldPassword: passwordValidation,
-  newPassword: passwordValidation,
-  confirmNewPassword: yup
-    .string()
-    .oneOf([yup.ref('newPassword')], 'Passwords do not match')
-    .required('Confirm Password is required'),
-});
+  const profileSchema = yup.object().shape({
+    login: yup.string().optional().min(3, t('profile.schema.loginMin')).max(16, t('profile.schema.loginMax')).nullable().default(null),
+    nickname: yup.string().nullable().default(null).min(3, t('profile.schema.nicknameMin')).max(25, t('profile.schema.nicknameMax')),
+    email: yup
+      .string()
+      .email(t('profile.schema.emailInvalid'))
+      .required(t('profile.schema.emailRequired'))
+      .min(7, t('profile.schema.emailMin'))
+      .max(100, t('profile.schema.emailMax')),
+    bio: yup.string().max(30, t('profile.schema.bioMax')).nullable().default(null),
+  });
 
-export const deleteAccountPasswordSchema = yup.object().shape({
-  password: passwordValidation,
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref('password')], 'Passwords do not match')
-    .required('Confirm Password is required'),
-});
+  const profilePasswordSchema = yup.object().shape({
+    oldPassword: passwordValidation,
+    newPassword: passwordValidation,
+    confirmNewPassword: yup
+      .string()
+      .oneOf([yup.ref('newPassword')], t('profile.schema.passwordsDoNotMatch'))
+      .required(t('profile.schema.confirmPasswordRequired')),
+  });
+
+  const deleteAccountPasswordSchema = yup.object().shape({
+    password: passwordValidation,
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref('password')], t('profile.schema.passwordsDoNotMatch'))
+      .required(t('profile.schema.confirmPasswordRequired')),
+  });
+
+  return { profileSchema, profilePasswordSchema, deleteAccountPasswordSchema };
+};

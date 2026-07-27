@@ -1,9 +1,10 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { tagValidationSchema } from './schema';
+import { useTagValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
@@ -19,9 +20,11 @@ interface UpdateTagModalProps extends IBaseModalProps {
 }
 
 const UpdateTagModal: React.FC<UpdateTagModalProps> = ({ isVisible, onClose, tag }) => {
+  const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
   const [createQuestLabel, { isLoading }] = useUpdateQuestLabelMutation();
   const { data: questLabels = [] } = useGetQuestLabelsQuery();
+  const tagValidationSchema = useTagValidationSchema();
 
   const methods = useForm<IPostQuestLabelRequest>({
     resolver: yupResolver(tagValidationSchema(questLabels, tag.value)),
@@ -38,11 +41,11 @@ const UpdateTagModal: React.FC<UpdateTagModalProps> = ({ isVisible, onClose, tag
   const onSubmit = async (data: IPostQuestLabelRequest) => {
     try {
       await createQuestLabel({ id: tag.id, ...data }).unwrap();
-      showSnackbar({ text: 'Tag updated successfully!', variant: SnackbarVariantEnum.SUCCESS });
+      showSnackbar({ text: t('quests.tags.updateModal.updatedSuccess'), variant: SnackbarVariantEnum.SUCCESS });
       onClose();
     } catch (err) {
       const error = err as IApiError;
-      showSnackbar({ text: error.data?.message || 'Failed to update tag. Please try again.', variant: SnackbarVariantEnum.ERROR });
+      showSnackbar({ text: error.data?.message || t('quests.tags.updateModal.updatedError'), variant: SnackbarVariantEnum.ERROR });
     }
   };
 
@@ -52,18 +55,18 @@ const UpdateTagModal: React.FC<UpdateTagModalProps> = ({ isVisible, onClose, tag
       onClose={onClose}
       key={tag.id}
       isLoading={isLoading}
-      loadingMessage="Updating tag..."
+      loadingMessage={t('quests.tags.updateModal.loadingMessage')}
       footer={
         <View className="flex-row justify-between">
           <Button
-            label="Cancel"
+            label={t('quests.tags.cancelButton')}
             variant="outlined"
             onPress={onClose}
             className="rounded-lg"
             startIcon={<Ionicons name="close-circle-outline" size={20} color="#1987EE" />}
           />
           <Button
-            label="Update Tag"
+            label={t('quests.tags.updateModal.submitButton')}
             onPress={handleSubmit(onSubmit)}
             className="rounded-lg"
             startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
@@ -73,12 +76,12 @@ const UpdateTagModal: React.FC<UpdateTagModalProps> = ({ isVisible, onClose, tag
     >
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-8 py-2">
-          <Text className="text-xl font-bold text-center">Update Tag:</Text>
-          <ControlledInput name="value" label="Tag Name" placeholder="Enter tag name" isRequired />
-          <ControlledSwatches name="backgroundColor" label="Pick a Background Color:" />
+          <Text className="text-xl font-bold text-center">{t('quests.tags.updateModal.heading')}</Text>
+          <ControlledInput name="value" label={t('quests.tags.nameLabel')} placeholder={t('quests.tags.namePlaceholder')} isRequired />
+          <ControlledSwatches name="backgroundColor" label={t('quests.tags.backgroundColorLabel')} />
 
           <View>
-            <Text className="text-base font-semibold mb-2">Tag Preview:</Text>
+            <Text className="text-base font-semibold mb-2">{t('quests.tags.previewLabel')}</Text>
             <View
               className="py-2 px-6 rounded-full flex-row justify-center items-center overflow-hidden max-w-[200px]"
               style={{ backgroundColor: selectedBackgroundColor, alignSelf: 'flex-start' }}
@@ -89,7 +92,7 @@ const UpdateTagModal: React.FC<UpdateTagModalProps> = ({ isVisible, onClose, tag
                 ellipsizeMode="tail"
                 style={{ color: getBestContrastTextColor(selectedBackgroundColor) }}
               >
-                {newTagValue || 'Example Tag'}
+                {newTagValue || t('quests.tags.previewFallback')}
               </Text>
             </View>
           </View>

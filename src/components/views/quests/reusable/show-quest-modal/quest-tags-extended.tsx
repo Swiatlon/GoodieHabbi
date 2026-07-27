@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, ScrollView } from 'react-native';
 import { IQuestLabel } from '@/contract/quests/labels/labels-quests';
 import { getBestContrastTextColor } from '@/utils/utils/utils';
@@ -8,13 +9,15 @@ interface QuestTagsExtendedProps {
 }
 
 const QuestTagsExtended: React.FC<QuestTagsExtendedProps> = ({ tags = [] }) => {
+  const { t } = useTranslation();
+
   if (tags.length === 0) return null;
 
   return (
     <View className="bg-white rounded-md p-4 border border-gray-200 shadow-sm max-h-64">
       <View className="flex-row items-center gap-3 mb-4">
         <Text className="text-xl">🏷️</Text>
-        <Text className="text-lg font-semibold text-gray-700">Quest Tags:</Text>
+        <Text className="text-lg font-semibold text-gray-700">{t('quests.reusable.tags.heading')}</Text>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} horizontal={false} className="max-h-[50px] flex-row flex-nowrap">

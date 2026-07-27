@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CustomDrawerItem from '../elements/custom-drawer-item';
@@ -58,25 +59,26 @@ const NotificationsIcon = ({ count, color }: { count: number; color: string }) =
   </View>
 );
 const AccountConfig = () => {
+  const { t } = useTranslation();
   const { unreadCount } = useNotificationsWithHub();
 
   return (
     <CustomDrawerItem
-      label="Account"
+      label={t('nav.account.root')}
       icon={(active: boolean) => <AccountIcon hasUnread={unreadCount > 0} color={active ? ACTIVE_COLOR : INACTIVE_COLOR} />}
       items={[
         {
-          label: 'Profile',
+          label: t('nav.account.profile'),
           route: '(authorized)/profile',
           icon: (active: boolean) => <Ionicons name="person-outline" size={22} color={active ? ACTIVE_COLOR : INACTIVE_COLOR} />,
         },
         {
-          label: 'Notifications',
+          label: t('nav.account.notifications'),
           route: '(authorized)/notifications',
           icon: (active: boolean) => <NotificationsIcon count={unreadCount} color={active ? ACTIVE_COLOR : INACTIVE_COLOR} />,
         },
         {
-          label: 'Inventory',
+          label: t('nav.account.inventory'),
           route: '(authorized)/inventory',
           icon: (active: boolean) => <Ionicons name="cube-outline" size={22} color={active ? ACTIVE_COLOR : INACTIVE_COLOR} />,
         },

@@ -16,6 +16,7 @@ interface CustomDrawerProps {
   route?: string;
   items?: DropdownItem[];
   depth?: number;
+  defaultOpen?: boolean;
 }
 
 const ICON_SIZE = 20;
@@ -44,8 +45,8 @@ const renderExtendArrow = (isOpen: boolean) => (
   <Ionicons name={isOpen ? 'chevron-up-outline' : 'chevron-down-outline'} size={ICON_SIZE} color="#4b465d" />
 );
 
-const CustomDrawerItem: React.FC<CustomDrawerProps> = ({ label, icon, items = [], route, depth = 0 }) => {
-  const [isOpen, setIsOpen] = useState(label === 'Quests');
+const CustomDrawerItem: React.FC<CustomDrawerProps> = ({ label, icon, items = [], route, depth = 0, defaultOpen = false }) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const currentRoute = navigation.getState().routes[navigation.getState().index]?.name;

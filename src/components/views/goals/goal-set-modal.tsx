@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import GoalQuestSection from './goal-quest-section';
@@ -17,6 +18,7 @@ interface GoalSetModalProps {
 }
 
 const GoalSetModal: React.FC<GoalSetModalProps> = ({ isVisible, onClose, frequency }) => {
+  const { t } = useTranslation();
   const { data: fetchedQuests = [], isLoading } = useGetEligibleQuestsForGoalsQuery();
   const [selectedQuest, setSelectedQuest] = useState<IGetActiveGoalResponse | null>(null);
   const { showSnackbar } = useSnackbar();
@@ -48,27 +50,38 @@ const GoalSetModal: React.FC<GoalSetModalProps> = ({ isVisible, onClose, frequen
         data: { questId: selectedQuest.id, goalType: frequency },
       }).unwrap();
 
-      showSnackbar({ text: 'Goal set successfully!', variant: SnackbarVariantEnum.SUCCESS });
+      showSnackbar({ text: t('goals.setModal.setSuccess'), variant: SnackbarVariantEnum.SUCCESS });
       onClose();
     } catch {
       showSnackbar({
-        text: 'Failed to set goal. Please try again.',
+        text: t('goals.setModal.setError'),
         variant: SnackbarVariantEnum.ERROR,
       });
     }
   };
 
   return (
-    <Modal isVisible={isVisible} onClose={onClose} className="min-h-[200px]" isLoading={isLoading} loadingMessage="Loading quests...">
+    <Modal isVisible={isVisible} onClose={onClose} className="min-h-[200px]" isLoading={isLoading} loadingMessage={t('goals.setModal.loadingQuests')}>
       <View className="flex gap-4 h-full px-4">
-        <Text className="text-lg font-bold text-center">Set goal</Text>
-        <Select placeholder="Select a quest" value={selectedQuest?.id} onChange={handleSelectChange} options={options} isModalVersion />
-        <Text className="text-lg font-semibold tracking-wider text-center">Preview selected quest:</Text>
+        <Text className="text-lg font-bold text-center">{t('goals.setModal.title')}</Text>
+        <Select
+          placeholder={t('goals.setModal.selectPlaceholder')}
+          value={selectedQuest?.id}
+          onChange={handleSelectChange}
+          options={options}
+          isModalVersion
+        />
+        <Text className="text-lg font-semibold tracking-wider text-center">{t('goals.setModal.previewLabel')}</Text>
         <GoalQuestSection selectedQuest={selectedQuest} />
         <View className="flex-row justify-between mt-auto">
-          <Button label="Close" variant="outlined" onPress={onClose} startIcon={<Ionicons name="close-outline" size={18} color="#1987EE" />} />
           <Button
-            label="Set"
+            label={t('common.close')}
+            variant="outlined"
+            onPress={onClose}
+            startIcon={<Ionicons name="close-outline" size={18} color="#1987EE" />}
+          />
+          <Button
+            label={t('goals.setModal.setButton')}
             styleType="primary"
             onPress={handleSubmit}
             startIcon={<Ionicons name="add-circle-outline" size={18} color="white" />}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import dayjs from '@/configs/day-js-config';
 import { NullableString } from '@/types/global-types';
@@ -10,6 +11,8 @@ interface QuestItemDateProps {
 }
 
 const QuestItemDate: React.FC<QuestItemDateProps> = ({ startDate, endDate }) => {
+  const { t } = useTranslation();
+
   if (!startDate && !endDate) {
     return null;
   }
@@ -20,12 +23,12 @@ const QuestItemDate: React.FC<QuestItemDateProps> = ({ startDate, endDate }) => 
   const daysLeft = endDate ? Math.floor(dayjs(endDate).diff(dayjs(), 'day', true)) : null;
 
   const getDaysLeftBadge = () => {
-    if (daysLeft == null) return <Text className="text-sm text-gray-500">(No deadline)</Text>;
-    if (daysLeft < 0) return <Text className="text-sm text-red-500">(⏰ Expired)</Text>;
-    if (daysLeft === 0) return <Text className="text-sm text-yellow-600">(⚡ Last day!)</Text>;
-    if (daysLeft <= 5) return <Text className="text-sm text-red-500">(⏳ {daysLeft} days left)</Text>;
-    if (daysLeft <= 10) return <Text className="text-sm text-yellow-500">(🕒 {daysLeft} days left)</Text>;
-    return <Text className="text-sm text-green-500">({daysLeft} days left)</Text>;
+    if (daysLeft == null) return <Text className="text-sm text-gray-500">{t('quests.reusable.dates.noDeadline')}</Text>;
+    if (daysLeft < 0) return <Text className="text-sm text-red-500">{t('quests.reusable.dates.expired')}</Text>;
+    if (daysLeft === 0) return <Text className="text-sm text-yellow-600">{t('quests.reusable.dates.lastDay')}</Text>;
+    if (daysLeft <= 5) return <Text className="text-sm text-red-500">{t('quests.reusable.dates.daysLeftUrgent', { count: daysLeft })}</Text>;
+    if (daysLeft <= 10) return <Text className="text-sm text-yellow-500">{t('quests.reusable.dates.daysLeftWarning', { count: daysLeft })}</Text>;
+    return <Text className="text-sm text-green-500">{t('quests.reusable.dates.daysLeftNormal', { count: daysLeft })}</Text>;
   };
 
   if (startDate && endDate) {
@@ -42,12 +45,16 @@ const QuestItemDate: React.FC<QuestItemDateProps> = ({ startDate, endDate }) => 
     <View className="gap-1">
       {startDate && (
         <View className="flex-row items-center gap-1">
-          <Text className="text-sm text-gray-600">📅 Start: {formattedStartDate}</Text>
+          <Text className="text-sm text-gray-600">
+            📅 {t('quests.reusable.dates.startDateLabel')} {formattedStartDate}
+          </Text>
         </View>
       )}
       {endDate && (
         <View className="flex-row items-center gap-2">
-          <Text className="text-sm text-gray-600">⏳ End: {formattedEndDate}</Text>
+          <Text className="text-sm text-gray-600">
+            ⏳ {t('quests.reusable.dates.endDateLabel')} {formattedEndDate}
+          </Text>
           {getDaysLeftBadge()}
         </View>
       )}

@@ -1,9 +1,10 @@
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { tagValidationSchema } from './schema';
+import { useTagValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
@@ -17,9 +18,11 @@ import { getBestContrastTextColor } from '@/utils/utils/utils';
 interface AddTagModalProps extends IBaseModalProps {}
 
 const AddTagModal: React.FC<AddTagModalProps> = ({ isVisible, onClose }) => {
+  const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
   const [createQuestLabel, { isLoading }] = useCreateQuestLabelMutation();
   const { data: questLabels = [] } = useGetQuestLabelsQuery();
+  const tagValidationSchema = useTagValidationSchema();
 
   const methods = useForm<IPostQuestLabelRequest>({
     resolver: yupResolver(tagValidationSchema(questLabels)),
@@ -41,10 +44,10 @@ const AddTagModal: React.FC<AddTagModalProps> = ({ isVisible, onClose }) => {
       await createQuestLabel(data).unwrap();
       onClose();
       reset();
-      showSnackbar({ text: 'Tag added successfully!', variant: SnackbarVariantEnum.SUCCESS });
+      showSnackbar({ text: t('quests.tags.addModal.addedSuccess'), variant: SnackbarVariantEnum.SUCCESS });
     } catch (err) {
       const error = err as IApiError;
-      showSnackbar({ text: error.data?.message || 'Failed to add tag. Please try again.', variant: SnackbarVariantEnum.ERROR });
+      showSnackbar({ text: error.data?.message || t('quests.tags.addModal.addedError'), variant: SnackbarVariantEnum.ERROR });
     }
   };
 
@@ -53,18 +56,18 @@ const AddTagModal: React.FC<AddTagModalProps> = ({ isVisible, onClose }) => {
       isVisible={isVisible}
       onClose={onClose}
       isLoading={isLoading}
-      loadingMessage="Adding tag..."
+      loadingMessage={t('quests.tags.addModal.loadingMessage')}
       footer={
         <View className="flex-row justify-between">
           <Button
-            label="Cancel"
+            label={t('quests.tags.cancelButton')}
             variant="outlined"
             onPress={onClose}
             className="rounded-lg"
             startIcon={<Ionicons name="close-circle-outline" size={20} color="#1987EE" />}
           />
           <Button
-            label="Add Tag"
+            label={t('quests.tags.addModal.submitButton')}
             onPress={handleSubmit(onSubmit)}
             className="rounded-lg"
             startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
@@ -74,21 +77,21 @@ const AddTagModal: React.FC<AddTagModalProps> = ({ isVisible, onClose }) => {
     >
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-8 py-2">
-          <Text className="text-xl font-bold text-center">Create a New Tag:</Text>
-          <ControlledInput name="value" label="Tag Name" placeholder="Enter tag name" isRequired />
+          <Text className="text-xl font-bold text-center">{t('quests.tags.addModal.heading')}</Text>
+          <ControlledInput name="value" label={t('quests.tags.nameLabel')} placeholder={t('quests.tags.namePlaceholder')} isRequired />
           <ControlledSwatches
             name="backgroundColor"
-            label="Pick a Background Color:"
+            label={t('quests.tags.backgroundColorLabel')}
             onChange={color => setValue('textColor', getBestContrastTextColor(color))}
           />
           <View>
-            <Text className="text-base font-semibold mb-2">Tag Preview:</Text>
+            <Text className="text-base font-semibold mb-2">{t('quests.tags.previewLabel')}</Text>
             <View
               className="py-2 px-6 rounded-full flex-row justify-center items-center overflow-hidden max-w-[200px]"
               style={{ backgroundColor: selectedBackgroundColor, alignSelf: 'flex-start' }}
             >
               <Text className="text-lg font-medium shadow-lg" numberOfLines={2} ellipsizeMode="tail" style={{ color: selectedTextColor }}>
-                {newTagValue || 'Example Tag'}
+                {newTagValue || t('quests.tags.previewFallback')}
               </Text>
             </View>
           </View>

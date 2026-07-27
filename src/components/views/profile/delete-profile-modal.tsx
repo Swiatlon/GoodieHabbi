@@ -1,10 +1,11 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'expo-router';
-import { deleteAccountPasswordSchema } from './schema';
+import { useProfileSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledPasswordInput from '@/components/shared/password/controlled-password-input';
@@ -17,6 +18,8 @@ import { IApiError } from '@/types/global-types';
 interface DeleteAccountModalProps extends IBaseModalProps {}
 
 const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isVisible, onClose }) => {
+  const { t } = useTranslation();
+  const { deleteAccountPasswordSchema } = useProfileSchema();
   const dispatch = useTypedDispatch();
   const router = useRouter();
   const methods = useForm({
@@ -35,17 +38,17 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isVisible, onCl
     try {
       await deleteAccount({ password: data.password, confirmPassword: data.confirmPassword }).unwrap();
       onClose();
-      showSnackbar({ text: 'Account deleted successfully!', variant: 'success' });
+      showSnackbar({ text: t('profile.deleteAccount.successMessage'), variant: 'success' });
       handleLogout();
     } catch (err) {
       const error = err as IApiError;
-      showSnackbar({ text: error.data?.message || 'Failed to delete account. Please try again.', variant: SnackbarVariantEnum.ERROR });
+      showSnackbar({ text: error.data?.message || t('profile.deleteAccount.errorMessage'), variant: SnackbarVariantEnum.ERROR });
     }
   };
   const handleLogout = () => {
     dispatch(logOutAsync());
     router.navigate('/(not-authorized)/login');
-    showSnackbar({ text: 'Logged off sucessfully!', variant: SnackbarVariantEnum.SUCCESS });
+    showSnackbar({ text: t('common.loggedOutSuccess'), variant: SnackbarVariantEnum.SUCCESS });
   };
 
   return (
@@ -53,10 +56,10 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isVisible, onCl
       isVisible={isVisible}
       onClose={onClose}
       isLoading={isLoading}
-      loadingMessage="Deleting account..."
+      loadingMessage={t('profile.deleteAccount.deleting')}
       footer={
         <Button
-          label="Delete Account"
+          label={t('profile.deleteAccount.deleteButton')}
           onPress={handleSubmit(handleDeleteAccount)}
           styleType="danger"
           startIcon={<Ionicons name="trash" size={20} color="white" />}
@@ -65,12 +68,24 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isVisible, onCl
       }
     >
       <View className="bg-white p-6 rounded-lg gap-4">
-        <Text className="text-lg font-bold mb-4 text-center">Delete Account</Text>
-        <Text className="text-sm mb-4 text-gray-600 text-center">Are you sure you want to delete your account? This action is irreversible.</Text>
+        <Text className="text-lg font-bold mb-4 text-center">{t('profile.deleteAccount.title')}</Text>
+        <Text className="text-sm mb-4 text-gray-600 text-center">{t('profile.deleteAccount.confirmMessage')}</Text>
         <FormProvider {...methods}>
           <View className="flex gap-4">
-            <ControlledPasswordInput name="password" label="Enter Password" placeholder="Enter your password" secureTextEntry isRequired />
-            <ControlledPasswordInput name="confirmPassword" label="Confirm Password" placeholder="Confirm your password" secureTextEntry isRequired />
+            <ControlledPasswordInput
+              name="password"
+              label={t('profile.deleteAccount.passwordLabel')}
+              placeholder={t('profile.deleteAccount.passwordPlaceholder')}
+              secureTextEntry
+              isRequired
+            />
+            <ControlledPasswordInput
+              name="confirmPassword"
+              label={t('profile.deleteAccount.confirmPasswordLabel')}
+              placeholder={t('profile.deleteAccount.confirmPasswordPlaceholder')}
+              secureTextEntry
+              isRequired
+            />
           </View>
         </FormProvider>
       </View>

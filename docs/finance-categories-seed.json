@@ -1,0 +1,116 @@
+{
+  "note": "Seed data for finance categories. Create each top-level category first, then create its subCategories using the returned id as parentCategoryId. Subcategories omit icon/color on purpose - the app falls back to the parent's icon/color when a subcategory's own icon/color is null.",
+  "expenseCategories": [
+    {
+      "name": "Mieszkanie",
+      "type": "Expense",
+      "icon": "home-outline",
+      "color": "#1987EE",
+      "isSavings": false,
+      "subCategories": [
+        { "name": "Czynsz / Rata kredytu" },
+        { "name": "Czynsz administracyjny" },
+        { "name": "Prąd" },
+        { "name": "Woda i ścieki" },
+        { "name": "Gaz" },
+        { "name": "Ogrzewanie" },
+        { "name": "Wywóz nieczystości" },
+        { "name": "Internet / Wi-Fi" },
+        { "name": "Telewizja" },
+        { "name": "Ubezpieczenie nieruchomości" },
+        { "name": "Serwis / Naprawy domowe" },
+        { "name": "Środki czystości" }
+      ]
+    },
+    {
+      "name": "Transport",
+      "type": "Expense",
+      "icon": "car-outline",
+      "color": "#F59E0B",
+      "isSavings": false,
+      "subCategories": [
+        { "name": "Paliwo" },
+        { "name": "Rata kredytu / leasingu" },
+        { "name": "Ubezpieczenie OC/AC" },
+        { "name": "Przegląd / Serwis" },
+        { "name": "Opony" },
+        { "name": "Komunikacja miejska / PKP" },
+        { "name": "Taxi / Uber / Bolt" },
+        { "name": "Parkingi / Autostrady" },
+        { "name": "Akcesoria samochodowe" }
+      ]
+    },
+    {
+      "name": "Życie i Zdrowie",
+      "type": "Expense",
+      "icon": "heart-outline",
+      "color": "#10B981",
+      "isSavings": false,
+      "subCategories": [
+        { "name": "Zakupy spożywcze" },
+        { "name": "Jedzenie na mieście" },
+        { "name": "Wizyty lekarskie" },
+        { "name": "Leki i suplementy" },
+        { "name": "Dentysta" },
+        { "name": "Siłownia / Karnet sportowy" },
+        { "name": "Kosmetyczka / Fryzjer" },
+        { "name": "Odzież i obuwie" }
+      ]
+    },
+    {
+      "name": "Rozwój i Edukacja",
+      "type": "Expense",
+      "icon": "school-outline",
+      "color": "#8B5CF6",
+      "isSavings": false,
+      "subCategories": [
+        { "name": "Czesne" },
+        { "name": "Kursy online / Szkolenia" },
+        { "name": "Książki / E-booki" },
+        { "name": "Subskrypcje edukacyjne" },
+        { "name": "Sprzęt edukacyjny" }
+      ]
+    },
+    {
+      "name": "Rozrywka i Inne",
+      "type": "Expense",
+      "icon": "game-controller-outline",
+      "color": "#EC4899",
+      "isSavings": false,
+      "subCategories": [
+        { "name": "Streaming (Netflix, Spotify...)" },
+        { "name": "Kino / Teatr / Koncerty" },
+        { "name": "Hobby i akcesoria" },
+        { "name": "Zwierzęta" },
+        { "name": "Dzieci" },
+        { "name": "Prezenty" },
+        { "name": "Wyjścia ze znajomymi" },
+        { "name": "Nieprzewidziane wydatki" }
+      ]
+    },
+    {
+      "name": "Finanse i Oszczędności",
+      "type": "Expense",
+      "icon": "trending-up-outline",
+      "color": "#14B8A6",
+      "isSavings": true,
+      "subCategories": [
+        { "name": "Poduszka finansowa" },
+        { "name": "IKE / IKZE" },
+        { "name": "Inwestycje (ETF / Giełda)" },
+        { "name": "Oszczędności celowe" },
+        { "name": "Spłata długów" }
+      ]
+    }
+  ],
+  "incomeCategories": [
+    { "name": "Wynagrodzenie", "type": "Income", "icon": "briefcase-outline", "color": "#10B981", "isSavings": false },
+    { "name": "Premia / Bonus", "type": "Income", "icon": "gift-outline", "color": "#10B981", "isSavings": false },
+    { "name": "Działalność gosp.", "type": "Income", "icon": "business-outline", "color": "#10B981", "isSavings": false },
+    { "name": "Freelance", "type": "Income", "icon": "laptop-outline", "color": "#10B981", "isSavings": false },
+    { "name": "Dochód pasywny", "type": "Income", "icon": "wallet-outline", "color": "#10B981", "isSavings": false },
+    { "name": "Świadczenia", "type": "Income", "icon": "shield-checkmark-outline", "color": "#10B981", "isSavings": false },
+    { "name": "Zwrot podatku", "type": "Income", "icon": "receipt-outline", "color": "#10B981", "isSavings": false },
+    { "name": "Inne", "type": "Income", "icon": "ellipsis-horizontal-outline", "color": "#10B981", "isSavings": false }
+  ]
+}

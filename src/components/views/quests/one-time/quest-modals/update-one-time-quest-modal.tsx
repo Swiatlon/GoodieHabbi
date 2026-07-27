@@ -1,5 +1,6 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -13,7 +14,7 @@ import ControlledInput from '@/components/shared/input/controlled-input';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledMultiSelect from '@/components/shared/multi-select/controlled-multi-select';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
-import { oneTimeQuestValidationSchema } from '@/components/views/quests/one-time/quest-modals/schema';
+import { useOneTimeQuestValidationSchema } from '@/components/views/quests/one-time/quest-modals/schema';
 import dayjs from '@/configs/day-js-config';
 import { IOneTimeQuest, IPostOneTimeQuestRequest } from '@/contract/quests/quests-types/one-time-quests';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
@@ -26,9 +27,11 @@ interface UpdateOneTimeQuestModalProps extends IBaseModalProps {
 }
 
 const UpdateOneTimeQuestModal: React.FC<UpdateOneTimeQuestModalProps> = ({ isVisible, onClose, quest }) => {
+  const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
   const [updateQuest, { isLoading }] = useUpdateOneTimeQuestMutation();
   const { data: questLabels = [] } = useGetQuestLabelsQuery();
+  const oneTimeQuestValidationSchema = useOneTimeQuestValidationSchema();
 
   const methods = useForm<IPostOneTimeQuestRequest>({
     resolver: yupResolver(oneTimeQuestValidationSchema),
@@ -53,10 +56,10 @@ const UpdateOneTimeQuestModal: React.FC<UpdateOneTimeQuestModalProps> = ({ isVis
   const onSubmit = async (data: IPostOneTimeQuestRequest) => {
     try {
       await updateQuest({ id: quest.id, ...data }).unwrap();
-      showSnackbar({ text: 'Quest updated successfully!', variant: SnackbarVariantEnum.SUCCESS });
+      showSnackbar({ text: t('quests.oneTime.updateModal.updatedSuccess'), variant: SnackbarVariantEnum.SUCCESS });
       onClose();
     } catch {
-      showSnackbar({ text: 'Failed to update quest. Please try again.', variant: SnackbarVariantEnum.ERROR });
+      showSnackbar({ text: t('quests.oneTime.updateModal.updatedError'), variant: SnackbarVariantEnum.ERROR });
     }
   };
 
@@ -66,18 +69,18 @@ const UpdateOneTimeQuestModal: React.FC<UpdateOneTimeQuestModalProps> = ({ isVis
       onClose={() => onClose()}
       key={quest.id}
       isLoading={isLoading}
-      loadingMessage="Updating quest..."
+      loadingMessage={t('quests.oneTime.updateModal.loadingMessage')}
       footer={
         <View className="flex-row justify-between">
           <Button
-            label="Cancel"
+            label={t('quests.oneTime.form.cancelButton')}
             variant="outlined"
             onPress={onClose}
             className="rounded-lg"
             startIcon={<Ionicons name="close-circle-outline" size={20} color="#1987EE" />}
           />
           <Button
-            label="Update Quest"
+            label={t('quests.oneTime.updateModal.submitButton')}
             onPress={handleSubmit(onSubmit)}
             className="rounded-lg"
             startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
@@ -87,31 +90,46 @@ const UpdateOneTimeQuestModal: React.FC<UpdateOneTimeQuestModalProps> = ({ isVis
     >
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-5 py-0">
-          <Text className="text-lg font-bold text-center">Edit Quest</Text>
-          <ControlledInput name="title" label="📝 Title:" placeholder="Enter the title" isRequired testID="input-title" />
-          <ControlledTextArea name="description" label="📖 Description:" placeholder="Enter description" testID="input-description" />
+          <Text className="text-lg font-bold text-center">{t('quests.oneTime.updateModal.heading')}</Text>
+          <ControlledInput
+            name="title"
+            label={t('quests.oneTime.form.titleLabel')}
+            placeholder={t('quests.oneTime.form.titlePlaceholder')}
+            isRequired
+            testID="input-title"
+          />
+          <ControlledTextArea
+            name="description"
+            label={t('quests.oneTime.form.descriptionLabel')}
+            placeholder={t('quests.oneTime.form.descriptionPlaceholder')}
+            testID="input-description"
+          />
           <DatePickerModal
             name="startDate"
             minDate={toUTCISOString(dayjs.min(dayjs(quest.startDate ?? '1970-01-01'), dayjs()))}
-            label="📅 Start Date:"
-            placeholder="Tap to pick start date"
+            label={t('quests.oneTime.form.startDateLabel')}
+            placeholder={t('quests.oneTime.form.startDatePlaceholder')}
           />
           <DatePickerModal
             name="endDate"
             minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(quest.endDate ?? dayjs())}
-            label="📅 End Date:"
-            placeholder="Tap to pick end date"
+            label={t('quests.oneTime.form.endDateLabel')}
+            placeholder={t('quests.oneTime.form.endDatePlaceholder')}
             isEndDate
           />
           <EmojiPickerComponent />
           <PriorityPicker />
           <DifficultyPicker />
-          <TimePickerModal name="scheduledTime" label="⏰ Scheduled Time:" placeholder="Select time" />
+          <TimePickerModal
+            name="scheduledTime"
+            label={t('quests.oneTime.form.scheduledTimeLabel')}
+            placeholder={t('quests.oneTime.form.scheduledTimePlaceholder')}
+          />
           <ControlledMultiSelect
             name="labels"
-            label="🏷️ Tags:"
-            placeholder="Select quest tags"
-            noContentMessage="No tags available, please create some first"
+            label={t('quests.oneTime.form.tagsLabel')}
+            placeholder={t('quests.oneTime.form.tagsPlaceholder')}
+            noContentMessage={t('quests.oneTime.form.tagsNoContent')}
             options={questLabels.map(item => ({ ...item, label: item.value }))}
           />
         </View>

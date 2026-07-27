@@ -1,56 +1,60 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import CustomDrawerItem from '../elements/custom-drawer-item';
 
 const QuestConfig = () => {
+  const { t } = useTranslation();
+
   return (
     <CustomDrawerItem
-      label="Quests"
+      label={t('nav.quests.root')}
       icon={<Ionicons name="trophy-outline" />}
+      defaultOpen
       items={[
         {
-          label: 'All Quests',
+          label: t('nav.quests.all'),
           icon: <Ionicons name="trophy-outline" />,
           route: '(authorized)/quests/all',
         },
         {
-          label: 'Today Quests',
+          label: t('nav.quests.today'),
           route: '(authorized)/quests/today',
           icon: <Ionicons name="today-outline" />,
         },
         {
-          label: 'Seasonal Quests',
+          label: t('nav.quests.seasonal'),
           route: '(authorized)/quests/seasonal',
           icon: <Ionicons name="calendar-outline" />,
         },
         {
-          label: 'Recurring Quests',
+          label: t('nav.quests.recurring.root'),
           icon: <Ionicons name="repeat-outline" />,
           children: [
             {
-              label: 'All Quests',
+              label: t('nav.quests.recurring.all'),
               icon: <Ionicons name="trophy-outline" />,
               route: '(authorized)/quests/recurring/all',
             },
             {
-              label: 'Daily Quests',
+              label: t('nav.quests.recurring.daily'),
               route: '(authorized)/quests/recurring/daily',
               icon: <Ionicons name="sunny-outline" />,
             },
             {
-              label: 'Weekly Quests',
+              label: t('nav.quests.recurring.weekly'),
               route: '(authorized)/quests/recurring/weekly',
               icon: <Ionicons name="calendar-outline" />,
             },
             {
-              label: 'Monthly Quests',
+              label: t('nav.quests.recurring.monthly'),
               route: '(authorized)/quests/recurring/monthly',
               icon: <Ionicons name="calendar-number-outline" />,
             },
           ],
         },
         {
-          label: 'One-Time Quests',
+          label: t('nav.quests.oneTime'),
           route: '(authorized)/quests/one-time',
           icon: <Ionicons name="checkmark-done-outline" />,
         },

@@ -17,6 +17,10 @@ export const allTags = [
   'notifications',
   'shopItems',
   'inventory',
+  'financeCategories',
+  'financeTransactions',
+  'financeBudgets',
+  'financeAnalytics',
 ];
 
 const Api = createApi({

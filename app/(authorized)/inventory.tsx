@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FlatList, View, Text, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
@@ -16,6 +17,7 @@ import {
 } from '@/redux/api/inventory/inventory.api';
 
 const Inventory = () => {
+  const { t } = useTranslation();
   const { data: items = [], isLoading, refetch } = useGetInventoryItemsQuery();
   const [equipItem] = useEquipInventoryItemMutation();
   const [unequipItem] = useUnequipInventoryItemMutation();
@@ -28,9 +30,9 @@ const Inventory = () => {
     try {
       await equipItem({ inventoryId }).unwrap();
       refetch();
-      showSnackbar({ text: 'Looking good! You equipped this item.', variant: 'success' });
+      showSnackbar({ text: t('inventory.equippedSuccess'), variant: 'success' });
     } catch {
-      showSnackbar({ text: "Oops! Couldn't equip this item. Try again?", variant: 'error' });
+      showSnackbar({ text: t('inventory.equippedError'), variant: 'error' });
     }
   };
 
@@ -38,9 +40,9 @@ const Inventory = () => {
     try {
       await unequipItem({ inventoryId }).unwrap();
       refetch();
-      showSnackbar({ text: 'You took off this item.', variant: 'success' });
+      showSnackbar({ text: t('inventory.unequippedSuccess'), variant: 'success' });
     } catch {
-      showSnackbar({ text: "Couldn't take it off. Please try again!", variant: 'error' });
+      showSnackbar({ text: t('inventory.unequippedError'), variant: 'error' });
     }
   };
 
@@ -48,23 +50,23 @@ const Inventory = () => {
     try {
       await useItem({ inventoryId }).unwrap();
       refetch();
-      showSnackbar({ text: 'Used! Hope it helped 🎉', variant: 'success' });
+      showSnackbar({ text: t('inventory.usedSuccess'), variant: 'success' });
     } catch {
-      showSnackbar({ text: "Couldn't use this item. Try again!", variant: 'error' });
+      showSnackbar({ text: t('inventory.usedError'), variant: 'error' });
     }
   };
 
   if (isLoading) {
-    return <Loader message="Loading inventory..." />;
+    return <Loader message={t('inventory.loading')} />;
   }
 
   if (items.length === 0) {
     return (
       <View className="flex-1 items-center justify-center">
-        <Text className="text-gray-500 text-lg">Your inventory is empty.</Text>
+        <Text className="text-gray-500 text-lg">{t('inventory.empty')}</Text>
         <Animated.View style={buttonsStyle}>
           <Button
-            label="Go to Shop to buy items"
+            label={t('inventory.goToShop')}
             onPress={() => navigation.navigate('(authorized)/shop')}
             startIcon={<Ionicons name="cart-outline" size={20} color="#fff" />}
             className="mx-auto mt-4"
@@ -76,7 +78,7 @@ const Inventory = () => {
 
   return (
     <View className="flex-1 p-4">
-      <Text className="text-2xl font-bold text-primary text-center mb-4">Inventory</Text>
+      <Text className="text-2xl font-bold text-primary text-center mb-4">{t('inventory.title')}</Text>
       <FlatList
         data={items}
         keyExtractor={item => item.userInventoryId.toString()}

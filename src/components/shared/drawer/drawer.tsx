@@ -1,12 +1,15 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, TouchableOpacity } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { DrawerContentComponentProps, DrawerContentScrollView, useDrawerStatus } from '@react-navigation/drawer';
 import { useRouter } from 'expo-router';
 import Button from '../button/button';
+import DrawerSection from './elements/drawer-section';
 import AccountConfig from './routes-configs/account-config';
 import DashboardConfig from './routes-configs/dashboard-config';
+import FinanceConfig from './routes-configs/finance-config';
 import PlanningConfig from './routes-configs/planning-config';
 import ProgressConfig from './routes-configs/progress-config';
 import StoreConfig from './routes-configs/store-config';
@@ -20,6 +23,7 @@ import { logOutAsync } from '@/redux/state/auth/auth-state';
 import { useIsCorrectAccessToken } from '@/utils/jwt-utils';
 
 export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props => {
+  const { t } = useTranslation();
   const dispatch = useTypedDispatch();
   const drawerStatus = useDrawerStatus();
   const { isCorrect: isAuthenticated } = useIsCorrectAccessToken();
@@ -31,7 +35,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props 
   const handleLogout = () => {
     dispatch(logOutAsync());
     router.navigate('/(not-authorized)/login');
-    showSnackbar({ text: 'Logged off sucessfully!', variant: SnackbarVariantEnum.SUCCESS });
+    showSnackbar({ text: t('common.loggedOutSuccess'), variant: SnackbarVariantEnum.SUCCESS });
   };
 
   return (
@@ -52,10 +56,15 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props 
           ) : (
             <>
               <DashboardConfig />
-              <QuestConfig />
-              <ProgressConfig />
-              <StoreConfig />
-              <PlanningConfig />
+              <FinanceConfig />
+
+              <DrawerSection title={t('nav.sections.tasks')}>
+                <QuestConfig />
+                <ProgressConfig />
+                <StoreConfig />
+                <PlanningConfig />
+              </DrawerSection>
+
               <AccountConfig />
             </>
           )}
@@ -66,7 +75,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props 
             <Button
               startIcon={<Ionicons name="log-out-outline" size={20} color="white" />}
               onPress={handleLogout}
-              label="Logout"
+              label={t('common.logout')}
               className="px-6 mr-auto text-center mt-4"
             />
           </Animated.View>

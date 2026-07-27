@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, FlatList, Text, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
@@ -17,6 +18,7 @@ import { useSort, SortOrderEnum } from '@/hooks/use-sort/use-sort';
 import { useGetAllTodayQuestsQuery } from '@/redux/api/quests/today-quests-api';
 
 const TodayQuests: React.FC = () => {
+  const { t } = useTranslation();
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
@@ -68,14 +70,14 @@ const TodayQuests: React.FC = () => {
   });
 
   if (isLoading) {
-    return <Loader message="Fetching quests..." />;
+    return <Loader message={t('quests.today.fetchingQuests')} />;
   }
 
   return (
     <>
       <View className="flex-1 p-4" testID="today-quests-screen">
         <Header
-          title="Today Quests"
+          title={t('quests.today.title')}
           isSearchVisible={isSearchVisible}
           searchQuery={searchQuery}
           setIsSearchVisible={setIsSearchVisible}
@@ -88,12 +90,12 @@ const TodayQuests: React.FC = () => {
           data={sortedData}
           keyExtractor={item => item.id.toString()}
           renderItem={({ item }) => <TodayQuestItem quest={item} />}
-          ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
+          ListEmptyComponent={<Text className="text-center text-gray-500">{t('quests.today.noQuestsFound')}</Text>}
         />
 
         <Animated.View style={buttonsStyle}>
           <Button
-            label="Add new Quest"
+            label={t('quests.today.addNewQuest')}
             onPress={() => setIsAddQuestModalVisible(true)}
             startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
             className="mx-auto mt-4"

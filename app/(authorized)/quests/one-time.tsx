@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, FlatList } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,6 +19,7 @@ import { SortOrderEnum, useSort } from '@/hooks/use-sort/use-sort';
 import { useGetAllOneTimeQuestsQuery } from '@/redux/api/quests/one-time-quests-api';
 
 const OneTimeQuests: React.FC = () => {
+  const { t } = useTranslation();
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
@@ -63,13 +65,13 @@ const OneTimeQuests: React.FC = () => {
   });
 
   if (isLoading) {
-    return <Loader message="Fetching quests..." />;
+    return <Loader message={t('quests.oneTime.fetchingQuests')} />;
   }
 
   return (
     <View className="flex-1 p-4" testID="one-time-quests-screen">
       <Header
-        title="One Time Quests"
+        title={t('quests.oneTime.title')}
         isSearchVisible={isSearchVisible}
         searchQuery={searchQuery}
         setIsSearchVisible={setIsSearchVisible}
@@ -82,12 +84,12 @@ const OneTimeQuests: React.FC = () => {
         data={sortedData}
         keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => <OneTimeQuestItem quest={item} />}
-        ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
+        ListEmptyComponent={<Text className="text-center text-gray-500">{t('quests.oneTime.noQuestsFound')}</Text>}
       />
 
       <Animated.View style={buttonsStyle}>
         <Button
-          label="Add new Quest"
+          label={t('quests.oneTime.addNewQuest')}
           onPress={() => setIsAddQuestModalVisible(true)}
           startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
           className="mx-auto mt-4"

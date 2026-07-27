@@ -1,9 +1,10 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { deleteAccountPasswordSchema } from './schema';
+import { useProfileSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ControlledPasswordInput from '@/components/shared/password/controlled-password-input';
@@ -14,6 +15,8 @@ import { IApiError } from '@/types/global-types';
 interface ClearProfileDataModalProps extends IBaseModalProps {}
 
 const ClearProfileDataModal: React.FC<ClearProfileDataModalProps> = ({ isVisible, onClose }) => {
+  const { t } = useTranslation();
+  const { deleteAccountPasswordSchema } = useProfileSchema();
   const methods = useForm({
     resolver: yupResolver(deleteAccountPasswordSchema),
     defaultValues: {
@@ -29,11 +32,11 @@ const ClearProfileDataModal: React.FC<ClearProfileDataModalProps> = ({ isVisible
     try {
       await wipeoutData(data).unwrap();
       onClose();
-      showSnackbar({ text: 'Profile data cleared successfully!', variant: SnackbarVariantEnum.SUCCESS });
+      showSnackbar({ text: t('profile.wipeoutData.successMessage'), variant: SnackbarVariantEnum.SUCCESS });
     } catch (err) {
       const error = err as IApiError;
       showSnackbar({
-        text: error.data?.message || 'Failed to clear profile data. Please try again.',
+        text: error.data?.message || t('profile.wipeoutData.errorMessage'),
         variant: SnackbarVariantEnum.ERROR,
       });
     }
@@ -44,10 +47,10 @@ const ClearProfileDataModal: React.FC<ClearProfileDataModalProps> = ({ isVisible
       isVisible={isVisible}
       onClose={onClose}
       isLoading={isLoading}
-      loadingMessage="Clearing profile data..."
+      loadingMessage={t('profile.wipeoutData.clearing')}
       footer={
         <Button
-          label="Clear Profile Data"
+          label={t('profile.wipeoutData.clearButton')}
           onPress={handleSubmit(handleClearData)}
           styleType="danger"
           startIcon={<Ionicons name="trash-bin" size={20} color="white" />}
@@ -56,14 +59,24 @@ const ClearProfileDataModal: React.FC<ClearProfileDataModalProps> = ({ isVisible
       }
     >
       <View className="bg-white p-6 rounded-lg gap-4">
-        <Text className="text-lg font-bold mb-4 text-center">Clear Profile Data</Text>
-        <Text className="text-sm mb-4 text-gray-600 text-center">
-          This will permanently remove your profile content. Your account will remain, but all your data (bio, badges, etc.) will be wiped.
-        </Text>
+        <Text className="text-lg font-bold mb-4 text-center">{t('profile.wipeoutData.title')}</Text>
+        <Text className="text-sm mb-4 text-gray-600 text-center">{t('profile.wipeoutData.confirmMessage')}</Text>
         <FormProvider {...methods}>
           <View className="flex gap-4">
-            <ControlledPasswordInput name="password" label="Password" placeholder="Enter password" secureTextEntry isRequired />
-            <ControlledPasswordInput name="confirmPassword" label="Confirm Password" placeholder="Confirm password" secureTextEntry isRequired />
+            <ControlledPasswordInput
+              name="password"
+              label={t('profile.wipeoutData.passwordLabel')}
+              placeholder={t('profile.wipeoutData.passwordPlaceholder')}
+              secureTextEntry
+              isRequired
+            />
+            <ControlledPasswordInput
+              name="confirmPassword"
+              label={t('profile.wipeoutData.confirmPasswordLabel')}
+              placeholder={t('profile.wipeoutData.confirmPasswordPlaceholder')}
+              secureTextEntry
+              isRequired
+            />
           </View>
         </FormProvider>
       </View>

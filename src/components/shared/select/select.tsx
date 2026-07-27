@@ -1,4 +1,5 @@
 import React, { ReactNode, forwardRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { TextInput, TouchableOpacity, View, Text, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Modal from '../modal/modal';
@@ -40,6 +41,7 @@ export type SelectProps = ModalSelectProps | NonModalSelectProps;
 
 const Select = forwardRef<TextInput, SelectProps>(
   ({ placeholder, value = null, onPress, onClear, onChange, className, isDate, error, isModalVersion, options, textColor }, ref) => {
+    const { t } = useTranslation();
     const [isVisibleModal, setIsVisibleModal] = useState(false);
     const formattedValue = getFormattedValue(value, isDate, isModalVersion ? options : undefined);
 
@@ -82,7 +84,7 @@ const Select = forwardRef<TextInput, SelectProps>(
 
         {isModalVersion && (
           <Modal isVisible={isVisibleModal} onClose={onClose} className="py-2">
-            <Text className="text-[16px] font-semibold mb-3 text-gray-500">Select an option:</Text>
+            <Text className="text-[16px] font-semibold mb-3 text-gray-500">{t('shared.select.selectOption')}</Text>
             <ScrollView className="max-h-60">
               {options.map(item => (
                 <TouchableOpacity

@@ -12,7 +12,7 @@ export const NotificationsFilterMap = {
         value: null,
         icon: <Ionicons name="notifications" size={28} color="#9E9E9E" />,
         color: '#9E9E9E',
-        label: 'All',
+        labelKey: 'notifications.filters.all',
       },
     ],
     [
@@ -22,7 +22,7 @@ export const NotificationsFilterMap = {
         value: true,
         icon: <Ionicons name="checkmark-circle" size={28} color="#4CAF50" />,
         color: '#4CAF50',
-        label: 'Read',
+        labelKey: 'notifications.filters.read',
       },
     ],
     [
@@ -32,7 +32,7 @@ export const NotificationsFilterMap = {
         value: false,
         icon: <Ionicons name="notifications-circle" size={28} color="#F44336" />,
         color: '#F44336',
-        label: 'Unread',
+        labelKey: 'notifications.filters.unread',
       },
     ],
   ]),
@@ -43,14 +43,14 @@ export const sortNotificationsOptions: SortOption[] = [
     key: 'title',
     objKey: 'title',
     icon: <Ionicons name="text-outline" size={28} />,
-    label: 'Title',
+    labelKey: 'notifications.sort.title',
     color: '#000000',
   },
   {
     key: 'isRead',
     objKey: 'isRead',
     icon: <Ionicons name="checkmark-done-outline" size={28} />,
-    label: 'Read Status',
+    labelKey: 'notifications.sort.readStatus',
     color: '#32CD32',
   },
 ];

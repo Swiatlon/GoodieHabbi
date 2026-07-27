@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { WeekdayEnum, WeekdayEnumType } from '@/contract/quests/base-quests';
 
@@ -6,17 +7,19 @@ interface QuestWeekdaysExtendedProps {
   weekdays?: WeekdayEnumType[];
 }
 
-const DAY_DISPLAY: { key: WeekdayEnumType; label: string; emoji: string }[] = [
-  { key: WeekdayEnum.MONDAY, label: 'Mon', emoji: '🌞' },
-  { key: WeekdayEnum.TUESDAY, label: 'Tue', emoji: '🔥' },
-  { key: WeekdayEnum.WEDNESDAY, label: 'Wed', emoji: '🐪' },
-  { key: WeekdayEnum.THURSDAY, label: 'Thu', emoji: '⚡' },
-  { key: WeekdayEnum.FRIDAY, label: 'Fri', emoji: '🎉' },
-  { key: WeekdayEnum.SATURDAY, label: 'Sat', emoji: '🛌' },
-  { key: WeekdayEnum.SUNDAY, label: 'Sun', emoji: '☕' },
+const DAY_DISPLAY: { key: WeekdayEnumType; labelKey: string; emoji: string }[] = [
+  { key: WeekdayEnum.MONDAY, labelKey: 'quests.reusable.days.monday', emoji: '🌞' },
+  { key: WeekdayEnum.TUESDAY, labelKey: 'quests.reusable.days.tuesday', emoji: '🔥' },
+  { key: WeekdayEnum.WEDNESDAY, labelKey: 'quests.reusable.days.wednesday', emoji: '🐪' },
+  { key: WeekdayEnum.THURSDAY, labelKey: 'quests.reusable.days.thursday', emoji: '⚡' },
+  { key: WeekdayEnum.FRIDAY, labelKey: 'quests.reusable.days.friday', emoji: '🎉' },
+  { key: WeekdayEnum.SATURDAY, labelKey: 'quests.reusable.days.saturday', emoji: '🛌' },
+  { key: WeekdayEnum.SUNDAY, labelKey: 'quests.reusable.days.sunday', emoji: '☕' },
 ];
 
 const QuestWeekdaysExtended: React.FC<QuestWeekdaysExtendedProps> = ({ weekdays }) => {
+  const { t } = useTranslation();
+
   if (!weekdays || weekdays.length === 0) return null;
 
   const isActive = (day: WeekdayEnumType) => weekdays.includes(day);
@@ -25,11 +28,11 @@ const QuestWeekdaysExtended: React.FC<QuestWeekdaysExtendedProps> = ({ weekdays 
     <View className="bg-white rounded-md p-4 shadow-sm border border-gray-200">
       <View className="flex-row items-center mb-2 gap-2">
         <Text className="text-2xl">🗓️</Text>
-        <Text className="font-semibold text-gray-700">Repeats On</Text>
+        <Text className="font-semibold text-gray-700">{t('quests.reusable.weekly.heading')}</Text>
       </View>
 
       <View className="flex-row flex-wrap justify-start gap-y-3 gap-x-6 px-8 pr-4">
-        {DAY_DISPLAY.map(({ key, label, emoji }) => {
+        {DAY_DISPLAY.map(({ key, labelKey, emoji }) => {
           const active = isActive(key);
           return (
             <View
@@ -39,7 +42,7 @@ const QuestWeekdaysExtended: React.FC<QuestWeekdaysExtendedProps> = ({ weekdays 
               }`}
             >
               <Text className={`text-lg ${active ? 'text-white' : 'text-gray-400'}`}>{emoji}</Text>
-              <Text className={`text-xs font-bold ${active ? 'text-white' : 'text-gray-500'}`}>{label}</Text>
+              <Text className={`text-xs font-bold ${active ? 'text-white' : 'text-gray-500'}`}>{t(labelKey)}</Text>
             </View>
           );
         })}

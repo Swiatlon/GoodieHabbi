@@ -1,4 +1,5 @@
 import React, { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, FlatList, Text } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,6 +19,7 @@ import { useSearch } from '@/hooks/use-search/use-search';
 import { useSort, SortOrderEnum } from '@/hooks/use-sort/use-sort';
 
 const AllRecurringQuests: FC = () => {
+  const { t } = useTranslation();
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
@@ -26,7 +28,6 @@ const AllRecurringQuests: FC = () => {
   const buttonsStyle = useTransformFade({ isContentLoading: isLoading, delay: 200 });
 
   const handleCloseModal = () => setIsAddQuestModalVisible(false);
-  console.log(fetchedQuests);
 
   const {
     data: searchedData,
@@ -69,14 +70,14 @@ const AllRecurringQuests: FC = () => {
   });
 
   if (isLoading) {
-    return <Loader message="Fetching quests..." />;
+    return <Loader message={t('quests.all.fetchingQuests')} />;
   }
 
   return (
     <>
       <View className="flex-1 p-4">
         <Header
-          title="All Recurring Quests"
+          title={t('quests.all.recurringTitle')}
           isSearchVisible={isSearchVisible}
           searchQuery={searchQuery}
           setIsSearchVisible={setIsSearchVisible}
@@ -89,12 +90,12 @@ const AllRecurringQuests: FC = () => {
           data={sortedData}
           keyExtractor={item => item.id.toString()}
           renderItem={({ item }) => <AllRecurringsQuestItem quest={item} />}
-          ListEmptyComponent={<Text className="text-center text-gray-500">No quests found.</Text>}
+          ListEmptyComponent={<Text className="text-center text-gray-500">{t('quests.all.noQuestsFound')}</Text>}
         />
 
         <Animated.View style={buttonsStyle}>
           <Button
-            label="Add new Quest"
+            label={t('quests.all.addNewQuest')}
             onPress={() => setIsAddQuestModalVisible(true)}
             startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
             className="mx-auto mt-4"

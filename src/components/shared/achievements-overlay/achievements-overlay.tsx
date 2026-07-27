@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, TouchableOpacity, Pressable } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { useNotifications } from '@/providers/notification-provider/notification-provider';
 
 export const AchievementOverlay: React.FC = () => {
+  const { t } = useTranslation();
   const { notifications } = useNotifications();
   const [achievement, setAchievement] = useState<{ title: string; message: string } | null>(null);
 
@@ -47,7 +49,7 @@ export const AchievementOverlay: React.FC = () => {
           <View className="mb-4 bg-yellow-400 rounded-full p-4">
             <Text className="text-5xl">🏆</Text>
           </View>
-          <Text className="text-blue-600 text-xs font-bold tracking-widest uppercase mb-3">Achievement Unlocked</Text>
+          <Text className="text-blue-600 text-xs font-bold tracking-widest uppercase mb-3">{t('notifications.achievementOverlay.unlocked')}</Text>
           <Text className="text-gray-800 text-2xl font-bold text-center mb-3">{achievement.title}</Text>
           <Text className="text-gray-700 text-base text-center leading-6">{achievement.message}</Text>
           <View className="flex-row mt-4 gap-2">

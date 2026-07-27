@@ -1,6 +1,6 @@
 export const SHOP_ITEM_TYPE_CONFIG = {
   Title: {
-    label: 'Title',
+    labelKey: 'title',
     textClass: 'text-yellow-600',
     borderColor: 'border-yellow-300',
     iconName: 'ribbon-outline',
@@ -8,7 +8,7 @@ export const SHOP_ITEM_TYPE_CONFIG = {
     layout: 'column',
   },
   VisualEffect: {
-    label: 'Visual Effect',
+    labelKey: 'visualEffect',
     textClass: 'text-purple-600',
     borderColor: 'border-purple-300',
     iconName: 'sparkles-outline',
@@ -16,7 +16,7 @@ export const SHOP_ITEM_TYPE_CONFIG = {
     layout: 'column',
   },
   Consumable: {
-    label: 'Consumable',
+    labelKey: 'consumable',
     textClass: 'text-blue-600',
     borderColor: 'border-blue-300',
     iconName: 'flash-outline',
@@ -24,7 +24,7 @@ export const SHOP_ITEM_TYPE_CONFIG = {
     layout: 'row',
   },
   Cosmetic: {
-    label: 'Cosmetic',
+    labelKey: 'cosmetic',
     textClass: 'text-pink-600',
     borderColor: 'border-pink-300',
     iconName: 'color-palette-outline',
@@ -32,7 +32,7 @@ export const SHOP_ITEM_TYPE_CONFIG = {
     layout: 'row',
   },
   Pet: {
-    label: 'Pet',
+    labelKey: 'pet',
     textClass: 'text-green-600',
     borderColor: 'border-green-300',
     iconName: 'paw-outline',

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
@@ -10,12 +11,13 @@ interface SetGoalButtonProps {
 }
 
 const GoalSetButton: React.FC<SetGoalButtonProps> = ({ onPress, disabled }) => {
+  const { t } = useTranslation();
   const buttonStyle = useTransformFade({ delay: 900 });
 
   return (
     <Animated.View style={buttonStyle}>
       <Button
-        label="Set goal"
+        label={t('goals.setButton.label')}
         startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
         className="mx-auto mt-auto px-6 py-4"
         onPress={onPress}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import Button from '@/components/shared/button/button';
 import { IconButton } from '@/components/shared/icon-button/icon-button';
@@ -12,7 +13,8 @@ export interface IFilterMapValues<T> {
   value: FilterValueType;
   icon: React.ReactNode;
   color: string;
-  label: string;
+  label?: string;
+  labelKey?: string;
 }
 
 interface FilterModalProps<T> {
@@ -32,13 +34,16 @@ const FilterModal = <T,>({
   actualFilterData,
   filterCategories,
   testID = 'filter-modal',
-  title = 'Filter Quests',
+  title,
 }: FilterModalProps<T>) => {
+  const { t } = useTranslation();
+  const modalTitle = title ?? t('shared.filterModal.title');
+
   return (
     <Modal isVisible={isVisible} onClose={() => setIsVisible(false)} testID={`${testID}-modal`}>
       <View className="flex gap-4" testID={`${testID}-container`}>
         <Text className="text-lg font-semibold text-center" testID={`${testID}-title`}>
-          {title}
+          {modalTitle}
         </Text>
 
         <View testID={`${testID}-categories-container`}>
@@ -52,7 +57,7 @@ const FilterModal = <T,>({
                 className="flex-row flex-wrap justify-around"
                 testID={`${testID}-filters-container-${category.toLowerCase().replace(/\s+/g, '-')}`}
               >
-                {Array.from(filtersMap.entries()).map(([filterKey, { value, icon, label, filterMainKey }]) => {
+                {Array.from(filtersMap.entries()).map(([filterKey, { value, icon, label, labelKey, filterMainKey }]) => {
                   const isActive = actualFilterData[filterMainKey as keyof ActualFilterData] === value;
                   const filterTestId = `${testID}-filter-${filterKey.toLowerCase().replace(/\s+/g, '-')}`;
 
@@ -65,7 +70,7 @@ const FilterModal = <T,>({
                       >
                         <View testID={`${filterTestId}-icon`}>{icon}</View>
                         <Text className={`text-sm text-center ${isActive ? 'font-bold text-primary' : ''}`} testID={`${filterTestId}-label`}>
-                          {label}
+                          {labelKey ? t(labelKey) : label}
                         </Text>
                       </IconButton>
                     </View>
@@ -76,7 +81,7 @@ const FilterModal = <T,>({
           ))}
         </View>
 
-        <Button label="Close" onPress={() => setIsVisible(false)} className="mx-auto px-6" testID={`${testID}-close-button`} />
+        <Button label={t('common.close')} onPress={() => setIsVisible(false)} className="mx-auto px-6" testID={`${testID}-close-button`} />
       </View>
     </Modal>
   );

@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Animated, Text } from 'react-native';
 import { SHOP_ITEM_TYPE_CONFIG } from '../shop/items.config';
 import InventoryItemActions from './inventory-item-actions';
@@ -15,6 +16,7 @@ interface InventoryItemProps {
 }
 
 const InventoryItem: FC<InventoryItemProps> = ({ item, onEquip, onUnequip, onUse }) => {
+  const { t } = useTranslation();
   const animatedStyle = useTransformFade({});
 
   if (!item.itemType) {
@@ -41,7 +43,7 @@ const InventoryItem: FC<InventoryItemProps> = ({ item, onEquip, onUnequip, onUse
 
         <View style={{ flex: 1 }}>
           <InventoryItemInfo item={item} />
-          <Text className="text-xs text-gray-400 mt-1">Qty: {item.quantity}</Text>
+          <Text className="text-xs text-gray-400 mt-1">{t('inventory.quantity', { count: item.quantity })}</Text>
           {config.layout === 'column' && item.itemType !== 'Title' && <InventoryItemIconColumn item={item} />}
           <InventoryItemActions
             item={item}

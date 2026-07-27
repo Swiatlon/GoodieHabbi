@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import CompleteGoalButton from './goal-completion-button';
@@ -12,11 +13,12 @@ interface QuestSectionProps {
 }
 
 const GoalQuestSection: React.FC<QuestSectionProps> = ({ selectedQuest, onComplete }) => {
+  const { t } = useTranslation();
   const goalStyle = useTransformFade({ delay: 500 });
 
   return (
     <Animated.View className="flex-1 py-4 rounded-3xl shadow-lg bg-white border border-gray-100 items-center justify-evenly" style={goalStyle}>
-      <Text className="text-lg font-semibold text-primary uppercase tracking-wider">Goal</Text>
+      <Text className="text-lg font-semibold text-primary uppercase tracking-wider">{t('goals.questSection.title')}</Text>
       {selectedQuest ? (
         <>
           <AllQuestItemGoals quest={selectedQuest} />
@@ -24,7 +26,7 @@ const GoalQuestSection: React.FC<QuestSectionProps> = ({ selectedQuest, onComple
         </>
       ) : (
         <View className="p-4 rounded-lg w-full items-center">
-          <Text className="text-secondary text-lg px-4 text-center">🎯 Set a goal to get started! 🎯</Text>
+          <Text className="text-secondary text-lg px-4 text-center">{t('goals.questSection.emptyState')}</Text>
         </View>
       )}
     </Animated.View>

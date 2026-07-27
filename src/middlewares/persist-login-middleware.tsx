@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
@@ -7,6 +8,7 @@ import { useRefreshAccessTokenMutation } from '@/redux/api/auth/auth-api';
 import { setCredentials } from '@/redux/state/auth/auth-state';
 
 const PersistLoginMiddleware = ({ children, onLoaded }: { children: React.JSX.Element; onLoaded: () => void }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const router = useRouter();
   const { showSnackbar } = useSnackbar();
@@ -32,7 +34,7 @@ const PersistLoginMiddleware = ({ children, onLoaded }: { children: React.JSX.El
       router.navigate('/(authorized)/dashboard');
       onLoaded();
     } else if (error) {
-      showSnackbar({ text: 'Failed to refresh token. Please log in again.', variant: SnackbarVariantEnum.ERROR });
+      showSnackbar({ text: t('auth.sessionExpired'), variant: SnackbarVariantEnum.ERROR });
       onLoaded();
     }
   }, [data, error]);

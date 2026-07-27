@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { SeasonEnum, SeasonEnumType } from '@/contract/quests/base-quests';
 
@@ -9,39 +10,41 @@ interface QuestSeasonExtendedProps {
 const seasonMeta: Record<
   SeasonEnumType,
   {
-    label: string;
+    labelKey: string;
     emoji: string;
     colorClass: string;
-    description: string;
+    descriptionKey: string;
   }
 > = {
   [SeasonEnum.WINTER]: {
-    label: 'Winter',
+    labelKey: 'quests.seasonal.seasons.winter',
     emoji: '❄️',
     colorClass: 'text-blue-500',
-    description: 'Cold and snowy season',
+    descriptionKey: 'quests.reusable.season.descriptions.winter',
   },
   [SeasonEnum.SPRING]: {
-    label: 'Spring',
+    labelKey: 'quests.seasonal.seasons.spring',
     emoji: '🌸',
     colorClass: 'text-green-500',
-    description: 'Season of growth and renewal',
+    descriptionKey: 'quests.reusable.season.descriptions.spring',
   },
   [SeasonEnum.SUMMER]: {
-    label: 'Summer',
+    labelKey: 'quests.seasonal.seasons.summer',
     emoji: '☀️',
     colorClass: 'text-yellow-500',
-    description: 'Hot and sunny days',
+    descriptionKey: 'quests.reusable.season.descriptions.summer',
   },
   [SeasonEnum.AUTUMN]: {
-    label: 'Autumn',
+    labelKey: 'quests.seasonal.seasons.autumn',
     emoji: '🍂',
     colorClass: 'text-orange-500',
-    description: 'Cool and colorful fall',
+    descriptionKey: 'quests.reusable.season.descriptions.autumn',
   },
 };
 
 const QuestSeasonExtended: React.FC<QuestSeasonExtendedProps> = ({ season }) => {
+  const { t } = useTranslation();
+
   if (!season) return null;
 
   const meta = seasonMeta[season];
@@ -50,8 +53,10 @@ const QuestSeasonExtended: React.FC<QuestSeasonExtendedProps> = ({ season }) => 
     <View className="bg-white rounded-md p-4 shadow-sm border border-gray-200 flex-row items-center gap-4">
       <Text className={`${meta.colorClass} text-3xl`}>{meta.emoji}</Text>
       <View>
-        <Text className={`${meta.colorClass} font-semibold text-base`}>Season: {meta.label}</Text>
-        <Text className="text-gray-500 text-xs">{meta.description}</Text>
+        <Text className={`${meta.colorClass} font-semibold text-base`}>
+          {t('quests.reusable.season.prefix')} {t(meta.labelKey)}
+        </Text>
+        <Text className="text-gray-500 text-xs">{t(meta.descriptionKey)}</Text>
       </View>
     </View>
   );

@@ -1,3 +1,7 @@
-import { baseQuestSchema } from '../../reusable/schema/schema';
+import { useBaseQuestSchema } from '../../reusable/schema/schema';
 
-export const oneTimeQuestValidationSchema = baseQuestSchema.shape({});
+export const useOneTimeQuestValidationSchema = () => {
+  const baseQuestSchema = useBaseQuestSchema();
+
+  return baseQuestSchema.shape({});
+};

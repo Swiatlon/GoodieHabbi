@@ -49,14 +49,14 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   testID,
 }) => {
-  const buttonStyles = `${styleTypeColors[styleType][variant]} ${disabled ? 'opacity-50' : ''}`;
   const textColor = variant === 'contained' ? 'text-white' : styleTypeColors[styleType].text;
 
   return (
     <TouchableOpacity
       onPress={!disabled ? onPress : undefined}
       activeOpacity={0.7}
-      className={`rounded-3xl flex-row gap-2 items-center p-3 ${buttonStyles} ${className}`}
+      className={`rounded-3xl flex-row gap-2 items-center p-3 ${styleTypeColors[styleType][variant]} ${className}`}
+      style={disabled ? { opacity: 0.5 } : undefined}
       disabled={disabled}
       testID={testID || 'button'}
     >

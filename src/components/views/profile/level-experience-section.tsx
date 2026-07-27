@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import Animated from 'react-native-reanimated';
 import ProgressBar from '@/components/shared/progress-bar/progress-bar';
@@ -11,19 +12,20 @@ interface LevelExperienceSectionProps {
 }
 
 const LevelExperienceSection: React.FC<LevelExperienceSectionProps> = ({ xpStats, isLoading }) => {
+  const { t } = useTranslation();
   const { level, currentXp, nextLevelXpRequirement, isMaxLevel } = xpStats;
   const animationStyle = useTransformFade({ isContentLoading: isLoading, delay: 300 });
 
   return (
     <Animated.View style={animationStyle} className="px-4 py-6 bg-gray-100 rounded-lg shadow-lg flex w-full mb-6">
-      <Text className="text-lg font-bold text-center mb-3">Experience Overview</Text>
+      <Text className="text-lg font-bold text-center mb-3">{t('profile.levelExperience.title')}</Text>
 
       <View className="flex items-center mb-4">
         <View className="flex-row items-center justify-center w-full gap-2">
-          <Text className="text-primary text-lg font-semibold text-center">Level: {level}</Text>
+          <Text className="text-primary text-lg font-semibold text-center">{t('profile.levelExperience.level', { level })}</Text>
           {isMaxLevel && (
             <View className="bg-yellow-500 px-3 py-1 rounded-full">
-              <Text className="text-white font-bold text-xs">MAX LEVEL</Text>
+              <Text className="text-white font-bold text-xs">{t('profile.levelExperience.maxLevel')}</Text>
             </View>
           )}
         </View>
@@ -32,7 +34,7 @@ const LevelExperienceSection: React.FC<LevelExperienceSectionProps> = ({ xpStats
           current={currentXp}
           total={nextLevelXpRequirement}
           maxColor={isMaxLevel ? 'bg-yellow-500' : 'bg-green-500'}
-          label={`${currentXp} / ${nextLevelXpRequirement} XP`}
+          label={t('profile.levelExperience.xpProgress', { current: currentXp, total: nextLevelXpRequirement })}
         />
       </View>
     </Animated.View>

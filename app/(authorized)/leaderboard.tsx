@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FlatList, Text, View } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import Loader from '@/components/shared/loader/loader';
@@ -7,6 +8,7 @@ import RegularLeaderboardItem from '@/components/views/leaderboard/regular-leade
 import { useGetLeaderboardXPQuery } from '@/redux/api/leaderboard/leaderboard-api';
 
 const Leaderboard = () => {
+  const { t } = useTranslation();
   const isFocused = useIsFocused();
   const { data = [], isLoading, refetch } = useGetLeaderboardXPQuery();
 
@@ -17,11 +19,11 @@ const Leaderboard = () => {
   }, [isFocused]);
 
   if (isLoading) {
-    return <Loader message="Loading leaderboard..." />;
+    return <Loader message={t('leaderboard.loading')} />;
   }
 
   if (!Array.isArray(data) || data.length === 0) {
-    return <Text className="text-center text-gray-500 mt-8">No users found.</Text>;
+    return <Text className="text-center text-gray-500 mt-8">{t('leaderboard.noUsers')}</Text>;
   }
 
   const topThree = data.slice(0, 3);
@@ -30,7 +32,7 @@ const Leaderboard = () => {
 
   return (
     <View className="flex-1 px-4 py-6">
-      <Text className="text-2xl font-bold text-primary text-center mb-6">🏆 Leaderboard</Text>
+      <Text className="text-2xl font-bold text-primary text-center mb-6">🏆 {t('leaderboard.title')}</Text>
       <FlatList
         data={remaining}
         keyExtractor={(item, index) => `${item.nickname}-${index + 3}`}
@@ -44,7 +46,7 @@ const Leaderboard = () => {
             {remaining.length > 0 && (
               <>
                 <View className="h-px bg-gray-300" />
-                <Text className="text-center text-gray-500 text-sm mt-2">Other Rankings</Text>
+                <Text className="text-center text-gray-500 text-sm mt-2">{t('leaderboard.otherRankings')}</Text>
               </>
             )}
           </View>

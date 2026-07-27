@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { TimerPickerModal as RNTimerPickerModal } from 'react-native-timer-picker';
 import dayjs from 'dayjs';
@@ -13,6 +14,7 @@ interface TimerPickerFieldProps {
 
 const TimerPickerField = ({ name, label, placeholder }: TimerPickerFieldProps) => {
   const { setValue } = useFormContext();
+  const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
 
   const handleTimeChange = (hours: number, minutes: number) => {
@@ -30,8 +32,8 @@ const TimerPickerField = ({ name, label, placeholder }: TimerPickerFieldProps) =
         setIsVisible={setIsVisible}
         onConfirm={({ hours, minutes }) => handleTimeChange(hours, minutes)}
         onCancel={() => setIsVisible(false)}
-        confirmButtonText="Set Time"
-        cancelButtonText="Cancel"
+        confirmButtonText={t('quests.reusable.timePicker.setTimeButton')}
+        cancelButtonText={t('common.cancel')}
         hideSeconds
         closeOnOverlayPress
         use12HourPicker={false}

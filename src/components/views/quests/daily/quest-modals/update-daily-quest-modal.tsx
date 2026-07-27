@@ -1,5 +1,6 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -8,7 +9,7 @@ import DifficultyPicker from '../../reusable/add-quest-modal/difficulty-picker';
 import EmojiPickerComponent from '../../reusable/add-quest-modal/emoji-picker';
 import PriorityPicker from '../../reusable/add-quest-modal/priority-picker';
 import TimePickerModal from '../../reusable/add-quest-modal/time-picker-modal';
-import { dailyQuestValidationSchema } from './schema';
+import { useDailyQuestValidationSchema } from './schema';
 import Button from '@/components/shared/button/button';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Modal from '@/components/shared/modal/modal';
@@ -28,9 +29,11 @@ interface UpdateDailyQuestModalProps {
 }
 
 const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible, onClose, quest }) => {
+  const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
   const [updateQuest, { isLoading }] = useUpdateDailyQuestMutation();
   const { data: questLabels = [] } = useGetQuestLabelsQuery();
+  const dailyQuestValidationSchema = useDailyQuestValidationSchema();
 
   const methods = useForm<IPostDailyQuestRequest>({
     resolver: yupResolver(dailyQuestValidationSchema),
@@ -54,10 +57,10 @@ const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible
   const onSubmit = async (data: IPostDailyQuestRequest) => {
     try {
       await updateQuest({ id: quest.id, ...data }).unwrap();
-      showSnackbar({ text: 'Quest updated successfully!', variant: SnackbarVariantEnum.SUCCESS });
+      showSnackbar({ text: t('quests.daily.updateModal.updatedSuccess'), variant: SnackbarVariantEnum.SUCCESS });
       onClose();
     } catch {
-      showSnackbar({ text: 'Failed to update quest. Please try again.', variant: SnackbarVariantEnum.ERROR });
+      showSnackbar({ text: t('quests.daily.updateModal.updatedError'), variant: SnackbarVariantEnum.ERROR });
     }
   };
 
@@ -69,18 +72,18 @@ const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible
       onClose={() => onClose()}
       key={quest.id}
       isLoading={isLoading}
-      loadingMessage="Updating quest..."
+      loadingMessage={t('quests.daily.updateModal.loadingMessage')}
       footer={
         <View className="flex-row justify-between">
           <Button
-            label="Cancel"
+            label={t('quests.daily.form.cancelButton')}
             variant="outlined"
             onPress={onClose}
             className="rounded-lg"
             startIcon={<Ionicons name="close-circle-outline" size={20} color="#1987EE" />}
           />
           <Button
-            label="Update Quest"
+            label={t('quests.daily.updateModal.submitButton')}
             onPress={handleSubmit(onSubmit)}
             className="rounded-lg"
             startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
@@ -90,31 +93,46 @@ const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible
     >
       <FormProvider {...methods}>
         <View className="bg-white rounded-lg px-4 gap-5 py-0">
-          <Text className="text-lg font-bold text-center">Edit Quest</Text>
-          <ControlledInput name="title" label="📝 Title:" placeholder="Enter the title" isRequired testID="input-title" />
-          <ControlledTextArea name="description" label="📖 Description:" placeholder="Enter description" testID="input-description" />
+          <Text className="text-lg font-bold text-center">{t('quests.daily.updateModal.heading')}</Text>
+          <ControlledInput
+            name="title"
+            label={t('quests.daily.form.titleLabel')}
+            placeholder={t('quests.daily.form.titlePlaceholder')}
+            isRequired
+            testID="input-title"
+          />
+          <ControlledTextArea
+            name="description"
+            label={t('quests.daily.form.descriptionLabel')}
+            placeholder={t('quests.daily.form.descriptionPlaceholder')}
+            testID="input-description"
+          />
           <DatePickerModal
             name="startDate"
             minDate={toUTCISOString(dayjs.min(dayjs(quest.startDate ?? '1970-01-01'), dayjs()))}
-            label="Start Date"
-            placeholder="Tap to pick start date"
+            label={t('quests.daily.updateModal.startDateLabel')}
+            placeholder={t('quests.daily.form.startDatePlaceholder')}
           />
           <DatePickerModal
             name="endDate"
             minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(quest.endDate ?? dayjs())}
-            label="📅 End Date:"
-            placeholder="Tap to pick end date"
+            label={t('quests.daily.form.endDateLabel')}
+            placeholder={t('quests.daily.form.endDatePlaceholder')}
             isEndDate
           />
           <EmojiPickerComponent />
           <PriorityPicker />
           <DifficultyPicker />
-          <TimePickerModal name="scheduledTime" label="⏰ Scheduled Time:" placeholder="Select time" />
+          <TimePickerModal
+            name="scheduledTime"
+            label={t('quests.daily.form.scheduledTimeLabel')}
+            placeholder={t('quests.daily.form.scheduledTimePlaceholder')}
+          />
           <ControlledMultiSelect
             name="labels"
-            label="🏷️ Tags:"
-            placeholder="Select quest tags"
-            noContentMessage="No tags available, please create some first"
+            label={t('quests.daily.form.tagsLabel')}
+            placeholder={t('quests.daily.form.tagsPlaceholder')}
+            noContentMessage={t('quests.daily.form.tagsNoContent')}
             options={questLabels.map(item => ({ ...item, label: item.value }))}
           />
         </View>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
@@ -11,6 +12,7 @@ interface QuestItemCheckmarkProps {
 }
 
 const QuestItemCheckmark: React.FC<QuestItemCheckmarkProps> = ({ completed, questId, patchQuest, isLoading }) => {
+  const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
 
   const handlePatch = () => {
@@ -21,13 +23,13 @@ const QuestItemCheckmark: React.FC<QuestItemCheckmarkProps> = ({ completed, ques
     patchQuest({ id: questId, isCompleted: !completed })
       .then(() => {
         showSnackbar({
-          text: `Quest marked as ${!completed ? 'completed' : 'incomplete'}.`,
+          text: !completed ? t('quests.reusable.itemCheckmark.completedSuccess') : t('quests.reusable.itemCheckmark.incompleteSuccess'),
           variant: SnackbarVariantEnum.SUCCESS,
         });
       })
       .catch(() => {
         showSnackbar({
-          text: 'Failed to update quest. Please try again.',
+          text: t('quests.reusable.itemCheckmark.updateError'),
           variant: SnackbarVariantEnum.ERROR,
         });
       });

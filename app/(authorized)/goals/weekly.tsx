@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import ConfirmModal from '@/components/shared/confirm-modal/confirm-modal';
 import Loader from '@/components/shared/loader/loader';
@@ -15,6 +16,7 @@ import { useGetActiveGoalQuery, useUpdateActiveGoalMutation } from '@/redux/api/
 const frequency = 'weekly';
 
 const Weekly = () => {
+  const { t } = useTranslation();
   const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
   const [isGoalSetModalVisible, setIsGoalSetModalVisible] = useState(false);
   const { data: weeklyGoal = null } = useGetActiveGoalQuery(frequency);
@@ -37,12 +39,12 @@ const Weekly = () => {
       }).unwrap();
 
       showSnackbar({
-        text: 'Goal marked as completed!',
+        text: t('goals.screens.completeSuccess'),
         variant: SnackbarVariantEnum.SUCCESS,
       });
     } catch {
       showSnackbar({
-        text: 'Failed to complete goal. Please try again.',
+        text: t('goals.screens.completeError'),
         variant: SnackbarVariantEnum.ERROR,
       });
     }
@@ -51,14 +53,14 @@ const Weekly = () => {
   };
 
   if (isLoading) {
-    return <Loader message="Fetching quests..." />;
+    return <Loader message={t('goals.screens.loadingQuests')} />;
   }
 
   return (
     <>
       <FormProvider {...methods}>
         <View className="flex-1 p-6 bg-white gap-6">
-          <GoalHeader title="Weekly goal" />
+          <GoalHeader title={t('goals.header.weekly')} />
           <GoalTimeSection frequency={frequency} />
           <GoalQuestSection selectedQuest={weeklyGoal} onComplete={openConfirmModal} />
           <GoalSetButton onPress={openSetGoalModal} disabled={!!weeklyGoal} />
@@ -72,8 +74,8 @@ const Weekly = () => {
           isVisible={isConfirmModalVisible}
           onAccept={handleConfirmCompletion}
           onClose={closeConfirmModal}
-          title="Complete Quest?"
-          message="Are you sure you want to mark this quest as completed?"
+          title={t('goals.screens.confirmTitle')}
+          message={t('goals.screens.confirmMessage')}
         />
       )}
     </>

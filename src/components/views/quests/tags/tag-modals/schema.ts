@@ -1,20 +1,24 @@
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { IQuestLabel } from '@/contract/quests/labels/labels-quests';
 
-export const tagValidationSchema = (questsLabels: IQuestLabel[], previousValue?: string) => {
-  return yup.object().shape({
-    value: yup
-      .string()
-      .trim()
-      .required('Tag cannot be empty')
-      .max(25, 'Tag is too long. Please keep it under 25 characters.')
-      .test('unique-tag', 'This tag name already exists. Please choose another.', value => {
-        if (previousValue && value.toLowerCase() === previousValue.toLowerCase()) {
-          return true;
-        }
+export const useTagValidationSchema = () => {
+  const { t } = useTranslation();
 
-        return questsLabels.every(label => label.value.toLowerCase() !== value.toLowerCase());
-      }),
-    backgroundColor: yup.string().default('#1987EE'),
-  });
+  return (questsLabels: IQuestLabel[], previousValue?: string) =>
+    yup.object().shape({
+      value: yup
+        .string()
+        .trim()
+        .required(t('quests.tags.schema.required'))
+        .max(25, t('quests.tags.schema.maxLength'))
+        .test('unique-tag', t('quests.tags.schema.unique'), value => {
+          if (previousValue && value.toLowerCase() === previousValue.toLowerCase()) {
+            return true;
+          }
+
+          return questsLabels.every(label => label.value.toLowerCase() !== value.toLowerCase());
+        }),
+      backgroundColor: yup.string().default('#1987EE'),
+    });
 };

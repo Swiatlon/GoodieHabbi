@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Button from '@/components/shared/button/button';
 import Modal from '@/components/shared/modal/modal';
@@ -16,6 +17,8 @@ interface DayPickerModalProps {
 const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
 const DayPickerModal: React.FC<DayPickerModalProps> = ({ isVisible, onClose, onConfirm, selectedDay, label, min = 1, max = 31 }) => {
+  const { t } = useTranslation();
+
   return (
     <Modal isVisible={isVisible} onClose={onClose}>
       <View className="bg-white rounded-lg p-4">
@@ -28,7 +31,8 @@ const DayPickerModal: React.FC<DayPickerModalProps> = ({ isVisible, onClose, onC
               <TouchableOpacity
                 key={day}
                 onPress={() => !isDisabled && onConfirm(day)}
-                className={`w-12 h-12 m-1 rounded-full justify-center items-center ${day === selectedDay ? 'bg-blue-500' : 'bg-slate-200'} ${isDisabled ? 'opacity-20' : ''}`}
+                className={`w-12 h-12 m-1 rounded-full justify-center items-center ${day === selectedDay ? 'bg-blue-500' : 'bg-slate-200'}`}
+                style={isDisabled ? { opacity: 0.2 } : undefined}
                 disabled={isDisabled}
               >
                 <Text className={`text-sm font-bold ${day === selectedDay ? 'text-white' : 'text-gray-700'} ${isDisabled ? 'text-gray-600' : ''}`}>
@@ -39,7 +43,7 @@ const DayPickerModal: React.FC<DayPickerModalProps> = ({ isVisible, onClose, onC
           })}
         </ScrollView>
         <View className="flex-row justify-between mt-4">
-          <Button label="Cancel" onPress={onClose} />
+          <Button label={t('quests.reusable.form.cancelButton')} onPress={onClose} />
         </View>
       </View>
     </Modal>
