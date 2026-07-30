@@ -16,6 +16,7 @@ import RoutesPermissionMiddleware from '@/middlewares/routes-permission-middlewa
 import { ApiErrorListener } from '@/providers/api-error/api-error-listener';
 import { NotificationsProvider } from '@/providers/notification-provider/notification-provider';
 import SnackbarProvider from '@/providers/snackbar/snackbar-provider';
+import { FinanceDisplayProvider } from '@/providers/finance-display-context';
 import { store } from '@/redux/config/store';
 import '@/configs/day-js-config';
 import '@/i18n/i18n';
@@ -59,7 +60,8 @@ export default function RootLayout() {
             <PersistLoginMiddleware onLoaded={() => handleLoaded('persistLogin')}>
               <RoutesPermissionMiddleware>
                 <PrefetchMiddleware onLoaded={() => handleLoaded('prefetch')}>
-                  <NotificationsProvider>
+                    <NotificationsProvider>
+                      <FinanceDisplayProvider>
                     <AchievementOverlay />
                     <Drawer
                       screenOptions={{
@@ -70,6 +72,7 @@ export default function RootLayout() {
                       }}
                       drawerContent={props => <CustomDrawerContent {...props} />}
                     />
+                      </FinanceDisplayProvider>
                   </NotificationsProvider>
                 </PrefetchMiddleware>
               </RoutesPermissionMiddleware>

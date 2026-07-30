@@ -36,8 +36,8 @@ const getViewedMonthDefaultDate = (year: number, month: number) => {
     .year(year)
     .month(month - 1)
     .date(1);
-  const today = dayjs();
-  return (monthStart.isAfter(today, 'day') ? today : monthStart).format(DATE_FORMAT);
+  // Always default to the start of the viewed month (so adding in future months works)
+  return monthStart.format(DATE_FORMAT);
 };
 
 interface SubmitButtonProps {
@@ -85,6 +85,12 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
   const { data: categories = [] } = useGetFinanceCategoriesQuery({ type });
+
+  const getMaxDateForPicker = () => {
+    const monthStart = dayjs().year(viewedYear).month(viewedMonth - 1).date(1);
+    const today = dayjs();
+    return monthStart.isAfter(today, 'day') ? monthStart.endOf('month').format(DATE_FORMAT) : todayString();
+  };
 
   useEffect(() => {
     if (!isVisible) return;
@@ -322,7 +328,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
         <DateTimePicker
           mode="single"
           date={occurredOn}
-          maxDate={todayString()}
+          maxDate={getMaxDateForPicker()}
           onChange={({ date }) => {
             setOccurredOn(dayjs(date).format(DATE_FORMAT));
             setDatePickerVisible(false);

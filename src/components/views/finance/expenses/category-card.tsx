@@ -9,6 +9,7 @@ import { IFinanceCategory, ITransaction } from '@/contract/finance/finance.contr
 import { useDeleteTransactionMutation } from '@/redux/api/finance/finance-api';
 import { DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
 import { formatPLN } from '@/utils/finance/format-pln';
+import { useFinanceDisplay } from '@/providers/finance-display-context';
 
 interface CategoryCardProps {
   category: IFinanceCategory;
@@ -27,6 +28,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
   const color = category.color ?? DEFAULT_CATEGORY_COLOR;
   const icon = resolveCategoryIcon(category.icon);
   const totalSpent = actualAmount;
+  const { hideNumbers } = useFinanceDisplay();
+  const mask = (v: string) => (hideNumbers ? '***' : v);
 
   if (totalSpent === 0 && budgetAmount === 0) return null;
 
@@ -65,7 +68,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
               {category.name}
             </Text>
             <Text className="text-sm font-bold ml-2" style={{ color: isOver ? '#EF4444' : '#1a1a2e' }}>
-              {budgetAmount > 0 ? `${formatPLN(totalSpent)} / ${formatPLN(budgetAmount)}` : formatPLN(totalSpent)}
+              {budgetAmount > 0 ? `${mask(formatPLN(totalSpent))} / ${mask(formatPLN(budgetAmount))}` : mask(formatPLN(totalSpent))}
             </Text>
           </View>
           {budgetAmount > 0 ? (
@@ -121,7 +124,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
                     <CorrectionSummary transaction={transaction} />
                   </View>
                   <Text className="text-sm font-bold mr-3" style={{ color }}>
-                    {formatPLN(transaction.netAmount)}
+                    {mask(formatPLN(transaction.netAmount))}
                   </Text>
                   <TouchableOpacity
                     onPress={() => handleDelete(transaction.id)}
@@ -138,7 +141,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
           {budgetAmount > 0 && (
             <View className="px-4 py-2.5 border-t border-gray-50 flex-row justify-end">
               <Text className="text-xs font-medium" style={{ color: isOver ? '#EF4444' : '#4b5563' }}>
-                {isOver ? `+${formatPLN(totalSpent - budgetAmount)}` : `${formatPLN(budgetAmount - totalSpent)} ${t('finance.expenses.free')}`}
+                {isOver ? `+${mask(formatPLN(totalSpent - budgetAmount))}` : `${mask(formatPLN(budgetAmount - totalSpent))} ${t('finance.expenses.free')}`}
               </Text>
             </View>
           )}
