@@ -13,6 +13,7 @@ import { useFinanceMonth } from '@/providers/finance/finance-month-context';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateTransactionMutation, useGetFinanceCategoriesQuery, useUpdateTransactionMutation } from '@/redux/api/finance/finance-api';
 import { DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
+import { DATE_FORMAT, parseAmount, todayString } from '@/utils/finance/form-helpers';
 
 interface AddTransactionModalProps extends IBaseModalProps {
   recentCategoryIds?: Partial<Record<FinanceTransactionTypeEnum, number[]>>;
@@ -24,13 +25,10 @@ interface TransactionFormValues {
   description: string;
 }
 
-const DATE_FORMAT = 'YYYY-MM-DD';
 const CHIP_ACTIVE_CLASS = 'border-primary bg-blue-50';
 const CHIP_INACTIVE_CLASS = 'border-gray-200 bg-white';
 const chipClass = (active: boolean) => (active ? CHIP_ACTIVE_CLASS : CHIP_INACTIVE_CLASS);
 const chipTextClass = (active: boolean) => (active ? 'text-primary' : 'text-gray-600');
-const todayString = () => dayjs().format(DATE_FORMAT);
-const parseAmount = (value: string) => parseFloat(value.replace(',', '.'));
 const getViewedMonthDefaultDate = (year: number, month: number) => {
   const monthStart = dayjs()
     .year(year)
@@ -87,7 +85,10 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
   const { data: categories = [] } = useGetFinanceCategoriesQuery({ type });
 
   const getMaxDateForPicker = () => {
-    const monthStart = dayjs().year(viewedYear).month(viewedMonth - 1).date(1);
+    const monthStart = dayjs()
+      .year(viewedYear)
+      .month(viewedMonth - 1)
+      .date(1);
     const today = dayjs();
     return monthStart.isAfter(today, 'day') ? monthStart.endOf('month').format(DATE_FORMAT) : todayString();
   };

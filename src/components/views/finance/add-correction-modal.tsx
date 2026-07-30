@@ -10,6 +10,7 @@ import dayjs from '@/configs/day-js-config';
 import { ITransaction } from '@/contract/finance/finance.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useAddCorrectionMutation } from '@/redux/api/finance/finance-api';
+import { DATE_FORMAT, parseAmount, todayString } from '@/utils/finance/form-helpers';
 import { formatPLN } from '@/utils/finance/format-pln';
 
 interface AddCorrectionModalProps extends IBaseModalProps {
@@ -20,10 +21,6 @@ interface CorrectionFormValues {
   amount: string;
   description: string;
 }
-
-const DATE_FORMAT = 'YYYY-MM-DD';
-const todayString = () => dayjs().format(DATE_FORMAT);
-const parseAmount = (value: string) => parseFloat(value.replace(',', '.'));
 
 // The server's 409s explain exactly what went wrong (over-correcting, correcting a correction), so surface
 // them verbatim rather than replacing them with a generic failure message.

@@ -15,6 +15,7 @@ import {
   useUpdateBudgetMutation,
 } from '@/redux/api/finance/finance-api';
 import { collectCategoryIds, DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
+import { parseAmount } from '@/utils/finance/form-helpers';
 import { formatPLN } from '@/utils/finance/format-pln';
 
 interface BudgetModalProps extends IBaseModalProps {
@@ -27,8 +28,6 @@ interface BudgetModalProps extends IBaseModalProps {
 interface BudgetFormValues {
   amount: string;
 }
-
-const parseAmount = (value: string) => parseFloat(value.replace(',', '.'));
 
 const HISTORY_MONTHS = 3;
 

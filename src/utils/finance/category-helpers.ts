@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import { IFinanceCategory } from '@/contract/finance/finance.contract';
+import { FinanceTransactionTypeEnum, IFinanceCategory, ITransaction } from '@/contract/finance/finance.contract';
 import { IoniconName } from '@/utils/icons/ionicon-name';
 
 export const DEFAULT_CATEGORY_ICON: IoniconName = 'pricetag-outline';
 export const DEFAULT_CATEGORY_COLOR = '#6b7280';
+export const INCOME_DEFAULT_COLOR = '#10B981';
 
 export const flattenCategories = (categories: IFinanceCategory[]): IFinanceCategory[] =>
   categories.flatMap(cat => [cat, ...(cat.subCategories ?? [])]);
@@ -36,4 +37,13 @@ export const getCategoryVisual = (
     icon: resolveCategoryIcon(category?.icon),
     color: category?.color ?? fallbackColor,
   };
+};
+
+// Expenses and income fall back to different default colors when their category has none set.
+export const getTransactionVisual = (
+  categoriesById: Map<number, IFinanceCategory>,
+  transaction: Pick<ITransaction, 'type' | 'categoryId'>
+): { icon: IoniconName; color: string } => {
+  const fallbackColor = transaction.type === FinanceTransactionTypeEnum.Expense ? DEFAULT_CATEGORY_COLOR : INCOME_DEFAULT_COLOR;
+  return getCategoryVisual(categoriesById, transaction.categoryId, fallbackColor);
 };

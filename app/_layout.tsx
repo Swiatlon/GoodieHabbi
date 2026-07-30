@@ -14,9 +14,9 @@ import PersistLoginMiddleware from '@/middlewares/persist-login-middleware';
 import PrefetchMiddleware from '@/middlewares/prefetch-middleware';
 import RoutesPermissionMiddleware from '@/middlewares/routes-permission-middleware';
 import { ApiErrorListener } from '@/providers/api-error/api-error-listener';
+import { FinanceDisplayProvider } from '@/providers/finance-display-context';
 import { NotificationsProvider } from '@/providers/notification-provider/notification-provider';
 import SnackbarProvider from '@/providers/snackbar/snackbar-provider';
-import { FinanceDisplayProvider } from '@/providers/finance-display-context';
 import { store } from '@/redux/config/store';
 import '@/configs/day-js-config';
 import '@/i18n/i18n';
@@ -60,19 +60,19 @@ export default function RootLayout() {
             <PersistLoginMiddleware onLoaded={() => handleLoaded('persistLogin')}>
               <RoutesPermissionMiddleware>
                 <PrefetchMiddleware onLoaded={() => handleLoaded('prefetch')}>
-                    <NotificationsProvider>
-                      <FinanceDisplayProvider>
-                    <AchievementOverlay />
-                    <Drawer
-                      screenOptions={{
-                        header: () => <Header />,
-                        sceneStyle: {
-                          backgroundColor: 'white',
-                        },
-                      }}
-                      drawerContent={props => <CustomDrawerContent {...props} />}
-                    />
-                      </FinanceDisplayProvider>
+                  <NotificationsProvider>
+                    <FinanceDisplayProvider>
+                      <AchievementOverlay />
+                      <Drawer
+                        screenOptions={{
+                          header: () => <Header />,
+                          sceneStyle: {
+                            backgroundColor: 'white',
+                          },
+                        }}
+                        drawerContent={props => <CustomDrawerContent {...props} />}
+                      />
+                    </FinanceDisplayProvider>
                   </NotificationsProvider>
                 </PrefetchMiddleware>
               </RoutesPermissionMiddleware>

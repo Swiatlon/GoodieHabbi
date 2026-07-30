@@ -14,15 +14,13 @@ import { useFinanceMonth } from '@/providers/finance/finance-month-context';
 import { useFinanceDisplay } from '@/providers/finance-display-context';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useDeleteTransactionMutation, useGetFinanceCategoriesQuery, useGetTransactionsQuery } from '@/redux/api/finance/finance-api';
-import { buildCategoriesById, resolveCategoryIcon } from '@/utils/finance/category-helpers';
+import { buildCategoriesById, getTransactionVisual } from '@/utils/finance/category-helpers';
 import { buildExportRows, shareFinanceExport } from '@/utils/finance/export';
 import { formatPLN } from '@/utils/finance/format-pln';
 
 type TypeFilter = 'all' | FinanceTransactionTypeEnum;
 
 const TRANSACTIONS_PAGE_SIZE = 100;
-const EXPENSE_DEFAULT_COLOR = '#6b7280';
-const INCOME_DEFAULT_COLOR = '#10B981';
 const DELETE_LABEL_KEY = 'common.delete';
 
 const History = () => {
@@ -74,14 +72,7 @@ const History = () => {
     return categoriesById.get(transaction.categoryId)?.name ?? t('finance.history.uncategorized');
   };
 
-  const getMeta = (transaction: ITransaction) => {
-    const category = transaction.categoryId != null ? categoriesById.get(transaction.categoryId) : undefined;
-    const isExpense = transaction.type === FinanceTransactionTypeEnum.Expense;
-    return {
-      icon: resolveCategoryIcon(category?.icon),
-      color: category?.color ?? (isExpense ? EXPENSE_DEFAULT_COLOR : INCOME_DEFAULT_COLOR),
-    };
-  };
+  const getMeta = (transaction: ITransaction) => getTransactionVisual(categoriesById, transaction);
 
   const filteredTransactions = useMemo(() => {
     return allTransactions.filter(transaction => {

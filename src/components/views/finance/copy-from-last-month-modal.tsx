@@ -7,7 +7,8 @@ import dayjs from '@/configs/day-js-config';
 import { FinanceTransactionTypeEnum, ITransaction } from '@/contract/finance/finance.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateTransactionMutation, useGetFinanceCategoriesQuery, useGetTransactionsQuery } from '@/redux/api/finance/finance-api';
-import { buildCategoriesById, resolveCategoryIcon } from '@/utils/finance/category-helpers';
+import { buildCategoriesById, getTransactionVisual } from '@/utils/finance/category-helpers';
+import { DATE_FORMAT } from '@/utils/finance/form-helpers';
 import { formatPLN } from '@/utils/finance/format-pln';
 
 interface CopyFromLastMonthModalProps extends IBaseModalProps {
@@ -15,10 +16,7 @@ interface CopyFromLastMonthModalProps extends IBaseModalProps {
   month: number;
 }
 
-const DATE_FORMAT = 'YYYY-MM-DD';
 const TRANSACTIONS_PAGE_SIZE = 100;
-const EXPENSE_DEFAULT_COLOR = '#6b7280';
-const INCOME_DEFAULT_COLOR = '#10B981';
 
 const getPreviousMonth = (year: number, month: number) => (month === 1 ? { year: year - 1, month: 12 } : { year, month: month - 1 });
 
@@ -80,10 +78,8 @@ const CopyFromLastMonthModal: React.FC<CopyFromLastMonthModalProps> = ({ isVisib
 
   const getMeta = (transaction: ITransaction) => {
     const category = transaction.categoryId != null ? categoriesById.get(transaction.categoryId) : undefined;
-    const isExpense = transaction.type === FinanceTransactionTypeEnum.Expense;
     return {
-      icon: resolveCategoryIcon(category?.icon),
-      color: category?.color ?? (isExpense ? EXPENSE_DEFAULT_COLOR : INCOME_DEFAULT_COLOR),
+      ...getTransactionVisual(categoriesById, transaction),
       label: category?.name ?? t('finance.history.uncategorized'),
     };
   };
