@@ -4,12 +4,13 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import SwipeableRow from '@/components/shared/swipeable-row/swipeable-row';
 import AddTransactionModal from '@/components/views/finance/add-transaction-modal';
+import CopyTransactionModal from '@/components/views/finance/copy-transaction-modal';
 import CorrectionSummary from '@/components/views/finance/shared/correction-summary';
 import { IFinanceCategory, ITransaction } from '@/contract/finance/finance.contract';
+import { useFinanceDisplay } from '@/providers/finance-display-context';
 import { useDeleteTransactionMutation } from '@/redux/api/finance/finance-api';
 import { DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
 import { formatPLN } from '@/utils/finance/format-pln';
-import { useFinanceDisplay } from '@/providers/finance-display-context';
 
 interface CategoryCardProps {
   category: IFinanceCategory;
@@ -24,6 +25,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
   const [deleteTransaction] = useDeleteTransactionMutation();
   const [isExpanded, setIsExpanded] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<ITransaction | null>(null);
+  const [copyingTransaction, setCopyingTransaction] = useState<ITransaction | null>(null);
 
   const color = category.color ?? DEFAULT_CATEGORY_COLOR;
   const icon = resolveCategoryIcon(category.icon);
@@ -100,7 +102,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
             </View>
           ) : (
             transactions.map((transaction, idx) => (
-              <SwipeableRow key={transaction.id} onDelete={() => handleDelete(transaction.id)}>
+              <SwipeableRow key={transaction.id} onDelete={() => handleDelete(transaction.id)} onCopy={() => setCopyingTransaction(transaction)}>
                 <TouchableOpacity
                   onPress={() => setEditingTransaction(transaction)}
                   activeOpacity={0.7}
@@ -141,7 +143,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
           {budgetAmount > 0 && (
             <View className="px-4 py-2.5 border-t border-gray-50 flex-row justify-end">
               <Text className="text-xs font-medium" style={{ color: isOver ? '#EF4444' : '#4b5563' }}>
-                {isOver ? `+${mask(formatPLN(totalSpent - budgetAmount))}` : `${mask(formatPLN(budgetAmount - totalSpent))} ${t('finance.expenses.free')}`}
+                {isOver
+                  ? `+${mask(formatPLN(totalSpent - budgetAmount))}`
+                  : `${mask(formatPLN(budgetAmount - totalSpent))} ${t('finance.expenses.free')}`}
               </Text>
             </View>
           )}
@@ -149,6 +153,12 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
       )}
 
       <AddTransactionModal isVisible={editingTransaction !== null} onClose={() => setEditingTransaction(null)} transaction={editingTransaction} />
+      <CopyTransactionModal
+        isVisible={copyingTransaction !== null}
+        onClose={() => setCopyingTransaction(null)}
+        transaction={copyingTransaction}
+        categoriesById={categoriesById}
+      />
     </View>
   );
 };
