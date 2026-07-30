@@ -99,7 +99,6 @@ const Dashboard = () => {
   };
 
   const sortedSpendingCategories = [...spendingCategories].sort((a, b) => getActualForCategory(b) - getActualForCategory(a));
-  const unbudgetedCategories = spendingCategories.filter(cat => getBudgetForCategory(cat) === null && getActualForCategory(cat) > 0);
 
   const topLevelIdForCategoryId = (categories: IFinanceCategory[], categoryId: number) => {
     const direct = categories.find(c => c.id === categoryId);
@@ -204,22 +203,6 @@ const Dashboard = () => {
               <Text className="text-xs text-emerald-600">{t('finance.dashboard.savingsGoal', { amount: formatPLN(savingsBudget) })}</Text>
             )}
           </View>
-
-          {unbudgetedCategories.length > 0 && (
-            <View className="bg-amber-50 rounded-2xl p-4 mb-4">
-              <View className="flex-row items-center gap-2 mb-2.5">
-                <Ionicons name="alert-circle-outline" size={18} color="#F59E0B" />
-                <Text className="text-xs font-bold text-amber-700 uppercase tracking-widest">{t('finance.dashboard.unbudgetedWarningTitle')}</Text>
-              </View>
-              <View className="flex-row flex-wrap gap-2">
-                {unbudgetedCategories.map(cat => (
-                  <TouchableOpacity key={cat.id} onPress={() => setBudgetCategory(cat)} className="px-3 py-1.5 rounded-lg bg-amber-100">
-                    <Text className="text-xs font-semibold text-amber-800">{cat.name}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-          )}
 
           <Text className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">{t('finance.dashboard.categories')}</Text>
           {sortedSpendingCategories.map(cat => (
