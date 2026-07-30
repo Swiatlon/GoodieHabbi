@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { View, Text, TouchableOpacity } from 'react-native';
-import DateTimePicker from 'react-native-ui-datepicker';
+import DateTimePicker, { useDefaultClassNames } from 'react-native-ui-datepicker';
 import { Ionicons } from '@expo/vector-icons';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
@@ -39,6 +39,7 @@ const AddCorrectionModal: React.FC<AddCorrectionModalProps> = ({ isVisible, onCl
 
   const [occurredOn, setOccurredOn] = useState(todayString);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+  const defaultDatePickerClassNames = useDefaultClassNames();
 
   useEffect(() => {
     if (!isVisible) return;
@@ -148,6 +149,16 @@ const AddCorrectionModal: React.FC<AddCorrectionModalProps> = ({ isVisible, onCl
 
       <Modal isVisible={isDatePickerVisible} onClose={() => setDatePickerVisible(false)} className="pt-14 px-6">
         <DateTimePicker
+          classNames={{
+            ...defaultDatePickerClassNames,
+            header: 'flex-row justify-between items-center mb-2',
+            weekdays: 'border-b border-gray-200 flex-row justify-between my-2 pb-2',
+            weekday_label: 'text-gray-500 text-sm font-semibold',
+            today: 'bg-white border border-primary rounded-full m-1',
+            selected: 'bg-primary border-primary rounded-full m-1',
+            selected_label: 'text-white font-bold',
+            disabled: 'opacity-50',
+          }}
           mode="single"
           date={occurredOn}
           maxDate={todayString()}
