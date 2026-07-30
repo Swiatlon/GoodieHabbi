@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AddTransactionModal from '@/components/views/finance/add-transaction-modal';
+import CopyFromLastMonthModal from '@/components/views/finance/copy-from-last-month-modal';
 import MonthlyOverviewCard from '@/components/views/finance/dashboard/monthly-overview-card';
 import BudgetModal from '@/components/views/finance/expenses/budget-modal';
 import CategoryCard from '@/components/views/finance/expenses/category-card';
@@ -30,6 +31,7 @@ const Dashboard = () => {
   const { t } = useTranslation();
   const { year, month, setYear, setMonth, goToPreviousMonth, goToNextMonth } = useFinanceMonth();
   const [addModalVisible, setAddModalVisible] = useState(false);
+  const [copyModalVisible, setCopyModalVisible] = useState(false);
   const [budgetCategory, setBudgetCategory] = useState<IFinanceCategory | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -158,6 +160,13 @@ const Dashboard = () => {
         <TouchableOpacity onPress={handleExport} className="px-3 py-2 rounded-lg bg-gray-100" accessibilityLabel={t('finance.export.title')}>
           <Text>⬇️</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setCopyModalVisible(true)}
+          className="px-3 py-2 rounded-lg bg-gray-100"
+          accessibilityLabel={t('finance.copyLastMonth.action')}
+        >
+          <Ionicons name="copy-outline" size={16} color="#374151" />
+        </TouchableOpacity>
       </View>
 
       {isLoading ? (
@@ -252,6 +261,7 @@ const Dashboard = () => {
       </TouchableOpacity>
 
       <AddTransactionModal isVisible={addModalVisible} onClose={() => setAddModalVisible(false)} recentCategoryIds={recentCategoryIds} />
+      <CopyFromLastMonthModal isVisible={copyModalVisible} onClose={() => setCopyModalVisible(false)} year={year} month={month} />
       <BudgetModal
         isVisible={budgetCategory !== null}
         onClose={() => setBudgetCategory(null)}
