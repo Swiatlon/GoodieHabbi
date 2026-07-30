@@ -260,6 +260,14 @@ const History = () => {
                           </TouchableOpacity>
                         )}
                         <TouchableOpacity
+                          onPress={() => setCopyingTransaction(transaction)}
+                          hitSlop={{ top: 14, bottom: 14, left: 10, right: 10 }}
+                          accessibilityLabel={t('finance.copyTransaction.action')}
+                          className="mr-3"
+                        >
+                          <Ionicons name="copy-outline" size={16} color="#9ca3af" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
                           onPress={() => handleDelete(transaction)}
                           hitSlop={{ top: 14, bottom: 14, left: 14, right: 14 }}
                           accessibilityLabel={t(DELETE_LABEL_KEY)}

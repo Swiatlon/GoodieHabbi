@@ -33,6 +33,7 @@ const finance = {
     savingsGoal: 'Goal: {{amount}}',
     categories: 'Categories',
     savingsSection: 'Savings & Investments',
+    incomeSection: 'Income',
   },
   hideNumbers: {
     toggle: 'Show/hide amounts',
@@ -55,12 +56,16 @@ const finance = {
     error: 'Failed to copy transactions.',
   },
   copyTransaction: {
+    action: 'Copy transaction',
     title: 'Copy transaction',
     hint: 'Pick the month you want to copy this transaction to.',
     copyButton: 'Copy',
     copying: 'Copying...',
     success: 'Transaction copied!',
     error: 'Failed to copy transaction.',
+    existingWarning: 'You already have {{count}} transactions in this category for the selected month.',
+    duplicateAmountWarning:
+      'You already have {{count}} transactions in this category for the selected month, including one for the exact same amount — check it is not a duplicate.',
   },
   history: {
     incomeShort: 'Income:',
@@ -116,6 +121,7 @@ const finance = {
     deleteTitle: 'Delete Expense',
     deleteMessage: 'Are you sure you want to delete this expense?',
     noExpenses: 'No expenses this month',
+    noIncome: 'No income this month',
     noBudgetHint: 'No budget set',
     free: 'free',
     setBudget: 'Set budget',

@@ -7,10 +7,12 @@ import YearMonthSelector from '@/components/views/finance/shared/year-month-sele
 import dayjs from '@/configs/day-js-config';
 import { FinanceTransactionTypeEnum, IFinanceCategory, ITransaction } from '@/contract/finance/finance.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import { useCreateTransactionMutation } from '@/redux/api/finance/finance-api';
+import { useCreateTransactionMutation, useGetTransactionsQuery } from '@/redux/api/finance/finance-api';
 import { getTransactionVisual } from '@/utils/finance/category-helpers';
-import { remapOccurredOnToMonth } from '@/utils/finance/form-helpers';
+import { DATE_FORMAT, remapOccurredOnToMonth } from '@/utils/finance/form-helpers';
 import { formatPLN } from '@/utils/finance/format-pln';
+
+const TARGET_MONTH_PAGE_SIZE = 100;
 
 interface CopyTransactionModalProps extends IBaseModalProps {
   transaction: ITransaction | null;
@@ -32,6 +34,23 @@ const CopyTransactionModal: React.FC<CopyTransactionModalProps> = ({ isVisible, 
     setTargetYear(next.year());
     setTargetMonth(next.month() + 1);
   }, [isVisible, transaction]);
+
+  const targetMonthStart = dayjs()
+    .year(targetYear)
+    .month(targetMonth - 1)
+    .date(1);
+  const { data: targetMonthPage } = useGetTransactionsQuery(
+    {
+      from: targetMonthStart.startOf('month').format(DATE_FORMAT),
+      to: targetMonthStart.endOf('month').format(DATE_FORMAT),
+      pageSize: TARGET_MONTH_PAGE_SIZE,
+    },
+    { skip: !isVisible || !transaction }
+  );
+  const existingInTargetMonth = transaction
+    ? (targetMonthPage?.items ?? []).filter(tx => tx.categoryId === transaction.categoryId && tx.type === transaction.type)
+    : [];
+  const hasExactAmountMatch = transaction ? existingInTargetMonth.some(tx => tx.amount === transaction.amount) : false;
 
   const handleClose = () => {
     if (isLoading) return;
@@ -105,6 +124,17 @@ const CopyTransactionModal: React.FC<CopyTransactionModalProps> = ({ isVisible, 
       )}
 
       <YearMonthSelector year={targetYear} month={targetMonth} onYearChange={setTargetYear} onMonthChange={setTargetMonth} />
+
+      {existingInTargetMonth.length > 0 && (
+        <View className="flex-row items-start gap-2 bg-blue-50 border border-blue-100 rounded-xl p-3 mt-3">
+          <Ionicons name="information-circle-outline" size={18} color="#1987EE" />
+          <Text className="flex-1 text-xs text-blue-800">
+            {t(hasExactAmountMatch ? 'finance.copyTransaction.duplicateAmountWarning' : 'finance.copyTransaction.existingWarning', {
+              count: existingInTargetMonth.length,
+            })}
+          </Text>
+        </View>
+      )}
     </Modal>
   );
 };

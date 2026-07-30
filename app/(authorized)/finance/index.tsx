@@ -58,6 +58,7 @@ const Dashboard = () => {
 
   const transactions = transactionsPage?.items ?? [];
   const expenseByCategory = summary?.expenseByCategory ?? [];
+  const incomeByCategory = summary?.incomeByCategory ?? [];
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -95,6 +96,17 @@ const Dashboard = () => {
     const ids = new Set(collectCategoryIds(cat));
     return transactions.filter(tx => tx.type === FinanceTransactionTypeEnum.Expense && tx.categoryId != null && ids.has(tx.categoryId));
   };
+
+  const topLevelIncomeCategories = incomeCategories.filter(cat => !cat.parentCategoryId);
+  const getActualIncomeForCategory = (cat: IFinanceCategory) => {
+    const ids = new Set(collectCategoryIds(cat));
+    return incomeByCategory.filter(item => item.categoryId != null && ids.has(item.categoryId)).reduce((sum, item) => sum + item.amount, 0);
+  };
+  const getIncomeTransactionsForCategory = (cat: IFinanceCategory) => {
+    const ids = new Set(collectCategoryIds(cat));
+    return transactions.filter(tx => tx.type === FinanceTransactionTypeEnum.Income && tx.categoryId != null && ids.has(tx.categoryId));
+  };
+  const sortedIncomeCategories = [...topLevelIncomeCategories].sort((a, b) => getActualIncomeForCategory(b) - getActualIncomeForCategory(a));
 
   const sortedSpendingCategories = [...spendingCategories].sort((a, b) => getActualForCategory(b) - getActualForCategory(a));
 
@@ -218,6 +230,23 @@ const Dashboard = () => {
                   actualAmount={getActualForCategory(cat)}
                   budgetAmount={getBudgetForCategory(cat)?.limitAmount ?? 0}
                   onSetBudget={() => setBudgetCategory(cat)}
+                />
+              ))}
+            </>
+          )}
+
+          {sortedIncomeCategories.length > 0 && (
+            <>
+              <Text className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 mt-1">{t('finance.dashboard.incomeSection')}</Text>
+              {sortedIncomeCategories.map(cat => (
+                <CategoryCard
+                  key={cat.id}
+                  category={cat}
+                  transactions={getIncomeTransactionsForCategory(cat)}
+                  actualAmount={getActualIncomeForCategory(cat)}
+                  budgetAmount={0}
+                  showBudget={false}
+                  emptyLabel={t('finance.expenses.noIncome')}
                 />
               ))}
             </>

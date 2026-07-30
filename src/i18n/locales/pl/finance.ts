@@ -33,6 +33,7 @@ const finance = {
     savingsGoal: 'Cel: {{amount}}',
     categories: 'Kategorie',
     savingsSection: 'Oszczędności i inwestycje',
+    incomeSection: 'Przychody',
   },
   hideNumbers: {
     toggle: 'Ukryj/pokaż kwoty',
@@ -55,12 +56,16 @@ const finance = {
     error: 'Nie udało się skopiować transakcji.',
   },
   copyTransaction: {
+    action: 'Kopiuj transakcję',
     title: 'Skopiuj transakcję',
     hint: 'Wybierz miesiąc, do którego chcesz skopiować tę transakcję.',
     copyButton: 'Skopiuj',
     copying: 'Kopiowanie...',
     success: 'Transakcja skopiowana!',
     error: 'Nie udało się skopiować transakcji.',
+    existingWarning: 'W wybranym miesiącu masz już {{count}} transakcji w tej kategorii.',
+    duplicateAmountWarning:
+      'W wybranym miesiącu masz już {{count}} transakcji w tej kategorii, w tym jedną na dokładnie tę samą kwotę — sprawdź, czy to nie duplikat.',
   },
   history: {
     incomeShort: 'Przychody:',
@@ -116,6 +121,7 @@ const finance = {
     deleteTitle: 'Usuń wydatek',
     deleteMessage: 'Czy na pewno chcesz usunąć ten wydatek?',
     noExpenses: 'Brak wydatków w tym miesiącu',
+    noIncome: 'Brak przychodów w tym miesiącu',
     noBudgetHint: 'Brak ustawionego budżetu',
     free: 'wolne',
     setBudget: 'Ustaw budżet',

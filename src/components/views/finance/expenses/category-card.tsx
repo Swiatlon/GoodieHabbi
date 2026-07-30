@@ -12,15 +12,65 @@ import { useDeleteTransactionMutation } from '@/redux/api/finance/finance-api';
 import { DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
 import { formatPLN } from '@/utils/finance/format-pln';
 
+interface BudgetIndicatorProps {
+  showBudget: boolean;
+  budgetAmount: number;
+  progress: number;
+  barColor: string;
+}
+
+// Isolated so the branching around "has a budget vs. income (no budget concept) vs. no budget set yet"
+// doesn't count against the parent component's cognitive complexity budget.
+const BudgetIndicator: React.FC<BudgetIndicatorProps> = ({ showBudget, budgetAmount, progress, barColor }) => {
+  const { t } = useTranslation();
+  if (!showBudget) return null;
+  if (budgetAmount > 0) {
+    return (
+      <View className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+        <View className="h-full rounded-full" style={{ width: `${progress * 100}%`, backgroundColor: barColor }} />
+      </View>
+    );
+  }
+  return <Text className="text-[11px] text-gray-400">{t('finance.expenses.noBudgetHint')}</Text>;
+};
+
+interface BudgetSummaryProps {
+  isOver: boolean;
+  totalSpent: number;
+  budgetAmount: number;
+  mask: (v: string) => string;
+}
+
+const BudgetSummary: React.FC<BudgetSummaryProps> = ({ isOver, totalSpent, budgetAmount, mask }) => {
+  const { t } = useTranslation();
+  return (
+    <View className="px-4 py-2.5 border-t border-gray-50 flex-row justify-end">
+      <Text className="text-xs font-medium" style={{ color: isOver ? '#EF4444' : '#4b5563' }}>
+        {isOver ? `+${mask(formatPLN(totalSpent - budgetAmount))}` : `${mask(formatPLN(budgetAmount - totalSpent))} ${t('finance.expenses.free')}`}
+      </Text>
+    </View>
+  );
+};
+
 interface CategoryCardProps {
   category: IFinanceCategory;
   transactions: ITransaction[];
   actualAmount: number;
   budgetAmount: number;
-  onSetBudget: () => void;
+  onSetBudget?: () => void;
+  showBudget?: boolean;
+  emptyLabel?: string;
 }
 
-const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, actualAmount, budgetAmount, onSetBudget }) => {
+const CategoryCard: React.FC<CategoryCardProps> = ({
+  category,
+  transactions,
+  actualAmount,
+  budgetAmount,
+  onSetBudget,
+  showBudget = true,
+  emptyLabel,
+}) => {
   const { t } = useTranslation();
   const [deleteTransaction] = useDeleteTransactionMutation();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -70,26 +120,22 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
               {category.name}
             </Text>
             <Text className="text-sm font-bold ml-2" style={{ color: isOver ? '#EF4444' : '#1a1a2e' }}>
-              {budgetAmount > 0 ? `${mask(formatPLN(totalSpent))} / ${mask(formatPLN(budgetAmount))}` : mask(formatPLN(totalSpent))}
+              {showBudget && budgetAmount > 0 ? `${mask(formatPLN(totalSpent))} / ${mask(formatPLN(budgetAmount))}` : mask(formatPLN(totalSpent))}
             </Text>
           </View>
-          {budgetAmount > 0 ? (
-            <View className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-              <View className="h-full rounded-full" style={{ width: `${progress * 100}%`, backgroundColor: barColor }} />
-            </View>
-          ) : (
-            <Text className="text-[11px] text-gray-400">{t('finance.expenses.noBudgetHint')}</Text>
-          )}
+          <BudgetIndicator showBudget={showBudget} budgetAmount={budgetAmount} progress={progress} barColor={barColor} />
         </View>
 
-        <TouchableOpacity
-          onPress={onSetBudget}
-          className="w-8 h-8 rounded-full items-center justify-center bg-gray-50"
-          hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
-          accessibilityLabel={t('finance.expenses.setBudget')}
-        >
-          <Ionicons name="options-outline" size={15} color="#6b7280" />
-        </TouchableOpacity>
+        {showBudget && onSetBudget && (
+          <TouchableOpacity
+            onPress={onSetBudget}
+            className="w-8 h-8 rounded-full items-center justify-center bg-gray-50"
+            hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
+            accessibilityLabel={t('finance.expenses.setBudget')}
+          >
+            <Ionicons name="options-outline" size={15} color="#6b7280" />
+          </TouchableOpacity>
+        )}
 
         <Ionicons name={isExpanded ? 'chevron-down' : 'chevron-forward'} size={16} color="#9ca3af" />
       </TouchableOpacity>
@@ -98,7 +144,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
         <View className="border-t border-gray-50">
           {transactions.length === 0 ? (
             <View className="px-4 py-4 items-center">
-              <Text className="text-xs text-gray-400">{t('finance.expenses.noExpenses')}</Text>
+              <Text className="text-xs text-gray-400">{emptyLabel ?? t('finance.expenses.noExpenses')}</Text>
             </View>
           ) : (
             transactions.map((transaction, idx) => (
@@ -129,6 +175,14 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
                     {mask(formatPLN(transaction.netAmount))}
                   </Text>
                   <TouchableOpacity
+                    onPress={() => setCopyingTransaction(transaction)}
+                    hitSlop={{ top: 14, bottom: 14, left: 10, right: 10 }}
+                    accessibilityLabel={t('finance.copyTransaction.action')}
+                    className="mr-3"
+                  >
+                    <Ionicons name="copy-outline" size={16} color="#9ca3af" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
                     onPress={() => handleDelete(transaction.id)}
                     hitSlop={{ top: 14, bottom: 14, left: 14, right: 14 }}
                     accessibilityLabel={t('common.delete')}
@@ -140,15 +194,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, transactions, act
             ))
           )}
 
-          {budgetAmount > 0 && (
-            <View className="px-4 py-2.5 border-t border-gray-50 flex-row justify-end">
-              <Text className="text-xs font-medium" style={{ color: isOver ? '#EF4444' : '#4b5563' }}>
-                {isOver
-                  ? `+${mask(formatPLN(totalSpent - budgetAmount))}`
-                  : `${mask(formatPLN(budgetAmount - totalSpent))} ${t('finance.expenses.free')}`}
-              </Text>
-            </View>
-          )}
+          {showBudget && budgetAmount > 0 && <BudgetSummary isOver={isOver} totalSpent={totalSpent} budgetAmount={budgetAmount} mask={mask} />}
         </View>
       )}
 
