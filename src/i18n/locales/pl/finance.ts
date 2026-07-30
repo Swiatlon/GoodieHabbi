@@ -54,6 +54,14 @@ const finance = {
     partial: 'Skopiowano {{succeeded}} z {{total}} transakcji',
     error: 'Nie udało się skopiować transakcji.',
   },
+  copyTransaction: {
+    title: 'Skopiuj transakcję',
+    hint: 'Wybierz miesiąc, do którego chcesz skopiować tę transakcję.',
+    copyButton: 'Skopiuj',
+    copying: 'Kopiowanie...',
+    success: 'Transakcja skopiowana!',
+    error: 'Nie udało się skopiować transakcji.',
+  },
   history: {
     incomeShort: 'Przychody:',
     expensesShort: 'Wydatki:',

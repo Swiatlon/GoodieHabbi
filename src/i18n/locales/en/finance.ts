@@ -54,6 +54,14 @@ const finance = {
     partial: 'Copied {{succeeded}} of {{total}} transactions',
     error: 'Failed to copy transactions.',
   },
+  copyTransaction: {
+    title: 'Copy transaction',
+    hint: 'Pick the month you want to copy this transaction to.',
+    copyButton: 'Copy',
+    copying: 'Copying...',
+    success: 'Transaction copied!',
+    error: 'Failed to copy transaction.',
+  },
   history: {
     incomeShort: 'Income:',
     expensesShort: 'Expenses:',

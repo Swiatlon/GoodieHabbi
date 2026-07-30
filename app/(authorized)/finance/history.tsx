@@ -6,6 +6,8 @@ import SwipeableRow from '@/components/shared/swipeable-row/swipeable-row';
 import ToggleTab from '@/components/shared/toggle-tab/toggle-tab';
 import AddCorrectionModal from '@/components/views/finance/add-correction-modal';
 import AddTransactionModal from '@/components/views/finance/add-transaction-modal';
+import CopyFromLastMonthModal from '@/components/views/finance/copy-from-last-month-modal';
+import CopyTransactionModal from '@/components/views/finance/copy-transaction-modal';
 import CorrectionSummary from '@/components/views/finance/shared/correction-summary';
 import YearMonthSelector from '@/components/views/finance/shared/year-month-selector';
 import dayjs from '@/configs/day-js-config';
@@ -29,6 +31,8 @@ const History = () => {
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<ITransaction | null>(null);
   const [correctingTransaction, setCorrectingTransaction] = useState<ITransaction | null>(null);
+  const [copyingTransaction, setCopyingTransaction] = useState<ITransaction | null>(null);
+  const [copyLastMonthVisible, setCopyLastMonthVisible] = useState(false);
   const [expandedCorrectionsId, setExpandedCorrectionsId] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
@@ -162,6 +166,13 @@ const History = () => {
         >
           <Ionicons name="download-outline" size={18} color="#6b7280" />
         </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setCopyLastMonthVisible(true)}
+          className="w-10 h-10 items-center justify-center bg-white border border-gray-200 rounded-xl"
+          accessibilityLabel={t('finance.copyLastMonth.action')}
+        >
+          <Ionicons name="copy-outline" size={18} color="#6b7280" />
+        </TouchableOpacity>
       </View>
 
       <View className="px-4 pt-3 pb-1">
@@ -207,7 +218,7 @@ const History = () => {
                 const isFullyReturned = transaction.correctedAmount >= transaction.amount;
                 return (
                   <View key={transaction.id} className={idx < filteredTransactions.length - 1 ? 'border-b border-gray-50' : ''}>
-                    <SwipeableRow onDelete={() => handleDelete(transaction)}>
+                    <SwipeableRow onDelete={() => handleDelete(transaction)} onCopy={() => setCopyingTransaction(transaction)}>
                       <TouchableOpacity
                         onPress={() => setEditingTransaction(transaction)}
                         activeOpacity={0.7}
@@ -309,6 +320,13 @@ const History = () => {
         onClose={() => setCorrectingTransaction(null)}
         transaction={correctingTransaction}
       />
+      <CopyTransactionModal
+        isVisible={copyingTransaction !== null}
+        onClose={() => setCopyingTransaction(null)}
+        transaction={copyingTransaction}
+        categoriesById={categoriesById}
+      />
+      <CopyFromLastMonthModal isVisible={copyLastMonthVisible} onClose={() => setCopyLastMonthVisible(false)} year={year} month={month} />
     </View>
   );
 };

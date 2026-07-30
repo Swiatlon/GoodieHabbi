@@ -8,7 +8,7 @@ import { FinanceTransactionTypeEnum, ITransaction } from '@/contract/finance/fin
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateTransactionMutation, useGetFinanceCategoriesQuery, useGetTransactionsQuery } from '@/redux/api/finance/finance-api';
 import { buildCategoriesById, getTransactionVisual } from '@/utils/finance/category-helpers';
-import { DATE_FORMAT } from '@/utils/finance/form-helpers';
+import { DATE_FORMAT, remapOccurredOnToMonth } from '@/utils/finance/form-helpers';
 import { formatPLN } from '@/utils/finance/format-pln';
 
 interface CopyFromLastMonthModalProps extends IBaseModalProps {
@@ -19,17 +19,6 @@ interface CopyFromLastMonthModalProps extends IBaseModalProps {
 const TRANSACTIONS_PAGE_SIZE = 100;
 
 const getPreviousMonth = (year: number, month: number) => (month === 1 ? { year: year - 1, month: 12 } : { year, month: month - 1 });
-
-// Keeps the same day-of-month, clamped into the target month (e.g. the 31st copied into a 30-day month lands on the 30th).
-const remapOccurredOn = (occurredOn: string, targetYear: number, targetMonth: number) => {
-  const day = dayjs(occurredOn).date();
-  const targetMonthStart = dayjs()
-    .year(targetYear)
-    .month(targetMonth - 1)
-    .date(1);
-  const clampedDay = Math.min(day, targetMonthStart.endOf('month').date());
-  return targetMonthStart.date(clampedDay).format(DATE_FORMAT);
-};
 
 const CopyFromLastMonthModal: React.FC<CopyFromLastMonthModalProps> = ({ isVisible, onClose, year, month }) => {
   const { t } = useTranslation();
@@ -101,7 +90,7 @@ const CopyFromLastMonthModal: React.FC<CopyFromLastMonthModalProps> = ({ isVisib
           amount: tx.amount,
           categoryId: tx.categoryId,
           note: tx.note ?? undefined,
-          occurredOn: remapOccurredOn(tx.occurredOn, year, month),
+          occurredOn: remapOccurredOnToMonth(tx.occurredOn, year, month),
         }).unwrap()
       )
     );
