@@ -10,6 +10,7 @@ import CorrectionSummary from '@/components/views/finance/shared/correction-summ
 import YearMonthSelector from '@/components/views/finance/shared/year-month-selector';
 import dayjs from '@/configs/day-js-config';
 import { FinanceTransactionTypeEnum, ITransaction } from '@/contract/finance/finance.contract';
+import { useFinanceDisplay } from '@/providers/finance-display-context';
 import { useFinanceMonth } from '@/providers/finance/finance-month-context';
 import { useDeleteTransactionMutation, useGetFinanceCategoriesQuery, useGetTransactionsQuery } from '@/redux/api/finance/finance-api';
 import { buildCategoriesById, resolveCategoryIcon } from '@/utils/finance/category-helpers';
@@ -32,6 +33,8 @@ const History = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
+  const { hideNumbers } = useFinanceDisplay();
+  const mask = (v: string) => (hideNumbers ? '***' : v);
 
   const monthStart = dayjs()
     .year(year)
@@ -118,10 +121,10 @@ const History = () => {
 
       <View className="px-4 pt-3 pb-1 flex-row justify-between">
         <Text className="text-xs text-gray-500">
-          {t('finance.history.incomeShort')} <Text className="font-bold text-green-600">{formatPLN(totalIncome)}</Text>
+          {t('finance.history.incomeShort')} <Text className="font-bold text-green-600">{mask(formatPLN(totalIncome))}</Text>
         </Text>
         <Text className="text-xs text-gray-500">
-          {t('finance.history.expensesShort')} <Text className="font-bold text-gray-700">{formatPLN(totalExpenses)}</Text>
+          {t('finance.history.expensesShort')} <Text className="font-bold text-gray-700">{mask(formatPLN(totalExpenses))}</Text>
         </Text>
       </View>
 
@@ -214,7 +217,7 @@ const History = () => {
                         </View>
                         <Text className={`text-sm font-bold mr-3 ${isExpense ? 'text-gray-700' : 'text-green-600'}`}>
                           {isExpense ? '-' : '+'}
-                          {formatPLN(transaction.netAmount)}
+                          {mask(formatPLN(transaction.netAmount))}
                         </Text>
                         {!isFullyReturned && (
                           <TouchableOpacity
@@ -252,7 +255,7 @@ const History = () => {
                           </View>
                           <Text className="text-xs font-bold text-emerald-600 mr-3">
                             {isExpense ? '+' : '-'}
-                            {formatPLN(correction.amount)}
+                            {mask(formatPLN(correction.amount))}
                           </Text>
                           <TouchableOpacity
                             onPress={() => handleDelete(correction)}
