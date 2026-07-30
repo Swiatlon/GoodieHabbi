@@ -5,10 +5,17 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
+import dayjs from '@/configs/day-js-config';
 import { BudgetPeriodEnum, IBudget, IFinanceCategory } from '@/contract/finance/finance.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import { useCreateBudgetMutation, useDeleteBudgetMutation, useUpdateBudgetMutation } from '@/redux/api/finance/finance-api';
-import { DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
+import {
+  useCreateBudgetMutation,
+  useDeleteBudgetMutation,
+  useGetMonthlySummaryQuery,
+  useUpdateBudgetMutation,
+} from '@/redux/api/finance/finance-api';
+import { collectCategoryIds, DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
+import { formatPLN } from '@/utils/finance/format-pln';
 
 interface BudgetModalProps extends IBaseModalProps {
   category: IFinanceCategory | null;
@@ -22,6 +29,17 @@ interface BudgetFormValues {
 }
 
 const parseAmount = (value: string) => parseFloat(value.replace(',', '.'));
+
+const HISTORY_MONTHS = 3;
+
+// months-ago (1..HISTORY_MONTHS) relative to the viewed year/month, wrapping across year boundaries.
+const getPastMonth = (year: number, month: number, monthsAgo: number) => {
+  const target = dayjs()
+    .year(year)
+    .month(month - 1)
+    .subtract(monthsAgo, 'month');
+  return { year: target.year(), month: target.month() + 1 };
+};
 
 interface SubmitButtonProps {
   control: Control<BudgetFormValues>;
@@ -55,7 +73,7 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isVisible, onClose, category,
   const [deleteBudget, { isLoading: isDeleting }] = useDeleteBudgetMutation();
 
   const methods = useForm<BudgetFormValues>({ defaultValues: { amount: '' } });
-  const { control, handleSubmit, reset: resetForm } = methods;
+  const { control, handleSubmit, reset: resetForm, setValue } = methods;
 
   useEffect(() => {
     if (isVisible) resetForm({ amount: currentBudget ? String(currentBudget.limitAmount) : '' });
@@ -63,6 +81,25 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isVisible, onClose, category,
 
   const color = category?.color ?? DEFAULT_CATEGORY_COLOR;
   const icon = resolveCategoryIcon(category?.icon);
+
+  // Only worth suggesting when there's no budget yet — once one exists the user is adjusting it deliberately.
+  const shouldFetchHistory = isVisible && !!category && !currentBudget;
+  const pastMonth1 = getPastMonth(year, month, 1);
+  const pastMonth2 = getPastMonth(year, month, 2);
+  const pastMonth3 = getPastMonth(year, month, 3);
+  const { data: summary1 } = useGetMonthlySummaryQuery(pastMonth1, { skip: !shouldFetchHistory });
+  const { data: summary2 } = useGetMonthlySummaryQuery(pastMonth2, { skip: !shouldFetchHistory });
+  const { data: summary3 } = useGetMonthlySummaryQuery(pastMonth3, { skip: !shouldFetchHistory });
+
+  const categoryIds = category ? new Set(collectCategoryIds(category)) : null;
+  const spendFor = (summary?: { expenseByCategory: { categoryId: number | null; amount: number }[] }) => {
+    if (!categoryIds) return 0;
+    return (summary?.expenseByCategory ?? [])
+      .filter(item => item.categoryId != null && categoryIds.has(item.categoryId))
+      .reduce((sum, item) => sum + item.amount, 0);
+  };
+  const suggestedAmount = shouldFetchHistory ? Math.round((spendFor(summary1) + spendFor(summary2) + spendFor(summary3)) / HISTORY_MONTHS) : 0;
+  const showSuggestion = shouldFetchHistory && suggestedAmount > 0;
 
   const onSubmit = async (values: BudgetFormValues) => {
     const parsedAmount = parseAmount(values.amount);
@@ -138,6 +175,17 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isVisible, onClose, category,
           testID="budget-amount-input"
         />
       </FormProvider>
+
+      {showSuggestion && (
+        <TouchableOpacity
+          onPress={() => setValue('amount', String(suggestedAmount))}
+          className="flex-row items-center gap-1.5 mt-2"
+          testID="budget-suggestion-button"
+        >
+          <Ionicons name="bulb-outline" size={14} color="#F59E0B" />
+          <Text className="text-xs text-amber-600">{t('finance.expenses.suggestedBudget', { amount: formatPLN(suggestedAmount) })}</Text>
+        </TouchableOpacity>
+      )}
 
       {/* Removing the budget is different from setting it to 0: a 0 limit still shows a progress bar that is
           instantly over, whereas no budget falls back to the plain "no budget set" hint. */}

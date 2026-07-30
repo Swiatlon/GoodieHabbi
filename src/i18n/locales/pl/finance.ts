@@ -114,6 +114,7 @@ const finance = {
     setBudget: 'Ustaw budżet',
     setBudgetTitle: 'Ustaw budżet',
     monthlyBudget: 'Miesięczny budżet (PLN)',
+    suggestedBudget: 'Sugerowane (śr. z 3 mies.): {{amount}} · dotknij, aby użyć',
     savingBudget: 'Zapisywanie budżetu...',
     budgetUpdated: 'Budżet zaktualizowany!',
     budgetError: 'Nie udało się zaktualizować budżetu.',
