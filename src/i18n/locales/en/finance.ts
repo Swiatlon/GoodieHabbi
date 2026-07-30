@@ -33,6 +33,7 @@ const finance = {
     savingsGoal: 'Goal: {{amount}}',
     categories: 'Categories',
     savingsSection: 'Savings & Investments',
+    unbudgetedWarningTitle: 'No budget set for categories you are already spending in',
   },
   hideNumbers: {
     toggle: 'Show/hide amounts',
