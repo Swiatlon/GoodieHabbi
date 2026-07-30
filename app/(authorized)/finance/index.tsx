@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl, Share } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import * as FileSystem from 'expo-file-system';
-import * as Sharing from 'expo-sharing';
 import AddTransactionModal from '@/components/views/finance/add-transaction-modal';
 import MonthlyOverviewCard from '@/components/views/finance/dashboard/monthly-overview-card';
 import BudgetModal from '@/components/views/finance/expenses/budget-modal';
@@ -14,6 +12,7 @@ import dayjs from '@/configs/day-js-config';
 import { FinanceTransactionTypeEnum, IFinanceCategory } from '@/contract/finance/finance.contract';
 import { useFinanceMonth } from '@/providers/finance/finance-month-context';
 import { useFinanceDisplay } from '@/providers/finance-display-context';
+import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import {
   useGetBudgetsQuery,
   useGetFinanceCategoriesQuery,
@@ -21,6 +20,7 @@ import {
   useGetTransactionsQuery,
 } from '@/redux/api/finance/finance-api';
 import { collectCategoryIds, getSavingsCategoryIds } from '@/utils/finance/category-helpers';
+import { buildExportRows, shareFinanceExport } from '@/utils/finance/export';
 import { formatPLN } from '@/utils/finance/format-pln';
 
 const RECENT_CATEGORIES_LIMIT = 4;
@@ -122,45 +122,39 @@ const Dashboard = () => {
   const isLoading = loadingSummary || loadingCategories || loadingIncomeCategories || loadingBudgets || loadingTransactions;
 
   const { hideNumbers, setHideNumbers } = useFinanceDisplay();
+  const { showSnackbar } = useSnackbar();
+
+  const handleExport = () => {
+    Alert.alert(t('finance.export.title'), undefined, [
+      { text: 'CSV', onPress: async () => runExport('csv') },
+      { text: 'JSON', onPress: async () => runExport('json') },
+      { text: t('common.cancel'), style: 'cancel' },
+    ]);
+  };
+
+  const runExport = async (format: 'csv' | 'json') => {
+    try {
+      const categoryNameById = new Map<number, string>([...expenseCategories, ...incomeCategories].map(c => [c.id, c.name]));
+      const rows = buildExportRows(transactions, categoryNameById);
+      await shareFinanceExport(rows, year, month, format);
+    } catch {
+      showSnackbar({ text: t('finance.export.error'), variant: SnackbarVariantEnum.ERROR });
+    }
+  };
 
   return (
     <View className="flex-1 bg-gray-50">
       <YearMonthSelector year={year} month={month} onYearChange={setYear} onMonthChange={setMonth} />
 
       <View className="absolute top-4 right-4 flex-row items-center gap-2">
-        <TouchableOpacity onPress={() => setHideNumbers(!hideNumbers)} className="px-3 py-2 rounded-lg bg-gray-100">
+        <TouchableOpacity
+          onPress={() => setHideNumbers(!hideNumbers)}
+          className="px-3 py-2 rounded-lg bg-gray-100"
+          accessibilityLabel={t('finance.hideNumbers.toggle')}
+        >
           <Text>{hideNumbers ? '🔒' : '👁️'}</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={async () => {
-            const catMap = new Map<number, string>();
-            [...expenseCategories, ...incomeCategories].forEach(c => catMap.set(c.id, c.name));
-            const rows = transactions.map(tx => ({
-              id: tx.id,
-              type: tx.type,
-              date: tx.occurredOn,
-              category: tx.categoryId ? (catMap.get(tx.categoryId) ?? tx.categoryId) : '',
-              amount: tx.netAmount,
-              note: tx.note ?? '',
-            }));
-
-            const payload = { exportedAt: new Date().toISOString(), year, month, items: rows };
-            const json = JSON.stringify(payload, null, 2);
-            try {
-              const filename = `goodiehabbi-export-${year}-${String(month).padStart(2, '0')}.json`;
-              const path = FileSystem.cacheDirectory + filename;
-              await FileSystem.writeAsStringAsync(path, json, { encoding: FileSystem.EncodingType.UTF8 });
-              if (await Sharing.isAvailableAsync()) {
-                await Sharing.shareAsync(path, { mimeType: 'application/json', dialogTitle: 'Export JSON' });
-              } else {
-                await Share.share({ title: 'Finance export', message: json });
-              }
-            } catch (e) {
-              // ignore
-            }
-          }}
-          className="px-3 py-2 rounded-lg bg-gray-100"
-        >
+        <TouchableOpacity onPress={handleExport} className="px-3 py-2 rounded-lg bg-gray-100" accessibilityLabel={t('finance.export.title')}>
           <Text>⬇️</Text>
         </TouchableOpacity>
       </View>

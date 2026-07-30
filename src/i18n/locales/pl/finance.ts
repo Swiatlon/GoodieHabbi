@@ -34,6 +34,13 @@ const finance = {
     categories: 'Kategorie',
     savingsSection: 'Oszczędności i inwestycje',
   },
+  hideNumbers: {
+    toggle: 'Ukryj/pokaż kwoty',
+  },
+  export: {
+    title: 'Eksportuj dane',
+    error: 'Nie udało się wyeksportować danych.',
+  },
   history: {
     incomeShort: 'Przychody:',
     expensesShort: 'Wydatki:',

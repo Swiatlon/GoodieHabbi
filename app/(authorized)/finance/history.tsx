@@ -10,10 +10,12 @@ import CorrectionSummary from '@/components/views/finance/shared/correction-summ
 import YearMonthSelector from '@/components/views/finance/shared/year-month-selector';
 import dayjs from '@/configs/day-js-config';
 import { FinanceTransactionTypeEnum, ITransaction } from '@/contract/finance/finance.contract';
-import { useFinanceDisplay } from '@/providers/finance-display-context';
 import { useFinanceMonth } from '@/providers/finance/finance-month-context';
+import { useFinanceDisplay } from '@/providers/finance-display-context';
+import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useDeleteTransactionMutation, useGetFinanceCategoriesQuery, useGetTransactionsQuery } from '@/redux/api/finance/finance-api';
 import { buildCategoriesById, resolveCategoryIcon } from '@/utils/finance/category-helpers';
+import { buildExportRows, shareFinanceExport } from '@/utils/finance/export';
 import { formatPLN } from '@/utils/finance/format-pln';
 
 type TypeFilter = 'all' | FinanceTransactionTypeEnum;
@@ -35,6 +37,7 @@ const History = () => {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
   const { hideNumbers } = useFinanceDisplay();
   const mask = (v: string) => (hideNumbers ? '***' : v);
+  const { showSnackbar } = useSnackbar();
 
   const monthStart = dayjs()
     .year(year)
@@ -115,6 +118,24 @@ const History = () => {
 
   const isLoading = loadingTransactions || loadingExpenseCategories || loadingIncomeCategories;
 
+  const handleExport = () => {
+    Alert.alert(t('finance.export.title'), undefined, [
+      { text: 'CSV', onPress: async () => runExport('csv') },
+      { text: 'JSON', onPress: async () => runExport('json') },
+      { text: t('common.cancel'), style: 'cancel' },
+    ]);
+  };
+
+  const runExport = async (format: 'csv' | 'json') => {
+    try {
+      const categoryNameById = new Map<number, string>([...categoriesById].map(([id, cat]) => [id, cat.name]));
+      const rows = buildExportRows(filteredTransactions, categoryNameById);
+      await shareFinanceExport(rows, year, month, format);
+    } catch {
+      showSnackbar({ text: t('finance.export.error'), variant: SnackbarVariantEnum.ERROR });
+    }
+  };
+
   return (
     <View className="flex-1 bg-gray-50">
       <YearMonthSelector year={year} month={month} onYearChange={setYear} onMonthChange={setMonth} />
@@ -143,6 +164,13 @@ const History = () => {
             </TouchableOpacity>
           )}
         </View>
+        <TouchableOpacity
+          onPress={handleExport}
+          className="w-10 h-10 items-center justify-center bg-white border border-gray-200 rounded-xl"
+          accessibilityLabel={t('finance.export.title')}
+        >
+          <Ionicons name="download-outline" size={18} color="#6b7280" />
+        </TouchableOpacity>
       </View>
 
       <View className="px-4 pt-3 pb-1">

@@ -34,6 +34,13 @@ const finance = {
     categories: 'Categories',
     savingsSection: 'Savings & Investments',
   },
+  hideNumbers: {
+    toggle: 'Show/hide amounts',
+  },
+  export: {
+    title: 'Export data',
+    error: 'Failed to export data.',
+  },
   history: {
     incomeShort: 'Income:',
     expensesShort: 'Expenses:',
