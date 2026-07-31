@@ -2,12 +2,14 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import AddTransactionModal from '@/components/views/finance/add-transaction-modal';
 import MiniStatCard from '@/components/views/finance/dashboard/mini-stat-card';
 import MonthlyOverviewCard from '@/components/views/finance/dashboard/monthly-overview-card';
 import BudgetModal from '@/components/views/finance/expenses/budget-modal';
 import CategoryCard from '@/components/views/finance/expenses/category-card';
 import RecurringTransactionsModal from '@/components/views/finance/recurring-transactions-modal';
+import HeaderMenu from '@/components/views/finance/shared/header-menu';
 import SwipeMonthArea from '@/components/views/finance/shared/swipe-month-area';
 import { useFinanceExportPrompt } from '@/components/views/finance/shared/use-finance-export-prompt';
 import YearMonthSelector from '@/components/views/finance/shared/year-month-selector';
@@ -55,6 +57,7 @@ const getRecentCategoryIds = (transactions: { type: FinanceTransactionTypeEnum; 
 
 const Dashboard = () => {
   const { t } = useTranslation();
+  const router = useRouter();
   const { year, month, setYear, setMonth, goToPreviousMonth, goToNextMonth } = useFinanceMonth();
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [recurringModalVisible, setRecurringModalVisible] = useState(false);
@@ -157,38 +160,55 @@ const Dashboard = () => {
   const currentBudgetForModal = budgetCategory ? getBudgetForCategory(budgetCategory) : null;
   const isLoading = loadingSummary || loadingCategories || loadingIncomeCategories || loadingBudgets || loadingTransactions;
 
-  const headerActions = (
-    <>
-      <TouchableOpacity
-        onPress={() => setHideNumbers(!hideNumbers)}
-        className="px-2.5 py-1.5 rounded-lg bg-gray-100"
-        accessibilityLabel={t('finance.hideNumbers.toggle')}
-      >
-        <Text>{hideNumbers ? '🔒' : '👁️'}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => promptExport(transactions, categoriesById, year, month)}
-        className="px-2.5 py-1.5 rounded-lg bg-gray-100"
-        accessibilityLabel={t('finance.export.title')}
-      >
-        <Text>⬇️</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => setRecurringModalVisible(true)}
-        className="px-2.5 py-1.5 rounded-lg bg-amber-50 relative"
-        accessibilityLabel={t('finance.recurring.actionExperimental')}
-      >
-        <Ionicons name="repeat-outline" size={16} color="#A8791F" />
-        {/* Amber tint + dot mark this as experimental (needs a backend that doesn't exist yet), unlike the
-            two fully-working icons next to it — see docs/finance-backend-todo.md. */}
-        <View className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-amber-500" />
-      </TouchableOpacity>
-    </>
+  // Privacy toggle sits on the left (used often, needs a fixed spot), the overflow menu on the right —
+  // the year stays centered between them instead of both actions crowding one side.
+  const leftHeaderActions = (
+    <TouchableOpacity
+      onPress={() => setHideNumbers(!hideNumbers)}
+      className="px-2.5 py-1.5 rounded-lg bg-gray-100"
+      accessibilityLabel={t('finance.hideNumbers.toggle')}
+    >
+      <Text>{hideNumbers ? '🔒' : '👁️'}</Text>
+    </TouchableOpacity>
+  );
+
+  // Export and recurring are reached far less often than the privacy toggle above, so they're tucked
+  // behind one overflow menu instead of sitting as two more always-visible icons next to the date nav.
+  const rightHeaderActions = (
+    <HeaderMenu
+      accessibilityLabel={t('finance.moreActions.toggle')}
+      items={[
+        {
+          icon: 'download-outline',
+          label: t('finance.export.title'),
+          onPress: () => promptExport(transactions, categoriesById, year, month),
+        },
+        {
+          icon: 'repeat-outline',
+          label: t('finance.recurring.actionExperimental'),
+          onPress: () => setRecurringModalVisible(true),
+          tintColor: '#A8791F',
+          showDot: true,
+        },
+        {
+          icon: 'pricetags-outline',
+          label: t('finance.categories.manageAction'),
+          onPress: () => router.push('/finance/categories'),
+        },
+      ]}
+    />
   );
 
   return (
     <View className="flex-1 bg-gray-50">
-      <YearMonthSelector year={year} month={month} onYearChange={setYear} onMonthChange={setMonth} rightActions={headerActions} />
+      <YearMonthSelector
+        year={year}
+        month={month}
+        onYearChange={setYear}
+        onMonthChange={setMonth}
+        leftActions={leftHeaderActions}
+        rightActions={rightHeaderActions}
+      />
 
       {isLoading ? (
         <View className="flex-1 items-center justify-center">

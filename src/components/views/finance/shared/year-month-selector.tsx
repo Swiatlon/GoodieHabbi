@@ -14,9 +14,10 @@ interface YearMonthSelectorProps {
   onMonthChange: (month: number) => void;
   minYear?: number;
   maxYear?: number;
-  // Rendered on the right of the year row, not layered over the month chips — keeps screen-level actions
-  // (e.g. Dashboard's hide-numbers/export/recurring buttons) visually separate from date navigation instead
-  // of floating on top of the horizontally scrollable chip row where they can read as extra chips.
+  // Rendered on the left/right of the year row, not layered over the month chips — keeps screen-level
+  // actions (e.g. Dashboard's hide-numbers/export/recurring buttons) visually separate from date navigation
+  // instead of floating on top of the horizontally scrollable chip row where they can read as extra chips.
+  leftActions?: React.ReactNode;
   rightActions?: React.ReactNode;
 }
 
@@ -27,6 +28,7 @@ const YearMonthSelector: React.FC<YearMonthSelectorProps> = ({
   onMonthChange,
   minYear = 2020,
   maxYear = 2030,
+  leftActions,
   rightActions,
 }) => {
   const { t } = useTranslation();
@@ -40,7 +42,7 @@ const YearMonthSelector: React.FC<YearMonthSelectorProps> = ({
   return (
     <View className="bg-white border-b border-gray-100">
       <View className="flex-row items-center justify-between py-2 px-2">
-        <View className="flex-1" />
+        <View className="flex-1 flex-row items-center">{leftActions}</View>
         <View className="flex-row items-center gap-6">
           <TouchableOpacity
             onPress={() => year > minYear && onYearChange(year - 1)}
@@ -58,7 +60,7 @@ const YearMonthSelector: React.FC<YearMonthSelectorProps> = ({
             <Ionicons name="chevron-forward" size={20} color={year < maxYear ? '#4b465d' : '#d1d5db'} />
           </TouchableOpacity>
         </View>
-        <View className="flex-1 flex-row items-center justify-end gap-2">{rightActions}</View>
+        <View className="flex-1 flex-row items-center justify-end gap-3">{rightActions}</View>
       </View>
 
       <ScrollView

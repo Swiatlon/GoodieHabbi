@@ -233,6 +233,18 @@ const quests = {
     header: {
       searchPlaceholder: 'Szukaj...',
     },
+    filters: {
+      status: {
+        all: 'Wszystkie',
+        completed: 'Zakończone',
+        incomplete: 'Niezakończone',
+      },
+      priority: {
+        low: 'Niski',
+        medium: 'Średni',
+        high: 'Wysoki',
+      },
+    },
     showModal,
     itemCheckmark: {
       completedSuccess: 'Zadanie oznaczone jako zakończone.',

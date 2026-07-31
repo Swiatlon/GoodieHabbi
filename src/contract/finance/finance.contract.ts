@@ -30,7 +30,9 @@ export interface ICreateFinanceCategoryRequest {
 }
 
 export interface IUpdateFinanceCategoryRequest {
-  name?: string | null;
+  // Required by the API even though the update is conceptually partial — and PUT replaces the whole
+  // record, so color/icon must always be sent too or the backend nulls them out. See docs/finance-backend-todo.md.
+  name: string;
   color?: string | null;
   icon?: string | null;
   isSavings?: boolean;
