@@ -9,15 +9,15 @@ import AddTransactionModal from '@/components/views/finance/add-transaction-moda
 import CopyFromLastMonthModal from '@/components/views/finance/copy-from-last-month-modal';
 import CopyTransactionModal from '@/components/views/finance/copy-transaction-modal';
 import CorrectionSummary from '@/components/views/finance/shared/correction-summary';
+import UnpaidBadge from '@/components/views/finance/shared/unpaid-badge';
+import { useFinanceExportPrompt } from '@/components/views/finance/shared/use-finance-export-prompt';
 import YearMonthSelector from '@/components/views/finance/shared/year-month-selector';
 import dayjs from '@/configs/day-js-config';
 import { FinanceTransactionTypeEnum, ITransaction } from '@/contract/finance/finance.contract';
 import { useFinanceMonth } from '@/providers/finance/finance-month-context';
 import { useFinanceDisplay } from '@/providers/finance-display-context';
-import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useDeleteTransactionMutation, useGetFinanceCategoriesQuery, useGetTransactionsQuery } from '@/redux/api/finance/finance-api';
-import { buildCategoriesById, getTransactionVisual } from '@/utils/finance/category-helpers';
-import { buildExportRows, shareFinanceExport } from '@/utils/finance/export';
+import { buildCategoriesById, getCategoryLabel, getTransactionVisual } from '@/utils/finance/category-helpers';
 import { formatPLN } from '@/utils/finance/format-pln';
 
 type TypeFilter = 'all' | FinanceTransactionTypeEnum;
@@ -37,9 +37,8 @@ const History = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
-  const { hideNumbers } = useFinanceDisplay();
-  const mask = (v: string) => (hideNumbers ? '***' : v);
-  const { showSnackbar } = useSnackbar();
+  const { mask } = useFinanceDisplay();
+  const promptExport = useFinanceExportPrompt();
 
   const monthStart = dayjs()
     .year(year)
@@ -71,10 +70,7 @@ const History = () => {
 
   const allTransactions = transactionsPage?.items ?? [];
 
-  const getLabel = (transaction: ITransaction) => {
-    if (transaction.categoryId == null) return t('finance.history.uncategorized');
-    return categoriesById.get(transaction.categoryId)?.name ?? t('finance.history.uncategorized');
-  };
+  const getLabel = (transaction: ITransaction) => getCategoryLabel(categoriesById, transaction.categoryId, t('finance.history.uncategorized'));
 
   const getMeta = (transaction: ITransaction) => getTransactionVisual(categoriesById, transaction);
 
@@ -113,24 +109,6 @@ const History = () => {
 
   const isLoading = loadingTransactions || loadingExpenseCategories || loadingIncomeCategories;
 
-  const handleExport = () => {
-    Alert.alert(t('finance.export.title'), undefined, [
-      { text: 'CSV', onPress: async () => runExport('csv') },
-      { text: 'JSON', onPress: async () => runExport('json') },
-      { text: t('common.cancel'), style: 'cancel' },
-    ]);
-  };
-
-  const runExport = async (format: 'csv' | 'json') => {
-    try {
-      const categoryNameById = new Map<number, string>([...categoriesById].map(([id, cat]) => [id, cat.name]));
-      const rows = buildExportRows(filteredTransactions, categoryNameById);
-      await shareFinanceExport(rows, year, month, format);
-    } catch {
-      showSnackbar({ text: t('finance.export.error'), variant: SnackbarVariantEnum.ERROR });
-    }
-  };
-
   return (
     <View className="flex-1 bg-gray-50">
       <YearMonthSelector year={year} month={month} onYearChange={setYear} onMonthChange={setMonth} />
@@ -160,7 +138,7 @@ const History = () => {
           )}
         </View>
         <TouchableOpacity
-          onPress={handleExport}
+          onPress={() => promptExport(filteredTransactions, categoriesById, year, month)}
           className="w-10 h-10 items-center justify-center bg-white border border-gray-200 rounded-xl"
           accessibilityLabel={t('finance.export.title')}
         >
@@ -238,6 +216,7 @@ const History = () => {
                                 · {transaction.note}
                               </Text>
                             ) : null}
+                            {isExpense && !transaction.isPaid && <UnpaidBadge transactionId={transaction.id} />}
                           </View>
                           <CorrectionSummary
                             transaction={transaction}

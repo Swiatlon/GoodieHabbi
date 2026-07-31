@@ -6,7 +6,8 @@ import SwipeableRow from '@/components/shared/swipeable-row/swipeable-row';
 import AddTransactionModal from '@/components/views/finance/add-transaction-modal';
 import CopyTransactionModal from '@/components/views/finance/copy-transaction-modal';
 import CorrectionSummary from '@/components/views/finance/shared/correction-summary';
-import { IFinanceCategory, ITransaction } from '@/contract/finance/finance.contract';
+import UnpaidBadge from '@/components/views/finance/shared/unpaid-badge';
+import { FinanceTransactionTypeEnum, IFinanceCategory, ITransaction } from '@/contract/finance/finance.contract';
 import { useFinanceDisplay } from '@/providers/finance-display-context';
 import { useDeleteTransactionMutation } from '@/redux/api/finance/finance-api';
 import { DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
@@ -17,12 +18,15 @@ interface BudgetIndicatorProps {
   budgetAmount: number;
   progress: number;
   barColor: string;
+  shareOfTotal: number;
 }
 
 // Isolated so the branching around "has a budget vs. income (no budget concept) vs. no budget set yet"
 // doesn't count against the parent component's cognitive complexity budget.
-const BudgetIndicator: React.FC<BudgetIndicatorProps> = ({ showBudget, budgetAmount, progress, barColor }) => {
-  const { t } = useTranslation();
+// No budget set yet: instead of repeating a "no budget" hint on every card (dead text once you've read it
+// once — the settings icon next to the amount already lets you set one), show how big a slice of this
+// month's total this category is, which is new information on every row.
+const BudgetIndicator: React.FC<BudgetIndicatorProps> = ({ showBudget, budgetAmount, progress, barColor, shareOfTotal }) => {
   if (!showBudget) return null;
   if (budgetAmount > 0) {
     return (
@@ -31,7 +35,12 @@ const BudgetIndicator: React.FC<BudgetIndicatorProps> = ({ showBudget, budgetAmo
       </View>
     );
   }
-  return <Text className="text-[11px] text-gray-400">{t('finance.expenses.noBudgetHint')}</Text>;
+  if (shareOfTotal <= 0) return null;
+  return (
+    <View className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+      <View className="h-full rounded-full" style={{ width: `${Math.min(shareOfTotal, 1) * 100}%`, backgroundColor: barColor, opacity: 0.45 }} />
+    </View>
+  );
 };
 
 interface BudgetSummaryProps {
@@ -60,6 +69,7 @@ interface CategoryCardProps {
   onSetBudget?: () => void;
   showBudget?: boolean;
   emptyLabel?: string;
+  totalForShare?: number;
 }
 
 const CategoryCard: React.FC<CategoryCardProps> = ({
@@ -70,6 +80,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   onSetBudget,
   showBudget = true,
   emptyLabel,
+  totalForShare = 0,
 }) => {
   const { t } = useTranslation();
   const [deleteTransaction] = useDeleteTransactionMutation();
@@ -80,14 +91,14 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   const color = category.color ?? DEFAULT_CATEGORY_COLOR;
   const icon = resolveCategoryIcon(category.icon);
   const totalSpent = actualAmount;
-  const { hideNumbers } = useFinanceDisplay();
-  const mask = (v: string) => (hideNumbers ? '***' : v);
+  const { mask } = useFinanceDisplay();
 
   if (totalSpent === 0 && budgetAmount === 0) return null;
 
   const progress = budgetAmount > 0 ? Math.min(totalSpent / budgetAmount, 1) : 0;
   const isOver = budgetAmount > 0 && totalSpent > budgetAmount;
   const barColor = isOver ? '#EF4444' : progress > 0.8 ? '#F59E0B' : color;
+  const shareOfTotal = totalForShare > 0 ? totalSpent / totalForShare : 0;
 
   const categoriesById = new Map<number, IFinanceCategory>([
     [category.id, category],
@@ -123,7 +134,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
               {showBudget && budgetAmount > 0 ? `${mask(formatPLN(totalSpent))} / ${mask(formatPLN(budgetAmount))}` : mask(formatPLN(totalSpent))}
             </Text>
           </View>
-          <BudgetIndicator showBudget={showBudget} budgetAmount={budgetAmount} progress={progress} barColor={barColor} />
+          <BudgetIndicator showBudget={showBudget} budgetAmount={budgetAmount} progress={progress} barColor={barColor} shareOfTotal={shareOfTotal} />
         </View>
 
         {showBudget && onSetBudget && (
@@ -152,8 +163,16 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                 <TouchableOpacity
                   onPress={() => setEditingTransaction(transaction)}
                   activeOpacity={0.7}
-                  className={`flex-row items-center px-4 py-3 bg-white ${idx < transactions.length - 1 ? 'border-b border-gray-50' : ''}`}
-                  style={{ borderLeftWidth: 3, borderLeftColor: color }}
+                  className="flex-row items-center px-4 py-3 bg-white"
+                  style={{
+                    borderLeftWidth: 3,
+                    borderLeftColor: color,
+                    // Kept as explicit borderBottom*, not a `border-b border-gray-50` className — Tailwind's
+                    // border-gray-50 sets the generic (all-sides) borderColor, which was clobbering the
+                    // borderLeftColor above on every row except the last (the only one without that class).
+                    borderBottomWidth: idx < transactions.length - 1 ? 1 : 0,
+                    borderBottomColor: '#F9FAFB',
+                  }}
                 >
                   <View className="flex-1 gap-0.5">
                     <Text className="text-sm font-semibold text-gray-800" numberOfLines={1}>
@@ -166,6 +185,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                           · {transaction.note}
                         </Text>
                       ) : null}
+                      {transaction.type === FinanceTransactionTypeEnum.Expense && !transaction.isPaid && (
+                        <UnpaidBadge transactionId={transaction.id} />
+                      )}
                     </View>
                     {/* Informational only here — refunds are added and managed from History, which keeps the
                         dashboard to a single reading of "where does my budget stand". */}

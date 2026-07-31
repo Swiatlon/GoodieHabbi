@@ -11,9 +11,14 @@ import dayjs from '@/configs/day-js-config';
 import { FinanceTransactionTypeEnum, IFinanceCategory, ITransaction } from '@/contract/finance/finance.contract';
 import { useFinanceMonth } from '@/providers/finance/finance-month-context';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import { useCreateTransactionMutation, useGetFinanceCategoriesQuery, useUpdateTransactionMutation } from '@/redux/api/finance/finance-api';
+import {
+  useCreateRecurringTransactionMutation,
+  useCreateTransactionMutation,
+  useGetFinanceCategoriesQuery,
+  useUpdateTransactionMutation,
+} from '@/redux/api/finance/finance-api';
 import { DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
-import { DATE_FORMAT, parseAmount } from '@/utils/finance/form-helpers';
+import { buildDatePickerClassNames, DATE_FORMAT, parseAmount } from '@/utils/finance/form-helpers';
 
 interface AddTransactionModalProps extends IBaseModalProps {
   recentCategoryIds?: Partial<Record<FinanceTransactionTypeEnum, number[]>>;
@@ -69,6 +74,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
   const { showSnackbar } = useSnackbar();
   const [createTransaction, { isLoading: isCreating }] = useCreateTransactionMutation();
   const [updateTransaction, { isLoading: isUpdating }] = useUpdateTransactionMutation();
+  const [createRecurringTransaction] = useCreateRecurringTransactionMutation();
   const isLoading = isCreating || isUpdating;
   const isEditMode = transaction != null;
   const { year: viewedYear, month: viewedMonth } = useFinanceMonth();
@@ -81,6 +87,8 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
   const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<number | null>(null);
   const [occurredOn, setOccurredOn] = useState(() => getViewedMonthDefaultDate(viewedYear, viewedMonth));
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+  const [isPaidValue, setIsPaidValue] = useState(true);
+  const [isRecurring, setIsRecurring] = useState(false);
 
   const { data: categories = [] } = useGetFinanceCategoriesQuery({ type });
   const defaultDatePickerClassNames = useDefaultClassNames();
@@ -92,12 +100,15 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
       setType(transaction.type);
       resetForm({ amount: String(transaction.amount), description: transaction.note ?? '' });
       setOccurredOn(transaction.occurredOn);
+      setIsPaidValue(transaction.isPaid);
     } else {
       setType(FinanceTransactionTypeEnum.Expense);
       setSelectedCategoryId(null);
       setSelectedSubcategoryId(null);
       resetForm({ amount: '', description: '' });
       setOccurredOn(getViewedMonthDefaultDate(viewedYear, viewedMonth));
+      setIsPaidValue(true);
+      setIsRecurring(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible, transaction, viewedYear, viewedMonth]);
@@ -154,16 +165,28 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
     setSelectedSubcategoryId(null);
   };
 
+  // Best-effort and isolated from the main flow: a recurring-template failure shouldn't undo — or even
+  // look like it failed — the transaction that was already created successfully.
+  const trySetupRecurring = async (categoryId: number, amount: number, note: string | undefined) => {
+    try {
+      await createRecurringTransaction({ type, categoryId, amount, note, dayOfMonth: dayjs(occurredOn).date() }).unwrap();
+    } catch {
+      showSnackbar({ text: t('finance.addTransaction.recurringSetupError'), variant: SnackbarVariantEnum.ERROR });
+    }
+  };
+
   const onSubmit = async (values: TransactionFormValues) => {
     const parsedAmount = parseAmount(values.amount);
     if (!finalCategoryId || isNaN(parsedAmount) || parsedAmount <= 0) return;
 
+    const noteValue = values.description.trim() || undefined;
     const data = {
       type,
       amount: parsedAmount,
       categoryId: finalCategoryId,
-      note: values.description.trim() || undefined,
+      note: noteValue,
       occurredOn,
+      isPaid: isExpense ? isPaidValue : true,
     };
 
     try {
@@ -179,6 +202,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
           text: isExpense ? t('finance.addTransaction.expenseAddedSuccess') : t('finance.addTransaction.incomeAddedSuccess'),
           variant: SnackbarVariantEnum.SUCCESS,
         });
+        if (isRecurring) await trySetupRecurring(finalCategoryId, parsedAmount, noteValue);
       }
       handleClose();
     } catch {
@@ -306,6 +330,28 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
             <Ionicons name="calendar-outline" size={18} color="#6b7280" />
           </TouchableOpacity>
 
+          {isExpense && (
+            <>
+              <Text className="text-sm font-semibold text-gray-600 mb-2">{t('finance.paidStatus.label')}</Text>
+              <View className="flex-row gap-2 mb-3">
+                <TouchableOpacity
+                  onPress={() => setIsPaidValue(true)}
+                  className={`flex-row items-center gap-1.5 px-3 py-2 rounded-xl border ${chipClass(isPaidValue)}`}
+                >
+                  <Ionicons name="checkmark-circle-outline" size={14} color={isPaidValue ? '#1987EE' : '#6b7280'} />
+                  <Text className={`text-xs font-semibold ${chipTextClass(isPaidValue)}`}>{t('finance.paidStatus.paid')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setIsPaidValue(false)}
+                  className={`flex-row items-center gap-1.5 px-3 py-2 rounded-xl border ${chipClass(!isPaidValue)}`}
+                >
+                  <Ionicons name="time-outline" size={14} color={!isPaidValue ? '#1987EE' : '#6b7280'} />
+                  <Text className={`text-xs font-semibold ${chipTextClass(!isPaidValue)}`}>{t('finance.paidStatus.unpaid')}</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+
           <ControlledInput
             name="description"
             label={t('common.descriptionOptional')}
@@ -314,21 +360,22 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
             returnKeyType="done"
             testID="description-input"
           />
+
+          {!isEditMode && (
+            <View className="mt-3">
+              <TouchableOpacity onPress={() => setIsRecurring(v => !v)} className="flex-row items-center gap-2" testID="recurring-toggle">
+                <Ionicons name={isRecurring ? 'checkbox' : 'square-outline'} size={20} color={isRecurring ? '#1987EE' : '#d1d5db'} />
+                <Text className="text-sm text-gray-600 flex-1">{t('finance.addTransaction.recurring')}</Text>
+              </TouchableOpacity>
+              {isRecurring && <Text className="text-xs text-amber-600 mt-1.5 ml-7">{t('finance.addTransaction.recurringNotReady')}</Text>}
+            </View>
+          )}
         </View>
       </FormProvider>
 
       <Modal isVisible={isDatePickerVisible} onClose={() => setDatePickerVisible(false)} className="pt-14 px-6">
         <DateTimePicker
-          classNames={{
-            ...defaultDatePickerClassNames,
-            header: 'flex-row justify-between items-center mb-2',
-            weekdays: 'border-b border-gray-200 flex-row justify-between my-2 pb-2',
-            weekday_label: 'text-gray-500 text-sm font-semibold',
-            today: 'bg-white border border-primary rounded-full m-1',
-            selected: 'bg-primary border-primary rounded-full m-1',
-            selected_label: 'text-white font-bold',
-            disabled: 'opacity-50',
-          }}
+          classNames={buildDatePickerClassNames(defaultDatePickerClassNames)}
           mode="single"
           date={occurredOn}
           onChange={({ date }) => {

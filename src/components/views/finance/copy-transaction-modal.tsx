@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
+import ModalFooterActions from '@/components/shared/modal/modal-footer-actions';
 import YearMonthSelector from '@/components/views/finance/shared/year-month-selector';
 import dayjs from '@/configs/day-js-config';
 import { FinanceTransactionTypeEnum, IFinanceCategory, ITransaction } from '@/contract/finance/finance.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateTransactionMutation, useGetTransactionsQuery } from '@/redux/api/finance/finance-api';
-import { getTransactionVisual } from '@/utils/finance/category-helpers';
-import { DATE_FORMAT, remapOccurredOnToMonth } from '@/utils/finance/form-helpers';
+import { getCategoryLabel, getTransactionVisual } from '@/utils/finance/category-helpers';
+import { buildCopyTransactionPayload, DATE_FORMAT } from '@/utils/finance/form-helpers';
 import { formatPLN } from '@/utils/finance/format-pln';
 
 const TARGET_MONTH_PAGE_SIZE = 100;
@@ -61,13 +62,7 @@ const CopyTransactionModal: React.FC<CopyTransactionModalProps> = ({ isVisible, 
     if (!transaction) return;
 
     try {
-      await createTransaction({
-        type: transaction.type,
-        amount: transaction.amount,
-        categoryId: transaction.categoryId,
-        note: transaction.note ?? undefined,
-        occurredOn: remapOccurredOnToMonth(transaction.occurredOn, targetYear, targetMonth),
-      }).unwrap();
+      await createTransaction(buildCopyTransactionPayload(transaction, targetYear, targetMonth)).unwrap();
       showSnackbar({ text: t('finance.copyTransaction.success'), variant: SnackbarVariantEnum.SUCCESS });
       onClose();
     } catch {
@@ -75,7 +70,6 @@ const CopyTransactionModal: React.FC<CopyTransactionModalProps> = ({ isVisible, 
     }
   };
 
-  const category = transaction?.categoryId != null ? categoriesById.get(transaction.categoryId) : undefined;
   const meta = transaction ? getTransactionVisual(categoriesById, transaction) : null;
   const isExpense = transaction ? transaction.type === FinanceTransactionTypeEnum.Expense : true;
 
@@ -86,16 +80,12 @@ const CopyTransactionModal: React.FC<CopyTransactionModalProps> = ({ isVisible, 
       isLoading={isLoading}
       loadingMessage={t('finance.copyTransaction.copying')}
       footer={
-        <View className="flex-row justify-between">
-          <TouchableOpacity onPress={handleClose} className="flex-row items-center gap-1 border border-primary rounded-lg px-4 py-2">
-            <Ionicons name="close-circle-outline" size={18} color="#1987EE" />
-            <Text className="text-primary font-semibold">{t('common.cancel')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleCopy} className="flex-row items-center gap-1 rounded-lg px-4 py-2 bg-primary">
-            <Ionicons name="copy-outline" size={18} color="white" />
-            <Text className="text-white font-semibold">{t('finance.copyTransaction.copyButton')}</Text>
-          </TouchableOpacity>
-        </View>
+        <ModalFooterActions
+          onCancel={handleClose}
+          onConfirm={handleCopy}
+          confirmIcon="copy-outline"
+          confirmLabel={t('finance.copyTransaction.copyButton')}
+        />
       }
     >
       <Text className="text-lg font-bold text-center mb-1">{t('finance.copyTransaction.title')}</Text>
@@ -108,7 +98,7 @@ const CopyTransactionModal: React.FC<CopyTransactionModalProps> = ({ isVisible, 
           </View>
           <View className="flex-1">
             <Text className="text-sm font-semibold text-gray-800" numberOfLines={1}>
-              {category?.name ?? t('finance.history.uncategorized')}
+              {getCategoryLabel(categoriesById, transaction.categoryId, t('finance.history.uncategorized'))}
             </Text>
             {transaction.note ? (
               <Text className="text-xs text-gray-500" numberOfLines={1}>

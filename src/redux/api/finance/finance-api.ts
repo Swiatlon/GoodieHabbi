@@ -4,15 +4,19 @@ import {
   IBudget,
   ICreateBudgetRequest,
   ICreateFinanceCategoryRequest,
+  ICreateRecurringTransactionRequest,
   ICreateTransactionRequest,
   IBudgetProgressItem,
   IDeleteFinanceCategoriesRequest,
   IFinanceCategory,
   IMonthlySummary,
+  IRecurringTransaction,
   ITransaction,
   ITransactionPagedResult,
   IUpdateBudgetRequest,
   IUpdateFinanceCategoryRequest,
+  IUpdateRecurringTransactionRequest,
+  IUpdateTransactionPaidStatusRequest,
   IUpdateTransactionRequest,
   IYearlySummary,
 } from '@/contract/finance/finance.contract';
@@ -107,6 +111,15 @@ export const FinanceApi = Api.injectEndpoints({
       invalidatesTags: ['financeTransactions', 'financeAnalytics'],
     }),
 
+    updateTransactionPaidStatus: builder.mutation<ITransaction, { id: number; data: IUpdateTransactionPaidStatusRequest }>({
+      query: ({ id, data }) => ({
+        url: `/finance/transactions/${id}/paid-status`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: ['financeTransactions', 'financeAnalytics'],
+    }),
+
     getBudgets: builder.query<IBudget[], { year: number; month?: number }>({
       query: ({ year, month }) => ({
         url: '/finance/budgets',
@@ -168,6 +181,40 @@ export const FinanceApi = Api.injectEndpoints({
       }),
       providesTags: ['financeAnalytics', 'financeBudgets'],
     }),
+
+    getRecurringTransactions: builder.query<IRecurringTransaction[], void>({
+      query: () => ({
+        url: '/finance/recurring-transactions',
+        method: 'GET',
+      }),
+      providesTags: ['financeRecurring'],
+    }),
+
+    createRecurringTransaction: builder.mutation<IRecurringTransaction, ICreateRecurringTransactionRequest>({
+      query: data => ({
+        url: '/finance/recurring-transactions',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['financeRecurring'],
+    }),
+
+    updateRecurringTransaction: builder.mutation<IRecurringTransaction, { id: number; data: IUpdateRecurringTransactionRequest }>({
+      query: ({ id, data }) => ({
+        url: `/finance/recurring-transactions/${id}`,
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['financeRecurring'],
+    }),
+
+    deleteRecurringTransaction: builder.mutation<void, { id: number }>({
+      query: ({ id }) => ({
+        url: `/finance/recurring-transactions/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['financeRecurring'],
+    }),
   }),
 });
 
@@ -181,6 +228,7 @@ export const {
   useUpdateTransactionMutation,
   useAddCorrectionMutation,
   useDeleteTransactionMutation,
+  useUpdateTransactionPaidStatusMutation,
   useGetBudgetsQuery,
   useCreateBudgetMutation,
   useUpdateBudgetMutation,
@@ -188,4 +236,8 @@ export const {
   useGetMonthlySummaryQuery,
   useGetYearlySummaryQuery,
   useGetBudgetProgressQuery,
+  useGetRecurringTransactionsQuery,
+  useCreateRecurringTransactionMutation,
+  useUpdateRecurringTransactionMutation,
+  useDeleteRecurringTransactionMutation,
 } = FinanceApi;

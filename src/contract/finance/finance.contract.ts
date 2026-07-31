@@ -64,6 +64,9 @@ export interface ITransaction {
   corrections: ITransaction[];
   createdAt: string;
   updatedAt?: string | null;
+  // Whether this transaction has actually been paid/received yet — mainly meaningful for expenses
+  // dated today or in the future. See docs/finance-backend-todo.md.
+  isPaid: boolean;
 }
 
 export interface IAddCorrectionRequest {
@@ -78,9 +81,14 @@ export interface ICreateTransactionRequest {
   occurredOn: string;
   categoryId?: number | null;
   note?: string | null;
+  isPaid?: boolean;
 }
 
 export interface IUpdateTransactionRequest extends ICreateTransactionRequest {}
+
+export interface IUpdateTransactionPaidStatusRequest {
+  isPaid: boolean;
+}
 
 export interface ITransactionPagedResult {
   items: ITransaction[];
@@ -130,6 +138,9 @@ export interface IMonthlySummary {
   net: number;
   expenseByCategory: ICategoryBreakdownItem[];
   incomeByCategory: ICategoryBreakdownItem[];
+  // Leftover carried forward from previous months (income minus expense, chained), server-computed.
+  // See docs/finance-backend-todo.md.
+  openingBalance: number;
 }
 
 export interface IMonthlyTotals {
@@ -192,4 +203,36 @@ export interface IFinanceSettings {
 
 export interface IUpdateCurrencyRequest {
   currency: string;
+}
+
+/**
+ * A recurring transaction is a template the backend materializes into a real transaction every month
+ * (e.g. on a schedule, or lazily the first time that month is touched) — distinct from the client-side
+ * "copy to another month" action, which only ever creates a one-off duplicate. See docs/finance-backend-todo.md.
+ */
+export interface IRecurringTransaction {
+  id: number;
+  type: FinanceTransactionTypeEnum;
+  categoryId: number | null;
+  amount: number;
+  note?: string | null;
+  dayOfMonth: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string | null;
+}
+
+export interface ICreateRecurringTransactionRequest {
+  type: FinanceTransactionTypeEnum;
+  categoryId?: number | null;
+  amount: number;
+  note?: string | null;
+  dayOfMonth: number;
+}
+
+export interface IUpdateRecurringTransactionRequest {
+  amount?: number;
+  note?: string | null;
+  dayOfMonth?: number;
+  isActive?: boolean;
 }

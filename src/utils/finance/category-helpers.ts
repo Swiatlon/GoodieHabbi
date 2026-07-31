@@ -47,3 +47,6 @@ export const getTransactionVisual = (
   const fallbackColor = transaction.type === FinanceTransactionTypeEnum.Expense ? DEFAULT_CATEGORY_COLOR : INCOME_DEFAULT_COLOR;
   return getCategoryVisual(categoriesById, transaction.categoryId, fallbackColor);
 };
+
+export const getCategoryLabel = (categoriesById: Map<number, IFinanceCategory>, categoryId: number | null, uncategorizedLabel: string): string =>
+  categoryId != null ? (categoriesById.get(categoryId)?.name ?? uncategorizedLabel) : uncategorizedLabel;

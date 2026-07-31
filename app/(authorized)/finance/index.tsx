@@ -1,37 +1,67 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AddTransactionModal from '@/components/views/finance/add-transaction-modal';
+import MiniStatCard from '@/components/views/finance/dashboard/mini-stat-card';
 import MonthlyOverviewCard from '@/components/views/finance/dashboard/monthly-overview-card';
 import BudgetModal from '@/components/views/finance/expenses/budget-modal';
 import CategoryCard from '@/components/views/finance/expenses/category-card';
+import RecurringTransactionsModal from '@/components/views/finance/recurring-transactions-modal';
 import SwipeMonthArea from '@/components/views/finance/shared/swipe-month-area';
+import { useFinanceExportPrompt } from '@/components/views/finance/shared/use-finance-export-prompt';
 import YearMonthSelector from '@/components/views/finance/shared/year-month-selector';
 import dayjs from '@/configs/day-js-config';
 import { FinanceTransactionTypeEnum, IFinanceCategory } from '@/contract/finance/finance.contract';
 import { useFinanceMonth } from '@/providers/finance/finance-month-context';
 import { useFinanceDisplay } from '@/providers/finance-display-context';
-import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import {
   useGetBudgetsQuery,
   useGetFinanceCategoriesQuery,
   useGetMonthlySummaryQuery,
   useGetTransactionsQuery,
 } from '@/redux/api/finance/finance-api';
-import { collectCategoryIds, getSavingsCategoryIds } from '@/utils/finance/category-helpers';
-import { buildExportRows, shareFinanceExport } from '@/utils/finance/export';
+import { buildCategoriesById, getSavingsCategoryIds } from '@/utils/finance/category-helpers';
 import { formatPLN } from '@/utils/finance/format-pln';
+import {
+  computeBudgetOverview,
+  getBudgetByCategory,
+  getSavingsAmount,
+  groupAmountByCategory,
+  groupTransactionsByCategory,
+} from '@/utils/finance/summary-helpers';
 
 const RECENT_CATEGORIES_LIMIT = 4;
 const TRANSACTIONS_PAGE_SIZE = 100;
+
+const topLevelIdForCategoryId = (categories: IFinanceCategory[], categoryId: number) => {
+  const direct = categories.find(c => c.id === categoryId);
+  if (direct) return direct.id;
+  const parent = categories.find(c => (c.subCategories ?? []).some(sub => sub.id === categoryId));
+  return parent?.id ?? categoryId;
+};
+
+// Most-recently-used top-level category per type, for the "recently used" chips in AddTransactionModal.
+const getRecentCategoryIds = (transactions: { type: FinanceTransactionTypeEnum; categoryId: number | null; occurredOn: string }[]) => {
+  const forType = (type: FinanceTransactionTypeEnum, categories: IFinanceCategory[]) =>
+    [...transactions]
+      .filter(tx => tx.type === type && tx.categoryId != null)
+      .sort((a, b) => b.occurredOn.localeCompare(a.occurredOn))
+      .map(tx => topLevelIdForCategoryId(categories, tx.categoryId!))
+      .filter((id, index, all) => all.indexOf(id) === index)
+      .slice(0, RECENT_CATEGORIES_LIMIT);
+  return forType;
+};
 
 const Dashboard = () => {
   const { t } = useTranslation();
   const { year, month, setYear, setMonth, goToPreviousMonth, goToNextMonth } = useFinanceMonth();
   const [addModalVisible, setAddModalVisible] = useState(false);
+  const [recurringModalVisible, setRecurringModalVisible] = useState(false);
   const [budgetCategory, setBudgetCategory] = useState<IFinanceCategory | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const { hideNumbers, setHideNumbers, mask } = useFinanceDisplay();
+  const promptExport = useFinanceExportPrompt();
 
   const monthStart = dayjs()
     .year(year)
@@ -59,6 +89,7 @@ const Dashboard = () => {
   const transactions = transactionsPage?.items ?? [];
   const expenseByCategory = summary?.expenseByCategory ?? [];
   const incomeByCategory = summary?.incomeByCategory ?? [];
+  const categoriesById = useMemo(() => buildCategoriesById([...expenseCategories, ...incomeCategories]), [expenseCategories, incomeCategories]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -66,110 +97,98 @@ const Dashboard = () => {
     setRefreshing(false);
   };
 
-  const savingsCategoryIds = getSavingsCategoryIds(expenseCategories);
-  const topLevelExpenseCategories = expenseCategories.filter(cat => !cat.parentCategoryId);
+  const savingsCategoryIds = useMemo(() => getSavingsCategoryIds(expenseCategories), [expenseCategories]);
+  const topLevelExpenseCategories = useMemo(() => expenseCategories.filter(cat => !cat.parentCategoryId), [expenseCategories]);
+  const topLevelIncomeCategories = useMemo(() => incomeCategories.filter(cat => !cat.parentCategoryId), [incomeCategories]);
   const spendingCategories = topLevelExpenseCategories.filter(cat => !savingsCategoryIds.has(cat.id));
   const savingsCategories = topLevelExpenseCategories.filter(cat => savingsCategoryIds.has(cat.id));
 
+  // Grouped once per category (instead of re-filtering the full breakdown/transaction list per category on
+  // every render) — see docs/finance-backend-todo.md-adjacent perf notes in summary-helpers.ts.
+  const expenseAmountByCategory = useMemo(
+    () => groupAmountByCategory(expenseByCategory, topLevelExpenseCategories),
+    [expenseByCategory, topLevelExpenseCategories]
+  );
+  const expenseTransactionsByCategory = useMemo(
+    () => groupTransactionsByCategory(transactions, FinanceTransactionTypeEnum.Expense, topLevelExpenseCategories),
+    [transactions, topLevelExpenseCategories]
+  );
+  const incomeAmountByCategory = useMemo(
+    () => groupAmountByCategory(incomeByCategory, topLevelIncomeCategories),
+    [incomeByCategory, topLevelIncomeCategories]
+  );
+  const incomeTransactionsByCategory = useMemo(
+    () => groupTransactionsByCategory(transactions, FinanceTransactionTypeEnum.Income, topLevelIncomeCategories),
+    [transactions, topLevelIncomeCategories]
+  );
+  const budgetByCategory = useMemo(() => getBudgetByCategory(budgets), [budgets]);
+  const getBudgetForCategory = (cat: IFinanceCategory) => budgetByCategory.get(cat.id) ?? null;
+
   const totalIncome = summary?.totalIncome ?? 0;
-  const totalSaved = expenseByCategory
-    .filter(item => item.categoryId != null && savingsCategoryIds.has(item.categoryId))
-    .reduce((sum, item) => sum + item.amount, 0);
+  // Server-computed, chained across months (see IMonthlySummary.openingBalance) — 0 until the backend ships it.
+  const openingBalance = summary?.openingBalance ?? 0;
+  const totalSaved = getSavingsAmount(expenseByCategory, savingsCategoryIds);
   // Show the full expense total in the top "Spent" card, including money moved into savings/investments.
   const totalSpent = summary?.totalExpense ?? 0;
-  const totalCommitted = totalSpent;
-  const totalBudget = totalIncome;
-  const progress = totalBudget > 0 ? Math.min(totalCommitted / totalBudget, 1) : 0;
-  const isOver = totalBudget > 0 && totalCommitted > totalBudget;
+  const { totalBudget, totalCommitted, progress, isOver } = computeBudgetOverview(totalIncome, openingBalance, totalSpent);
 
   const spendingBudgets = budgets.filter(b => b.categoryId != null && !savingsCategoryIds.has(b.categoryId));
   const sumCategoryBudgets = spendingBudgets.reduce((sum, b) => sum + b.limitAmount, 0);
   const allocationDiff = totalBudget - sumCategoryBudgets;
   const savingsBudget = budgets.filter(b => b.categoryId != null && savingsCategoryIds.has(b.categoryId)).reduce((sum, b) => sum + b.limitAmount, 0);
 
-  const getBudgetForCategory = (cat: IFinanceCategory) => budgets.find(b => b.categoryId === cat.id) ?? null;
-  const getActualForCategory = (cat: IFinanceCategory) => {
-    const ids = new Set(collectCategoryIds(cat));
-    return expenseByCategory.filter(item => item.categoryId != null && ids.has(item.categoryId)).reduce((sum, item) => sum + item.amount, 0);
-  };
-  const getTransactionsForCategory = (cat: IFinanceCategory) => {
-    const ids = new Set(collectCategoryIds(cat));
-    return transactions.filter(tx => tx.type === FinanceTransactionTypeEnum.Expense && tx.categoryId != null && ids.has(tx.categoryId));
-  };
+  const sortedSpendingCategories = [...spendingCategories].sort(
+    (a, b) => (expenseAmountByCategory.get(b.id) ?? 0) - (expenseAmountByCategory.get(a.id) ?? 0)
+  );
+  const sortedIncomeCategories = [...topLevelIncomeCategories].sort(
+    (a, b) => (incomeAmountByCategory.get(b.id) ?? 0) - (incomeAmountByCategory.get(a.id) ?? 0)
+  );
 
-  const topLevelIncomeCategories = incomeCategories.filter(cat => !cat.parentCategoryId);
-  const getActualIncomeForCategory = (cat: IFinanceCategory) => {
-    const ids = new Set(collectCategoryIds(cat));
-    return incomeByCategory.filter(item => item.categoryId != null && ids.has(item.categoryId)).reduce((sum, item) => sum + item.amount, 0);
-  };
-  const getIncomeTransactionsForCategory = (cat: IFinanceCategory) => {
-    const ids = new Set(collectCategoryIds(cat));
-    return transactions.filter(tx => tx.type === FinanceTransactionTypeEnum.Income && tx.categoryId != null && ids.has(tx.categoryId));
-  };
-  const sortedIncomeCategories = [...topLevelIncomeCategories].sort((a, b) => getActualIncomeForCategory(b) - getActualIncomeForCategory(a));
-
-  const sortedSpendingCategories = [...spendingCategories].sort((a, b) => getActualForCategory(b) - getActualForCategory(a));
-
-  const topLevelIdForCategoryId = (categories: IFinanceCategory[], categoryId: number) => {
-    const direct = categories.find(c => c.id === categoryId);
-    if (direct) return direct.id;
-    const parent = categories.find(c => (c.subCategories ?? []).some(sub => sub.id === categoryId));
-    return parent?.id ?? categoryId;
-  };
-
-  const getRecentCategoryIds = (type: FinanceTransactionTypeEnum, categories: IFinanceCategory[]) =>
-    [...transactions]
-      .filter(tx => tx.type === type && tx.categoryId != null)
-      .sort((a, b) => b.occurredOn.localeCompare(a.occurredOn))
-      .map(tx => topLevelIdForCategoryId(categories, tx.categoryId!))
-      .filter((id, index, all) => all.indexOf(id) === index)
-      .slice(0, RECENT_CATEGORIES_LIMIT);
-
-  const recentCategoryIds = {
-    [FinanceTransactionTypeEnum.Expense]: getRecentCategoryIds(FinanceTransactionTypeEnum.Expense, expenseCategories),
-    [FinanceTransactionTypeEnum.Income]: getRecentCategoryIds(FinanceTransactionTypeEnum.Income, incomeCategories),
-  };
+  // Only consumed by AddTransactionModal's "recently used" chips, so recomputing it is wasted work on every
+  // Dashboard render that isn't about opening that modal — memoized on the data it's actually derived from.
+  const recentCategoryIds = useMemo(() => {
+    const forType = getRecentCategoryIds(transactions);
+    return {
+      [FinanceTransactionTypeEnum.Expense]: forType(FinanceTransactionTypeEnum.Expense, expenseCategories),
+      [FinanceTransactionTypeEnum.Income]: forType(FinanceTransactionTypeEnum.Income, incomeCategories),
+    };
+  }, [transactions, expenseCategories, incomeCategories]);
 
   const currentBudgetForModal = budgetCategory ? getBudgetForCategory(budgetCategory) : null;
   const isLoading = loadingSummary || loadingCategories || loadingIncomeCategories || loadingBudgets || loadingTransactions;
 
-  const { hideNumbers, setHideNumbers } = useFinanceDisplay();
-  const { showSnackbar } = useSnackbar();
-
-  const handleExport = () => {
-    Alert.alert(t('finance.export.title'), undefined, [
-      { text: 'CSV', onPress: async () => runExport('csv') },
-      { text: 'JSON', onPress: async () => runExport('json') },
-      { text: t('common.cancel'), style: 'cancel' },
-    ]);
-  };
-
-  const runExport = async (format: 'csv' | 'json') => {
-    try {
-      const categoryNameById = new Map<number, string>([...expenseCategories, ...incomeCategories].map(c => [c.id, c.name]));
-      const rows = buildExportRows(transactions, categoryNameById);
-      await shareFinanceExport(rows, year, month, format);
-    } catch {
-      showSnackbar({ text: t('finance.export.error'), variant: SnackbarVariantEnum.ERROR });
-    }
-  };
+  const headerActions = (
+    <>
+      <TouchableOpacity
+        onPress={() => setHideNumbers(!hideNumbers)}
+        className="px-2.5 py-1.5 rounded-lg bg-gray-100"
+        accessibilityLabel={t('finance.hideNumbers.toggle')}
+      >
+        <Text>{hideNumbers ? '🔒' : '👁️'}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => promptExport(transactions, categoriesById, year, month)}
+        className="px-2.5 py-1.5 rounded-lg bg-gray-100"
+        accessibilityLabel={t('finance.export.title')}
+      >
+        <Text>⬇️</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => setRecurringModalVisible(true)}
+        className="px-2.5 py-1.5 rounded-lg bg-amber-50 relative"
+        accessibilityLabel={t('finance.recurring.actionExperimental')}
+      >
+        <Ionicons name="repeat-outline" size={16} color="#A8791F" />
+        {/* Amber tint + dot mark this as experimental (needs a backend that doesn't exist yet), unlike the
+            two fully-working icons next to it — see docs/finance-backend-todo.md. */}
+        <View className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-amber-500" />
+      </TouchableOpacity>
+    </>
+  );
 
   return (
     <View className="flex-1 bg-gray-50">
-      <YearMonthSelector year={year} month={month} onYearChange={setYear} onMonthChange={setMonth} />
-
-      <View className="absolute top-4 right-4 flex-row items-center gap-2">
-        <TouchableOpacity
-          onPress={() => setHideNumbers(!hideNumbers)}
-          className="px-3 py-2 rounded-lg bg-gray-100"
-          accessibilityLabel={t('finance.hideNumbers.toggle')}
-        >
-          <Text>{hideNumbers ? '🔒' : '👁️'}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleExport} className="px-3 py-2 rounded-lg bg-gray-100" accessibilityLabel={t('finance.export.title')}>
-          <Text>⬇️</Text>
-        </TouchableOpacity>
-      </View>
+      <YearMonthSelector year={year} month={month} onYearChange={setYear} onMonthChange={setMonth} rightActions={headerActions} />
 
       {isLoading ? (
         <View className="flex-1 items-center justify-center">
@@ -194,17 +213,24 @@ const Dashboard = () => {
             />
           </SwipeMonthArea>
 
-          <View className="bg-emerald-50 rounded-2xl p-4 mb-4 flex-row items-center gap-3">
-            <View className="w-10 h-10 rounded-xl items-center justify-center bg-emerald-100">
-              <Ionicons name="trending-up-outline" size={20} color="#10B981" />
-            </View>
-            <View className="flex-1">
-              <Text className="text-xs font-bold text-emerald-700 uppercase tracking-widest">{t('finance.dashboard.savedThisMonth')}</Text>
-              <Text className="text-lg font-bold text-emerald-700">{formatPLN(totalSaved)}</Text>
-            </View>
-            {savingsBudget > 0 && (
-              <Text className="text-xs text-emerald-600">{t('finance.dashboard.savingsGoal', { amount: formatPLN(savingsBudget) })}</Text>
+          <View className="flex-row gap-3 mb-4">
+            {openingBalance > 0 && (
+              <MiniStatCard
+                icon="wallet-outline"
+                color="#1987EE"
+                bgClassName="bg-blue-50"
+                label={t('finance.dashboard.leftoverFromLastMonth')}
+                value={mask(formatPLN(openingBalance))}
+              />
             )}
+            <MiniStatCard
+              icon="trending-up-outline"
+              color="#10B981"
+              bgClassName="bg-emerald-50"
+              label={t('finance.dashboard.savedThisMonth')}
+              value={mask(formatPLN(totalSaved))}
+              caption={savingsBudget > 0 ? t('finance.dashboard.savingsGoal', { amount: formatPLN(savingsBudget) }) : undefined}
+            />
           </View>
 
           <Text className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">{t('finance.dashboard.categories')}</Text>
@@ -212,10 +238,11 @@ const Dashboard = () => {
             <CategoryCard
               key={cat.id}
               category={cat}
-              transactions={getTransactionsForCategory(cat)}
-              actualAmount={getActualForCategory(cat)}
+              transactions={expenseTransactionsByCategory.get(cat.id) ?? []}
+              actualAmount={expenseAmountByCategory.get(cat.id) ?? 0}
               budgetAmount={getBudgetForCategory(cat)?.limitAmount ?? 0}
               onSetBudget={() => setBudgetCategory(cat)}
+              totalForShare={totalSpent}
             />
           ))}
 
@@ -226,10 +253,11 @@ const Dashboard = () => {
                 <CategoryCard
                   key={cat.id}
                   category={cat}
-                  transactions={getTransactionsForCategory(cat)}
-                  actualAmount={getActualForCategory(cat)}
+                  transactions={expenseTransactionsByCategory.get(cat.id) ?? []}
+                  actualAmount={expenseAmountByCategory.get(cat.id) ?? 0}
                   budgetAmount={getBudgetForCategory(cat)?.limitAmount ?? 0}
                   onSetBudget={() => setBudgetCategory(cat)}
+                  totalForShare={totalSpent}
                 />
               ))}
             </>
@@ -242,8 +270,8 @@ const Dashboard = () => {
                 <CategoryCard
                   key={cat.id}
                   category={cat}
-                  transactions={getIncomeTransactionsForCategory(cat)}
-                  actualAmount={getActualIncomeForCategory(cat)}
+                  transactions={incomeTransactionsByCategory.get(cat.id) ?? []}
+                  actualAmount={incomeAmountByCategory.get(cat.id) ?? 0}
                   budgetAmount={0}
                   showBudget={false}
                   emptyLabel={t('finance.expenses.noIncome')}
@@ -264,6 +292,7 @@ const Dashboard = () => {
       </TouchableOpacity>
 
       <AddTransactionModal isVisible={addModalVisible} onClose={() => setAddModalVisible(false)} recentCategoryIds={recentCategoryIds} />
+      <RecurringTransactionsModal isVisible={recurringModalVisible} onClose={() => setRecurringModalVisible(false)} categoriesById={categoriesById} />
       <BudgetModal
         isVisible={budgetCategory !== null}
         onClose={() => setBudgetCategory(null)}

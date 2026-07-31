@@ -21,6 +21,7 @@ export const allTags = [
   'financeTransactions',
   'financeBudgets',
   'financeAnalytics',
+  'financeRecurring',
 ];
 
 const Api = createApi({

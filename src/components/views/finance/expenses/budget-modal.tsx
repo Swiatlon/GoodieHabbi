@@ -29,6 +29,9 @@ interface BudgetFormValues {
   amount: string;
 }
 
+// Drives the divisor in the average below and the number of `useGetMonthlySummaryQuery` calls a few lines
+// down — hooks can't be called a variable number of times, so changing this also means adding/removing one
+// of those three calls (and the corresponding spendFor(...) term) by hand.
 const HISTORY_MONTHS = 3;
 
 // months-ago (1..HISTORY_MONTHS) relative to the viewed year/month, wrapping across year boundaries.

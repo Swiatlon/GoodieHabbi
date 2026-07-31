@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { View, Text, Animated, TouchableOpacity } from 'react-native';
 import { Portal } from 'react-native-portalize';
 import { Ionicons } from '@expo/vector-icons';
@@ -20,8 +20,14 @@ export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [snackbar, setSnackbar] = useState<SnackbarOptions | null>(null);
   const [isVisible, setIsVisible] = useState(true);
   const [fadeAnim] = useState(new Animated.Value(0));
+  // Without this, a second showSnackbar() call fired shortly after the first (e.g. a transaction-saved
+  // success toast immediately followed by an unrelated background-task error toast) would still get hidden
+  // by the FIRST call's 3s timer — cutting the second message's visible time short, sometimes to a flash.
+  const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const showSnackbar = ({ text, variant = SnackbarVariantEnum.INFO }: SnackbarOptions) => {
+    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+
     setSnackbar({ text, variant });
     setIsVisible(true);
 
@@ -31,7 +37,7 @@ export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       useNativeDriver: true,
     }).start();
 
-    setTimeout(() => {
+    hideTimeoutRef.current = setTimeout(() => {
       Animated.timing(fadeAnim, {
         toValue: 0,
         duration: 300,
@@ -44,6 +50,8 @@ export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const handleCloseSnackbar = () => {
+    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+
     Animated.timing(fadeAnim, {
       toValue: 0,
       duration: 300,

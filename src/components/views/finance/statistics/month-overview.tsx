@@ -4,6 +4,7 @@ import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import KpiCard from './kpi-card';
 import { IBudgetProgressItem, IFinanceCategory, IMonthlySummary } from '@/contract/finance/finance.contract';
+import { useFinanceDisplay } from '@/providers/finance-display-context';
 import { buildCategoriesById, getCategoryVisual, getSavingsCategoryIds } from '@/utils/finance/category-helpers';
 import { formatK } from '@/utils/finance/format-k';
 import { formatPLN } from '@/utils/finance/format-pln';
@@ -18,6 +19,7 @@ interface MonthOverviewProps {
 
 const MonthOverview: React.FC<MonthOverviewProps> = ({ summary, prevSummary, budgetProgress, categories }) => {
   const { t } = useTranslation();
+  const { mask } = useFinanceDisplay();
   const uncategorizedLabel = t('finance.history.uncategorized');
 
   const categoriesById = buildCategoriesById(categories);
@@ -37,8 +39,8 @@ const MonthOverview: React.FC<MonthOverviewProps> = ({ summary, prevSummary, bud
     !prevSummary || spentDelta === 0
       ? undefined
       : spentDelta > 0
-        ? t('finance.statistics.moreThanLastMonth', { amount: formatK(Math.abs(spentDelta)) })
-        : t('finance.statistics.lessThanLastMonth', { amount: formatK(Math.abs(spentDelta)) });
+        ? t('finance.statistics.moreThanLastMonth', { amount: mask(formatK(Math.abs(spentDelta))) })
+        : t('finance.statistics.lessThanLastMonth', { amount: mask(formatK(Math.abs(spentDelta))) });
 
   const spendingBreakdown = summary.expenseByCategory.filter(item => item.categoryId != null && !savingsCategoryIds.has(item.categoryId));
   const spendingBudgetProgress = budgetProgress.filter(item => item.categoryId != null && !savingsCategoryIds.has(item.categoryId));
@@ -60,10 +62,16 @@ const MonthOverview: React.FC<MonthOverviewProps> = ({ summary, prevSummary, bud
   return (
     <>
       <View className="flex-row gap-2 mb-4">
-        <KpiCard label={t('finance.statistics.expenses')} value={formatK(totalSpent)} icon="receipt-outline" color="#EC4899" delta={spentDeltaText} />
-        <KpiCard label={t('finance.statistics.income')} value={formatK(totalIncome)} icon="trending-up-outline" color="#10B981" />
-        <KpiCard label={t('finance.statistics.balance')} value={formatK(balance)} icon="wallet-outline" color="#1987EE" />
-        <KpiCard label={t('finance.statistics.saved')} value={formatK(totalSaved)} icon="save-outline" color="#8B5CF6" />
+        <KpiCard label={t('finance.statistics.income')} value={mask(formatK(totalIncome))} icon="trending-up-outline" color="#10B981" />
+        <KpiCard
+          label={t('finance.statistics.expenses')}
+          value={mask(formatK(totalSpent))}
+          icon="receipt-outline"
+          color="#EC4899"
+          delta={spentDeltaText}
+        />
+        <KpiCard label={t('finance.statistics.balance')} value={mask(formatK(balance))} icon="wallet-outline" color="#1987EE" />
+        <KpiCard label={t('finance.statistics.saved')} value={mask(formatK(totalSaved))} icon="save-outline" color="#8B5CF6" />
       </View>
 
       {spendingBreakdown.length > 0 && (
@@ -79,7 +87,7 @@ const MonthOverview: React.FC<MonthOverviewProps> = ({ summary, prevSummary, bud
                     <View className="w-3 h-3 rounded-full" style={{ backgroundColor: visual.color }} />
                     <Text className="text-xs text-gray-600 flex-1">{item.categoryName ?? uncategorizedLabel}</Text>
                     <Text className="text-xs text-gray-500">{Math.round(item.percentage)}%</Text>
-                    <Text className="text-xs font-semibold text-gray-700 w-24 text-right">{formatPLN(item.amount)}</Text>
+                    <Text className="text-xs font-semibold text-gray-700 w-24 text-right">{mask(formatPLN(item.amount))}</Text>
                   </View>
                 );
               })}
@@ -98,8 +106,8 @@ const MonthOverview: React.FC<MonthOverviewProps> = ({ summary, prevSummary, bud
                 <View className="flex-row items-center mb-1">
                   <Ionicons name={visual.icon} size={13} color={visual.color} />
                   <Text className="text-xs font-semibold text-gray-700 ml-1.5 flex-1">{item.categoryName ?? uncategorizedLabel}</Text>
-                  <Text className="text-xs text-gray-600">{formatPLN(item.spent)}</Text>
-                  <Text className="text-xs text-gray-500"> / {formatPLN(item.limit)}</Text>
+                  <Text className="text-xs text-gray-600">{mask(formatPLN(item.spent))}</Text>
+                  <Text className="text-xs text-gray-500"> / {mask(formatPLN(item.limit))}</Text>
                 </View>
                 <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
                   <View
@@ -124,7 +132,7 @@ const MonthOverview: React.FC<MonthOverviewProps> = ({ summary, prevSummary, bud
                     <View className="flex-row items-center mb-1">
                       <Ionicons name={visual.icon} size={13} color={visual.color} />
                       <Text className="text-xs font-semibold text-gray-700 ml-1.5 flex-1">{item.categoryName ?? uncategorizedLabel}</Text>
-                      <Text className="text-xs text-gray-600">{formatPLN(item.amount)}</Text>
+                      <Text className="text-xs text-gray-600">{mask(formatPLN(item.amount))}</Text>
                     </View>
                     <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
                       <View className="h-full rounded-full" style={{ width: `${shareOfTotal}%`, backgroundColor: visual.color, opacity: 0.5 }} />

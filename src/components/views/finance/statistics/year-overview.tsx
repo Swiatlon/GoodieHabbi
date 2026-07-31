@@ -5,6 +5,7 @@ import { BarChart, LineChart, PieChart } from 'react-native-gifted-charts';
 import { Ionicons } from '@expo/vector-icons';
 import KpiCard from './kpi-card';
 import { IBudgetProgressItem, IFinanceCategory, IYearlySummary } from '@/contract/finance/finance.contract';
+import { useFinanceDisplay } from '@/providers/finance-display-context';
 import { buildCategoriesById, getCategoryVisual, getSavingsCategoryIds } from '@/utils/finance/category-helpers';
 import { formatK } from '@/utils/finance/format-k';
 import { formatPLN } from '@/utils/finance/format-pln';
@@ -24,6 +25,7 @@ interface YearOverviewProps {
 
 const YearOverview: React.FC<YearOverviewProps> = ({ year, summary, budgetProgress, categories, monthsShort }) => {
   const { t } = useTranslation();
+  const { mask } = useFinanceDisplay();
   const uncategorizedLabel = t('finance.history.uncategorized');
 
   const categoriesById = buildCategoriesById(categories);
@@ -43,10 +45,11 @@ const YearOverview: React.FC<YearOverviewProps> = ({ year, summary, budgetProgre
     );
   }
 
-  const totalSaved = getSavingsAmount(summary.expenseByCategory, savingsCategoryIds);
   const totalSpent = summary.totalExpense;
   const yearBalance = summary.totalIncome - totalSpent;
-  const savingsPercent = summary.totalIncome > 0 ? Math.round(((summary.totalIncome - totalSpent) / summary.totalIncome) * 100) : 0;
+  // Actual money moved into savings/investment categories — was previously mislabeled as "Oszczędności"
+  // while showing the overall balance percentage instead, which duplicated the "Saldo" card.
+  const totalSaved = getSavingsAmount(summary.expenseByCategory, savingsCategoryIds);
 
   const spendingBreakdown = summary.expenseByCategory.filter(item => item.categoryId != null && !savingsCategoryIds.has(item.categoryId));
 
@@ -58,14 +61,14 @@ const YearOverview: React.FC<YearOverviewProps> = ({ year, summary, budgetProgre
       spacing: 2,
       labelTextStyle: AXIS_LABEL_STYLE,
       topLabelComponent: () =>
-        m.totalIncome > 0 ? <Text style={{ color: '#1987EE', fontSize: 9, marginBottom: 2 }}>{formatK(m.totalIncome)}</Text> : null,
+        m.totalIncome > 0 ? <Text style={{ color: '#1987EE', fontSize: 9, marginBottom: 2 }}>{mask(formatK(m.totalIncome))}</Text> : null,
     },
     {
       value: m.totalExpense,
       frontColor: '#EC4899',
       spacing: 8,
       topLabelComponent: () =>
-        m.totalExpense > 0 ? <Text style={{ color: '#EC4899', fontSize: 9, marginBottom: 2 }}>{formatK(m.totalExpense)}</Text> : null,
+        m.totalExpense > 0 ? <Text style={{ color: '#EC4899', fontSize: 9, marginBottom: 2 }}>{mask(formatK(m.totalExpense))}</Text> : null,
     },
   ]);
 
@@ -74,7 +77,7 @@ const YearOverview: React.FC<YearOverviewProps> = ({ year, summary, budgetProgre
   const hasNegative = summary.months.some(m => m.net < 0);
   const lineData = summary.months.map(m => ({
     value: Math.max(m.net, 0),
-    dataPointText: m.net > 0 ? formatK(m.net) : '',
+    dataPointText: m.net > 0 ? mask(formatK(m.net)) : '',
   }));
 
   const spendingBudgetProgress = budgetProgress.filter(item => item.categoryId != null && !savingsCategoryIds.has(item.categoryId));
@@ -87,10 +90,10 @@ const YearOverview: React.FC<YearOverviewProps> = ({ year, summary, budgetProgre
   return (
     <>
       <View className="flex-row gap-2 mb-4">
-        <KpiCard label={t('finance.statistics.income')} value={formatK(summary.totalIncome)} icon="trending-up-outline" color="#10B981" />
-        <KpiCard label={t('finance.statistics.expenses')} value={formatK(totalSpent)} icon="receipt-outline" color="#EC4899" />
-        <KpiCard label={t('finance.statistics.balance')} value={formatK(yearBalance)} icon="wallet-outline" color="#1987EE" />
-        <KpiCard label={t('finance.statistics.savings')} value={`${savingsPercent}%`} icon="save-outline" color="#8B5CF6" />
+        <KpiCard label={t('finance.statistics.income')} value={mask(formatK(summary.totalIncome))} icon="trending-up-outline" color="#10B981" />
+        <KpiCard label={t('finance.statistics.expenses')} value={mask(formatK(totalSpent))} icon="receipt-outline" color="#EC4899" />
+        <KpiCard label={t('finance.statistics.balance')} value={mask(formatK(yearBalance))} icon="wallet-outline" color="#1987EE" />
+        <KpiCard label={t('finance.statistics.saved')} value={mask(formatK(totalSaved))} icon="save-outline" color="#8B5CF6" />
       </View>
 
       {pieData.length > 0 && (
@@ -106,7 +109,7 @@ const YearOverview: React.FC<YearOverviewProps> = ({ year, summary, budgetProgre
               centerLabelComponent={() => (
                 <View className="items-center">
                   <Text className="text-xs text-gray-500">{t('finance.statistics.total')}</Text>
-                  <Text className="text-sm font-bold text-gray-800">{formatK(totalSpent)}</Text>
+                  <Text className="text-sm font-bold text-gray-800">{mask(formatK(totalSpent))}</Text>
                 </View>
               )}
             />
@@ -121,7 +124,7 @@ const YearOverview: React.FC<YearOverviewProps> = ({ year, summary, budgetProgre
                     <View className="w-3 h-3 rounded-full" style={{ backgroundColor: visual.color }} />
                     <Text className="text-xs text-gray-600 flex-1">{item.categoryName ?? uncategorizedLabel}</Text>
                     <Text className="text-xs text-gray-500">{Math.round(item.percentage)}%</Text>
-                    <Text className="text-xs font-semibold text-gray-700 w-24 text-right">{formatPLN(item.amount)}</Text>
+                    <Text className="text-xs font-semibold text-gray-700 w-24 text-right">{mask(formatPLN(item.amount))}</Text>
                   </View>
                 );
               })}
@@ -157,7 +160,7 @@ const YearOverview: React.FC<YearOverviewProps> = ({ year, summary, budgetProgre
             yAxisTextStyle={AXIS_LABEL_STYLE}
             xAxisLabelTextStyle={AXIS_LABEL_STYLE}
             yAxisLabelPrefix=""
-            formatYLabel={v => formatK(Number(v))}
+            formatYLabel={v => mask(formatK(Number(v)))}
             hideRules
             disableScroll
             width={CHART_WIDTH - 32}
@@ -178,8 +181,8 @@ const YearOverview: React.FC<YearOverviewProps> = ({ year, summary, budgetProgre
                 <View className="flex-row items-center mb-1">
                   <Ionicons name={visual.icon} size={13} color={visual.color} />
                   <Text className="text-xs font-semibold text-gray-700 ml-1.5 flex-1">{item.categoryName ?? uncategorizedLabel}</Text>
-                  <Text className="text-xs text-gray-600">{formatPLN(item.spent)}</Text>
-                  <Text className="text-xs text-gray-500"> / {formatPLN(item.limit)}</Text>
+                  <Text className="text-xs text-gray-600">{mask(formatPLN(item.spent))}</Text>
+                  <Text className="text-xs text-gray-500"> / {mask(formatPLN(item.limit))}</Text>
                 </View>
                 <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
                   <View
@@ -204,7 +207,7 @@ const YearOverview: React.FC<YearOverviewProps> = ({ year, summary, budgetProgre
                     <View className="flex-row items-center mb-1">
                       <Ionicons name={visual.icon} size={13} color={visual.color} />
                       <Text className="text-xs font-semibold text-gray-700 ml-1.5 flex-1">{item.categoryName ?? uncategorizedLabel}</Text>
-                      <Text className="text-xs text-gray-600">{formatPLN(item.amount)}</Text>
+                      <Text className="text-xs text-gray-600">{mask(formatPLN(item.amount))}</Text>
                     </View>
                     <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
                       <View className="h-full rounded-full" style={{ width: `${shareOfTotal}%`, backgroundColor: visual.color, opacity: 0.5 }} />
@@ -239,7 +242,7 @@ const YearOverview: React.FC<YearOverviewProps> = ({ year, summary, budgetProgre
             areaChart
             noOfSections={3}
             yAxisTextStyle={AXIS_LABEL_STYLE}
-            formatYLabel={v => formatK(Number(v))}
+            formatYLabel={v => mask(formatK(Number(v)))}
             xAxisLabelTexts={monthsShort}
             xAxisLabelTextStyle={AXIS_LABEL_STYLE}
             hideRules

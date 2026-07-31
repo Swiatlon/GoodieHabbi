@@ -3,12 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
+import ModalFooterActions from '@/components/shared/modal/modal-footer-actions';
 import dayjs from '@/configs/day-js-config';
 import { FinanceTransactionTypeEnum, ITransaction } from '@/contract/finance/finance.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateTransactionMutation, useGetFinanceCategoriesQuery, useGetTransactionsQuery } from '@/redux/api/finance/finance-api';
-import { buildCategoriesById, getTransactionVisual } from '@/utils/finance/category-helpers';
-import { DATE_FORMAT, remapOccurredOnToMonth } from '@/utils/finance/form-helpers';
+import { buildCategoriesById, getCategoryLabel, getTransactionVisual } from '@/utils/finance/category-helpers';
+import { buildCopyTransactionPayload, DATE_FORMAT } from '@/utils/finance/form-helpers';
 import { formatPLN } from '@/utils/finance/format-pln';
 
 interface CopyFromLastMonthModalProps extends IBaseModalProps {
@@ -65,13 +66,10 @@ const CopyFromLastMonthModal: React.FC<CopyFromLastMonthModalProps> = ({ isVisib
     setSelectedIds(prev => (prev.size === previousTransactions.length ? new Set() : new Set(previousTransactions.map(tx => tx.id))));
   };
 
-  const getMeta = (transaction: ITransaction) => {
-    const category = transaction.categoryId != null ? categoriesById.get(transaction.categoryId) : undefined;
-    return {
-      ...getTransactionVisual(categoriesById, transaction),
-      label: category?.name ?? t('finance.history.uncategorized'),
-    };
-  };
+  const getMeta = (transaction: ITransaction) => ({
+    ...getTransactionVisual(categoriesById, transaction),
+    label: getCategoryLabel(categoriesById, transaction.categoryId, t('finance.history.uncategorized')),
+  });
 
   const handleClose = () => {
     if (isCopying) return;
@@ -83,17 +81,7 @@ const CopyFromLastMonthModal: React.FC<CopyFromLastMonthModalProps> = ({ isVisib
     if (toCopy.length === 0) return;
 
     setIsCopying(true);
-    const results = await Promise.allSettled(
-      toCopy.map(async tx =>
-        createTransaction({
-          type: tx.type,
-          amount: tx.amount,
-          categoryId: tx.categoryId,
-          note: tx.note ?? undefined,
-          occurredOn: remapOccurredOnToMonth(tx.occurredOn, year, month),
-        }).unwrap()
-      )
-    );
+    const results = await Promise.allSettled(toCopy.map(async tx => createTransaction(buildCopyTransactionPayload(tx, year, month)).unwrap()));
     setIsCopying(false);
 
     const succeeded = results.filter(r => r.status === 'fulfilled').length;
@@ -123,20 +111,13 @@ const CopyFromLastMonthModal: React.FC<CopyFromLastMonthModalProps> = ({ isVisib
       isLoading={isCopying}
       loadingMessage={t('finance.copyLastMonth.copying')}
       footer={
-        <View className="flex-row justify-between">
-          <TouchableOpacity onPress={handleClose} className="flex-row items-center gap-1 border border-primary rounded-lg px-4 py-2">
-            <Ionicons name="close-circle-outline" size={18} color="#1987EE" />
-            <Text className="text-primary font-semibold">{t('common.cancel')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleCopy}
-            disabled={selectedIds.size === 0}
-            className={`flex-row items-center gap-1 rounded-lg px-4 py-2 ${selectedIds.size > 0 ? 'bg-primary' : 'bg-gray-300'}`}
-          >
-            <Ionicons name="copy-outline" size={18} color="white" />
-            <Text className="text-white font-semibold">{t('finance.copyLastMonth.copyButton', { count: selectedIds.size })}</Text>
-          </TouchableOpacity>
-        </View>
+        <ModalFooterActions
+          onCancel={handleClose}
+          onConfirm={handleCopy}
+          confirmDisabled={selectedIds.size === 0}
+          confirmIcon="copy-outline"
+          confirmLabel={t('finance.copyLastMonth.copyButton', { count: selectedIds.size })}
+        />
       }
     >
       <Text className="text-lg font-bold text-center mb-1">{t('finance.copyLastMonth.title')}</Text>

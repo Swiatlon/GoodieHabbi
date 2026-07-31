@@ -14,9 +14,21 @@ interface YearMonthSelectorProps {
   onMonthChange: (month: number) => void;
   minYear?: number;
   maxYear?: number;
+  // Rendered on the right of the year row, not layered over the month chips — keeps screen-level actions
+  // (e.g. Dashboard's hide-numbers/export/recurring buttons) visually separate from date navigation instead
+  // of floating on top of the horizontally scrollable chip row where they can read as extra chips.
+  rightActions?: React.ReactNode;
 }
 
-const YearMonthSelector: React.FC<YearMonthSelectorProps> = ({ year, month, onYearChange, onMonthChange, minYear = 2020, maxYear = 2030 }) => {
+const YearMonthSelector: React.FC<YearMonthSelectorProps> = ({
+  year,
+  month,
+  onYearChange,
+  onMonthChange,
+  minYear = 2020,
+  maxYear = 2030,
+  rightActions,
+}) => {
   const { t } = useTranslation();
   const scrollRef = useRef<ScrollView>(null);
 
@@ -27,14 +39,26 @@ const YearMonthSelector: React.FC<YearMonthSelectorProps> = ({ year, month, onYe
 
   return (
     <View className="bg-white border-b border-gray-100">
-      <View className="flex-row items-center justify-center py-3 gap-6">
-        <TouchableOpacity onPress={() => year > minYear && onYearChange(year - 1)} className="p-3" hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-          <Ionicons name="chevron-back" size={20} color={year > minYear ? '#4b465d' : '#d1d5db'} />
-        </TouchableOpacity>
-        <Text className="text-base font-bold text-gray-800 w-14 text-center">{year}</Text>
-        <TouchableOpacity onPress={() => year < maxYear && onYearChange(year + 1)} className="p-3" hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-          <Ionicons name="chevron-forward" size={20} color={year < maxYear ? '#4b465d' : '#d1d5db'} />
-        </TouchableOpacity>
+      <View className="flex-row items-center justify-between py-2 px-2">
+        <View className="flex-1" />
+        <View className="flex-row items-center gap-6">
+          <TouchableOpacity
+            onPress={() => year > minYear && onYearChange(year - 1)}
+            className="p-3"
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Ionicons name="chevron-back" size={20} color={year > minYear ? '#4b465d' : '#d1d5db'} />
+          </TouchableOpacity>
+          <Text className="text-base font-bold text-gray-800 w-14 text-center">{year}</Text>
+          <TouchableOpacity
+            onPress={() => year < maxYear && onYearChange(year + 1)}
+            className="p-3"
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Ionicons name="chevron-forward" size={20} color={year < maxYear ? '#4b465d' : '#d1d5db'} />
+          </TouchableOpacity>
+        </View>
+        <View className="flex-1 flex-row items-center justify-end gap-2">{rightActions}</View>
       </View>
 
       <ScrollView

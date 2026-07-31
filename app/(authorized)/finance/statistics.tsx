@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, Text, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import ToggleTab from '@/components/shared/toggle-tab/toggle-tab';
+import { useFinanceBreakdownExportPrompt } from '@/components/views/finance/shared/use-finance-breakdown-export-prompt';
 import YearMonthSelector from '@/components/views/finance/shared/year-month-selector';
 import YearSelector from '@/components/views/finance/shared/year-selector';
 import MonthOverview from '@/components/views/finance/statistics/month-overview';
@@ -14,6 +16,7 @@ import {
   useGetMonthlySummaryQuery,
   useGetYearlySummaryQuery,
 } from '@/redux/api/finance/finance-api';
+import { buildCategoriesById } from '@/utils/finance/category-helpers';
 import { MONTH_KEYS } from '@/utils/finance/month-keys';
 
 type ViewMode = 'month' | 'year';
@@ -28,6 +31,9 @@ const Statistics = () => {
   const prevYear = month === 1 ? year - 1 : year;
 
   const { data: categories = [], isLoading: loadingCategories } = useGetFinanceCategoriesQuery({ type: FinanceTransactionTypeEnum.Expense });
+  const { data: incomeCategories = [] } = useGetFinanceCategoriesQuery({ type: FinanceTransactionTypeEnum.Income });
+  const categoriesById = useMemo(() => buildCategoriesById([...categories, ...incomeCategories]), [categories, incomeCategories]);
+  const promptExport = useFinanceBreakdownExportPrompt();
 
   const { data: monthSummary, isLoading: loadingMonthSummary, refetch: refetchMonthSummary } = useGetMonthlySummaryQuery({ year, month });
   const { data: prevMonthSummary } = useGetMonthlySummaryQuery({ year: prevYear, month: prevMonth });
@@ -70,7 +76,7 @@ const Statistics = () => {
         <YearSelector year={year} onYearChange={setYear} />
       )}
 
-      <View className="flex-row bg-white px-4 pb-3">
+      <View className="flex-row items-center gap-2 bg-white px-4 pb-3">
         <View className="flex-1 flex-row bg-gray-100 rounded-xl p-1">
           <ToggleTab active={viewMode === 'month'} onPress={() => setViewMode('month')}>
             <Text className={`text-xs font-bold ${viewMode === 'month' ? 'text-primary' : 'text-gray-500'}`}>
@@ -81,6 +87,18 @@ const Statistics = () => {
             <Text className={`text-xs font-bold ${viewMode === 'year' ? 'text-primary' : 'text-gray-500'}`}>{t('finance.statistics.viewYear')}</Text>
           </ToggleTab>
         </View>
+        <TouchableOpacity
+          onPress={() => {
+            const summary = viewMode === 'year' ? yearSummary : monthSummary;
+            if (!summary) return;
+            promptExport(summary.incomeByCategory, summary.expenseByCategory, categoriesById, year, viewMode === 'year' ? null : month);
+          }}
+          disabled={viewMode === 'year' ? !yearSummary : !monthSummary}
+          className="w-10 h-10 items-center justify-center bg-gray-100 rounded-xl"
+          accessibilityLabel={t('finance.export.title')}
+        >
+          <Ionicons name="download-outline" size={18} color="#6b7280" />
+        </TouchableOpacity>
       </View>
 
       {isLoading ? (

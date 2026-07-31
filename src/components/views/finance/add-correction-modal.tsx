@@ -6,11 +6,12 @@ import DateTimePicker, { useDefaultClassNames } from 'react-native-ui-datepicker
 import { Ionicons } from '@expo/vector-icons';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
+import ModalFooterActions from '@/components/shared/modal/modal-footer-actions';
 import dayjs from '@/configs/day-js-config';
 import { ITransaction } from '@/contract/finance/finance.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useAddCorrectionMutation } from '@/redux/api/finance/finance-api';
-import { DATE_FORMAT, parseAmount, todayString } from '@/utils/finance/form-helpers';
+import { buildDatePickerClassNames, DATE_FORMAT, parseAmount, todayString } from '@/utils/finance/form-helpers';
 import { formatPLN } from '@/utils/finance/format-pln';
 
 interface AddCorrectionModalProps extends IBaseModalProps {
@@ -85,20 +86,13 @@ const AddCorrectionModal: React.FC<AddCorrectionModalProps> = ({ isVisible, onCl
       isLoading={isLoading}
       loadingMessage={t('finance.corrections.adding')}
       footer={
-        <View className="flex-row justify-between">
-          <TouchableOpacity onPress={handleClose} className="flex-row items-center gap-1 border border-primary rounded-lg px-4 py-2">
-            <Ionicons name="close-circle-outline" size={18} color="#1987EE" />
-            <Text className="text-primary font-semibold">{t('common.cancel')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleSubmit(onSubmit)}
-            disabled={!canSubmit}
-            className={`flex-row items-center gap-1 rounded-lg px-4 py-2 ${canSubmit ? 'bg-primary' : 'bg-gray-300'}`}
-          >
-            <Ionicons name="arrow-undo-outline" size={18} color="white" />
-            <Text className="text-white font-semibold">{t('finance.corrections.addButton')}</Text>
-          </TouchableOpacity>
-        </View>
+        <ModalFooterActions
+          onCancel={handleClose}
+          onConfirm={handleSubmit(onSubmit)}
+          confirmDisabled={!canSubmit}
+          confirmIcon="arrow-undo-outline"
+          confirmLabel={t('finance.corrections.addButton')}
+        />
       }
     >
       <FormProvider {...methods}>
@@ -149,16 +143,7 @@ const AddCorrectionModal: React.FC<AddCorrectionModalProps> = ({ isVisible, onCl
 
       <Modal isVisible={isDatePickerVisible} onClose={() => setDatePickerVisible(false)} className="pt-14 px-6">
         <DateTimePicker
-          classNames={{
-            ...defaultDatePickerClassNames,
-            header: 'flex-row justify-between items-center mb-2',
-            weekdays: 'border-b border-gray-200 flex-row justify-between my-2 pb-2',
-            weekday_label: 'text-gray-500 text-sm font-semibold',
-            today: 'bg-white border border-primary rounded-full m-1',
-            selected: 'bg-primary border-primary rounded-full m-1',
-            selected_label: 'text-white font-bold',
-            disabled: 'opacity-50',
-          }}
+          classNames={buildDatePickerClassNames(defaultDatePickerClassNames)}
           mode="single"
           date={occurredOn}
           maxDate={todayString()}
