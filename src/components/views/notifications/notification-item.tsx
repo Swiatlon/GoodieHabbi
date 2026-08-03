@@ -1,5 +1,6 @@
 import { FC } from 'react';
-import { Animated, TouchableOpacity, View, Text } from 'react-native';
+import { TouchableOpacity, View, Text } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { NotificationDto } from '@/contract/notifications/notifications';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';

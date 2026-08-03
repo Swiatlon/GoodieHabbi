@@ -19,6 +19,7 @@ const nav = {
       weekly: 'Tygodniowe zadania',
       monthly: 'Miesięczne zadania',
     },
+    analytics: 'Statystyki nawyków',
   },
   leaderboard: 'Ranking',
   shop: 'Sklep',

@@ -18,6 +18,7 @@ const UnpaidBadge: React.FC<UnpaidBadgeProps> = ({ transactionId }) => {
   const handlePress = async () => {
     try {
       await updateTransactionPaidStatus({ id: transactionId, data: { isPaid: true } }).unwrap();
+      showSnackbar({ text: t('finance.paidStatus.markedPaidSuccess'), variant: SnackbarVariantEnum.SUCCESS });
     } catch {
       showSnackbar({ text: t('finance.addTransaction.updatedError'), variant: SnackbarVariantEnum.ERROR });
     }

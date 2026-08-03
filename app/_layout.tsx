@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Host } from 'react-native-portalize';
 import { Provider } from 'react-redux';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 import { Drawer } from 'expo-router/drawer';
 import * as SplashScreen from 'expo-splash-screen';
@@ -52,34 +53,36 @@ export default function RootLayout() {
   };
 
   return (
-    <Host>
-      <SnackbarProvider>
-        <Provider store={store}>
-          <ApiErrorListener />
-          <GestureHandlerRootView className="flex-1 bg-white">
-            <PersistLoginMiddleware onLoaded={() => handleLoaded('persistLogin')}>
-              <RoutesPermissionMiddleware>
-                <PrefetchMiddleware onLoaded={() => handleLoaded('prefetch')}>
-                  <NotificationsProvider>
-                    <FinanceDisplayProvider>
-                      <AchievementOverlay />
-                      <Drawer
-                        screenOptions={{
-                          header: () => <Header />,
-                          sceneStyle: {
-                            backgroundColor: 'white',
-                          },
-                        }}
-                        drawerContent={props => <CustomDrawerContent {...props} />}
-                      />
-                    </FinanceDisplayProvider>
-                  </NotificationsProvider>
-                </PrefetchMiddleware>
-              </RoutesPermissionMiddleware>
-            </PersistLoginMiddleware>
-          </GestureHandlerRootView>
-        </Provider>
-      </SnackbarProvider>
-    </Host>
+    <SafeAreaProvider>
+      <Host>
+        <SnackbarProvider>
+          <Provider store={store}>
+            <ApiErrorListener />
+            <GestureHandlerRootView className="flex-1 bg-white">
+              <PersistLoginMiddleware onLoaded={() => handleLoaded('persistLogin')}>
+                <RoutesPermissionMiddleware>
+                  <PrefetchMiddleware onLoaded={() => handleLoaded('prefetch')}>
+                    <NotificationsProvider>
+                      <FinanceDisplayProvider>
+                        <AchievementOverlay />
+                        <Drawer
+                          screenOptions={{
+                            header: () => <Header />,
+                            sceneStyle: {
+                              backgroundColor: 'white',
+                            },
+                          }}
+                          drawerContent={props => <CustomDrawerContent {...props} />}
+                        />
+                      </FinanceDisplayProvider>
+                    </NotificationsProvider>
+                  </PrefetchMiddleware>
+                </RoutesPermissionMiddleware>
+              </PersistLoginMiddleware>
+            </GestureHandlerRootView>
+          </Provider>
+        </SnackbarProvider>
+      </Host>
+    </SafeAreaProvider>
   );
 }

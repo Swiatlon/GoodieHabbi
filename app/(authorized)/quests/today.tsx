@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, FlatList, Text, Animated } from 'react-native';
+import { View, FlatList, Text } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/shared/button/button';
 import FilterModal from '@/components/shared/config-modal/filter-modal';

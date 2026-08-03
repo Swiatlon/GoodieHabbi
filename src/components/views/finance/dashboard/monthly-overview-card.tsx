@@ -65,13 +65,15 @@ const MonthlyOverviewCard: React.FC<MonthlyOverviewCardProps> = ({
       <View className="flex-row justify-between mb-3">
         <View className="gap-1">
           <Text className="text-xs text-gray-500">{t('finance.dashboard.spent')}</Text>
-          <Text className={`text-xl font-bold ${isOver ? 'text-red-500' : 'text-gray-800'}`}>{mask(formatPLN(totalSpent))}</Text>
+          {/* The headline is real consumption: money moved into savings/investments is not spending,
+              so burying it in a sub-label made the number that matters the harder one to read. */}
+          <Text className={`text-xl font-bold ${isOver ? 'text-red-500' : 'text-gray-800'}`}>{mask(formatPLN(realSpent))}</Text>
           {totalSaved > 0 && (
             <StatBadge
-              icon="cart-outline"
+              icon="wallet-outline"
               color="#6b7280"
               bgClassName="bg-gray-100"
-              label={t('finance.dashboard.spentExcludingSavings', { amount: mask(formatPLN(totalSpent - totalSaved)) })}
+              label={t('finance.dashboard.spentIncludingSavings', { amount: mask(formatPLN(totalSpent)) })}
             />
           )}
         </View>

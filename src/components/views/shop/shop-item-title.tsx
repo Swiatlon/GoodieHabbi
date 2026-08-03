@@ -1,5 +1,6 @@
 import { FC } from 'react';
-import { Animated, View } from 'react-native';
+import { View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { SHOP_ITEM_TYPE_CONFIG } from './items.config';
 import { ShopItemSubProps } from './shop-item';
 import ShopItemButton from './shop-item-button';

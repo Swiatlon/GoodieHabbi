@@ -87,7 +87,7 @@ const ShowDailyQuestItemModal: React.FC<ShowDailyQuestItemModalProps> = ({ quest
         {isSeasonalQuest(quest) && <QuestSeasonExtended season={quest.season} />}
         {isWeeklyQuest(quest) && <QuestWeekdaysExtended weekdays={quest.weekdays} />}
         {isMonthlyQuest(quest) && <QuestMonthDaysExtended startDay={quest.startDay} endDay={quest.endDay} />}
-        {'statistics' in quest && <QuestStatisticsExtended statistics={quest.statistics} />}
+        {'statistics' in quest && <QuestStatisticsExtended statistics={quest.statistics} questId={quest.id} onClose={onClose} />}
         <QuestPriorityExtended priority={quest.priority} />
         <QuestDifficultyExtended difficulty={quest.difficulty} />
         <QuestDatesExtended startDate={quest.startDate} endDate={quest.endDate} />

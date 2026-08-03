@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import KpiCard from './kpi-card';
+import KpiCard from '@/components/shared/kpi-card/kpi-card';
 import { IBudgetProgressItem, IFinanceCategory, IMonthlySummary } from '@/contract/finance/finance.contract';
 import { useFinanceDisplay } from '@/providers/finance-display-context';
 import { buildCategoriesById, getCategoryVisual, getSavingsCategoryIds } from '@/utils/finance/category-helpers';

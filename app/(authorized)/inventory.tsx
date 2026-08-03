@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, View, Text, Animated } from 'react-native';
+import { FlatList, View, Text } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import { useNavigation } from 'expo-router';

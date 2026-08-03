@@ -39,7 +39,16 @@ export const dailyQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
+      invalidatesTags: [
+        'dailyQuestsGet',
+        'todayQuestsGet',
+        'goals',
+        'statsProfile',
+        'statsExtended',
+        'eligibleQuestsForGoals',
+        'questAnalytics',
+        'habitsOverview',
+      ],
     }),
 
     updateDailyQuest: builder.mutation<void, IPutDailyQuestRequest>({
@@ -55,7 +64,7 @@ export const dailyQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet', 'goals'],
+      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet', 'goals', 'questAnalytics', 'habitsOverview'],
     }),
 
     patchDailyQuest: builder.mutation<void, IPatchDailyQuestRequest>({
@@ -71,7 +80,16 @@ export const dailyQuestSlice = Api.injectEndpoints({
           body: transformedPatchData,
         };
       },
-      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
+      invalidatesTags: [
+        'dailyQuestsGet',
+        'todayQuestsGet',
+        'goals',
+        'statsProfile',
+        'statsExtended',
+        'eligibleQuestsForGoals',
+        'questAnalytics',
+        'habitsOverview',
+      ],
     }),
 
     deleteDailyQuest: builder.mutation<void, IDeleteDailyQuestRequest>({
@@ -79,7 +97,16 @@ export const dailyQuestSlice = Api.injectEndpoints({
         url: `/quests/daily/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['dailyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
+      invalidatesTags: [
+        'dailyQuestsGet',
+        'todayQuestsGet',
+        'goals',
+        'statsProfile',
+        'statsExtended',
+        'eligibleQuestsForGoals',
+        'questAnalytics',
+        'habitsOverview',
+      ],
     }),
   }),
 });

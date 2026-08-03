@@ -185,10 +185,8 @@ const Dashboard = () => {
         },
         {
           icon: 'repeat-outline',
-          label: t('finance.recurring.actionExperimental'),
+          label: t('finance.recurring.action'),
           onPress: () => setRecurringModalVisible(true),
-          tintColor: '#A8791F',
-          showDot: true,
         },
         {
           icon: 'pricetags-outline',

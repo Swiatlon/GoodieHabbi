@@ -21,7 +21,7 @@ import { IWeeklyQuest, IPostWeeklyQuestRequest } from '@/contract/quests/quests-
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
 import { useUpdateWeeklyQuestMutation } from '@/redux/api/quests/weekly-quests-api';
-import { toUTCISOString } from '@/utils/utils/utils';
+import { toIsoDate } from '@/utils/utils/utils';
 
 interface UpdateWeeklyQuestModalProps extends IBaseModalProps {
   quest: IWeeklyQuest;
@@ -109,14 +109,13 @@ const UpdateWeeklyQuestModal: React.FC<UpdateWeeklyQuestModalProps> = ({ isVisib
           />
           <DatePickerModal
             name="startDate"
-            minDate={toUTCISOString(dayjs.min(dayjs(quest.startDate ?? '1970-01-01'), dayjs()))}
+            minDate={toIsoDate(dayjs.min(dayjs(quest.startDate ?? '1970-01-01'), dayjs()))}
             label={t('quests.weekly.form.startDateLabel')}
             placeholder={t('quests.weekly.form.startDatePlaceholder')}
           />
           <DatePickerModal
             name="endDate"
-            isEndDate
-            minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(quest.endDate ?? dayjs())}
+            minDate={startDate ? toIsoDate(startDate) : toIsoDate(quest.endDate ?? dayjs())}
             label={t('quests.weekly.form.endDateLabel')}
             placeholder={t('quests.weekly.form.endDatePlaceholder')}
           />

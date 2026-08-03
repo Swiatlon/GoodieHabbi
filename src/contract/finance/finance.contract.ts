@@ -208,9 +208,12 @@ export interface IUpdateCurrencyRequest {
 }
 
 /**
- * A recurring transaction is a template the backend materializes into a real transaction every month
- * (e.g. on a schedule, or lazily the first time that month is touched) — distinct from the client-side
- * "copy to another month" action, which only ever creates a one-off duplicate. See docs/finance-backend-todo.md.
+ * A recurring transaction is a template the backend materializes into a real transaction every month on
+ * a schedule — distinct from the client-side "copy to another month" action, which only ever creates a
+ * one-off duplicate. `dayOfMonth` past the end of a short month lands on that month's last day.
+ *
+ * Note that the materialized transactions carry no reference back to the template they came from, so the
+ * app cannot mark them as recurring, dedupe them, or offer a "skip this month" action.
  */
 export interface IRecurringTransaction {
   id: number;
@@ -232,6 +235,12 @@ export interface ICreateRecurringTransactionRequest {
   dayOfMonth: number;
 }
 
+/**
+ * Every field is optional and an omitted one is left untouched — so a partial body (e.g. just
+ * `isActive`) is safe and preserves the rest.
+ *
+ * ⚠️ `note: null` is treated as "leave unchanged", not "clear". To erase a note send an empty string.
+ */
 export interface IUpdateRecurringTransactionRequest {
   amount?: number;
   note?: string | null;

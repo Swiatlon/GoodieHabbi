@@ -372,6 +372,71 @@ const quests = {
       setTimeButton: 'Set Time',
     },
   },
+  analytics: {
+    loading: 'Loading statistics...',
+    openFromQuest: 'See full statistics',
+    rangeLabel: 'Range: {{from}} – {{to}}',
+    range: {
+      days: '{{days}} days',
+    },
+    outcome: {
+      completed: 'Done',
+      backfilled: 'Backfilled',
+      missed: 'Missed',
+      pending: 'In progress',
+      unscheduled: 'Not scheduled',
+    },
+    summary: {
+      completionRate: 'Success rate',
+      currentStreak: 'Streak',
+      longestStreak: 'Longest',
+      inRange: 'in range',
+      allTime: 'all time',
+      periodsHeading: 'Period breakdown',
+      periodsBreakdown: 'Done: {{completed}} · Missed: {{missed}} · In progress: {{pending}}',
+    },
+    heatmap: {
+      heading: 'Calendar',
+      hint: 'An empty cell is a day the habit was not scheduled on.',
+    },
+    trend: {
+      heading: 'Success rate trend',
+      hint: 'A dash instead of a bar means nothing was scheduled in that period.',
+      granularity: {
+        day: 'by day',
+        week: 'by week',
+        month: 'by month',
+      },
+    },
+    weekday: {
+      heading: 'Days of the week',
+      hint: 'Which days this tends to slip on.',
+    },
+    empty: {
+      heading: 'No occurrences in this range',
+      hint: 'Pick a longer range, or give the habit time to build up.',
+    },
+    error: {
+      heading: 'Could not load the statistics',
+      hint: 'Statistics are only available for repeatable quests: daily, weekly and monthly.',
+    },
+    overview: {
+      title: 'Habit statistics',
+      donePeriods: 'Done',
+      habitsCount: 'Habits',
+      repeatable: 'repeatable',
+      dailyRateHeading: 'Day by day',
+      dailyRateHint: 'What share of the scheduled habits you completed on each day.',
+      scaleLess: 'less',
+      scaleMore: 'more',
+      rankingHeading: 'Your habits',
+      rankingHint: 'From the best kept to the ones needing attention.',
+      questMeta: 'Done {{completed}} of {{evaluated}}',
+      questNoData: 'No evaluated periods in this range',
+      emptyHeading: 'No repeatable habits yet',
+      emptyHint: 'Add a daily, weekly or monthly quest to see statistics here.',
+    },
+  },
 };
 
 export default quests;

@@ -19,7 +19,6 @@ jest.mock('../modal/modal', () => {
 
 jest.mock('@/configs/day-js-config', () => require('dayjs'));
 jest.mock('@/utils/utils/utils', () => ({
-  fromUTCToLocal: (date: string) => date,
   safeDateFormat: (date: string) => `Formatted(${date})`,
 }));
 

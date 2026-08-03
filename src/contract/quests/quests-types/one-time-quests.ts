@@ -10,9 +10,9 @@ export interface IDeleteOneTimeQuestRequest {
   id: number;
 }
 
-export interface IPostOneTimeQuestRequest extends Omit<IOneTimeQuest, 'id' | 'questType'> {}
+export interface IPostOneTimeQuestRequest extends Omit<IOneTimeQuest, 'id' | 'questType' | 'lastCompletedAt'> {}
 
-export interface IPutOneTimeQuestRequest extends Omit<IOneTimeQuest, 'questType'> {}
+export interface IPutOneTimeQuestRequest extends Omit<IOneTimeQuest, 'questType' | 'lastCompletedAt'> {}
 
 export interface IPatchOneTimeQuestRequest extends Partial<Omit<IOneTimeQuest, 'questType'>> {
   id: number;

@@ -7,9 +7,8 @@ import Button from '@/components/shared/button/button';
 import Modal from '@/components/shared/modal/modal';
 import ControlledSelect from '@/components/shared/select/controlled-select';
 import { SelectItemValue } from '@/components/shared/select/select';
-import dayjs from '@/configs/day-js-config';
 import { NullableString } from '@/types/global-types';
-import { safeDateFormat, toUTCISOString } from '@/utils/utils/utils';
+import { safeDateFormat, toIsoDate } from '@/utils/utils/utils';
 
 interface DatePickerModalProps {
   name: string;
@@ -17,12 +16,11 @@ interface DatePickerModalProps {
   placeholder: string;
   minDate?: string | null;
   maxDate?: string | null;
-  isEndDate?: boolean;
 }
 
 const formatOfDate = 'YYYY-MM-DD';
 
-const DatePickerModal = ({ minDate = null, maxDate = null, label, name, placeholder, isEndDate }: DatePickerModalProps) => {
+const DatePickerModal = ({ minDate = null, maxDate = null, label, name, placeholder }: DatePickerModalProps) => {
   const { t } = useTranslation();
   const defaultClassNames = useDefaultClassNames();
   const { setValue, watch } = useFormContext<Record<string, SelectItemValue>>();
@@ -32,8 +30,7 @@ const DatePickerModal = ({ minDate = null, maxDate = null, label, name, placehol
   const handleClose = () => setIsVisible(false);
 
   const handleDateChange = (date: DateType) => {
-    const transformedDate = isEndDate ? dayjs(date).endOf('day') : date;
-    setValue(name, toUTCISOString(transformedDate));
+    setValue(name, toIsoDate(date));
   };
 
   const selectedDate = watch(name) as NullableString;

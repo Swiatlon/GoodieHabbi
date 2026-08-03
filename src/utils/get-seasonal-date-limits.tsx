@@ -1,14 +1,16 @@
 import dayjs from '@/configs/day-js-config';
 import { SeasonEnum, SeasonEnumType } from '@/contract/quests/base-quests';
-import { toUTCISOString } from '@/utils/utils/utils';
+import { toIsoDate } from '@/utils/utils/utils';
 
+// Season boundaries and "today" are calendar days, so everything here stays in local time — going
+// through UTC puts users east of Greenwich on the previous day for part of every evening.
 const getSeasonDateRange = (season: SeasonEnumType | null) => {
-  const today = dayjs.utc();
+  const today = dayjs();
   const year = today.year();
 
   let winterStart, winterEnd;
 
-  if (today.isAfter(dayjs.utc(`${year}-03-20`))) {
+  if (today.isAfter(dayjs(`${year}-03-20`))) {
     winterStart = `${year}-12-21`;
     winterEnd = `${year + 1}-03-20`;
   } else {
@@ -28,16 +30,16 @@ const getSeasonDateRange = (season: SeasonEnumType | null) => {
   }
 
   return {
-    start: dayjs.utc(seasonRanges[season].start),
-    end: dayjs.utc(seasonRanges[season].end),
+    start: dayjs(seasonRanges[season].start),
+    end: dayjs(seasonRanges[season].end),
   };
 };
 
-const formatDate = (date: dayjs.Dayjs | string | null | undefined) => (date ? toUTCISOString(date) : null);
+const formatDate = (date: dayjs.Dayjs | string | null | undefined) => (date ? toIsoDate(date) : null);
 
 export const getSeasonalDateLimits = (selectedSeason: SeasonEnumType | null, startDate: string | null | undefined) => {
   const seasonDates = getSeasonDateRange(selectedSeason);
-  const today = dayjs.utc();
+  const today = dayjs();
 
   return {
     minStartDate: formatDate(seasonDates?.start.isAfter(today) ? seasonDates.start : today),

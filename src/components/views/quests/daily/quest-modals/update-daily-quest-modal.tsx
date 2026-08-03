@@ -20,7 +20,7 @@ import { IDailyQuest, IPostDailyQuestRequest } from '@/contract/quests/quests-ty
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useUpdateDailyQuestMutation } from '@/redux/api/quests/daily-quests-api';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
-import { toUTCISOString } from '@/utils/utils/utils';
+import { toIsoDate } from '@/utils/utils/utils';
 
 interface UpdateDailyQuestModalProps {
   isVisible: boolean;
@@ -109,16 +109,15 @@ const UpdateDailyQuestModal: React.FC<UpdateDailyQuestModalProps> = ({ isVisible
           />
           <DatePickerModal
             name="startDate"
-            minDate={toUTCISOString(dayjs.min(dayjs(quest.startDate ?? '1970-01-01'), dayjs()))}
+            minDate={toIsoDate(dayjs.min(dayjs(quest.startDate ?? '1970-01-01'), dayjs()))}
             label={t('quests.daily.updateModal.startDateLabel')}
             placeholder={t('quests.daily.form.startDatePlaceholder')}
           />
           <DatePickerModal
             name="endDate"
-            minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(quest.endDate ?? dayjs())}
+            minDate={startDate ? toIsoDate(startDate) : toIsoDate(quest.endDate ?? dayjs())}
             label={t('quests.daily.form.endDateLabel')}
             placeholder={t('quests.daily.form.endDatePlaceholder')}
-            isEndDate
           />
           <EmojiPickerComponent />
           <PriorityPicker />

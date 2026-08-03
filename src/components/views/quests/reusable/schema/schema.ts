@@ -16,6 +16,8 @@ export const useBaseQuestSchema = () => {
 
         if (!value) return true;
 
+        // Values are calendar dates ("YYYY-MM-DD"); dayjs parses them as a local day, so comparing
+        // day-by-day here matches what the backend does with its own DateOnly values.
         const inputDate = dayjs(value).startOf('day');
         const today = dayjs().startOf('day');
 
@@ -41,8 +43,8 @@ export const useBaseQuestSchema = () => {
           return true;
         }
 
-        const start = dayjs(startDate).local();
-        const end = dayjs(value).local();
+        const start = dayjs(startDate);
+        const end = dayjs(value);
 
         return end.isSameOrAfter(start, 'day');
       })

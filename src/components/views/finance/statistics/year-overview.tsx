@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { View, Text, Dimensions } from 'react-native';
 import { BarChart, LineChart, PieChart } from 'react-native-gifted-charts';
 import { Ionicons } from '@expo/vector-icons';
-import KpiCard from './kpi-card';
+import KpiCard from '@/components/shared/kpi-card/kpi-card';
 import { IBudgetProgressItem, IFinanceCategory, IYearlySummary } from '@/contract/finance/finance.contract';
 import { useFinanceDisplay } from '@/providers/finance-display-context';
 import { buildCategoriesById, getCategoryVisual, getSavingsCategoryIds } from '@/utils/finance/category-helpers';

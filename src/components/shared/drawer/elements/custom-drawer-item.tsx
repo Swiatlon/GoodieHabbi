@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, ParamListBase, NavigationProp } from '@react-navigation/native';
+import { useRouter, usePathname, Href } from 'expo-router';
 
 interface DropdownItem {
   label: string;
@@ -47,10 +47,11 @@ const renderExtendArrow = (isOpen: boolean) => (
 
 const CustomDrawerItem: React.FC<CustomDrawerProps> = ({ label, icon, items = [], route, depth = 0, defaultOpen = false }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
-  const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const currentRoute = navigation.getState().routes[navigation.getState().index]?.name;
-  const isActive = route === currentRoute;
+  const normalizedRoute = route ? `/${route.replace(/\([^)]+\)\//g, '')}` : undefined;
+  const isActive = normalizedRoute === pathname;
   const hasChildren = items.length > 0;
   const marginClass = DEPTH_MARGIN_CLASSES[depth];
 
@@ -58,7 +59,7 @@ const CustomDrawerItem: React.FC<CustomDrawerProps> = ({ label, icon, items = []
     setIsOpen(!isOpen);
 
     if (!hasChildren && route) {
-      navigation.navigate(route);
+      router.navigate(`/${route}` as Href);
     }
   };
 

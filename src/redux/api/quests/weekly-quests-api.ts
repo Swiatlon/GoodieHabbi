@@ -39,7 +39,16 @@ export const weeklyQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
+      invalidatesTags: [
+        'weeklyQuestsGet',
+        'todayQuestsGet',
+        'goals',
+        'statsProfile',
+        'statsExtended',
+        'eligibleQuestsForGoals',
+        'questAnalytics',
+        'habitsOverview',
+      ],
     }),
 
     updateWeeklyQuest: builder.mutation<void, IPutWeeklyQuestRequest>({
@@ -55,7 +64,7 @@ export const weeklyQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet', 'goals'],
+      invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet', 'goals', 'questAnalytics', 'habitsOverview'],
     }),
 
     patchWeeklyQuest: builder.mutation<void, IPatchWeeklyQuestRequest>({
@@ -64,7 +73,16 @@ export const weeklyQuestSlice = Api.injectEndpoints({
         method: 'PATCH',
         body: patchData,
       }),
-      invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
+      invalidatesTags: [
+        'weeklyQuestsGet',
+        'todayQuestsGet',
+        'goals',
+        'statsProfile',
+        'statsExtended',
+        'eligibleQuestsForGoals',
+        'questAnalytics',
+        'habitsOverview',
+      ],
     }),
 
     deleteWeeklyQuest: builder.mutation<void, IDeleteWeeklyQuestRequest>({
@@ -72,7 +90,16 @@ export const weeklyQuestSlice = Api.injectEndpoints({
         url: `/quests/weekly/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['weeklyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
+      invalidatesTags: [
+        'weeklyQuestsGet',
+        'todayQuestsGet',
+        'goals',
+        'statsProfile',
+        'statsExtended',
+        'eligibleQuestsForGoals',
+        'questAnalytics',
+        'habitsOverview',
+      ],
     }),
   }),
 });

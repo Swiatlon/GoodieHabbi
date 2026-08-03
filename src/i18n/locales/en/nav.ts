@@ -19,6 +19,7 @@ const nav = {
       weekly: 'Weekly Quests',
       monthly: 'Monthly Quests',
     },
+    analytics: 'Habit Statistics',
   },
   leaderboard: 'Leaderboard',
   shop: 'Shop',
