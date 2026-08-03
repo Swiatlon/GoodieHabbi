@@ -21,7 +21,7 @@ import { IPostMonthlyQuestRequest } from '@/contract/quests/quests-types/monthly
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
 import { useCreateMonthlyQuestMutation } from '@/redux/api/quests/monthly-quests-api';
-import { toUTCISOString } from '@/utils/utils/utils';
+import { toIsoDate } from '@/utils/utils/utils';
 
 interface AddMonthlyQuestModalProps extends IBaseModalProps {}
 
@@ -121,16 +121,15 @@ const AddMonthlyQuestModal: React.FC<AddMonthlyQuestModalProps> = ({ isVisible, 
           />
           <DatePickerModal
             name="startDate"
-            minDate={toUTCISOString(dayjs())}
+            minDate={toIsoDate(dayjs())}
             label={t('quests.monthly.form.startDateLabel')}
             placeholder={t('quests.monthly.form.startDatePlaceholder')}
           />
           <DatePickerModal
             name="endDate"
-            minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(dayjs())}
+            minDate={startDate ? toIsoDate(startDate) : toIsoDate(dayjs())}
             label={t('quests.monthly.form.endDateLabel')}
             placeholder={t('quests.monthly.form.endDatePlaceholder')}
-            isEndDate
           />
           <EmojiPickerComponent />
           <PriorityPicker />

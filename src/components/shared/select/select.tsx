@@ -4,7 +4,7 @@ import { TextInput, TouchableOpacity, View, Text, ScrollView } from 'react-nativ
 import { Ionicons } from '@expo/vector-icons';
 import Modal from '../modal/modal';
 import dayjs from '@/configs/day-js-config';
-import { fromUTCToLocal, safeDateFormat } from '@/utils/utils/utils';
+import { safeDateFormat } from '@/utils/utils/utils';
 
 export type SelectItemValue = string | number | null;
 
@@ -113,8 +113,10 @@ const getFormattedValue = (value: SelectItemValue, isDate?: boolean, options?: S
     return '';
   }
 
+  // Date values are calendar dates ("YYYY-MM-DD"), which dayjs already parses as a local day —
+  // converting from UTC first would shift the displayed day.
   if (isDate && dayjs(value).isValid()) {
-    return safeDateFormat(fromUTCToLocal(value as string)) ?? '';
+    return safeDateFormat(value as string) ?? '';
   }
 
   if (options) {

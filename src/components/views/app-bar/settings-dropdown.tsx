@@ -2,14 +2,14 @@ import React, { useState, useRef } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
+import { useRouter, Href } from 'expo-router';
 import { Dropdown } from '@/components/shared/dropdown/dropdown';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useNotificationsWithHub } from '@/hooks/useNotificationsWithHub';
 
 export const SettingsDropdown = () => {
   const { unreadCount } = useNotificationsWithHub();
-  const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const router = useRouter();
   const animatedStyle = useTransformFade({ direction: 'left' });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownAnchorRef = useRef<View>(null);
@@ -66,7 +66,7 @@ export const SettingsDropdown = () => {
               key={item.title}
               title={item.title}
               onPress={() => {
-                navigation.navigate(item.route);
+                router.navigate(`/${item.route}` as Href);
                 setIsDropdownOpen(false);
               }}
               leadingIcon={

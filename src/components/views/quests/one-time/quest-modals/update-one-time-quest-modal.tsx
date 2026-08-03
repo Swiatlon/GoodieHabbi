@@ -20,7 +20,7 @@ import { IOneTimeQuest, IPostOneTimeQuestRequest } from '@/contract/quests/quest
 import { useSnackbar, SnackbarVariantEnum } from '@/providers/snackbar/snackbar-context';
 import { useGetQuestLabelsQuery } from '@/redux/api/quests/labels-quests-api';
 import { useUpdateOneTimeQuestMutation } from '@/redux/api/quests/one-time-quests-api';
-import { toUTCISOString } from '@/utils/utils/utils';
+import { toIsoDate } from '@/utils/utils/utils';
 
 interface UpdateOneTimeQuestModalProps extends IBaseModalProps {
   quest: IOneTimeQuest;
@@ -106,16 +106,15 @@ const UpdateOneTimeQuestModal: React.FC<UpdateOneTimeQuestModalProps> = ({ isVis
           />
           <DatePickerModal
             name="startDate"
-            minDate={toUTCISOString(dayjs.min(dayjs(quest.startDate ?? '1970-01-01'), dayjs()))}
+            minDate={toIsoDate(dayjs.min(dayjs(quest.startDate ?? '1970-01-01'), dayjs()))}
             label={t('quests.oneTime.form.startDateLabel')}
             placeholder={t('quests.oneTime.form.startDatePlaceholder')}
           />
           <DatePickerModal
             name="endDate"
-            minDate={startDate ? toUTCISOString(startDate) : toUTCISOString(quest.endDate ?? dayjs())}
+            minDate={startDate ? toIsoDate(startDate) : toIsoDate(quest.endDate ?? dayjs())}
             label={t('quests.oneTime.form.endDateLabel')}
             placeholder={t('quests.oneTime.form.endDatePlaceholder')}
-            isEndDate
           />
           <EmojiPickerComponent />
           <PriorityPicker />

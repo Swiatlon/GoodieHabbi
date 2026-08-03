@@ -1,5 +1,6 @@
 import { FC } from 'react';
-import { Animated, View, Image } from 'react-native';
+import { View, Image } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { SHOP_ITEM_TYPE_CONFIG } from './items.config';
 import { ShopItemSubProps } from './shop-item';

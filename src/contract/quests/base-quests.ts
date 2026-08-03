@@ -63,15 +63,18 @@ export interface IRecurringQuestStats {
   occurrenceCount: number;
   currentStreak: number;
   longestStreak: number;
-  lastCompletedAt: NullableString;
 }
 
 export interface IQuest {
   id: number;
   title: string;
   description: string | null;
+  /** Calendar date "YYYY-MM-DD" — a day in the user's own calendar, never a UTC instant. */
   startDate: string | null;
+  /** Calendar date "YYYY-MM-DD", inclusive. */
   endDate: string | null;
+  /** A real instant ("...Z"), unlike start/end date. */
+  lastCompletedAt: NullableString;
   priority: PriorityEnumType | null;
   isCompleted: boolean;
   emoji: string | null;

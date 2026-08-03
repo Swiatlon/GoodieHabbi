@@ -6,12 +6,13 @@ export const safeDateFormat = (date: NullableString, format = 'DD.MM.YYYY'): Und
   return date ? dayjs(date).format(format) : undefined;
 };
 
-export const toUTCISOString = (date: DateType) => {
-  return date ? dayjs.utc(date).toISOString() : null;
-};
-
-export const fromUTCToLocal = (date: NullableString) => {
-  return date ? dayjs(date).local().toISOString() : null;
+/**
+ * Quest `startDate` / `endDate` are calendar dates (`DateOnly`) on the backend — the day the user
+ * picked, with no time and no timezone. Formatting has to stay local: going through UTC shifts the
+ * day backwards for every timezone east of Greenwich.
+ */
+export const toIsoDate = (date: DateType): NullableString => {
+  return date ? dayjs(date).format('YYYY-MM-DD') : null;
 };
 
 export const fromUTCToDateObject = (date: NullableString) => {

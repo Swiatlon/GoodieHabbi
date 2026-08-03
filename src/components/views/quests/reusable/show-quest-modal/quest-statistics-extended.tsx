@@ -1,10 +1,16 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { IRecurringQuestStats } from '@/contract/quests/base-quests';
 
 interface QuestStatisticsExtendedProps {
   statistics?: IRecurringQuestStats;
+  /** Only repeatable quests have analytics — omit to hide the link. */
+  questId?: number;
+  /** Closes the modal so the analytics screen is not pushed underneath it. */
+  onClose?: () => void;
 }
 
 const STATISTICS_META = [
@@ -40,10 +46,16 @@ const STATISTICS_META = [
   },
 ] as const;
 
-const QuestStatisticsExtended: React.FC<QuestStatisticsExtendedProps> = ({ statistics }) => {
+const QuestStatisticsExtended: React.FC<QuestStatisticsExtendedProps> = ({ statistics, questId, onClose }) => {
   const { t } = useTranslation();
+  const router = useRouter();
 
   if (!statistics) return null;
+
+  const handleShowAnalytics = () => {
+    onClose?.();
+    router.push(`/(authorized)/quests/analytics/${questId}`);
+  };
 
   return (
     <View className="bg-white rounded-md p-4 shadow-sm border border-gray-200">
@@ -60,6 +72,13 @@ const QuestStatisticsExtended: React.FC<QuestStatisticsExtendedProps> = ({ stati
           </View>
         ))}
       </View>
+
+      {questId !== undefined && (
+        <TouchableOpacity onPress={handleShowAnalytics} className="flex-row items-center justify-center gap-2 pt-3 border-t border-gray-100">
+          <Ionicons name="stats-chart-outline" size={16} color="#1987EE" />
+          <Text className="text-sm font-semibold text-primary">{t('quests.analytics.openFromQuest')}</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

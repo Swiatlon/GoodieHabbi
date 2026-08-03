@@ -372,6 +372,72 @@ const quests = {
       setTimeButton: 'Ustaw godzinę',
     },
   },
+  analytics: {
+    loading: 'Wczytywanie statystyk...',
+    openFromQuest: 'Zobacz pełne statystyki',
+    rangeLabel: 'Okres: {{from}} – {{to}}',
+    // Ranges are always 30/90/365, so every value takes the same plural form.
+    range: {
+      days: '{{days}} dni',
+    },
+    outcome: {
+      completed: 'Zrobione',
+      backfilled: 'Uzupełnione później',
+      missed: 'Pominięte',
+      pending: 'W trakcie',
+      unscheduled: 'Niezaplanowane',
+    },
+    summary: {
+      completionRate: 'Skuteczność',
+      currentStreak: 'Seria',
+      longestStreak: 'Najdłuższa',
+      inRange: 'w okresie',
+      allTime: 'od zawsze',
+      periodsHeading: 'Rozkład okresów',
+      periodsBreakdown: 'Zrobione: {{completed}} · Pominięte: {{missed}} · W trakcie: {{pending}}',
+    },
+    heatmap: {
+      heading: 'Kalendarz',
+      hint: 'Puste pole oznacza dzień, w którym nawyk nie był zaplanowany.',
+    },
+    trend: {
+      heading: 'Trend skuteczności',
+      hint: 'Kreska zamiast słupka oznacza okres bez zaplanowanych wystąpień.',
+      granularity: {
+        day: 'w podziale na dni',
+        week: 'w podziale na tygodnie',
+        month: 'w podziale na miesiące',
+      },
+    },
+    weekday: {
+      heading: 'Dni tygodnia',
+      hint: 'W które dni najczęściej Ci to ucieka.',
+    },
+    empty: {
+      heading: 'Brak wystąpień w tym okresie',
+      hint: 'Wybierz dłuższy zakres albo poczekaj, aż nawyk się rozkręci.',
+    },
+    error: {
+      heading: 'Nie udało się wczytać statystyk',
+      hint: 'Statystyki są dostępne tylko dla zadań powtarzalnych: dziennych, tygodniowych i miesięcznych.',
+    },
+    overview: {
+      title: 'Statystyki nawyków',
+      donePeriods: 'Zrobione',
+      habitsCount: 'Nawyki',
+      repeatable: 'powtarzalne',
+      dailyRateHeading: 'Dzień po dniu',
+      dailyRateHint: 'Ile procent zaplanowanych nawyków udało się zrobić danego dnia.',
+      scaleLess: 'mniej',
+      scaleMore: 'więcej',
+      rankingHeading: 'Twoje nawyki',
+      rankingHint: 'Od najlepiej trzymanych do tych, które wymagają uwagi.',
+      questMeta: 'Zrobione {{completed}} z {{evaluated}}',
+      questNoData: 'Brak ocenionych okresów w tym zakresie',
+      emptyHeading: 'Nie masz jeszcze powtarzalnych nawyków',
+      emptyHint: 'Dodaj zadanie dzienne, tygodniowe lub miesięczne, żeby zobaczyć tu statystyki.',
+    },
+  },
 };
 
 export default quests;

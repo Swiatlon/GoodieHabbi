@@ -367,7 +367,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
                 <Ionicons name={isRecurring ? 'checkbox' : 'square-outline'} size={20} color={isRecurring ? '#1987EE' : '#d1d5db'} />
                 <Text className="text-sm text-gray-600 flex-1">{t('finance.addTransaction.recurring')}</Text>
               </TouchableOpacity>
-              {isRecurring && <Text className="text-xs text-amber-600 mt-1.5 ml-7">{t('finance.addTransaction.recurringNotReady')}</Text>}
+              {isRecurring && <Text className="text-xs text-gray-500 mt-1.5 ml-7">{t('finance.addTransaction.recurringHint')}</Text>}
             </View>
           )}
         </View>

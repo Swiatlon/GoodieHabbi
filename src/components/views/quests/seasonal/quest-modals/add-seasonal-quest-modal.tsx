@@ -124,7 +124,6 @@ const AddSeasonalQuestModal: React.FC<AddSeasonalQuestModalProps> = ({ isVisible
             maxDate={maxEndDate}
             label={t('quests.seasonal.form.endDateLabel')}
             placeholder={t('quests.seasonal.form.endDatePlaceholder')}
-            isEndDate
           />
           <EmojiPickerComponent />
           <PriorityPicker />

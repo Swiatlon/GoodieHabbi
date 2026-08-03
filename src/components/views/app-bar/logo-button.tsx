@@ -1,17 +1,16 @@
 import React from 'react';
 import { Image, TouchableOpacity } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { ParamListBase, useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import logoHeader from '@/assets/images/logoheader.png';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 
 export const LogoButton = () => {
-  const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
+  const router = useRouter();
   const animatedStyle = useTransformFade({ direction: 'right' });
 
   const handlePress = () => {
-    navigation.navigate('(authorized)/dashboard');
+    router.navigate('/(authorized)/dashboard');
   };
 
   return (

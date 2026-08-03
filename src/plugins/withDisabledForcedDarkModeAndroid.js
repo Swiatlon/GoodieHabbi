@@ -1,4 +1,4 @@
-const { createRunOncePlugin, withAndroidStyles, AndroidConfig } = require('@expo/config-plugins');
+const { createRunOncePlugin, withAndroidStyles, AndroidConfig } = require('expo/config-plugins');
 
 function setForceDarkModeToFalse(styles) {
   styles = AndroidConfig.Styles.assignStylesValue(styles, {

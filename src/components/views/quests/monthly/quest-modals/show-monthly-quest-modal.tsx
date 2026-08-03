@@ -81,7 +81,7 @@ const ShowMonthlyQuestItemModal: React.FC<ShowMonthlyQuestItemModalProps> = ({ q
         <QuestTitleExtended title={quest.title} emoji={quest.emoji} />
         <QuestStatusExtended isCompleted={quest.isCompleted} />
         <QuestDescriptionExtended description={quest.description} />
-        <QuestStatisticsExtended statistics={quest.statistics} />
+        <QuestStatisticsExtended statistics={quest.statistics} questId={quest.id} onClose={onClose} />
         <QuestMonthDaysExtended startDay={quest.startDay} endDay={quest.endDay} />
         <QuestPriorityExtended priority={quest.priority} />
         <QuestDifficultyExtended difficulty={quest.difficulty} />

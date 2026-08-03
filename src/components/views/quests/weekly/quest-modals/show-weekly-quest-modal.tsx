@@ -81,7 +81,7 @@ const ShowWeeklyQuestItemModal: React.FC<ShowWeeklyQuestItemModalProps> = ({ que
         <QuestTitleExtended title={quest.title} emoji={quest.emoji} />
         <QuestStatusExtended isCompleted={quest.isCompleted} />
         <QuestDescriptionExtended description={quest.description} />
-        <QuestStatisticsExtended statistics={quest.statistics} />
+        <QuestStatisticsExtended statistics={quest.statistics} questId={quest.id} onClose={onClose} />
         <QuestWeekdaysExtended weekdays={quest.weekdays} />
         <QuestPriorityExtended priority={quest.priority} />
         <QuestDifficultyExtended difficulty={quest.difficulty} />

@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, Animated, Text } from 'react-native';
+import { View, Text } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { SHOP_ITEM_TYPE_CONFIG } from '../shop/items.config';
 import InventoryItemActions from './inventory-item-actions';
 import { InventoryItemIconColumn, InventoryItemIconRow } from './inventory-item-icon';

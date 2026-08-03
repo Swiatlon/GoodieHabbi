@@ -9,6 +9,8 @@ export const allTags = [
   'weeklyQuestsGet',
   'todayQuestsGet',
   'questLabelsGet',
+  'questAnalytics',
+  'habitsOverview',
   'account',
   'goals',
   'statsProfile',

@@ -39,7 +39,16 @@ export const monthlyQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
+      invalidatesTags: [
+        'monthlyQuestsGet',
+        'todayQuestsGet',
+        'goals',
+        'statsProfile',
+        'statsExtended',
+        'eligibleQuestsForGoals',
+        'questAnalytics',
+        'habitsOverview',
+      ],
     }),
 
     updateMonthlyQuest: builder.mutation<void, IPutMonthlyQuestRequest>({
@@ -55,7 +64,7 @@ export const monthlyQuestSlice = Api.injectEndpoints({
           body: transformedQuest,
         };
       },
-      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet', 'goals'],
+      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet', 'goals', 'questAnalytics', 'habitsOverview'],
     }),
 
     patchMonthlyQuest: builder.mutation<void, IPatchMonthlyQuestRequest>({
@@ -71,7 +80,16 @@ export const monthlyQuestSlice = Api.injectEndpoints({
           body: transformedPatchData,
         };
       },
-      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
+      invalidatesTags: [
+        'monthlyQuestsGet',
+        'todayQuestsGet',
+        'goals',
+        'statsProfile',
+        'statsExtended',
+        'eligibleQuestsForGoals',
+        'questAnalytics',
+        'habitsOverview',
+      ],
     }),
 
     deleteMonthlyQuest: builder.mutation<void, IDeleteMonthlyQuestRequest>({
@@ -79,7 +97,16 @@ export const monthlyQuestSlice = Api.injectEndpoints({
         url: `/quests/monthly/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['monthlyQuestsGet', 'todayQuestsGet', 'goals', 'statsProfile', 'statsExtended', 'eligibleQuestsForGoals'],
+      invalidatesTags: [
+        'monthlyQuestsGet',
+        'todayQuestsGet',
+        'goals',
+        'statsProfile',
+        'statsExtended',
+        'eligibleQuestsForGoals',
+        'questAnalytics',
+        'habitsOverview',
+      ],
     }),
   }),
 });

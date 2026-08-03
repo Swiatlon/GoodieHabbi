@@ -58,6 +58,11 @@ const QuestConfig = () => {
           route: '(authorized)/quests/one-time',
           icon: <Ionicons name="checkmark-done-outline" />,
         },
+        {
+          label: t('nav.quests.analytics'),
+          route: '(authorized)/quests/analytics',
+          icon: <Ionicons name="stats-chart-outline" />,
+        },
       ]}
     />
   );
