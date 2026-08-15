@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Host } from 'react-native-portalize';
-import { Provider } from 'react-redux';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Provider } from 'react-redux';
 import { useFonts } from 'expo-font';
 import { Drawer } from 'expo-router/drawer';
 import * as SplashScreen from 'expo-splash-screen';
@@ -15,6 +15,7 @@ import PersistLoginMiddleware from '@/middlewares/persist-login-middleware';
 import PrefetchMiddleware from '@/middlewares/prefetch-middleware';
 import RoutesPermissionMiddleware from '@/middlewares/routes-permission-middleware';
 import { ApiErrorListener } from '@/providers/api-error/api-error-listener';
+import { FeatureGroupsProvider } from '@/providers/feature-groups-context';
 import { FinanceDisplayProvider } from '@/providers/finance-display-context';
 import { NotificationsProvider } from '@/providers/notification-provider/notification-provider';
 import SnackbarProvider from '@/providers/snackbar/snackbar-provider';
@@ -64,16 +65,18 @@ export default function RootLayout() {
                   <PrefetchMiddleware onLoaded={() => handleLoaded('prefetch')}>
                     <NotificationsProvider>
                       <FinanceDisplayProvider>
-                        <AchievementOverlay />
-                        <Drawer
-                          screenOptions={{
-                            header: () => <Header />,
-                            sceneStyle: {
-                              backgroundColor: 'white',
-                            },
-                          }}
-                          drawerContent={props => <CustomDrawerContent {...props} />}
-                        />
+                        <FeatureGroupsProvider>
+                          <AchievementOverlay />
+                          <Drawer
+                            screenOptions={{
+                              header: () => <Header />,
+                              sceneStyle: {
+                                backgroundColor: 'white',
+                              },
+                            }}
+                            drawerContent={props => <CustomDrawerContent {...props} />}
+                          />
+                        </FeatureGroupsProvider>
                       </FinanceDisplayProvider>
                     </NotificationsProvider>
                   </PrefetchMiddleware>

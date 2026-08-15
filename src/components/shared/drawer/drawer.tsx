@@ -16,8 +16,10 @@ import StoreConfig from './routes-configs/store-config';
 import LoginConfig from '@/components/shared/drawer/routes-configs/login-config';
 import QuestConfig from '@/components/shared/drawer/routes-configs/quest-config';
 import RegisterConfig from '@/components/shared/drawer/routes-configs/register-config';
+import WorkoutsConfig from '@/components/shared/drawer/routes-configs/workouts-config';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useTypedDispatch } from '@/hooks/use-store-hooks';
+import { useFeatureGroups } from '@/providers/feature-groups-context';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { logOutAsync } from '@/redux/state/auth/auth-state';
 import { useIsCorrectAccessToken } from '@/utils/jwt-utils';
@@ -27,6 +29,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props 
   const dispatch = useTypedDispatch();
   const drawerStatus = useDrawerStatus();
   const { isCorrect: isAuthenticated } = useIsCorrectAccessToken();
+  const { isGroupEnabled } = useFeatureGroups();
   const router = useRouter();
   const { showSnackbar } = useSnackbar();
   const isDrawerOpen = drawerStatus === 'open';
@@ -56,14 +59,27 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props 
           ) : (
             <>
               <DashboardConfig />
-              <FinanceConfig />
 
-              <DrawerSection title={t('nav.sections.tasks')}>
-                <QuestConfig />
-                <ProgressConfig />
-                <StoreConfig />
-                <PlanningConfig />
-              </DrawerSection>
+              {isGroupEnabled('finance') && (
+                <DrawerSection title={t('nav.sections.finance')}>
+                  <FinanceConfig />
+                </DrawerSection>
+              )}
+
+              {isGroupEnabled('tasks') && (
+                <DrawerSection title={t('nav.sections.tasks')}>
+                  <QuestConfig />
+                  <ProgressConfig />
+                  <StoreConfig />
+                  <PlanningConfig />
+                </DrawerSection>
+              )}
+
+              {isGroupEnabled('workouts') && (
+                <DrawerSection title={t('nav.sections.workouts')}>
+                  <WorkoutsConfig />
+                </DrawerSection>
+              )}
 
               <AccountConfig />
             </>

@@ -6,6 +6,7 @@ import BadgesSection from '@/components/views/profile/badges-section';
 import ClearProfileDataModal from '@/components/views/profile/clear-profile-data-modal';
 import DangerActionsSection from '@/components/views/profile/delete-actions-section';
 import DeleteAccountModal from '@/components/views/profile/delete-profile-modal';
+import FeatureGroupsSection from '@/components/views/profile/feature-groups-section';
 import GoalsSection from '@/components/views/profile/goal-section';
 import LevelExperienceSection from '@/components/views/profile/level-experience-section';
 import ProfileHeader from '@/components/views/profile/profile-header';
@@ -51,6 +52,7 @@ const Profile: FC = () => {
           <QuestsSection quests={statsData.questStats} isLoading={isLoading} />
           <GoalsSection goals={statsData.goalStats} isLoading={isLoading} />
           <BadgesSection badges={profileData.profile.badges} isLoading={isLoading} />
+          <FeatureGroupsSection isLoading={isLoading} />
           <DangerActionsSection isLoading={isLoading} onDeleteAccount={handleDeletePress} onWipeoutData={handleWipeoutDataPress} />
         </View>
       </ScrollView>

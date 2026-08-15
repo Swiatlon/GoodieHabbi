@@ -10,6 +10,8 @@ import profile from './profile';
 import quests from './quests';
 import shared from './shared';
 import shop from './shop';
+import supplements from './supplements';
+import workouts from './workouts';
 
 const en = {
   common,
@@ -24,6 +26,8 @@ const en = {
   auth,
   shared,
   nav,
+  workouts,
+  supplements,
 };
 
 export default en;

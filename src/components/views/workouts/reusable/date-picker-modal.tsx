@@ -1,0 +1,56 @@
+import React, { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { Text, View } from 'react-native';
+import DateTimePicker, { DateType, useDefaultClassNames } from 'react-native-ui-datepicker';
+import Button from '@/components/shared/button/button';
+import Modal from '@/components/shared/modal/modal';
+import ControlledSelect from '@/components/shared/select/controlled-select';
+import { SelectItemValue } from '@/components/shared/select/select';
+import { NullableString } from '@/types/global-types';
+import { safeDateFormat, toIsoDate } from '@/utils/utils/utils';
+
+interface DatePickerModalProps {
+  name: string;
+  label: string;
+  placeholder: string;
+}
+
+const formatOfDate = 'YYYY-MM-DD';
+
+const WorkoutsDatePickerModal: React.FC<DatePickerModalProps> = ({ label, name, placeholder }) => {
+  const { t } = useTranslation();
+  const defaultClassNames = useDefaultClassNames();
+  const { setValue, watch } = useFormContext<Record<string, SelectItemValue>>();
+  const [isVisible, setIsVisible] = useState(false);
+
+  const selectedDate = watch(name) as NullableString;
+
+  return (
+    <View className="flex gap-2">
+      <Text className="text-sm font-semibold text-gray-500">{label}</Text>
+      <ControlledSelect name={name} placeholder={placeholder} onPress={() => setIsVisible(true)} isDate />
+      <Modal isVisible={isVisible} onClose={() => setIsVisible(false)} className="pt-14 px-6">
+        <DateTimePicker
+          classNames={{
+            ...defaultClassNames,
+            header: 'flex-row justify-between items-center mb-2',
+            weekdays: 'border-b border-gray-200 flex-row justify-between my-2 pb-2',
+            weekday_label: 'text-gray-500 text-sm font-semibold',
+            today: 'bg-white border border-primary rounded-full m-1',
+            selected: 'bg-primary border-primary rounded-full m-1',
+            selected_label: 'text-white font-bold',
+          }}
+          mode="single"
+          date={safeDateFormat(selectedDate, formatOfDate)}
+          onChange={({ date }: { date: DateType }) => setValue(name, toIsoDate(date))}
+        />
+        <View className="flex-row justify-between mt-2">
+          <Button label={t('common.close')} onPress={() => setIsVisible(false)} className="px-6" />
+        </View>
+      </Modal>
+    </View>
+  );
+};
+
+export default WorkoutsDatePickerModal;

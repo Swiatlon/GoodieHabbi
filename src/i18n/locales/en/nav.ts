@@ -1,6 +1,8 @@
 const nav = {
   sections: {
     tasks: 'Tasks',
+    finance: 'Finance',
+    workouts: 'Training & supplements',
   },
   dashboard: 'Dashboard',
   finance: {
@@ -20,6 +22,21 @@ const nav = {
       monthly: 'Monthly Quests',
     },
     analytics: 'Habit Statistics',
+  },
+  workouts: {
+    root: 'Training & supplements',
+    exercises: 'Exercises',
+    routines: 'Routines',
+    activeSession: 'Session',
+    history: 'History',
+    analytics: 'Analytics',
+    settings: 'Settings',
+    supplements: {
+      root: 'Supplements',
+      checklist: 'Today',
+      catalog: 'Supplements',
+      analytics: 'Analytics',
+    },
   },
   leaderboard: 'Leaderboard',
   shop: 'Shop',

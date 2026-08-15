@@ -26,6 +26,24 @@ const profile = {
     title: 'Achievements & Badges',
     emptyState: '✨ No badges yet! Keep going!',
   },
+  featureGroups: {
+    title: 'Modules',
+    hint: 'Turn modules you don’t need on or off. The choice is saved on this device.',
+    groups: {
+      finance: {
+        label: 'Finance',
+        hint: 'Expenses, budgets and transactions.',
+      },
+      tasks: {
+        label: 'Tasks',
+        hint: 'Quests, goals, shop and leaderboard.',
+      },
+      workouts: {
+        label: 'Training & supplements',
+        hint: 'Exercises, routines, workout sessions and supplements.',
+      },
+    },
+  },
   dangerZone: {
     title: 'Danger Zone',
     deleteAccountButton: 'Delete Account',

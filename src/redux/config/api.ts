@@ -24,6 +24,16 @@ export const allTags = [
   'financeBudgets',
   'financeAnalytics',
   'financeRecurring',
+  'workoutExercises',
+  'workoutRoutines',
+  'workoutSessions',
+  'workoutActiveSession',
+  'workoutAnalytics',
+  'workoutSettings',
+  'supplements',
+  'supplementChecklist',
+  'supplementIntakes',
+  'supplementAnalytics',
 ];
 
 const Api = createApi({

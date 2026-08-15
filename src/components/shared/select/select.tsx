@@ -25,6 +25,7 @@ export interface BaseSelectProps {
   error?: string;
   textColor?: string;
   isModalVersion?: boolean;
+  testID?: string;
 }
 
 interface ModalSelectProps extends BaseSelectProps {
@@ -40,7 +41,7 @@ interface NonModalSelectProps extends BaseSelectProps {
 export type SelectProps = ModalSelectProps | NonModalSelectProps;
 
 const Select = forwardRef<TextInput, SelectProps>(
-  ({ placeholder, value = null, onPress, onClear, onChange, className, isDate, error, isModalVersion, options, textColor }, ref) => {
+  ({ placeholder, value = null, onPress, onClear, onChange, className, isDate, error, isModalVersion, options, textColor, testID }, ref) => {
     const { t } = useTranslation();
     const [isVisibleModal, setIsVisibleModal] = useState(false);
     const formattedValue = getFormattedValue(value, isDate, isModalVersion ? options : undefined);
@@ -61,7 +62,7 @@ const Select = forwardRef<TextInput, SelectProps>(
       <>
         <View className="w-full">
           <View className={`flex-row items-center border rounded-lg pl-1 ${error ? 'border-red-500' : 'border-gray-300'}`}>
-            <TouchableOpacity onPress={onPressHandler} className="flex-1">
+            <TouchableOpacity onPress={onPressHandler} className="flex-1" testID={testID}>
               <TextInput
                 ref={ref}
                 placeholder={placeholder}

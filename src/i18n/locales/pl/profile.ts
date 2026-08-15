@@ -26,6 +26,24 @@ const profile = {
     title: 'Osiągnięcia i odznaki',
     emptyState: '✨ Brak odznak! Działaj dalej!',
   },
+  featureGroups: {
+    title: 'Moduły',
+    hint: 'Włącz lub wyłącz moduły, których nie potrzebujesz. Zmiana zapisuje się na tym urządzeniu.',
+    groups: {
+      finance: {
+        label: 'Finanse',
+        hint: 'Wydatki, budżety i transakcje.',
+      },
+      tasks: {
+        label: 'Zadania',
+        hint: 'Questy, cele, sklep i ranking.',
+      },
+      workouts: {
+        label: 'Trening i suplementy',
+        hint: 'Ćwiczenia, rutyny, sesje treningowe i suplementy.',
+      },
+    },
+  },
   dangerZone: {
     title: 'Strefa zagrożenia',
     deleteAccountButton: 'Usuń konto',
