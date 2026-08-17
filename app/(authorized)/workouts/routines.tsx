@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { IconButton } from '@/components/shared/icon-button/icon-button';
+import EmptyState from '@/components/shared/empty-state/empty-state';
 import Loader from '@/components/shared/loader/loader';
+import SearchBar from '@/components/shared/search-bar/search-bar';
+import ToggleTab from '@/components/shared/toggle-tab/toggle-tab';
 import RoutineFormModal from '@/components/views/workouts/routines/routine-form-modal';
 import RoutineItem from '@/components/views/workouts/routines/routine-item';
 import { IWorkoutRoutine } from '@/contract/workouts/workouts.contract';
+import { useSearch } from '@/hooks/use-search/use-search';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useDeleteRoutineMutation, useGetRoutinesQuery, useSetRoutineArchivedMutation } from '@/redux/api/workouts/routines-api';
 import { IApiError } from '@/types/global-types';
@@ -18,6 +21,7 @@ const RoutinesScreen: React.FC = () => {
   const [modalRoutine, setModalRoutine] = useState<IWorkoutRoutine | null | undefined>(undefined);
 
   const { data: routines = [], isLoading } = useGetRoutinesQuery({ includeArchived });
+  const { data: searchedRoutines, searchQuery, setSearchQuery } = useSearch({ data: routines });
   const [deleteRoutine] = useDeleteRoutineMutation();
   const [setRoutineArchived] = useSetRoutineArchivedMutation();
 
@@ -54,23 +58,46 @@ const RoutinesScreen: React.FC = () => {
   }
 
   return (
-    <View className="flex-1 bg-white" testID="workouts-routines-screen">
-      <View className="flex-row justify-between items-center px-4 pt-4">
-        <Text className="text-2xl font-bold text-primary">{t('workouts.routines.title')}</Text>
-        <IconButton onPress={() => setIncludeArchived(prev => !prev)}>
-          <Ionicons name={includeArchived ? 'archive' : 'archive-outline'} size={22} color="#1987EE" />
-        </IconButton>
+    <View className="flex-1 bg-gray-50" testID="workouts-routines-screen">
+      <Text className="text-2xl font-bold text-primary px-4 pt-4">{t('workouts.routines.title')}</Text>
+
+      <View className="px-4 pt-3">
+        <SearchBar
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholder={t('workouts.routines.searchPlaceholder')}
+          testID="routines-search-input"
+        />
       </View>
 
-      <FlatList
-        className="flex-1 mt-2"
-        data={routines}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => (
-          <RoutineItem routine={item} onEdit={setModalRoutine} onDelete={handleDelete} onToggleArchived={handleToggleArchived} />
+      <View className="px-4 pt-3">
+        <View className="flex-row bg-gray-100 rounded-xl p-1">
+          <ToggleTab active={!includeArchived} onPress={() => setIncludeArchived(false)}>
+            <Text className={`text-xs font-bold ${!includeArchived ? 'text-primary' : 'text-gray-500'}`}>
+              {t('workouts.reusable.filterActiveOnly')}
+            </Text>
+          </ToggleTab>
+          <ToggleTab active={includeArchived} onPress={() => setIncludeArchived(true)}>
+            <Text className={`text-xs font-bold ${includeArchived ? 'text-primary' : 'text-gray-500'}`}>
+              {t('workouts.reusable.filterAllIncludingArchived')}
+            </Text>
+          </ToggleTab>
+        </View>
+      </View>
+
+      <ScrollView className="flex-1" contentContainerStyle={{ padding: 16, paddingBottom: 96 }}>
+        {searchedRoutines.length === 0 ? (
+          <EmptyState icon="repeat-outline" message={t('workouts.routines.noRoutinesFound')} />
+        ) : (
+          <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            {searchedRoutines.map((routine, idx) => (
+              <View key={routine.id} className={idx < searchedRoutines.length - 1 ? 'border-b border-gray-50' : ''}>
+                <RoutineItem routine={routine} onEdit={setModalRoutine} onDelete={handleDelete} onToggleArchived={handleToggleArchived} />
+              </View>
+            ))}
+          </View>
         )}
-        ListEmptyComponent={<Text className="text-center text-gray-500 mt-6">{t('workouts.routines.noRoutinesFound')}</Text>}
-      />
+      </ScrollView>
 
       <TouchableOpacity
         onPress={() => setModalRoutine(null)}

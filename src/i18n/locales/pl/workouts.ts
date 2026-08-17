@@ -6,6 +6,13 @@ const SAVE_ERROR = 'Nie udało się zapisać zmian';
 const DELETE_CONFIRM_MESSAGE = 'Czy na pewno usunąć „{{name}}”?';
 
 const workouts = {
+  tabs: {
+    exercises: 'Ćwiczenia',
+    routines: 'Rutyny',
+    history: 'Historia',
+    analytics: 'Statystyki',
+  },
+
   enums: {
     metricType: {
       Reps: REPS_LABEL,
@@ -54,6 +61,11 @@ const workouts = {
     muscleGroupLabel: 'Partia mięśniowa',
     muscleGroupPlaceholder: 'Wybierz partię mięśniową',
     muscleGroupFilterPlaceholder: 'Filtruj po partii mięśniowej',
+    muscleGroupFilterAll: 'Wszystkie',
+    exercisePickerTitle: 'Wybierz ćwiczenie',
+    archivedPillLabel: 'Zarchiwizowane',
+    filterActiveOnly: 'Aktywne',
+    filterAllIncludingArchived: 'Wszystkie',
     equipmentLabel: 'Sprzęt',
     equipmentPlaceholder: 'Wybierz sprzęt',
     metricFields: {
@@ -98,6 +110,7 @@ const workouts = {
   routines: {
     title: 'Rutyny',
     fetching: 'Wczytywanie rutyn...',
+    searchPlaceholder: 'Szukaj rutyny...',
     noRoutinesFound: 'Nie znaleziono rutyn.',
     addTitle: 'Dodaj rutynę',
     editTitle: 'Edytuj rutynę',
@@ -122,6 +135,7 @@ const workouts = {
     archiveError: 'Nie udało się zmienić statusu archiwizacji',
     toggleArchived: 'Archiwizuj / przywróć',
     exerciseCount: '{{count}} ćwiczeń',
+    moreExercises: '+{{count}}',
     schema: {
       nameRequired: NAME_REQUIRED,
       nameMaxLength: NAME_MAX_LENGTH,
@@ -142,6 +156,7 @@ const workouts = {
     fetchingDetail: 'Wczytywanie treningu...',
     historyTitle: 'Historia treningów',
     detailTitle: 'Szczegóły treningu',
+    searchPlaceholder: 'Szukaj treningów...',
     noSessionsFound: 'Nie znaleziono treningów.',
     previousPage: 'Poprzednia',
     nextPage: 'Następna',

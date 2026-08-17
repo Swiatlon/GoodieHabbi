@@ -21,15 +21,20 @@ const SessionSummaryItem: React.FC<SessionSummaryItemProps> = ({ session, onPres
   const status = STATUS_STYLE[session.status];
 
   return (
-    <TouchableOpacity onPress={onPress} className="flex-row items-center justify-between p-4 border-b border-gray-100" testID="session-summary-item">
+    <TouchableOpacity onPress={onPress} activeOpacity={0.7} className="flex-row items-center px-4 py-3 bg-white" testID="session-summary-item">
+      <View className="w-10 h-10 rounded-xl items-center justify-center mr-3" style={{ backgroundColor: `${status.color}20` }}>
+        <Ionicons name={status.icon} size={18} color={status.color} />
+      </View>
       <View className="flex-1 pr-3">
-        <Text className="text-base font-semibold text-gray-800">{session.name}</Text>
-        <Text className="text-xs text-gray-400 mt-0.5">
+        <Text className="text-sm font-semibold text-gray-800" numberOfLines={1}>
+          {session.name}
+        </Text>
+        <Text className="text-xs text-gray-500 mt-0.5">
           {safeDateFormat(session.performedOn)} · {t('workouts.sessions.totals.sets')}: {session.totals.setCount} ·{' '}
           {t('workouts.sessions.totals.volume')}: {session.totals.totalVolume}
         </Text>
       </View>
-      <Ionicons name={status.icon} size={22} color={status.color} />
+      <Ionicons name="chevron-forward" size={16} color="#9ca3af" />
     </TouchableOpacity>
   );
 };

@@ -8,9 +8,9 @@ import RoutineExerciseRow, { RoutineExerciseDraft } from './routine-exercise-row
 import { useRoutineValidationSchema } from './schema';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
-import Select from '@/components/shared/select/select';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
-import { IRoutineExerciseInput, IWorkoutRoutine } from '@/contract/workouts/workouts.contract';
+import { ExercisePickerContent } from '@/components/views/workouts/reusable/exercise-picker-modal';
+import { IExercise, IRoutineExerciseInput, IWorkoutRoutine } from '@/contract/workouts/workouts.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useGetExercisesQuery } from '@/redux/api/workouts/exercises-api';
 import { useCreateRoutineMutation, useUpdateRoutineMutation } from '@/redux/api/workouts/routines-api';
@@ -55,6 +55,7 @@ const RoutineFormModal: React.FC<RoutineFormModalProps> = ({ isVisible, onClose,
   const validationSchema = useRoutineValidationSchema();
 
   const [drafts, setDrafts] = useState<RoutineExerciseDraft[]>([]);
+  const [isPickerVisible, setIsPickerVisible] = useState(false);
 
   const methods = useForm<RoutineFormValues>({
     resolver: yupResolver(validationSchema),
@@ -67,14 +68,12 @@ const RoutineFormModal: React.FC<RoutineFormModalProps> = ({ isVisible, onClose,
 
     resetForm(routine ? { name: routine.name, description: routine.description } : { name: '', description: null });
     setDrafts(routineToDrafts(routine));
+    setIsPickerVisible(false);
   }, [isVisible, routine, resetForm]);
 
   const availableExercises = exercises.filter(exercise => !exercise.isArchived && !drafts.some(d => d.exerciseId === exercise.id));
 
-  const addExercise = (exerciseId: number) => {
-    const exercise = exercises.find(e => e.id === exerciseId);
-    if (!exercise) return;
-
+  const addExercise = (exercise: IExercise) => {
     setDrafts(prev => [
       ...prev,
       {
@@ -90,6 +89,7 @@ const RoutineFormModal: React.FC<RoutineFormModalProps> = ({ isVisible, onClose,
         note: null,
       },
     ]);
+    setIsPickerVisible(false);
   };
 
   const moveDraft = (index: number, direction: -1 | 1) => {
@@ -144,70 +144,91 @@ const RoutineFormModal: React.FC<RoutineFormModalProps> = ({ isVisible, onClose,
       loadingMessage={routine ? t('workouts.routines.updating') : t('workouts.routines.creating')}
       testID="routine-form-modal"
       footer={
-        <View className="flex-row justify-between">
-          <TouchableOpacity onPress={onClose} className="flex-row items-center gap-1 border border-primary rounded-lg px-4 py-2">
-            <Ionicons name="close-circle-outline" size={18} color="#1987EE" />
-            <Text className="text-primary font-semibold">{t('common.cancel')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleSubmit(onSubmit)}
-            className="flex-row items-center gap-1 rounded-lg px-4 py-2 bg-primary"
-            testID="btn-save-routine"
-          >
-            <Ionicons name="checkmark-circle-outline" size={18} color="white" />
-            <Text className="text-white font-semibold">{t('common.save')}</Text>
-          </TouchableOpacity>
-        </View>
+        isPickerVisible ? undefined : (
+          <View className="flex-row justify-between">
+            <TouchableOpacity onPress={onClose} className="flex-row items-center gap-1 border border-primary rounded-lg px-4 py-2">
+              <Ionicons name="close-circle-outline" size={18} color="#1987EE" />
+              <Text className="text-primary font-semibold">{t('common.cancel')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleSubmit(onSubmit)}
+              className="flex-row items-center gap-1 rounded-lg px-4 py-2 bg-primary"
+              testID="btn-save-routine"
+            >
+              <Ionicons name="checkmark-circle-outline" size={18} color="white" />
+              <Text className="text-white font-semibold">{t('common.save')}</Text>
+            </TouchableOpacity>
+          </View>
+        )
       }
     >
-      <Text className="text-lg font-bold text-gray-800 text-center mb-4">
-        {routine ? t('workouts.routines.editTitle') : t('workouts.routines.addTitle')}
-      </Text>
-
-      <FormProvider {...methods}>
-        <View className="gap-5">
-          <ControlledInput
-            name="name"
-            label={t('workouts.routines.nameLabel')}
-            placeholder={t('workouts.routines.namePlaceholder')}
-            isRequired
-            testID="routine-name-input"
-          />
-          <ControlledTextArea
-            name="description"
-            label={t('workouts.routines.descriptionLabel')}
-            placeholder={t('workouts.routines.descriptionPlaceholder')}
-            testID="routine-description-input"
-          />
-
-          <View className="gap-2">
-            <Text className="text-sm font-semibold text-gray-500">{t('workouts.routines.exercisesLabel')}</Text>
-            {drafts.map((draft, index) => (
-              <RoutineExerciseRow
-                key={draft.exerciseId}
-                draft={draft}
-                index={index}
-                count={drafts.length}
-                weightUnit={weightUnit}
-                onChange={updated => setDrafts(prev => prev.map((d, i) => (i === index ? updated : d)))}
-                onMoveUp={() => moveDraft(index, -1)}
-                onMoveDown={() => moveDraft(index, 1)}
-                onRemove={() => removeDraft(index)}
-              />
-            ))}
-
-            {availableExercises.length > 0 && (
-              <Select
-                placeholder={t('workouts.routines.addExercisePlaceholder')}
-                value={null}
-                onChange={value => value != null && addExercise(Number(value))}
-                isModalVersion={true}
-                options={availableExercises.map(exercise => ({ label: exercise.name, value: exercise.id }))}
-              />
-            )}
+      {isPickerVisible ? (
+        <View className="gap-3">
+          <View className="flex-row items-center">
+            <TouchableOpacity
+              onPress={() => setIsPickerVisible(false)}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              testID="btn-close-exercise-picker"
+            >
+              <Ionicons name="chevron-back" size={22} color="#1987EE" />
+            </TouchableOpacity>
+            <Text className="flex-1 text-lg font-bold text-gray-800 text-center -ml-6">{t('workouts.reusable.exercisePickerTitle')}</Text>
           </View>
+          <ExercisePickerContent exercises={availableExercises} onSelect={addExercise} testID="routine-exercise-picker" />
         </View>
-      </FormProvider>
+      ) : (
+        <>
+          <Text className="text-lg font-bold text-gray-800 text-center mb-4">
+            {routine ? t('workouts.routines.editTitle') : t('workouts.routines.addTitle')}
+          </Text>
+
+          <FormProvider {...methods}>
+            <View className="gap-5">
+              <ControlledInput
+                name="name"
+                label={t('workouts.routines.nameLabel')}
+                placeholder={t('workouts.routines.namePlaceholder')}
+                isRequired
+                testID="routine-name-input"
+              />
+              <ControlledTextArea
+                name="description"
+                label={t('workouts.routines.descriptionLabel')}
+                placeholder={t('workouts.routines.descriptionPlaceholder')}
+                testID="routine-description-input"
+              />
+
+              <View className="gap-2">
+                <Text className="text-sm font-semibold text-gray-500">{t('workouts.routines.exercisesLabel')}</Text>
+                {drafts.map((draft, index) => (
+                  <RoutineExerciseRow
+                    key={draft.exerciseId}
+                    draft={draft}
+                    index={index}
+                    count={drafts.length}
+                    weightUnit={weightUnit}
+                    onChange={updated => setDrafts(prev => prev.map((d, i) => (i === index ? updated : d)))}
+                    onMoveUp={() => moveDraft(index, -1)}
+                    onMoveDown={() => moveDraft(index, 1)}
+                    onRemove={() => removeDraft(index)}
+                  />
+                ))}
+
+                {availableExercises.length > 0 && (
+                  <TouchableOpacity
+                    onPress={() => setIsPickerVisible(true)}
+                    className="flex-row items-center justify-center gap-1.5 py-3 rounded-lg border border-dashed border-primary"
+                    testID="btn-open-exercise-picker"
+                  >
+                    <Ionicons name="add-circle-outline" size={16} color="#1987EE" />
+                    <Text className="text-xs font-semibold text-primary">{t('workouts.routines.addExercisePlaceholder')}</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+          </FormProvider>
+        </>
+      )}
     </Modal>
   );
 };

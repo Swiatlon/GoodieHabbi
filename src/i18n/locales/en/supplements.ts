@@ -1,4 +1,10 @@
 const supplements = {
+  tabs: {
+    checklist: 'Checklist',
+    catalog: 'Catalog',
+    analytics: 'Analytics',
+  },
+
   enums: {
     unit: {
       Piece: 'pc',
@@ -30,12 +36,14 @@ const supplements = {
     customTimingHint: 'Enter the exact time below.',
     unitLabel: 'Unit',
     unitPlaceholder: 'Select a unit',
+    timingFilterAll: 'All',
   },
 
   checklist: {
     title: 'Supplements — today',
     fetching: 'Loading checklist...',
     noItems: 'No supplements scheduled for this day.',
+    adherenceTitle: "Today's adherence",
     adHocLabel: 'Unplanned doses',
     toggleError: 'Failed to update dose',
     deleteAdHocError: 'Failed to delete dose',
@@ -51,10 +59,15 @@ const supplements = {
     title: 'Supplements',
     fetching: 'Loading supplements...',
     noSupplementsFound: 'No supplements found.',
+    searchPlaceholder: 'Search supplements...',
+    filterActiveLabel: 'Active',
+    filterAllLabel: 'All',
     addTitle: 'Add supplement',
     editTitle: 'Edit supplement',
     nameLabel: 'Name',
     namePlaceholder: 'e.g. Magnesium',
+    colorLabel: 'Color',
+    iconLabel: 'Icon',
     defaultAmountLabel: 'Default amount',
     defaultAmountPlaceholder: '0',
     noteLabel: 'Note',
@@ -101,6 +114,9 @@ const supplements = {
     doses: 'doses',
     overPlan: 'over plan',
     noSupplements: 'No supplements to summarize.',
+    kpiRateLabel: 'Adherence',
+    kpiTakenLabel: 'Taken',
+    kpiScheduledLabel: 'Scheduled',
   },
 };
 

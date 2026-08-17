@@ -16,6 +16,7 @@ import StoreConfig from './routes-configs/store-config';
 import LoginConfig from '@/components/shared/drawer/routes-configs/login-config';
 import QuestConfig from '@/components/shared/drawer/routes-configs/quest-config';
 import RegisterConfig from '@/components/shared/drawer/routes-configs/register-config';
+import SupplementsConfig from '@/components/shared/drawer/routes-configs/supplements-config';
 import WorkoutsConfig from '@/components/shared/drawer/routes-configs/workouts-config';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
 import { useTypedDispatch } from '@/hooks/use-store-hooks';
@@ -78,6 +79,12 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = props 
               {isGroupEnabled('workouts') && (
                 <DrawerSection title={t('nav.sections.workouts')}>
                   <WorkoutsConfig />
+                </DrawerSection>
+              )}
+
+              {isGroupEnabled('workouts') && (
+                <DrawerSection title={t('nav.sections.supplements')}>
+                  <SupplementsConfig />
                 </DrawerSection>
               )}
 

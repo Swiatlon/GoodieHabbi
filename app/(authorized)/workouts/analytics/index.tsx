@@ -1,7 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import EmptyState from '@/components/shared/empty-state/empty-state';
+import KpiCard from '@/components/shared/kpi-card/kpi-card';
 import Loader from '@/components/shared/loader/loader';
 import MuscleGroupBar from '@/components/views/workouts/analytics/muscle-group-bar';
 import PersonalRecordItem from '@/components/views/workouts/analytics/personal-record-item';
@@ -30,54 +32,50 @@ const WorkoutAnalyticsScreen: React.FC = () => {
   const maxVolume = Math.max(0, ...(summary?.byMuscleGroup ?? []).map(entry => entry.totalVolume));
 
   return (
-    <View className="flex-1 bg-white" testID="workouts-analytics-screen">
-      <FlatList
-        data={personalRecords}
-        keyExtractor={item => item.exerciseId.toString()}
-        contentContainerStyle={{ paddingBottom: 24 }}
-        ListHeaderComponent={
-          <View className="px-4 pt-4 gap-4">
-            <Text className="text-2xl font-bold text-primary">{t('workouts.analytics.title')}</Text>
-            <Text className="text-xs text-gray-400 -mt-2">{t('workouts.analytics.rangeLabel', { days: RANGE_DAYS })}</Text>
+    <View className="flex-1 bg-gray-50" testID="workouts-analytics-screen">
+      <ScrollView className="flex-1" contentContainerStyle={{ padding: 16, paddingBottom: 24 }}>
+        <Text className="text-2xl font-bold text-primary">{t('workouts.analytics.title')}</Text>
+        <Text className="text-xs text-gray-400 mt-1 mb-4">{t('workouts.analytics.rangeLabel', { days: RANGE_DAYS })}</Text>
 
-            <View className="flex-row justify-between bg-gray-50 rounded-xl p-3">
-              <View className="items-center">
-                <Text className="text-lg font-bold text-gray-800">{summary?.sessionCount ?? 0}</Text>
-                <Text className="text-[10px] text-gray-400">{t('workouts.analytics.sessions')}</Text>
-              </View>
-              <View className="items-center">
-                <Text className="text-lg font-bold text-gray-800">{summary?.setCount ?? 0}</Text>
-                <Text className="text-[10px] text-gray-400">{t('workouts.sessions.totals.sets')}</Text>
-              </View>
-              <View className="items-center">
-                <Text className="text-lg font-bold text-gray-800">
-                  {summary?.totalVolume ?? 0} {weightUnit}
-                </Text>
-                <Text className="text-[10px] text-gray-400">{t('workouts.sessions.totals.volume')}</Text>
-              </View>
-            </View>
-
-            {summary && summary.byMuscleGroup.length > 0 && (
-              <View className="gap-3">
-                <Text className="text-sm font-semibold text-gray-500">{t('workouts.analytics.byMuscleGroup')}</Text>
-                {summary.byMuscleGroup.map(entry => (
-                  <MuscleGroupBar key={entry.muscleGroup} entry={entry} maxVolume={maxVolume} weightUnit={weightUnit} />
-                ))}
-              </View>
-            )}
-
-            <Text className="text-sm font-semibold text-gray-500">{t('workouts.analytics.personalRecords')}</Text>
-          </View>
-        }
-        renderItem={({ item }) => (
-          <PersonalRecordItem
-            record={item}
-            weightUnit={weightUnit}
-            onPress={() => router.push(`/(authorized)/workouts/analytics/${item.exerciseId}`)}
+        <View className="flex-row gap-2 mb-4">
+          <KpiCard label={t('workouts.analytics.sessions')} value={String(summary?.sessionCount ?? 0)} icon="calendar-outline" color="#1987EE" />
+          <KpiCard label={t('workouts.sessions.totals.sets')} value={String(summary?.setCount ?? 0)} icon="layers-outline" color="#F59E0B" />
+          <KpiCard
+            label={t('workouts.sessions.totals.volume')}
+            value={`${summary?.totalVolume ?? 0} ${weightUnit}`}
+            icon="trending-up-outline"
+            color="#8B5CF6"
           />
+        </View>
+
+        {summary && summary.byMuscleGroup.length > 0 && (
+          <View className="mb-4">
+            <Text className="text-sm font-semibold text-gray-500 mb-2">{t('workouts.analytics.byMuscleGroup')}</Text>
+            <View className="bg-white rounded-2xl shadow-sm p-4 gap-3">
+              {summary.byMuscleGroup.map(entry => (
+                <MuscleGroupBar key={entry.muscleGroup} entry={entry} maxVolume={maxVolume} weightUnit={weightUnit} />
+              ))}
+            </View>
+          </View>
         )}
-        ListEmptyComponent={<Text className="text-center text-gray-500 mt-2 px-4">{t('workouts.analytics.noPersonalRecords')}</Text>}
-      />
+
+        <Text className="text-sm font-semibold text-gray-500 mb-2">{t('workouts.analytics.personalRecords')}</Text>
+        {personalRecords.length === 0 ? (
+          <EmptyState icon="trophy-outline" message={t('workouts.analytics.noPersonalRecords')} />
+        ) : (
+          <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            {personalRecords.map((record, idx) => (
+              <View key={record.exerciseId} className={idx < personalRecords.length - 1 ? 'border-b border-gray-50' : ''}>
+                <PersonalRecordItem
+                  record={record}
+                  weightUnit={weightUnit}
+                  onPress={() => router.push(`/(authorized)/workouts/analytics/${record.exerciseId}`)}
+                />
+              </View>
+            ))}
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 };

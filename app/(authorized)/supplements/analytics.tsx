@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
+import EmptyState from '@/components/shared/empty-state/empty-state';
+import KpiCard from '@/components/shared/kpi-card/kpi-card';
 import Loader from '@/components/shared/loader/loader';
 import AdherenceItem from '@/components/views/supplements/analytics/adherence-item';
 import dayjs from '@/configs/day-js-config';
@@ -20,29 +22,32 @@ const SupplementAnalyticsScreen: React.FC = () => {
     return <Loader message={t('supplements.analytics.fetching')} />;
   }
 
-  return (
-    <View className="flex-1 bg-white" testID="supplements-analytics-screen">
-      <FlatList
-        data={report.items}
-        keyExtractor={item => item.supplementId.toString()}
-        ListHeaderComponent={
-          <View className="px-4 pt-4 gap-2">
-            <Text className="text-2xl font-bold text-primary">{t('supplements.analytics.title')}</Text>
-            <Text className="text-xs text-gray-400 -mt-1">{t('supplements.analytics.rangeLabel', { days: RANGE_DAYS })}</Text>
+  const rateLabel = report.rate == null ? t('supplements.analytics.noData') : `${Math.round(report.rate)}%`;
 
-            <View className="bg-gray-50 rounded-xl p-3 items-center mt-2">
-              <Text className="text-2xl font-bold text-gray-800">
-                {report.rate == null ? t('supplements.analytics.noData') : `${Math.round(report.rate)}%`}
-              </Text>
-              <Text className="text-xs text-gray-400">
-                {report.taken}/{report.scheduled} {t('supplements.analytics.doses')}
-              </Text>
-            </View>
+  return (
+    <View className="flex-1 bg-gray-50" testID="supplements-analytics-screen">
+      <ScrollView className="flex-1" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
+        <Text className="text-2xl font-bold text-primary">{t('supplements.analytics.title')}</Text>
+        <Text className="text-xs text-gray-400 mt-0.5 mb-3">{t('supplements.analytics.rangeLabel', { days: RANGE_DAYS })}</Text>
+
+        <View className="flex-row gap-2 mb-4">
+          <KpiCard label={t('supplements.analytics.kpiRateLabel')} value={rateLabel} icon="checkmark-circle-outline" color="#10B981" />
+          <KpiCard label={t('supplements.analytics.kpiTakenLabel')} value={String(report.taken)} icon="checkbox-outline" color="#1987EE" />
+          <KpiCard label={t('supplements.analytics.kpiScheduledLabel')} value={String(report.scheduled)} icon="calendar-outline" color="#6b7280" />
+        </View>
+
+        {report.items.length === 0 ? (
+          <EmptyState icon="stats-chart-outline" message={t('supplements.analytics.noSupplements')} testID="analytics-empty-state" />
+        ) : (
+          <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            {report.items.map((item, idx) => (
+              <View key={item.supplementId} className={idx < report.items.length - 1 ? 'border-b border-gray-50' : ''}>
+                <AdherenceItem item={item} />
+              </View>
+            ))}
           </View>
-        }
-        renderItem={({ item }) => <AdherenceItem item={item} />}
-        ListEmptyComponent={<Text className="text-center text-gray-500 mt-6 px-4">{t('supplements.analytics.noSupplements')}</Text>}
-      />
+        )}
+      </ScrollView>
     </View>
   );
 };

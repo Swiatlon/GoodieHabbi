@@ -1,4 +1,10 @@
 const supplements = {
+  tabs: {
+    checklist: 'Checklista',
+    catalog: 'Katalog',
+    analytics: 'Statystyki',
+  },
+
   enums: {
     unit: {
       Piece: 'szt.',
@@ -30,12 +36,14 @@ const supplements = {
     customTimingHint: 'Podaj dokładną godzinę poniżej.',
     unitLabel: 'Jednostka',
     unitPlaceholder: 'Wybierz jednostkę',
+    timingFilterAll: 'Wszystkie',
   },
 
   checklist: {
     title: 'Suplementy — dziś',
     fetching: 'Wczytywanie checklisty...',
     noItems: 'Brak zaplanowanych suplementów na ten dzień.',
+    adherenceTitle: 'Dzisiejsze przestrzeganie planu',
     adHocLabel: 'Dawki poza planem',
     toggleError: 'Nie udało się zaktualizować dawki',
     deleteAdHocError: 'Nie udało się usunąć dawki',
@@ -51,10 +59,15 @@ const supplements = {
     title: 'Suplementy',
     fetching: 'Wczytywanie suplementów...',
     noSupplementsFound: 'Nie znaleziono suplementów.',
+    searchPlaceholder: 'Szukaj suplementów...',
+    filterActiveLabel: 'Aktywne',
+    filterAllLabel: 'Wszystkie',
     addTitle: 'Dodaj suplement',
     editTitle: 'Edytuj suplement',
     nameLabel: 'Nazwa',
     namePlaceholder: 'np. Magnez',
+    colorLabel: 'Kolor',
+    iconLabel: 'Ikona',
     defaultAmountLabel: 'Domyślna ilość',
     defaultAmountPlaceholder: '0',
     noteLabel: 'Notatka',
@@ -101,6 +114,9 @@ const supplements = {
     doses: 'dawek',
     overPlan: 'ponad plan',
     noSupplements: 'Brak suplementów do podsumowania.',
+    kpiRateLabel: 'Przestrzeganie',
+    kpiTakenLabel: 'Wzięte',
+    kpiScheduledLabel: 'Zaplanowane',
   },
 };
 

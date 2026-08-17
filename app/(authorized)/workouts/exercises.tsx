@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { IconButton } from '@/components/shared/icon-button/icon-button';
+import EmptyState from '@/components/shared/empty-state/empty-state';
+import FilterChips from '@/components/shared/filter-chips/filter-chips';
 import Loader from '@/components/shared/loader/loader';
+import SearchBar from '@/components/shared/search-bar/search-bar';
 import ExerciseFormModal from '@/components/views/workouts/exercises/exercise-form-modal';
 import ExerciseItem from '@/components/views/workouts/exercises/exercise-item';
-import { MuscleGroupFilter } from '@/components/views/workouts/reusable/muscle-group-picker';
 import { IExercise, MuscleGroupEnum } from '@/contract/workouts/workouts.contract';
 import { useSearch } from '@/hooks/use-search/use-search';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useDeleteExerciseMutation, useGetExercisesQuery, useSetExerciseArchivedMutation } from '@/redux/api/workouts/exercises-api';
 import { IApiError } from '@/types/global-types';
+import { MUSCLE_GROUP_COLORS, MUSCLE_GROUP_EMOJI } from '@/utils/workouts/muscle-group-visuals';
 
 const ExercisesScreen: React.FC = () => {
   const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
   const [muscleGroup, setMuscleGroup] = useState<MuscleGroupEnum | null>(null);
   const [includeArchived, setIncludeArchived] = useState(false);
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [modalExercise, setModalExercise] = useState<IExercise | null | undefined>(undefined);
 
   const { data: exercises = [], isLoading } = useGetExercisesQuery({ muscleGroup: muscleGroup ?? undefined, includeArchived });
@@ -58,45 +59,58 @@ const ExercisesScreen: React.FC = () => {
     return <Loader message={t('workouts.exercises.fetching')} />;
   }
 
+  const muscleGroupItems = Object.values(MuscleGroupEnum).map(value => ({
+    key: value,
+    label: t(`workouts.enums.muscleGroup.${value}`),
+    color: MUSCLE_GROUP_COLORS[value],
+    emoji: MUSCLE_GROUP_EMOJI[value],
+  }));
+
   return (
-    <View className="flex-1 bg-white" testID="workouts-exercises-screen">
+    <View className="flex-1 bg-gray-50" testID="workouts-exercises-screen">
       <View className="flex-row justify-between items-center px-4 pt-4">
         <Text className="text-2xl font-bold text-primary">{t('workouts.exercises.title')}</Text>
-        <View className="flex-row">
-          <IconButton onPress={() => setIncludeArchived(prev => !prev)}>
-            <Ionicons name={includeArchived ? 'archive' : 'archive-outline'} size={22} color="#1987EE" />
-          </IconButton>
-          <IconButton onPress={() => setIsSearchVisible(prev => !prev)}>
-            <Ionicons name={isSearchVisible ? 'close' : 'search-outline'} size={22} color="#1987EE" />
-          </IconButton>
-        </View>
+        <TouchableOpacity
+          onPress={() => setIncludeArchived(prev => !prev)}
+          className={`px-3 py-1.5 rounded-full border ${includeArchived ? 'bg-primary border-primary' : 'bg-white border-gray-200'}`}
+          testID="exercises-toggle-archived"
+        >
+          <Text className={`text-xs font-bold ${includeArchived ? 'text-white' : 'text-gray-500'}`}>{t('workouts.reusable.archivedPillLabel')}</Text>
+        </TouchableOpacity>
       </View>
 
-      {isSearchVisible && (
-        <View className="flex-row items-center mx-4 mt-2 border border-gray-300 rounded-md px-2">
-          <TextInput
-            className="flex-1 p-2"
-            placeholder={t('workouts.exercises.searchPlaceholder')}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          <Ionicons name="search-outline" size={20} color="#9e9e9e" />
-        </View>
-      )}
-
-      <View className="mx-4 mt-2">
-        <MuscleGroupFilter value={muscleGroup} onChange={setMuscleGroup} />
+      <View className="px-4 pt-3">
+        <SearchBar
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholder={t('workouts.exercises.searchPlaceholder')}
+          testID="exercises-search-input"
+        />
       </View>
 
-      <FlatList
-        className="flex-1 mt-2"
-        data={searchedExercises}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => (
-          <ExerciseItem exercise={item} onEdit={setModalExercise} onDelete={handleDelete} onToggleArchived={handleToggleArchived} />
+      <View className="pt-3 pl-4">
+        <FilterChips
+          items={muscleGroupItems}
+          value={muscleGroup}
+          onChange={setMuscleGroup}
+          allLabel={t('workouts.reusable.muscleGroupFilterAll')}
+          testID="exercises-muscle-group-filter"
+        />
+      </View>
+
+      <ScrollView className="flex-1" contentContainerStyle={{ padding: 16, paddingBottom: 96 }}>
+        {searchedExercises.length === 0 ? (
+          <EmptyState icon="barbell-outline" message={t('workouts.exercises.noExercisesFound')} />
+        ) : (
+          <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            {searchedExercises.map((exercise, idx) => (
+              <View key={exercise.id} className={idx < searchedExercises.length - 1 ? 'border-b border-gray-50' : ''}>
+                <ExerciseItem exercise={exercise} onEdit={setModalExercise} onDelete={handleDelete} onToggleArchived={handleToggleArchived} />
+              </View>
+            ))}
+          </View>
         )}
-        ListEmptyComponent={<Text className="text-center text-gray-500 mt-6">{t('workouts.exercises.noExercisesFound')}</Text>}
-      />
+      </ScrollView>
 
       <TouchableOpacity
         onPress={() => setModalExercise(null)}

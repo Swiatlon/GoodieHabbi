@@ -6,6 +6,13 @@ const SAVE_ERROR = 'Failed to save changes';
 const DELETE_CONFIRM_MESSAGE = 'Are you sure you want to delete "{{name}}"?';
 
 const workouts = {
+  tabs: {
+    exercises: 'Exercises',
+    routines: 'Routines',
+    history: 'History',
+    analytics: 'Analytics',
+  },
+
   enums: {
     metricType: {
       Reps: REPS_LABEL,
@@ -54,6 +61,11 @@ const workouts = {
     muscleGroupLabel: 'Muscle group',
     muscleGroupPlaceholder: 'Select a muscle group',
     muscleGroupFilterPlaceholder: 'Filter by muscle group',
+    muscleGroupFilterAll: 'All',
+    exercisePickerTitle: 'Choose an exercise',
+    archivedPillLabel: 'Archived',
+    filterActiveOnly: 'Active',
+    filterAllIncludingArchived: 'All',
     equipmentLabel: 'Equipment',
     equipmentPlaceholder: 'Select equipment',
     metricFields: {
@@ -98,6 +110,7 @@ const workouts = {
   routines: {
     title: 'Routines',
     fetching: 'Loading routines...',
+    searchPlaceholder: 'Search routines...',
     noRoutinesFound: 'No routines found.',
     addTitle: 'Add routine',
     editTitle: 'Edit routine',
@@ -122,6 +135,7 @@ const workouts = {
     archiveError: 'Failed to change archive status',
     toggleArchived: 'Archive / restore',
     exerciseCount: '{{count}} exercises',
+    moreExercises: '+{{count}}',
     schema: {
       nameRequired: NAME_REQUIRED,
       nameMaxLength: NAME_MAX_LENGTH,
@@ -142,6 +156,7 @@ const workouts = {
     fetchingDetail: 'Loading workout...',
     historyTitle: 'Workout history',
     detailTitle: 'Workout details',
+    searchPlaceholder: 'Search workouts...',
     noSessionsFound: 'No workouts found.',
     previousPage: 'Previous',
     nextPage: 'Next',

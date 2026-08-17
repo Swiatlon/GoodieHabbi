@@ -7,12 +7,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useSupplementValidationSchema } from './schema';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
+import ControlledSwatches from '@/components/shared/swatches/controlled-swatches';
 import ControlledTextArea from '@/components/shared/text-area/controlled-text-area';
+import ControlledSupplementIconPicker from '@/components/views/supplements/reusable/supplement-icon-picker';
 import ControlledSupplementUnitPicker from '@/components/views/supplements/reusable/supplement-unit-picker';
 import { ISupplement, SupplementUnitEnum } from '@/contract/supplements/supplements.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateSupplementMutation, useUpdateSupplementMutation } from '@/redux/api/supplements/catalog-api';
 import { IApiError } from '@/types/global-types';
+import { DEFAULT_SUPPLEMENT_COLOR, DEFAULT_SUPPLEMENT_EMOJI } from '@/utils/supplements/supplement-visuals';
 
 interface SupplementFormModalProps extends IBaseModalProps {
   supplement: ISupplement | null;
@@ -27,7 +30,14 @@ interface SupplementFormValues {
   icon: string | null;
 }
 
-const DEFAULT_VALUES: SupplementFormValues = { name: '', unit: SupplementUnitEnum.Capsule, defaultAmount: '', note: null, color: null, icon: null };
+const DEFAULT_VALUES: SupplementFormValues = {
+  name: '',
+  unit: SupplementUnitEnum.Capsule,
+  defaultAmount: '',
+  note: null,
+  color: DEFAULT_SUPPLEMENT_COLOR,
+  icon: DEFAULT_SUPPLEMENT_EMOJI,
+};
 
 const parseAmount = (value: string): number | null => {
   if (value.trim() === '') return null;
@@ -43,7 +53,8 @@ const SupplementFormModal: React.FC<SupplementFormModalProps> = ({ isVisible, on
   const validationSchema = useSupplementValidationSchema();
 
   const methods = useForm<SupplementFormValues>({ resolver: yupResolver(validationSchema), defaultValues: DEFAULT_VALUES });
-  const { handleSubmit, reset: resetForm } = methods;
+  const { handleSubmit, reset: resetForm, watch } = methods;
+  const selectedColor = watch('color') ?? DEFAULT_SUPPLEMENT_COLOR;
 
   useEffect(() => {
     if (!isVisible) return;
@@ -55,8 +66,8 @@ const SupplementFormModal: React.FC<SupplementFormModalProps> = ({ isVisible, on
             unit: supplement.unit,
             defaultAmount: supplement.defaultAmount != null ? String(supplement.defaultAmount) : '',
             note: supplement.note,
-            color: supplement.color,
-            icon: supplement.icon,
+            color: supplement.color ?? DEFAULT_SUPPLEMENT_COLOR,
+            icon: supplement.icon?.trim() || DEFAULT_SUPPLEMENT_EMOJI,
           }
         : DEFAULT_VALUES
     );
@@ -135,6 +146,8 @@ const SupplementFormModal: React.FC<SupplementFormModalProps> = ({ isVisible, on
             keyboardType="decimal-pad"
             testID="supplement-default-amount-input"
           />
+          <ControlledSwatches name="color" label={t('supplements.catalog.colorLabel')} />
+          <ControlledSupplementIconPicker name="icon" label={t('supplements.catalog.iconLabel')} accentColor={selectedColor} />
           <ControlledTextArea
             name="note"
             label={t('supplements.catalog.noteLabel')}

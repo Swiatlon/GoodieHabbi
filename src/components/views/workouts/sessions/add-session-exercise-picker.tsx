@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Select from '@/components/shared/select/select';
-import { IWorkoutSession } from '@/contract/workouts/workouts.contract';
+import { Text, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import ExercisePickerModal from '@/components/views/workouts/reusable/exercise-picker-modal';
+import { IExercise, IWorkoutSession } from '@/contract/workouts/workouts.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useGetExercisesQuery } from '@/redux/api/workouts/exercises-api';
 import { useAddSessionExerciseMutation } from '@/redux/api/workouts/sessions-api';
@@ -16,12 +18,13 @@ const AddSessionExercisePicker: React.FC<AddSessionExercisePickerProps> = ({ ses
   const { showSnackbar } = useSnackbar();
   const { data: exercises = [] } = useGetExercisesQuery();
   const [addSessionExercise] = useAddSessionExerciseMutation();
+  const [isPickerVisible, setIsPickerVisible] = useState(false);
 
   const availableExercises = exercises.filter(exercise => !exercise.isArchived && !session.exercises.some(entry => entry.exerciseId === exercise.id));
 
-  const handleSelect = async (exerciseId: number) => {
+  const handleSelect = async (exercise: IExercise) => {
     try {
-      await addSessionExercise({ sessionId: session.id, exercise: { exerciseId } }).unwrap();
+      await addSessionExercise({ sessionId: session.id, exercise: { exerciseId: exercise.id } }).unwrap();
     } catch (err) {
       const error = err as IApiError;
       showSnackbar({ text: error.data?.message || t('workouts.sessions.addExerciseError'), variant: SnackbarVariantEnum.ERROR });
@@ -31,14 +34,24 @@ const AddSessionExercisePicker: React.FC<AddSessionExercisePickerProps> = ({ ses
   if (availableExercises.length === 0) return null;
 
   return (
-    <Select
-      placeholder={t('workouts.sessions.addExercisePlaceholder')}
-      value={null}
-      onChange={async value => value != null && handleSelect(Number(value))}
-      isModalVersion={true}
-      options={availableExercises.map(exercise => ({ label: exercise.name, value: exercise.id }))}
-      testID="add-session-exercise-select"
-    />
+    <>
+      <TouchableOpacity
+        onPress={() => setIsPickerVisible(true)}
+        className="flex-row items-center justify-center gap-1.5 py-3 rounded-lg border border-dashed border-primary"
+        testID="add-session-exercise-select"
+      >
+        <Ionicons name="add-circle-outline" size={16} color="#1987EE" />
+        <Text className="text-xs font-semibold text-primary">{t('workouts.sessions.addExercisePlaceholder')}</Text>
+      </TouchableOpacity>
+
+      <ExercisePickerModal
+        isVisible={isPickerVisible}
+        onClose={() => setIsPickerVisible(false)}
+        exercises={availableExercises}
+        onSelect={handleSelect}
+        testID="session-exercise-picker"
+      />
+    </>
   );
 };
 

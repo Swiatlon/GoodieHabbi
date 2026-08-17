@@ -3,10 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import SlotFormModal from './slot-form-modal';
+import SwipeableRow from '@/components/shared/swipeable-row/swipeable-row';
 import { ISupplement, ISupplementSlot } from '@/contract/supplements/supplements.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useDeleteSupplementSlotMutation } from '@/redux/api/supplements/catalog-api';
 import { IApiError } from '@/types/global-types';
+import { getSupplementVisual, getTimingVisual } from '@/utils/supplements/supplement-visuals';
 
 interface SupplementItemProps {
   supplement: ISupplement;
@@ -20,6 +22,7 @@ const SupplementItem: React.FC<SupplementItemProps> = ({ supplement, onEdit, onD
   const { showSnackbar } = useSnackbar();
   const [slotModalState, setSlotModalState] = useState<{ slot: ISupplementSlot | null } | null>(null);
   const [deleteSlot] = useDeleteSupplementSlotMutation();
+  const visual = getSupplementVisual(supplement);
 
   const handleDeleteSlot = (slot: ISupplementSlot) => {
     Alert.alert(t('supplements.catalog.deleteSlotTitle'), t('supplements.catalog.deleteSlotMessage'), [
@@ -40,41 +43,54 @@ const SupplementItem: React.FC<SupplementItemProps> = ({ supplement, onEdit, onD
   };
 
   return (
-    <View testID="supplement-item-container" className={`p-4 border-b border-gray-100 gap-2 ${supplement.isActive ? '' : 'opacity-50'}`}>
-      <View className="flex-row items-center justify-between">
-        <TouchableOpacity className="flex-1 pr-3" onPress={() => onEdit(supplement)}>
-          <Text className="text-base font-semibold text-gray-800">{supplement.name}</Text>
-          <Text className="text-xs text-gray-400 mt-0.5">{t(`supplements.enums.unit.${supplement.unit}`)}</Text>
-        </TouchableOpacity>
-
-        <View className="flex-row gap-3">
-          <TouchableOpacity onPress={() => onToggleActive(supplement)} accessibilityLabel={t('supplements.catalog.toggleActive')}>
+    <View testID="supplement-item-container" className={`bg-white ${supplement.isActive ? '' : 'opacity-50'}`}>
+      <SwipeableRow onDelete={() => onDelete(supplement)}>
+        <TouchableOpacity onPress={() => onEdit(supplement)} activeOpacity={0.7} className="flex-row items-center px-4 py-3 bg-white">
+          <View className="w-10 h-10 rounded-xl items-center justify-center mr-3" style={{ backgroundColor: `${visual.color}20` }}>
+            <Text className="text-lg">{visual.emoji}</Text>
+          </View>
+          <View className="flex-1 pr-3">
+            <Text className="text-sm font-semibold text-gray-800" numberOfLines={1}>
+              {supplement.name}
+            </Text>
+            <Text className="text-xs text-gray-500 mt-0.5">{t(`supplements.enums.unit.${supplement.unit}`)}</Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => onToggleActive(supplement)}
+            accessibilityLabel={t('supplements.catalog.toggleActive')}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
             <Ionicons name={supplement.isActive ? 'toggle' : 'toggle-outline'} size={26} color={supplement.isActive ? '#10B981' : '#9ca3af'} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => onDelete(supplement)} accessibilityLabel={t('common.delete')}>
-            <Ionicons name="trash-outline" size={20} color="#e53e3e" />
-          </TouchableOpacity>
-        </View>
-      </View>
+        </TouchableOpacity>
+      </SwipeableRow>
 
-      <View className="gap-1">
-        {supplement.slots.map(slot => (
-          <TouchableOpacity
-            key={slot.id}
-            className="flex-row items-center justify-between bg-gray-50 rounded-lg px-3 py-2"
-            onPress={() => setSlotModalState({ slot })}
-            onLongPress={() => handleDeleteSlot(slot)}
-          >
-            <Text className="text-xs text-gray-600">
-              {t(`supplements.enums.timing.${slot.timing}`)} · {slot.amount} {t(`supplements.enums.unit.${supplement.unit}`)}
-            </Text>
-            <Ionicons name="pencil-outline" size={14} color="#9ca3af" />
-          </TouchableOpacity>
-        ))}
+      <View className="flex-row flex-wrap gap-1.5 px-4 pb-3 bg-white">
+        {supplement.slots.map(slot => {
+          const timingVisual = getTimingVisual(slot.timing);
+          return (
+            <TouchableOpacity
+              key={slot.id}
+              onPress={() => setSlotModalState({ slot })}
+              onLongPress={() => handleDeleteSlot(slot)}
+              className="flex-row items-center gap-1 px-2.5 py-1.5 rounded-full"
+              style={{ backgroundColor: `${timingVisual.color}20` }}
+            >
+              <Text className="text-xs">{timingVisual.emoji}</Text>
+              <Text className="text-[11px] font-semibold" style={{ color: timingVisual.color }}>
+                {t(`supplements.enums.timing.${slot.timing}`)} · {slot.amount}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
 
-        <TouchableOpacity onPress={() => setSlotModalState({ slot: null })} className="flex-row items-center gap-1 py-1" testID="btn-add-slot">
-          <Ionicons name="add-circle-outline" size={16} color="#1987EE" />
-          <Text className="text-xs font-semibold text-primary">{t('supplements.catalog.addSlot')}</Text>
+        <TouchableOpacity
+          onPress={() => setSlotModalState({ slot: null })}
+          className="flex-row items-center gap-1 px-2.5 py-1.5 rounded-full bg-gray-50"
+          testID="btn-add-slot"
+        >
+          <Ionicons name="add-circle-outline" size={14} color="#1987EE" />
+          <Text className="text-[11px] font-semibold text-primary">{t('supplements.catalog.addSlot')}</Text>
         </TouchableOpacity>
       </View>
 

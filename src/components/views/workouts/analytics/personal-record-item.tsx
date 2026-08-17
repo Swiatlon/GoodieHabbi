@@ -15,16 +15,21 @@ const PersonalRecordItem: React.FC<PersonalRecordItemProps> = ({ record, weightU
   const { t } = useTranslation();
 
   return (
-    <TouchableOpacity onPress={onPress} className="flex-row items-center justify-between p-4 border-b border-gray-100" testID="personal-record-item">
+    <TouchableOpacity onPress={onPress} activeOpacity={0.7} className="flex-row items-center px-4 py-3 bg-white" testID="personal-record-item">
+      <View className="w-10 h-10 rounded-xl items-center justify-center mr-3 bg-amber-50">
+        <Ionicons name="trophy-outline" size={18} color="#F59E0B" />
+      </View>
       <View className="flex-1 pr-3">
-        <Text className="text-base font-semibold text-gray-800">{record.exerciseName}</Text>
-        <Text className="text-xs text-gray-400 mt-0.5">
+        <Text className="text-sm font-semibold text-gray-800" numberOfLines={1}>
+          {record.exerciseName}
+        </Text>
+        <Text className="text-xs text-gray-500 mt-0.5">
           {record.maxWeight != null && `${t('workouts.analytics.maxWeight')}: ${record.maxWeight} ${weightUnit} · `}
           {record.maxReps != null && `${t('workouts.analytics.maxReps')}: ${record.maxReps} · `}
           {t('workouts.analytics.lastPerformedOn')}: {safeDateFormat(record.lastPerformedOn)}
         </Text>
       </View>
-      <Ionicons name="chevron-forward" size={18} color="#9ca3af" />
+      <Ionicons name="chevron-forward" size={16} color="#9ca3af" />
     </TouchableOpacity>
   );
 };
