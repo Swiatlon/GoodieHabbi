@@ -11,9 +11,10 @@ interface ExerciseItemProps {
   onEdit: (exercise: IExercise) => void;
   onDelete: (exercise: IExercise) => void;
   onToggleArchived: (exercise: IExercise) => void;
+  onDuplicate: (exercise: IExercise) => void;
 }
 
-const ExerciseItem: React.FC<ExerciseItemProps> = ({ exercise, onEdit, onDelete, onToggleArchived }) => {
+const ExerciseItem: React.FC<ExerciseItemProps> = ({ exercise, onEdit, onDelete, onToggleArchived, onDuplicate }) => {
   const { t } = useTranslation();
   const canEdit = !exercise.isSystem;
   const visual = getMuscleGroupVisual(exercise.muscleGroup);
@@ -33,17 +34,38 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({ exercise, onEdit, onDelete,
         </Text>
       </TouchableOpacity>
 
-      {exercise.isSystem ? (
-        <Ionicons name="lock-closed-outline" size={18} color="#9ca3af" />
-      ) : (
+      <View className="flex-row items-center gap-3">
         <TouchableOpacity
-          onPress={() => onToggleArchived(exercise)}
-          accessibilityLabel={t('workouts.exercises.toggleArchived')}
+          onPress={() => onDuplicate(exercise)}
+          accessibilityLabel={t('workouts.exercises.duplicateAction')}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          testID={`exercise-duplicate-${exercise.id}`}
         >
-          <Ionicons name={exercise.isArchived ? 'archive' : 'archive-outline'} size={18} color="#6b7280" />
+          <Ionicons name="copy-outline" size={18} color="#6b7280" />
         </TouchableOpacity>
-      )}
+
+        {exercise.isSystem ? (
+          <Ionicons name="lock-closed-outline" size={18} color="#9ca3af" />
+        ) : (
+          <>
+            <TouchableOpacity
+              onPress={() => onToggleArchived(exercise)}
+              accessibilityLabel={t('workouts.exercises.toggleArchived')}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
+              <Ionicons name={exercise.isArchived ? 'archive' : 'archive-outline'} size={18} color="#6b7280" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => onDelete(exercise)}
+              accessibilityLabel={t('workouts.exercises.deleteTitle')}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              testID={`exercise-delete-${exercise.id}`}
+            >
+              <Ionicons name="trash-outline" size={18} color="#e53e3e" />
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
     </View>
   );
 

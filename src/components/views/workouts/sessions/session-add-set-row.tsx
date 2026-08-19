@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,14 +10,25 @@ interface SessionAddSetRowProps {
   metricType: ExerciseMetricEnum;
   weightUnit: string;
   isSubmitting: boolean;
+  seedValues: MetricValues;
+  seedRpe: number | null;
+  seedKey: number | string;
   onAdd: (set: ISessionSetInput) => void;
 }
 
-const SessionAddSetRow: React.FC<SessionAddSetRowProps> = ({ metricType, weightUnit, isSubmitting, onAdd }) => {
+const SessionAddSetRow: React.FC<SessionAddSetRowProps> = ({ metricType, weightUnit, isSubmitting, seedValues, seedRpe, seedKey, onAdd }) => {
   const { t } = useTranslation();
-  const [values, setValues] = useState<MetricValues>({});
-  const [rpe, setRpe] = useState<string>('');
+  const [values, setValues] = useState<MetricValues>(seedValues);
+  const [rpe, setRpe] = useState<string>(seedRpe != null ? String(seedRpe) : '');
   const [isWarmup, setIsWarmup] = useState(false);
+
+  // Re-primes the inputs with the last logged set (or the routine's target) so the next set
+  // is a one-tap repeat instead of retyping the same reps/weight every time.
+  useEffect(() => {
+    setValues(seedValues);
+    setRpe(seedRpe != null ? String(seedRpe) : '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seedKey]);
 
   const requiredFields = getRequiredFields(metricType);
   const canSubmit = requiredFields.every(field => values[field] != null) && !isSubmitting;
@@ -33,8 +44,6 @@ const SessionAddSetRow: React.FC<SessionAddSetRowProps> = ({ metricType, weightU
       rpe: rpe.trim() === '' ? null : Number(rpe),
       setType: isWarmup ? WorkoutSetTypeEnum.Warmup : WorkoutSetTypeEnum.Normal,
     });
-    setValues({});
-    setRpe('');
     setIsWarmup(false);
   };
 

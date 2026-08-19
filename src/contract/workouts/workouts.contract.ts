@@ -31,6 +31,8 @@ export enum EquipmentEnum {
   Machine = 'Machine',
   Cable = 'Cable',
   ResistanceBand = 'ResistanceBand',
+  Calisthenics = 'Calisthenics',
+  Rings = 'Rings',
   Other = 'Other',
 }
 

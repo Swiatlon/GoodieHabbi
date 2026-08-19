@@ -45,24 +45,37 @@ const SupplementItem: React.FC<SupplementItemProps> = ({ supplement, onEdit, onD
   return (
     <View testID="supplement-item-container" className={`bg-white ${supplement.isActive ? '' : 'opacity-50'}`}>
       <SwipeableRow onDelete={() => onDelete(supplement)}>
-        <TouchableOpacity onPress={() => onEdit(supplement)} activeOpacity={0.7} className="flex-row items-center px-4 py-3 bg-white">
-          <View className="w-10 h-10 rounded-xl items-center justify-center mr-3" style={{ backgroundColor: `${visual.color}20` }}>
-            <Text className="text-lg">{visual.emoji}</Text>
-          </View>
-          <View className="flex-1 pr-3">
-            <Text className="text-sm font-semibold text-gray-800" numberOfLines={1}>
-              {supplement.name}
-            </Text>
-            <Text className="text-xs text-gray-500 mt-0.5">{t(`supplements.enums.unit.${supplement.unit}`)}</Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => onToggleActive(supplement)}
-            accessibilityLabel={t('supplements.catalog.toggleActive')}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <Ionicons name={supplement.isActive ? 'toggle' : 'toggle-outline'} size={26} color={supplement.isActive ? '#10B981' : '#9ca3af'} />
+        <View className="flex-row items-center px-4 py-3 bg-white">
+          <TouchableOpacity onPress={() => onEdit(supplement)} activeOpacity={0.7} className="flex-1 flex-row items-center pr-3">
+            <View className="w-10 h-10 rounded-xl items-center justify-center mr-3" style={{ backgroundColor: `${visual.color}20` }}>
+              <Text className="text-lg">{visual.emoji}</Text>
+            </View>
+            <View className="flex-1">
+              <Text className="text-sm font-semibold text-gray-800" numberOfLines={1}>
+                {supplement.name}
+              </Text>
+              <Text className="text-xs text-gray-500 mt-0.5">{t(`supplements.enums.unit.${supplement.unit}`)}</Text>
+            </View>
           </TouchableOpacity>
-        </TouchableOpacity>
+
+          <View className="flex-row items-center gap-3">
+            <TouchableOpacity
+              onPress={() => onToggleActive(supplement)}
+              accessibilityLabel={t('supplements.catalog.toggleActive')}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Ionicons name={supplement.isActive ? 'toggle' : 'toggle-outline'} size={26} color={supplement.isActive ? '#10B981' : '#9ca3af'} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => onDelete(supplement)}
+              accessibilityLabel={t('supplements.catalog.deleteTitle')}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              testID={`supplement-delete-${supplement.id}`}
+            >
+              <Ionicons name="trash-outline" size={18} color="#e53e3e" />
+            </TouchableOpacity>
+          </View>
+        </View>
       </SwipeableRow>
 
       <View className="flex-row flex-wrap gap-1.5 px-4 pb-3 bg-white">

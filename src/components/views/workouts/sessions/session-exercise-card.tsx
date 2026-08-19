@@ -4,6 +4,7 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import SessionAddSetRow from './session-add-set-row';
 import SessionSetRow from './session-set-row';
+import { MetricValues } from '@/components/views/workouts/reusable/metric-input-group';
 import { ISessionSetInput, IWorkoutSessionExercise } from '@/contract/workouts/workouts.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useAddSessionSetMutation, useDeleteSessionExerciseMutation, useDeleteSessionSetMutation } from '@/redux/api/workouts/sessions-api';
@@ -49,6 +50,17 @@ const SessionExerciseCard: React.FC<SessionExerciseCardProps> = ({ sessionId, ex
     }
   };
 
+  const lastSet = exercise.sets.at(-1);
+  const seedValues: MetricValues = lastSet
+    ? { reps: lastSet.reps, weight: lastSet.weight, durationSeconds: lastSet.durationSeconds, distance: lastSet.distance }
+    : {
+        reps: exercise.targetReps,
+        weight: exercise.targetWeight,
+        durationSeconds: exercise.targetDurationSeconds,
+        distance: exercise.targetDistance,
+      };
+  const seedRpe = lastSet?.rpe ?? null;
+
   return (
     <View className="border border-gray-200 rounded-xl p-3 gap-1" testID="session-exercise-card">
       <View className="flex-row items-center justify-between">
@@ -68,7 +80,15 @@ const SessionExerciseCard: React.FC<SessionExerciseCardProps> = ({ sessionId, ex
         />
       ))}
 
-      <SessionAddSetRow metricType={exercise.metricType} weightUnit={weightUnit} isSubmitting={isAdding} onAdd={handleAddSet} />
+      <SessionAddSetRow
+        metricType={exercise.metricType}
+        weightUnit={weightUnit}
+        isSubmitting={isAdding}
+        seedValues={seedValues}
+        seedRpe={seedRpe}
+        seedKey={lastSet?.id ?? 'target'}
+        onAdd={handleAddSet}
+      />
     </View>
   );
 };

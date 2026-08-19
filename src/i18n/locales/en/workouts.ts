@@ -45,6 +45,8 @@ const workouts = {
       Machine: 'Machine',
       Cable: 'Cable',
       ResistanceBand: 'Resistance band',
+      Calisthenics: 'Calisthenics',
+      Rings: 'Rings',
       Other: 'Other',
     },
     setType: {
@@ -66,8 +68,10 @@ const workouts = {
     archivedPillLabel: 'Archived',
     filterActiveOnly: 'Active',
     filterAllIncludingArchived: 'All',
+    mineOnlyLabel: 'Mine',
     equipmentLabel: 'Equipment',
     equipmentPlaceholder: 'Select equipment',
+    equipmentFilterLabel: 'Filter by equipment',
     metricFields: {
       reps: REPS_LABEL,
       weight: 'Weight',
@@ -99,6 +103,8 @@ const workouts = {
     deletedError: 'Failed to delete exercise',
     archiveError: 'Failed to change archive status',
     toggleArchived: 'Archive / restore',
+    duplicateAction: 'Duplicate exercise',
+    duplicateSuffix: ' (copy)',
     schema: {
       nameRequired: NAME_REQUIRED,
       nameMaxLength: NAME_MAX_LENGTH,

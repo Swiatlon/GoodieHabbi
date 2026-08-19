@@ -18,6 +18,7 @@ import { IApiError } from '@/types/global-types';
 
 interface ExerciseFormModalProps extends IBaseModalProps {
   exercise: IExercise | null;
+  duplicateFrom?: IExercise | null;
 }
 
 interface ExerciseFormValues {
@@ -36,7 +37,7 @@ const DEFAULT_VALUES: ExerciseFormValues = {
   note: null,
 };
 
-const ExerciseFormModal: React.FC<ExerciseFormModalProps> = ({ isVisible, onClose, exercise }) => {
+const ExerciseFormModal: React.FC<ExerciseFormModalProps> = ({ isVisible, onClose, exercise, duplicateFrom }) => {
   const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
   const [createExercise, { isLoading: isCreating }] = useCreateExerciseMutation();
@@ -52,18 +53,26 @@ const ExerciseFormModal: React.FC<ExerciseFormModalProps> = ({ isVisible, onClos
   useEffect(() => {
     if (!isVisible) return;
 
-    resetForm(
-      exercise
-        ? {
-            name: exercise.name,
-            metricType: exercise.metricType,
-            muscleGroup: exercise.muscleGroup,
-            equipment: exercise.equipment,
-            note: exercise.note,
-          }
-        : DEFAULT_VALUES
-    );
-  }, [isVisible, exercise, resetForm]);
+    if (exercise) {
+      resetForm({
+        name: exercise.name,
+        metricType: exercise.metricType,
+        muscleGroup: exercise.muscleGroup,
+        equipment: exercise.equipment,
+        note: exercise.note,
+      });
+    } else if (duplicateFrom) {
+      resetForm({
+        name: `${duplicateFrom.name}${t('workouts.exercises.duplicateSuffix')}`,
+        metricType: duplicateFrom.metricType,
+        muscleGroup: duplicateFrom.muscleGroup,
+        equipment: duplicateFrom.equipment,
+        note: duplicateFrom.note,
+      });
+    } else {
+      resetForm(DEFAULT_VALUES);
+    }
+  }, [isVisible, exercise, duplicateFrom, resetForm, t]);
 
   const onSubmit = async (values: ExerciseFormValues) => {
     const payload = {

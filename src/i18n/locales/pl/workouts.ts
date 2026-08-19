@@ -45,6 +45,8 @@ const workouts = {
       Machine: 'Maszyna',
       Cable: 'Wyciąg',
       ResistanceBand: 'Guma oporowa',
+      Calisthenics: 'Kalistenika',
+      Rings: 'Kółka gimnastyczne',
       Other: 'Inny',
     },
     setType: {
@@ -66,8 +68,10 @@ const workouts = {
     archivedPillLabel: 'Zarchiwizowane',
     filterActiveOnly: 'Aktywne',
     filterAllIncludingArchived: 'Wszystkie',
+    mineOnlyLabel: 'Moje',
     equipmentLabel: 'Sprzęt',
     equipmentPlaceholder: 'Wybierz sprzęt',
+    equipmentFilterLabel: 'Filtruj po sprzęcie',
     metricFields: {
       reps: REPS_LABEL,
       weight: 'Ciężar',
@@ -99,6 +103,8 @@ const workouts = {
     deletedError: 'Nie udało się usunąć ćwiczenia',
     archiveError: 'Nie udało się zmienić statusu archiwizacji',
     toggleArchived: 'Archiwizuj / przywróć',
+    duplicateAction: 'Duplikuj ćwiczenie',
+    duplicateSuffix: ' (kopia)',
     schema: {
       nameRequired: NAME_REQUIRED,
       nameMaxLength: NAME_MAX_LENGTH,
