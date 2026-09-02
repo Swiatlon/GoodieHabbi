@@ -3,6 +3,7 @@ const finance = {
     dashboard: 'Pulpit',
     history: 'Historia',
     statistics: 'Statystyki',
+    budgetPlanner: 'Plan',
   },
   months: {
     jan: 'Sty',
@@ -37,6 +38,12 @@ const finance = {
     savingsSection: 'Oszczędności i inwestycje',
     incomeSection: 'Przychody',
     leftoverFromLastMonth: 'Zostało z poprzednich miesięcy',
+    planBanner: {
+      title: 'Zaplanuj budżet na ten miesiąc',
+      subtitle: 'Zobacz sugerowane kwoty dla wszystkich kategorii na podstawie Twojej historii',
+      cta: 'Zaplanuj',
+      dismiss: 'Zamknij',
+    },
   },
   hideNumbers: {
     toggle: 'Ukryj/pokaż kwoty',
@@ -201,7 +208,8 @@ const finance = {
     setBudget: 'Ustaw budżet',
     setBudgetTitle: 'Ustaw budżet',
     monthlyBudget: 'Miesięczny budżet (PLN)',
-    suggestedBudget: 'Sugerowane (śr. z 3 mies.): {{amount}} · dotknij, aby użyć',
+    suggestedBudget: 'Sugerowane (typowy miesiąc, mediana z {{months}} mies.): {{amount}} · dotknij, aby użyć',
+    suggestedBudgetIrregular: 'Nieregularne — szczyt {{peak}}, zapas {{amount}}/mies. (śr. z {{months}} mies.) · dotknij, aby użyć',
     savingBudget: 'Zapisywanie budżetu...',
     budgetUpdated: 'Budżet zaktualizowany!',
     budgetError: 'Nie udało się zaktualizować budżetu.',
@@ -235,6 +243,24 @@ const finance = {
     monthlyBalance: 'Miesięczny przychód minus wydatki',
     moreThanLastMonth: '{{amount}} więcej niż w zeszłym miesiącu',
     lessThanLastMonth: '{{amount}} mniej niż w zeszłym miesiącu',
+  },
+  budgetPlanner: {
+    title: 'Plan budżetu',
+    subtitle:
+      'Wszystkie kategorie, nawet te bez ruchu w tym miesiącu — sugestia to typowy miesiąc (mediana) z ostatnich {{months}} mies., a dla nieregularnych wydatków zapas na wpadki.',
+    needToPrepare: 'Musisz mieć przygotowane',
+    avgIncome: 'Śr. przychód / mies.',
+    canSave: 'Możesz odłożyć',
+    overspending: 'Śr. wydatki przewyższają śr. przychód o {{amount}}',
+    historyTypical: 'Typowy miesiąc (mediana z {{months}} mies.): {{amount}}',
+    historyIrregular: 'Nieregularne · szczyt {{peak}} · zapas {{amount}}/mies.',
+    noHistory: 'Brak historii dla tej kategorii',
+    plannedBadge: 'Zaplanowano',
+    suggestedBadge: 'Sugerowane',
+    spendingSection: 'Wydatki',
+    savingsSection: 'Oszczędności i inwestycje',
+    emptyTitle: 'Brak kategorii wydatków',
+    emptyHint: 'Dodaj kategorię, aby zacząć planować budżet',
   },
 };
 

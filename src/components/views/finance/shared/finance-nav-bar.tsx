@@ -9,6 +9,7 @@ const SECTIONS: { path: string; icon: IoniconName; labelKey: string }[] = [
   { path: '/finance', icon: 'home-outline', labelKey: 'finance.tabs.dashboard' },
   { path: '/finance/history', icon: 'receipt-outline', labelKey: 'finance.tabs.history' },
   { path: '/finance/statistics', icon: 'stats-chart-outline', labelKey: 'finance.tabs.statistics' },
+  { path: '/finance/budget-planner', icon: 'clipboard-outline', labelKey: 'finance.tabs.budgetPlanner' },
 ];
 
 const FinanceNavBar = () => {

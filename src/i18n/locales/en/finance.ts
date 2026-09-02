@@ -3,6 +3,7 @@ const finance = {
     dashboard: 'Dashboard',
     history: 'History',
     statistics: 'Statistics',
+    budgetPlanner: 'Plan',
   },
   months: {
     jan: 'Jan',
@@ -37,6 +38,12 @@ const finance = {
     savingsSection: 'Savings & Investments',
     incomeSection: 'Income',
     leftoverFromLastMonth: 'Left over from previous months',
+    planBanner: {
+      title: "Plan this month's budget",
+      subtitle: 'See suggested amounts for every category based on your history',
+      cta: 'Plan it',
+      dismiss: 'Dismiss',
+    },
   },
   hideNumbers: {
     toggle: 'Show/hide amounts',
@@ -201,7 +208,8 @@ const finance = {
     setBudget: 'Set budget',
     setBudgetTitle: 'Set Budget',
     monthlyBudget: 'Monthly Budget (PLN)',
-    suggestedBudget: 'Suggested (3-month avg): {{amount}} · tap to use',
+    suggestedBudget: 'Suggested (typical month, {{months}}-month median): {{amount}} · tap to use',
+    suggestedBudgetIrregular: 'Irregular — peak {{peak}}, set aside {{amount}}/mo ({{months}}-month avg) · tap to use',
     savingBudget: 'Saving budget...',
     budgetUpdated: 'Budget updated!',
     budgetError: 'Failed to update budget.',
@@ -235,6 +243,24 @@ const finance = {
     monthlyBalance: 'Monthly income minus expenses',
     moreThanLastMonth: '{{amount}} more than last month',
     lessThanLastMonth: '{{amount}} less than last month',
+  },
+  budgetPlanner: {
+    title: 'Budget Plan',
+    subtitle:
+      'Every category, even ones with no activity yet this month — the suggestion is a typical month (median) over the last {{months}} months, and a safety buffer for irregular expenses.',
+    needToPrepare: 'You need to have ready',
+    avgIncome: 'Avg. income / month',
+    canSave: 'You could save',
+    overspending: 'Avg. spending exceeds avg. income by {{amount}}',
+    historyTypical: 'Typical month ({{months}}-month median): {{amount}}',
+    historyIrregular: 'Irregular · peak {{peak}} · buffer {{amount}}/mo',
+    noHistory: 'No history for this category',
+    plannedBadge: 'Planned',
+    suggestedBadge: 'Suggested',
+    spendingSection: 'Spending',
+    savingsSection: 'Savings & Investments',
+    emptyTitle: 'No expense categories',
+    emptyHint: 'Add a category to start planning your budget',
   },
 };
 

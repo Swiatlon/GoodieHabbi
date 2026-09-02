@@ -3,20 +3,16 @@ import { Control, FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useMonthlyHistory } from '../budget-planner/use-monthly-history';
 import ControlledInput from '@/components/shared/input/controlled-input';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
-import dayjs from '@/configs/day-js-config';
 import { BudgetPeriodEnum, IBudget, IFinanceCategory } from '@/contract/finance/finance.contract';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import {
-  useCreateBudgetMutation,
-  useDeleteBudgetMutation,
-  useGetMonthlySummaryQuery,
-  useUpdateBudgetMutation,
-} from '@/redux/api/finance/finance-api';
+import { useCreateBudgetMutation, useDeleteBudgetMutation, useUpdateBudgetMutation } from '@/redux/api/finance/finance-api';
 import { collectCategoryIds, DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
 import { parseAmount } from '@/utils/finance/form-helpers';
 import { formatPLN } from '@/utils/finance/format-pln';
+import { amountForCategoryIds, BUDGET_HISTORY_MONTHS, suggestBudgetAmount } from '@/utils/finance/summary-helpers';
 
 interface BudgetModalProps extends IBaseModalProps {
   category: IFinanceCategory | null;
@@ -28,20 +24,6 @@ interface BudgetModalProps extends IBaseModalProps {
 interface BudgetFormValues {
   amount: string;
 }
-
-// Drives the divisor in the average below and the number of `useGetMonthlySummaryQuery` calls a few lines
-// down — hooks can't be called a variable number of times, so changing this also means adding/removing one
-// of those three calls (and the corresponding spendFor(...) term) by hand.
-const HISTORY_MONTHS = 3;
-
-// months-ago (1..HISTORY_MONTHS) relative to the viewed year/month, wrapping across year boundaries.
-const getPastMonth = (year: number, month: number, monthsAgo: number) => {
-  const target = dayjs()
-    .year(year)
-    .month(month - 1)
-    .subtract(monthsAgo, 'month');
-  return { year: target.year(), month: target.month() + 1 };
-};
 
 interface SubmitButtonProps {
   control: Control<BudgetFormValues>;
@@ -86,22 +68,13 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isVisible, onClose, category,
 
   // Only worth suggesting when there's no budget yet — once one exists the user is adjusting it deliberately.
   const shouldFetchHistory = isVisible && !!category && !currentBudget;
-  const pastMonth1 = getPastMonth(year, month, 1);
-  const pastMonth2 = getPastMonth(year, month, 2);
-  const pastMonth3 = getPastMonth(year, month, 3);
-  const { data: summary1 } = useGetMonthlySummaryQuery(pastMonth1, { skip: !shouldFetchHistory });
-  const { data: summary2 } = useGetMonthlySummaryQuery(pastMonth2, { skip: !shouldFetchHistory });
-  const { data: summary3 } = useGetMonthlySummaryQuery(pastMonth3, { skip: !shouldFetchHistory });
+  const history = useMonthlyHistory(year, month, !shouldFetchHistory);
 
   const categoryIds = category ? new Set(collectCategoryIds(category)) : null;
-  const spendFor = (summary?: { expenseByCategory: { categoryId: number | null; amount: number }[] }) => {
-    if (!categoryIds) return 0;
-    return (summary?.expenseByCategory ?? [])
-      .filter(item => item.categoryId != null && categoryIds.has(item.categoryId))
-      .reduce((sum, item) => sum + item.amount, 0);
-  };
-  const suggestedAmount = shouldFetchHistory ? Math.round((spendFor(summary1) + spendFor(summary2) + spendFor(summary3)) / HISTORY_MONTHS) : 0;
-  const showSuggestion = shouldFetchHistory && suggestedAmount > 0;
+  const suggestion = categoryIds
+    ? suggestBudgetAmount(history.map(summary => amountForCategoryIds(summary, categoryIds)))
+    : { amount: 0, isIrregular: false, peak: 0, hasHistory: false };
+  const showSuggestion = shouldFetchHistory && suggestion.amount > 0;
 
   const onSubmit = async (values: BudgetFormValues) => {
     const parsedAmount = parseAmount(values.amount);
@@ -180,12 +153,20 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isVisible, onClose, category,
 
       {showSuggestion && (
         <TouchableOpacity
-          onPress={() => setValue('amount', String(suggestedAmount))}
+          onPress={() => setValue('amount', String(suggestion.amount))}
           className="flex-row items-center gap-1.5 mt-2"
           testID="budget-suggestion-button"
         >
-          <Ionicons name="bulb-outline" size={14} color="#F59E0B" />
-          <Text className="text-xs text-amber-600">{t('finance.expenses.suggestedBudget', { amount: formatPLN(suggestedAmount) })}</Text>
+          <Ionicons name={suggestion.isIrregular ? 'flash-outline' : 'bulb-outline'} size={14} color="#F59E0B" />
+          <Text className="text-xs text-amber-600">
+            {suggestion.isIrregular
+              ? t('finance.expenses.suggestedBudgetIrregular', {
+                  amount: formatPLN(suggestion.amount),
+                  peak: formatPLN(suggestion.peak),
+                  months: BUDGET_HISTORY_MONTHS,
+                })
+              : t('finance.expenses.suggestedBudget', { amount: formatPLN(suggestion.amount), months: BUDGET_HISTORY_MONTHS })}
+          </Text>
         </TouchableOpacity>
       )}
 

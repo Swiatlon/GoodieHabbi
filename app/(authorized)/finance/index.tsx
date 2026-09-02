@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { Href, useRouter } from 'expo-router';
 import AddTransactionModal from '@/components/views/finance/add-transaction-modal';
 import MiniStatCard from '@/components/views/finance/dashboard/mini-stat-card';
 import MonthlyOverviewCard from '@/components/views/finance/dashboard/monthly-overview-card';
@@ -63,6 +63,9 @@ const Dashboard = () => {
   const [recurringModalVisible, setRecurringModalVisible] = useState(false);
   const [budgetCategory, setBudgetCategory] = useState<IFinanceCategory | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  // Keyed by "year-month" so a dismissal only lasts for the month it was dismissed in — swiping/navigating
+  // to a different month (or a future session in a month that still has no budgets) shows the nudge again.
+  const [dismissedPlanBannerMonth, setDismissedPlanBannerMonth] = useState<string | null>(null);
   const { hideNumbers, setHideNumbers, mask } = useFinanceDisplay();
   const promptExport = useFinanceExportPrompt();
 
@@ -160,6 +163,11 @@ const Dashboard = () => {
   const currentBudgetForModal = budgetCategory ? getBudgetForCategory(budgetCategory) : null;
   const isLoading = loadingSummary || loadingCategories || loadingIncomeCategories || loadingBudgets || loadingTransactions;
 
+  const monthKey = `${year}-${month}`;
+  // No budgets at all this month is exactly the "new month, categories haven't reappeared yet" gap — nudge
+  // toward the planner instead of leaving the user to discover it only via the nav bar.
+  const showPlanBanner = !loadingBudgets && budgets.length === 0 && dismissedPlanBannerMonth !== monthKey;
+
   // Privacy toggle sits on the left (used often, needs a fixed spot), the overflow menu on the right —
   // the year stays centered between them instead of both actions crowding one side.
   const leftHeaderActions = (
@@ -218,6 +226,34 @@ const Dashboard = () => {
           contentContainerStyle={{ padding: 16, paddingBottom: 96 }}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} colors={['#1987EE']} tintColor="#1987EE" />}
         >
+          {showPlanBanner && (
+            <View className="bg-blue-50 rounded-2xl p-3.5 mb-4" testID="plan-budget-banner">
+              <View className="flex-row items-start gap-3">
+                <View className="w-9 h-9 rounded-full bg-white items-center justify-center">
+                  <Ionicons name="calendar-outline" size={18} color="#1987EE" />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-sm font-bold text-gray-800">{t('finance.dashboard.planBanner.title')}</Text>
+                  <Text className="text-xs text-gray-500 mt-0.5">{t('finance.dashboard.planBanner.subtitle')}</Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => setDismissedPlanBannerMonth(monthKey)}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                  accessibilityLabel={t('finance.dashboard.planBanner.dismiss')}
+                >
+                  <Ionicons name="close" size={16} color="#9ca3af" />
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                onPress={() => router.push('/finance/budget-planner' as Href)}
+                className="mt-3 self-start px-3 py-1.5 rounded-lg bg-primary"
+                testID="plan-budget-banner-cta"
+              >
+                <Text className="text-xs font-bold text-white">{t('finance.dashboard.planBanner.cta')}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
           <SwipeMonthArea onSwipeLeft={goToNextMonth} onSwipeRight={goToPreviousMonth}>
             <MonthlyOverviewCard
               totalSpent={totalSpent}
