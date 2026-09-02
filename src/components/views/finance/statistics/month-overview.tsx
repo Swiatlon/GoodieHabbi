@@ -2,12 +2,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import BudgetProgressRow from './budget-progress-row';
+import ExpenseBreakdownRow from './expense-breakdown-row';
 import KpiCard from '@/components/shared/kpi-card/kpi-card';
 import { IBudgetProgressItem, IFinanceCategory, IMonthlySummary } from '@/contract/finance/finance.contract';
 import { useFinanceDisplay } from '@/providers/finance-display-context';
-import { buildCategoriesById, getCategoryVisual, getSavingsCategoryIds } from '@/utils/finance/category-helpers';
+import { buildCategoriesById, buildCategoryChartColors, getCategoryVisual, getSavingsCategoryIds } from '@/utils/finance/category-helpers';
 import { formatK } from '@/utils/finance/format-k';
-import { formatPLN } from '@/utils/finance/format-pln';
 import { getSavingsAmount } from '@/utils/finance/summary-helpers';
 
 interface MonthOverviewProps {
@@ -47,7 +48,17 @@ const MonthOverview: React.FC<MonthOverviewProps> = ({ summary, prevSummary, bud
   const budgetedCategoryIds = new Set(spendingBudgetProgress.map(item => item.categoryId));
   const noBudgetItems = spendingBreakdown.filter(item => item.categoryId != null && !budgetedCategoryIds.has(item.categoryId));
 
+  const chartColorByCategoryId = buildCategoryChartColors(categories);
   const getVisual = (categoryId: number | null) => getCategoryVisual(categoriesById, categoryId);
+  // The breakdown bar below is the one place color alone has to tell uncustomized categories apart —
+  // everywhere else (icon chips, cards) the name is right next to it, so a shared gray fallback is fine.
+  const getChartColor = (categoryId: number | null) =>
+    (categoryId != null && categoriesById.get(categoryId)?.color) || chartColorByCategoryId.get(categoryId ?? -1) || getVisual(categoryId).color;
+
+  // Sorted, and each category gets its own bar row (not a pie) — a bar list scales to as many categories
+  // as exist and bar length is easy to compare, unlike pie-slice angle/area past a handful of segments.
+  const sortedSpendingBreakdown = [...spendingBreakdown].sort((a, b) => b.amount - a.amount);
+  const maxSpendingAmount = sortedSpendingBreakdown.length > 0 ? sortedSpendingBreakdown[0].amount : 0;
 
   if (!hasData) {
     return (
@@ -74,23 +85,25 @@ const MonthOverview: React.FC<MonthOverviewProps> = ({ summary, prevSummary, bud
         <KpiCard label={t('finance.statistics.saved')} value={mask(formatK(totalSaved))} icon="save-outline" color="#8B5CF6" />
       </View>
 
-      {spendingBreakdown.length > 0 && (
+      {sortedSpendingBreakdown.length > 0 && (
         <View className="bg-white rounded-2xl shadow-sm p-4 mb-4">
           <Text className="text-sm font-bold text-gray-800 mb-4">{t('finance.statistics.expenseBreakdown')}</Text>
-          <View className="gap-2">
-            {[...spendingBreakdown]
-              .sort((a, b) => b.amount - a.amount)
-              .map(item => {
-                const visual = getVisual(item.categoryId);
-                return (
-                  <View key={item.categoryId} className="flex-row items-center gap-2">
-                    <View className="w-3 h-3 rounded-full" style={{ backgroundColor: visual.color }} />
-                    <Text className="text-xs text-gray-600 flex-1">{item.categoryName ?? uncategorizedLabel}</Text>
-                    <Text className="text-xs text-gray-500">{Math.round(item.percentage)}%</Text>
-                    <Text className="text-xs font-semibold text-gray-700 w-24 text-right">{mask(formatPLN(item.amount))}</Text>
-                  </View>
-                );
-              })}
+          <View className="gap-3">
+            {sortedSpendingBreakdown.map(item => {
+              const visual = getVisual(item.categoryId);
+              return (
+                <ExpenseBreakdownRow
+                  key={item.categoryId}
+                  icon={visual.icon}
+                  color={getChartColor(item.categoryId)}
+                  label={item.categoryName ?? uncategorizedLabel}
+                  amount={item.amount}
+                  percentage={item.percentage}
+                  barWidthPct={maxSpendingAmount > 0 ? (item.amount / maxSpendingAmount) * 100 : 0}
+                  mask={mask}
+                />
+              );
+            })}
           </View>
         </View>
       )}
@@ -100,22 +113,16 @@ const MonthOverview: React.FC<MonthOverviewProps> = ({ summary, prevSummary, bud
         <View className="gap-3">
           {spendingBudgetProgress.map(item => {
             const visual = getVisual(item.categoryId);
-            const progress = item.limit > 0 ? Math.min(item.spent / item.limit, 1) : 0;
             return (
-              <View key={item.budgetId}>
-                <View className="flex-row items-center mb-1">
-                  <Ionicons name={visual.icon} size={13} color={visual.color} />
-                  <Text className="text-xs font-semibold text-gray-700 ml-1.5 flex-1">{item.categoryName ?? uncategorizedLabel}</Text>
-                  <Text className="text-xs text-gray-600">{mask(formatPLN(item.spent))}</Text>
-                  <Text className="text-xs text-gray-500"> / {mask(formatPLN(item.limit))}</Text>
-                </View>
-                <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <View
-                    className="h-full rounded-full"
-                    style={{ width: `${progress * 100}%`, backgroundColor: item.isOverBudget ? '#EF4444' : visual.color }}
-                  />
-                </View>
-              </View>
+              <BudgetProgressRow
+                key={item.budgetId}
+                icon={visual.icon}
+                color={visual.color}
+                label={item.categoryName ?? uncategorizedLabel}
+                spent={item.spent}
+                limit={item.limit}
+                mask={mask}
+              />
             );
           })}
         </View>
@@ -126,18 +133,16 @@ const MonthOverview: React.FC<MonthOverviewProps> = ({ summary, prevSummary, bud
             <View className="gap-3">
               {noBudgetItems.map(item => {
                 const visual = getVisual(item.categoryId);
-                const shareOfTotal = Math.min((item.amount / (totalSpent || 1)) * 100, 100);
                 return (
-                  <View key={item.categoryId}>
-                    <View className="flex-row items-center mb-1">
-                      <Ionicons name={visual.icon} size={13} color={visual.color} />
-                      <Text className="text-xs font-semibold text-gray-700 ml-1.5 flex-1">{item.categoryName ?? uncategorizedLabel}</Text>
-                      <Text className="text-xs text-gray-600">{mask(formatPLN(item.amount))}</Text>
-                    </View>
-                    <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                      <View className="h-full rounded-full" style={{ width: `${shareOfTotal}%`, backgroundColor: visual.color, opacity: 0.5 }} />
-                    </View>
-                  </View>
+                  <BudgetProgressRow
+                    key={item.categoryId}
+                    icon={visual.icon}
+                    color={visual.color}
+                    label={item.categoryName ?? uncategorizedLabel}
+                    spent={item.amount}
+                    shareOfTotal={totalSpent > 0 ? item.amount / totalSpent : 0}
+                    mask={mask}
+                  />
                 );
               })}
             </View>

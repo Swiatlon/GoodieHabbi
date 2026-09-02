@@ -21,32 +21,46 @@ const CategoryRow: React.FC<CategoryRowProps> = ({ category, indented, onEdit, o
   const icon = resolveCategoryIcon(category.icon);
 
   const content = (
-    <TouchableOpacity
-      onPress={category.isSystem ? undefined : () => onEdit(category)}
-      activeOpacity={category.isSystem ? 1 : 0.7}
-      className={`flex-row items-center gap-3 px-4 py-3 bg-white ${indented ? 'pl-10' : ''}`}
-    >
-      <View className="w-8 h-8 rounded-lg items-center justify-center" style={{ backgroundColor: `${color}20` }}>
-        <Ionicons name={icon} size={15} color={color} />
-      </View>
-      <Text className="flex-1 text-sm font-semibold text-gray-800" numberOfLines={1}>
-        {category.name}
-      </Text>
-      {category.isSavings && (
-        <View className="flex-row items-center gap-0.5 px-1.5 py-0.5 rounded bg-emerald-50">
-          <Ionicons name="trending-up-outline" size={10} color="#059669" />
-          <Text className="text-[10px] font-semibold text-emerald-600">{t('finance.categories.savingsBadge')}</Text>
+    <View className={`flex-row items-center gap-3 px-4 py-3 bg-white ${indented ? 'pl-10' : ''}`}>
+      <TouchableOpacity
+        onPress={category.isSystem ? undefined : () => onEdit(category)}
+        activeOpacity={category.isSystem ? 1 : 0.7}
+        disabled={category.isSystem}
+        className="flex-1 flex-row items-center gap-3"
+      >
+        <View className="w-8 h-8 rounded-lg items-center justify-center" style={{ backgroundColor: `${color}20` }}>
+          <Ionicons name={icon} size={15} color={color} />
         </View>
-      )}
+        <Text className="flex-1 text-sm font-semibold text-gray-800" numberOfLines={1}>
+          {category.name}
+        </Text>
+        {category.isSavings && (
+          <View className="flex-row items-center gap-0.5 px-1.5 py-0.5 rounded bg-emerald-50">
+            <Ionicons name="trending-up-outline" size={10} color="#059669" />
+            <Text className="text-[10px] font-semibold text-emerald-600">{t('finance.categories.savingsBadge')}</Text>
+          </View>
+        )}
+      </TouchableOpacity>
+
       {category.isSystem ? (
         <View className="flex-row items-center gap-0.5 px-1.5 py-0.5 rounded bg-gray-100">
           <Ionicons name="lock-closed-outline" size={10} color="#6b7280" />
           <Text className="text-[10px] font-semibold text-gray-500">{t('finance.categories.systemBadge')}</Text>
         </View>
       ) : (
-        <Ionicons name="chevron-forward" size={14} color="#d1d5db" />
+        <View className="flex-row items-center gap-3">
+          <TouchableOpacity
+            onPress={() => onDelete(category)}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            accessibilityLabel={t('finance.categories.deleteTitle')}
+            testID={`category-delete-${category.id}`}
+          >
+            <Ionicons name="trash-outline" size={16} color="#e53e3e" />
+          </TouchableOpacity>
+          <Ionicons name="chevron-forward" size={14} color="#d1d5db" />
+        </View>
       )}
-    </TouchableOpacity>
+    </View>
   );
 
   if (category.isSystem) return content;

@@ -69,6 +69,32 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({ control, isEditMode, hasCat
   );
 };
 
+interface SubmitHintProps {
+  control: Control<TransactionFormValues>;
+  hasCategory: boolean;
+}
+
+// The disabled Save button alone doesn't say why it's disabled — a first-time user has no way to know
+// whether it's the missing category, the missing amount, or both. Isolated for the same re-render reason
+// as SubmitButton above.
+const SubmitHint: React.FC<SubmitHintProps> = ({ control, hasCategory }) => {
+  const { t } = useTranslation();
+  const amount = useWatch({ control, name: 'amount' });
+  const parsedAmount = parseAmount(amount);
+  const hasAmount = !isNaN(parsedAmount) && parsedAmount > 0;
+
+  if (hasCategory && hasAmount) return null;
+
+  const key =
+    !hasCategory && !hasAmount
+      ? 'finance.addTransaction.missingCategoryAndAmount'
+      : !hasCategory
+        ? 'finance.addTransaction.missingCategory'
+        : 'finance.addTransaction.missingAmount';
+
+  return <Text className="text-xs text-gray-400 text-center mb-2">{t(key)}</Text>;
+};
+
 const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, onClose, recentCategoryIds = {}, transaction = null }) => {
   const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
@@ -220,12 +246,15 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
       isLoading={isLoading}
       loadingMessage={t(isEditMode ? 'finance.addTransaction.updating' : 'finance.addTransaction.adding')}
       footer={
-        <View className="flex-row justify-between">
-          <TouchableOpacity onPress={handleClose} className="flex-row items-center gap-1 border border-primary rounded-lg px-4 py-2">
-            <Ionicons name="close-circle-outline" size={18} color="#1987EE" />
-            <Text className="text-primary font-semibold">{t('common.cancel')}</Text>
-          </TouchableOpacity>
-          <SubmitButton control={control} isEditMode={isEditMode} hasCategory={!!finalCategoryId} onPress={handleSubmit(onSubmit)} />
+        <View>
+          <SubmitHint control={control} hasCategory={!!finalCategoryId} />
+          <View className="flex-row justify-between">
+            <TouchableOpacity onPress={handleClose} className="flex-row items-center gap-1 border border-primary rounded-lg px-4 py-2">
+              <Ionicons name="close-circle-outline" size={18} color="#1987EE" />
+              <Text className="text-primary font-semibold">{t('common.cancel')}</Text>
+            </TouchableOpacity>
+            <SubmitButton control={control} isEditMode={isEditMode} hasCategory={!!finalCategoryId} onPress={handleSubmit(onSubmit)} />
+          </View>
         </View>
       }
     >
@@ -318,6 +347,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
             placeholder="0.00"
             keyboardType="decimal-pad"
             returnKeyType="next"
+            autoFocus
             testID="amount-input"
           />
 

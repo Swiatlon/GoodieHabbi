@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ITransaction } from '@/contract/finance/finance.contract';
+import { useFinanceDisplay } from '@/providers/finance-display-context';
 import { formatPLN } from '@/utils/finance/format-pln';
 
 interface CorrectionSummaryProps {
@@ -17,12 +18,13 @@ interface CorrectionSummaryProps {
  */
 const CorrectionSummary: React.FC<CorrectionSummaryProps> = ({ transaction, onPress, isExpanded }) => {
   const { t } = useTranslation();
+  const { mask } = useFinanceDisplay();
 
   if (transaction.correctedAmount <= 0) return null;
 
   const label = t('finance.corrections.returnedBadge', {
-    amount: formatPLN(transaction.correctedAmount),
-    original: formatPLN(transaction.amount),
+    amount: mask(formatPLN(transaction.correctedAmount)),
+    original: mask(formatPLN(transaction.amount)),
   });
 
   const content = (

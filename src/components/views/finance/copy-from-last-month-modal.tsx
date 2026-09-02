@@ -6,6 +6,7 @@ import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ModalFooterActions from '@/components/shared/modal/modal-footer-actions';
 import dayjs from '@/configs/day-js-config';
 import { FinanceTransactionTypeEnum, ITransaction } from '@/contract/finance/finance.contract';
+import { useFinanceDisplay } from '@/providers/finance-display-context';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateTransactionMutation, useGetFinanceCategoriesQuery, useGetTransactionsQuery } from '@/redux/api/finance/finance-api';
 import { buildCategoriesById, getCategoryLabel, getTransactionVisual } from '@/utils/finance/category-helpers';
@@ -24,6 +25,7 @@ const getPreviousMonth = (year: number, month: number) => (month === 1 ? { year:
 const CopyFromLastMonthModal: React.FC<CopyFromLastMonthModalProps> = ({ isVisible, onClose, year, month }) => {
   const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
+  const { mask } = useFinanceDisplay();
   const [createTransaction] = useCreateTransactionMutation();
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [isCopying, setIsCopying] = useState(false);
@@ -168,7 +170,7 @@ const CopyFromLastMonthModal: React.FC<CopyFromLastMonthModalProps> = ({ isVisib
                   </View>
                   <Text className={`text-sm font-bold ${isExpense ? 'text-gray-700' : 'text-green-600'}`}>
                     {isExpense ? '-' : '+'}
-                    {formatPLN(transaction.amount)}
+                    {mask(formatPLN(transaction.amount))}
                   </Text>
                 </TouchableOpacity>
               );

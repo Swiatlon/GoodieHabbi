@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, TouchableOpacity, ActivityIndicator, RefreshControl, ScrollView, TextInput, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import SwipeableRow from '@/components/shared/swipeable-row/swipeable-row';
 import ToggleTab from '@/components/shared/toggle-tab/toggle-tab';
 import AddCorrectionModal from '@/components/views/finance/add-correction-modal';
 import AddTransactionModal from '@/components/views/finance/add-transaction-modal';
@@ -185,7 +184,14 @@ const History = () => {
           {filteredTransactions.length === 0 ? (
             <View className="items-center py-12">
               <Ionicons name="receipt-outline" size={48} color="#d1d5db" />
-              <Text className="text-gray-500 text-base mt-3">{t('finance.history.noResults')}</Text>
+              {allTransactions.length === 0 ? (
+                <>
+                  <Text className="text-gray-500 text-base mt-3">{t('finance.history.emptyTitle')}</Text>
+                  <Text className="text-gray-400 text-sm mt-1">{t('finance.history.emptyHint')}</Text>
+                </>
+              ) : (
+                <Text className="text-gray-500 text-base mt-3">{t('finance.history.noResults')}</Text>
+              )}
             </View>
           ) : (
             <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
@@ -196,65 +202,63 @@ const History = () => {
                 const isFullyReturned = transaction.correctedAmount >= transaction.amount;
                 return (
                   <View key={transaction.id} className={idx < filteredTransactions.length - 1 ? 'border-b border-gray-50' : ''}>
-                    <SwipeableRow onDelete={() => handleDelete(transaction)} onCopy={() => setCopyingTransaction(transaction)}>
-                      <TouchableOpacity
-                        onPress={() => setEditingTransaction(transaction)}
-                        activeOpacity={0.7}
-                        className="flex-row items-center px-4 py-3 bg-white"
-                      >
-                        <View className="w-10 h-10 rounded-xl items-center justify-center mr-3" style={{ backgroundColor: `${meta.color}20` }}>
-                          <Ionicons name={meta.icon} size={18} color={meta.color} />
-                        </View>
-                        <View className="flex-1">
-                          <Text className="text-sm font-semibold text-gray-800" numberOfLines={1}>
-                            {getLabel(transaction)}
-                          </Text>
-                          <View className="flex-row items-center gap-1.5">
-                            <Text className="text-xs text-gray-500">{transaction.occurredOn}</Text>
-                            {transaction.note ? (
-                              <Text className="text-xs text-gray-500 italic" numberOfLines={1}>
-                                · {transaction.note}
-                              </Text>
-                            ) : null}
-                            {isExpense && !transaction.isPaid && <UnpaidBadge transactionId={transaction.id} />}
-                          </View>
-                          <CorrectionSummary
-                            transaction={transaction}
-                            isExpanded={isExpanded}
-                            onPress={() => setExpandedCorrectionsId(isExpanded ? null : transaction.id)}
-                          />
-                        </View>
-                        <Text className={`text-sm font-bold mr-3 ${isExpense ? 'text-gray-700' : 'text-green-600'}`}>
-                          {isExpense ? '-' : '+'}
-                          {mask(formatPLN(transaction.netAmount))}
+                    <TouchableOpacity
+                      onPress={() => setEditingTransaction(transaction)}
+                      activeOpacity={0.7}
+                      className="flex-row items-center px-4 py-3 bg-white"
+                    >
+                      <View className="w-10 h-10 rounded-xl items-center justify-center mr-3" style={{ backgroundColor: `${meta.color}20` }}>
+                        <Ionicons name={meta.icon} size={18} color={meta.color} />
+                      </View>
+                      <View className="flex-1">
+                        <Text className="text-sm font-semibold text-gray-800" numberOfLines={1}>
+                          {getLabel(transaction)}
                         </Text>
-                        {!isFullyReturned && (
-                          <TouchableOpacity
-                            onPress={() => setCorrectingTransaction(transaction)}
-                            hitSlop={{ top: 14, bottom: 14, left: 10, right: 10 }}
-                            accessibilityLabel={t('finance.corrections.action')}
-                            className="mr-3"
-                          >
-                            <Ionicons name="arrow-undo-outline" size={16} color="#9ca3af" />
-                          </TouchableOpacity>
-                        )}
+                        <View className="flex-row items-center gap-1.5">
+                          <Text className="text-xs text-gray-500">{transaction.occurredOn}</Text>
+                          {transaction.note ? (
+                            <Text className="text-xs text-gray-500 italic" numberOfLines={1}>
+                              · {transaction.note}
+                            </Text>
+                          ) : null}
+                          {isExpense && !transaction.isPaid && <UnpaidBadge transactionId={transaction.id} />}
+                        </View>
+                        <CorrectionSummary
+                          transaction={transaction}
+                          isExpanded={isExpanded}
+                          onPress={() => setExpandedCorrectionsId(isExpanded ? null : transaction.id)}
+                        />
+                      </View>
+                      <Text className={`text-sm font-bold mr-3 ${isExpense ? 'text-gray-700' : 'text-green-600'}`}>
+                        {isExpense ? '-' : '+'}
+                        {mask(formatPLN(transaction.netAmount))}
+                      </Text>
+                      {!isFullyReturned && (
                         <TouchableOpacity
-                          onPress={() => setCopyingTransaction(transaction)}
+                          onPress={() => setCorrectingTransaction(transaction)}
                           hitSlop={{ top: 14, bottom: 14, left: 10, right: 10 }}
-                          accessibilityLabel={t('finance.copyTransaction.action')}
+                          accessibilityLabel={t('finance.corrections.action')}
                           className="mr-3"
                         >
-                          <Ionicons name="copy-outline" size={16} color="#9ca3af" />
+                          <Ionicons name="arrow-undo-outline" size={16} color="#9ca3af" />
                         </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={() => handleDelete(transaction)}
-                          hitSlop={{ top: 14, bottom: 14, left: 14, right: 14 }}
-                          accessibilityLabel={t(DELETE_LABEL_KEY)}
-                        >
-                          <Ionicons name="trash-outline" size={16} color="#d1d5db" />
-                        </TouchableOpacity>
+                      )}
+                      <TouchableOpacity
+                        onPress={() => setCopyingTransaction(transaction)}
+                        hitSlop={{ top: 14, bottom: 14, left: 10, right: 10 }}
+                        accessibilityLabel={t('finance.copyTransaction.action')}
+                        className="mr-3"
+                      >
+                        <Ionicons name="copy-outline" size={16} color="#9ca3af" />
                       </TouchableOpacity>
-                    </SwipeableRow>
+                      <TouchableOpacity
+                        onPress={() => handleDelete(transaction)}
+                        hitSlop={{ top: 14, bottom: 14, left: 14, right: 14 }}
+                        accessibilityLabel={t(DELETE_LABEL_KEY)}
+                      >
+                        <Ionicons name="trash-outline" size={16} color="#d1d5db" />
+                      </TouchableOpacity>
+                    </TouchableOpacity>
 
                     {isExpanded &&
                       transaction.corrections.map(correction => (

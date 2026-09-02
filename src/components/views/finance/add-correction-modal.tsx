@@ -9,6 +9,7 @@ import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import ModalFooterActions from '@/components/shared/modal/modal-footer-actions';
 import dayjs from '@/configs/day-js-config';
 import { ITransaction } from '@/contract/finance/finance.contract';
+import { useFinanceDisplay } from '@/providers/finance-display-context';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useAddCorrectionMutation } from '@/redux/api/finance/finance-api';
 import { buildDatePickerClassNames, DATE_FORMAT, parseAmount, todayString } from '@/utils/finance/form-helpers';
@@ -33,6 +34,7 @@ const getServerMessage = (error: unknown): string | null => {
 const AddCorrectionModal: React.FC<AddCorrectionModalProps> = ({ isVisible, onClose, transaction }) => {
   const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
+  const { mask } = useFinanceDisplay();
   const [addCorrection, { isLoading }] = useAddCorrectionMutation();
 
   const methods = useForm<CorrectionFormValues>({ defaultValues: { amount: '', description: '' } });
@@ -103,13 +105,13 @@ const AddCorrectionModal: React.FC<AddCorrectionModalProps> = ({ isVisible, onCl
               amount, date and note — no toggle, no category grid. */}
           <View className="bg-gray-50 rounded-xl p-3 mb-4 gap-1">
             <Text className="text-xs text-gray-500">{t('finance.corrections.originalAmount')}</Text>
-            <Text className="text-base font-bold text-gray-800">{formatPLN(transaction?.amount ?? 0)}</Text>
+            <Text className="text-base font-bold text-gray-800">{mask(formatPLN(transaction?.amount ?? 0))}</Text>
             {transaction?.note ? (
               <Text className="text-xs text-gray-500 italic" numberOfLines={1}>
                 {transaction.note}
               </Text>
             ) : null}
-            <Text className="text-xs text-gray-500 mt-1">{t('finance.corrections.remaining', { amount: formatPLN(remaining) })}</Text>
+            <Text className="text-xs text-gray-500 mt-1">{t('finance.corrections.remaining', { amount: mask(formatPLN(remaining)) })}</Text>
           </View>
 
           <ControlledInput

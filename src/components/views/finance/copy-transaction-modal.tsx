@@ -7,6 +7,7 @@ import ModalFooterActions from '@/components/shared/modal/modal-footer-actions';
 import YearMonthSelector from '@/components/views/finance/shared/year-month-selector';
 import dayjs from '@/configs/day-js-config';
 import { FinanceTransactionTypeEnum, IFinanceCategory, ITransaction } from '@/contract/finance/finance.contract';
+import { useFinanceDisplay } from '@/providers/finance-display-context';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import { useCreateTransactionMutation, useGetTransactionsQuery } from '@/redux/api/finance/finance-api';
 import { getCategoryLabel, getTransactionVisual } from '@/utils/finance/category-helpers';
@@ -23,6 +24,7 @@ interface CopyTransactionModalProps extends IBaseModalProps {
 const CopyTransactionModal: React.FC<CopyTransactionModalProps> = ({ isVisible, onClose, transaction, categoriesById }) => {
   const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
+  const { mask } = useFinanceDisplay();
   const [createTransaction, { isLoading }] = useCreateTransactionMutation();
   const [targetYear, setTargetYear] = useState(() => dayjs().year());
   const [targetMonth, setTargetMonth] = useState(() => dayjs().month() + 1);
@@ -108,7 +110,7 @@ const CopyTransactionModal: React.FC<CopyTransactionModalProps> = ({ isVisible, 
           </View>
           <Text className={`text-sm font-bold ${isExpense ? 'text-gray-700' : 'text-green-600'}`}>
             {isExpense ? '-' : '+'}
-            {formatPLN(transaction.amount)}
+            {mask(formatPLN(transaction.amount))}
           </Text>
         </View>
       )}

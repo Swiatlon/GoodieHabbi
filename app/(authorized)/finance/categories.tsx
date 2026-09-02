@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import ToggleTab from '@/components/shared/toggle-tab/toggle-tab';
@@ -19,9 +19,20 @@ const CategoriesScreen: React.FC = () => {
   const router = useRouter();
   const { showSnackbar } = useSnackbar();
   const [typeFilter, setTypeFilter] = useState<FinanceTransactionTypeEnum>(FinanceTransactionTypeEnum.Expense);
+  const [search, setSearch] = useState('');
   const { data: categories = [], isLoading } = useGetFinanceCategoriesQuery({ type: typeFilter });
   const [deleteFinanceCategories] = useDeleteFinanceCategoriesMutation();
   const [modalState, setModalState] = useState<ModalState>(null);
+
+  // A group matches if its own name matches, or any of its subcategories' does — kept together as one group
+  // rather than filtering subcategories out individually, so a match never loses its parent's context.
+  const filteredCategories = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return categories;
+    return categories.filter(
+      category => category.name.toLowerCase().includes(query) || (category.subCategories ?? []).some(sub => sub.name.toLowerCase().includes(query))
+    );
+  }, [categories, search]);
 
   // The sibling group a new/edited name must be unique within: same parent (or top-level), same type —
   // the query is already type-scoped, so only the parent match is needed here.
@@ -79,7 +90,7 @@ const CategoriesScreen: React.FC = () => {
         <View className="w-9" />
       </View>
 
-      <View className="px-4 pt-3 pb-1">
+      <View className="px-4 pt-3 pb-1 gap-2">
         <View className="flex-row bg-gray-100 rounded-xl p-1">
           {(
             [
@@ -95,15 +106,35 @@ const CategoriesScreen: React.FC = () => {
             );
           })}
         </View>
+
+        <View className="flex-row items-center bg-white border border-gray-200 rounded-xl px-3">
+          <Ionicons name="search-outline" size={16} color="#9ca3af" />
+          <TextInput
+            className="flex-1 py-2.5 px-2 text-sm text-gray-800"
+            placeholder={t('finance.categories.searchPlaceholder')}
+            value={search}
+            onChangeText={setSearch}
+          />
+          {search.length > 0 && (
+            <TouchableOpacity onPress={() => setSearch('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <Ionicons name="close-circle" size={16} color="#9ca3af" />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       {isLoading ? (
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#1987EE" />
         </View>
+      ) : filteredCategories.length === 0 ? (
+        <View className="flex-1 items-center justify-center py-12">
+          <Ionicons name="pricetags-outline" size={48} color="#d1d5db" />
+          <Text className="text-gray-500 text-base mt-3">{t('finance.categories.noResults')}</Text>
+        </View>
       ) : (
         <ScrollView className="flex-1 px-4 pt-2" contentContainerStyle={{ paddingBottom: 90 }}>
-          {categories.map(category => (
+          {filteredCategories.map(category => (
             <CategoryGroup
               key={category.id}
               category={category}

@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import RecurringTransactionFormModal from './recurring-transaction-form-modal';
 import Modal, { IBaseModalProps } from '@/components/shared/modal/modal';
 import { FinanceTransactionTypeEnum, IFinanceCategory, IRecurringTransaction } from '@/contract/finance/finance.contract';
+import { useFinanceDisplay } from '@/providers/finance-display-context';
 import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
 import {
   useDeleteRecurringTransactionMutation,
@@ -23,6 +24,7 @@ const HIT_SLOP = { top: 10, bottom: 10, left: 10, right: 10 };
 const RecurringTransactionsModal: React.FC<RecurringTransactionsModalProps> = ({ isVisible, onClose, categoriesById }) => {
   const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
+  const { mask } = useFinanceDisplay();
   const { data: recurring = [], isLoading, isError } = useGetRecurringTransactionsQuery(undefined, { skip: !isVisible });
   const [deleteRecurringTransaction] = useDeleteRecurringTransactionMutation();
   const [updateRecurringTransaction] = useUpdateRecurringTransactionMutation();
@@ -88,8 +90,8 @@ const RecurringTransactionsModal: React.FC<RecurringTransactionsModalProps> = ({
           {/* Income and expense templates shared one undifferentiated look before — the sign and colour are
               what stop a 5000 salary from reading like a 5000 bill. */}
           <Text className={`text-sm font-bold mr-3 ${isExpense ? 'text-gray-700' : 'text-green-600'}`}>
-            {isExpense ? '' : '+'}
-            {formatPLN(item.amount)}
+            {isExpense ? '-' : '+'}
+            {mask(formatPLN(item.amount))}
           </Text>
 
           <View className="flex-row items-center gap-3">
