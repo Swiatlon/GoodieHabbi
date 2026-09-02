@@ -206,6 +206,7 @@ const finance = {
     noIncome: 'No income this month',
     free: 'free',
     setBudget: 'Set budget',
+    ofBudgetLabel: 'of',
     setBudgetTitle: 'Set Budget',
     monthlyBudget: 'Monthly Budget (PLN)',
     suggestedBudget: 'Suggested (typical month, {{months}}-month median): {{amount}} · tap to use',

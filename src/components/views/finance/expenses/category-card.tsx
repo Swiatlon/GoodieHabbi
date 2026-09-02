@@ -11,7 +11,7 @@ import { FinanceTransactionTypeEnum, IFinanceCategory, ITransaction } from '@/co
 import { useFinanceDisplay } from '@/providers/finance-display-context';
 import { useDeleteTransactionMutation } from '@/redux/api/finance/finance-api';
 import { DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
-import { formatPLN } from '@/utils/finance/format-pln';
+import { formatPLN, formatPLNCompact } from '@/utils/finance/format-pln';
 
 interface BudgetIndicatorProps {
   showBudget: boolean;
@@ -19,6 +19,7 @@ interface BudgetIndicatorProps {
   progress: number;
   barColor: string;
   shareOfTotal: number;
+  isAutoBudget: boolean;
 }
 
 // Isolated so the branching around "has a budget vs. income (no budget concept) vs. no budget set yet"
@@ -26,12 +27,14 @@ interface BudgetIndicatorProps {
 // No budget set yet: instead of repeating a "no budget" hint on every card (dead text once you've read it
 // once — the settings icon next to the amount already lets you set one), show how big a slice of this
 // month's total this category is, which is new information on every row.
-const BudgetIndicator: React.FC<BudgetIndicatorProps> = ({ showBudget, budgetAmount, progress, barColor, shareOfTotal }) => {
+const BudgetIndicator: React.FC<BudgetIndicatorProps> = ({ showBudget, budgetAmount, progress, barColor, shareOfTotal, isAutoBudget }) => {
   if (!showBudget) return null;
   if (budgetAmount > 0) {
+    // A lighter fill for an auto-suggested budget — it's a proposal from your history, not something you
+    // committed to, so it shouldn't read with the same visual weight as a budget you deliberately set.
     return (
       <View className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-        <View className="h-full rounded-full" style={{ width: `${progress * 100}%`, backgroundColor: barColor }} />
+        <View className="h-full rounded-full" style={{ width: `${progress * 100}%`, backgroundColor: barColor, opacity: isAutoBudget ? 0.55 : 1 }} />
       </View>
     );
   }
@@ -45,17 +48,24 @@ const BudgetIndicator: React.FC<BudgetIndicatorProps> = ({ showBudget, budgetAmo
 
 interface BudgetSummaryProps {
   isOver: boolean;
+  isSavings: boolean;
   totalSpent: number;
   budgetAmount: number;
   mask: (v: string) => string;
 }
 
-const BudgetSummary: React.FC<BudgetSummaryProps> = ({ isOver, totalSpent, budgetAmount, mask }) => {
+// For a savings/investment category, "spent" is money you put aside — going over the goal is the good
+// outcome, so it gets the same green the rest of the app already uses for savings, not the expense-category
+// red.
+const BudgetSummary: React.FC<BudgetSummaryProps> = ({ isOver, isSavings, totalSpent, budgetAmount, mask }) => {
   const { t } = useTranslation();
+  const overColor = isSavings ? '#10B981' : '#EF4444';
   return (
     <View className="px-4 py-2.5 border-t border-gray-50 flex-row justify-end">
-      <Text className="text-xs font-medium" style={{ color: isOver ? '#EF4444' : '#4b5563' }}>
-        {isOver ? `+${mask(formatPLN(totalSpent - budgetAmount))}` : `${mask(formatPLN(budgetAmount - totalSpent))} ${t('finance.expenses.free')}`}
+      <Text className="text-xs font-medium" style={{ color: isOver ? overColor : '#4b5563' }}>
+        {isOver
+          ? `+${mask(formatPLNCompact(totalSpent - budgetAmount))} zł`
+          : `${mask(formatPLNCompact(budgetAmount - totalSpent))} zł ${t('finance.expenses.free')}`}
       </Text>
     </View>
   );
@@ -70,6 +80,9 @@ interface CategoryCardProps {
   showBudget?: boolean;
   emptyLabel?: string;
   totalForShare?: number;
+  // budgetAmount came from your history (median/mean), not a budget you deliberately set — shown lighter,
+  // with a small hint icon, so it reads as a proposal you can tap the settings icon to override.
+  isAutoBudget?: boolean;
 }
 
 const CategoryCard: React.FC<CategoryCardProps> = ({
@@ -81,6 +94,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   showBudget = true,
   emptyLabel,
   totalForShare = 0,
+  isAutoBudget = false,
 }) => {
   const { t } = useTranslation();
   const [deleteTransaction] = useDeleteTransactionMutation();
@@ -97,7 +111,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
 
   const progress = budgetAmount > 0 ? Math.min(totalSpent / budgetAmount, 1) : 0;
   const isOver = budgetAmount > 0 && totalSpent > budgetAmount;
-  const barColor = isOver ? '#EF4444' : progress > 0.8 ? '#F59E0B' : color;
+  // Going over the goal is the point for a savings/investment category — you saved more than planned — so
+  // it earns the app's savings green instead of the expense-category alarm red.
+  const overColor = category.isSavings ? '#10B981' : '#EF4444';
   const shareOfTotal = totalForShare > 0 ? totalSpent / totalForShare : 0;
 
   const categoriesById = new Map<number, IFinanceCategory>([
@@ -130,11 +146,28 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
             <Text className="text-xs font-bold text-gray-600 uppercase tracking-wide" numberOfLines={1}>
               {category.name}
             </Text>
-            <Text className="text-sm font-bold ml-2" style={{ color: isOver ? '#EF4444' : '#1a1a2e' }}>
-              {showBudget && budgetAmount > 0 ? `${mask(formatPLN(totalSpent))} / ${mask(formatPLN(budgetAmount))}` : mask(formatPLN(totalSpent))}
+            {/* "949 zł z 900 zł", not "949 / 900 zł" — a slash between two same-weight numbers leaves it
+                ambiguous which one is "what I spent"; the word makes that unambiguous without relying on
+                color alone. Red only ever touches the spent figure, so a single number carries the alarm,
+                not the whole row. */}
+            <Text className="text-sm font-bold ml-2" numberOfLines={1}>
+              <Text style={{ color: isOver ? overColor : '#1a1a2e' }}>{mask(formatPLNCompact(totalSpent))} zł</Text>
+              {showBudget && budgetAmount > 0 && (
+                <Text className="text-gray-400 font-semibold text-xs">
+                  {' '}
+                  {t('finance.expenses.ofBudgetLabel')} {mask(formatPLNCompact(budgetAmount))} zł
+                </Text>
+              )}
             </Text>
           </View>
-          <BudgetIndicator showBudget={showBudget} budgetAmount={budgetAmount} progress={progress} barColor={barColor} shareOfTotal={shareOfTotal} />
+          <BudgetIndicator
+            showBudget={showBudget}
+            budgetAmount={budgetAmount}
+            progress={progress}
+            barColor={color}
+            shareOfTotal={shareOfTotal}
+            isAutoBudget={isAutoBudget}
+          />
         </View>
 
         {showBudget && onSetBudget && (
@@ -216,7 +249,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
             ))
           )}
 
-          {showBudget && budgetAmount > 0 && <BudgetSummary isOver={isOver} totalSpent={totalSpent} budgetAmount={budgetAmount} mask={mask} />}
+          {showBudget && budgetAmount > 0 && (
+            <BudgetSummary isOver={isOver} isSavings={category.isSavings} totalSpent={totalSpent} budgetAmount={budgetAmount} mask={mask} />
+          )}
         </View>
       )}
 

@@ -4,6 +4,7 @@ import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshCon
 import { Ionicons } from '@expo/vector-icons';
 import { Href, useRouter } from 'expo-router';
 import AddTransactionModal from '@/components/views/finance/add-transaction-modal';
+import { useMonthlyHistory } from '@/components/views/finance/budget-planner/use-monthly-history';
 import MiniStatCard from '@/components/views/finance/dashboard/mini-stat-card';
 import MonthlyOverviewCard from '@/components/views/finance/dashboard/monthly-overview-card';
 import BudgetModal from '@/components/views/finance/expenses/budget-modal';
@@ -23,14 +24,17 @@ import {
   useGetMonthlySummaryQuery,
   useGetTransactionsQuery,
 } from '@/redux/api/finance/finance-api';
-import { buildCategoriesById, getSavingsCategoryIds } from '@/utils/finance/category-helpers';
+import { buildCategoriesById, collectCategoryIds, getSavingsCategoryIds } from '@/utils/finance/category-helpers';
 import { formatPLN } from '@/utils/finance/format-pln';
 import {
+  amountForCategoryIds,
   computeBudgetOverview,
   getBudgetByCategory,
   getSavingsAmount,
   groupAmountByCategory,
   groupTransactionsByCategory,
+  IBudgetSuggestion,
+  suggestBudgetAmount,
 } from '@/utils/finance/summary-helpers';
 
 const RECENT_CATEGORIES_LIMIT = 4;
@@ -91,6 +95,9 @@ const Dashboard = () => {
     isLoading: loadingTransactions,
     refetch: refetchTransactions,
   } = useGetTransactionsQuery({ from, to, pageSize: TRANSACTIONS_PAGE_SIZE });
+  // Feeds the same median/mean-based suggestion the Budget Planner uses, so a category you haven't
+  // deliberately budgeted still shows a realistic budget line here instead of nothing at all.
+  const history = useMonthlyHistory(year, month);
 
   const transactions = transactionsPage?.items ?? [];
   const expenseByCategory = summary?.expenseByCategory ?? [];
@@ -130,6 +137,25 @@ const Dashboard = () => {
   const budgetByCategory = useMemo(() => getBudgetByCategory(budgets), [budgets]);
   const getBudgetForCategory = (cat: IFinanceCategory) => budgetByCategory.get(cat.id) ?? null;
 
+  // Same rule as the Budget Planner: median for a regular category, mean (sinking-fund amount) for an
+  // irregular one — computed once per top-level category from the same fetched monthly summaries.
+  const historySuggestionByCategory = useMemo(() => {
+    const map = new Map<number, IBudgetSuggestion>();
+    topLevelExpenseCategories.forEach(cat => {
+      const ids = new Set(collectCategoryIds(cat));
+      map.set(cat.id, suggestBudgetAmount(history.map(monthSummary => amountForCategoryIds(monthSummary, ids))));
+    });
+    return map;
+  }, [topLevelExpenseCategories, history]);
+
+  // What actually governs the card: the budget you deliberately set, or — if you haven't — the historical
+  // suggestion, flagged as auto so the UI can show it's a proposal, not a commitment, until overridden.
+  const getEffectiveBudget = (cat: IFinanceCategory): { amount: number; isAuto: boolean } => {
+    const explicit = getBudgetForCategory(cat);
+    if (explicit && explicit.limitAmount > 0) return { amount: explicit.limitAmount, isAuto: false };
+    return { amount: historySuggestionByCategory.get(cat.id)?.amount ?? 0, isAuto: true };
+  };
+
   const totalIncome = summary?.totalIncome ?? 0;
   // Server-computed, chained across months (see IMonthlySummary.openingBalance) — 0 until the backend ships it.
   const openingBalance = summary?.openingBalance ?? 0;
@@ -138,10 +164,11 @@ const Dashboard = () => {
   const totalSpent = summary?.totalExpense ?? 0;
   const { totalBudget, totalCommitted, progress, isOver } = computeBudgetOverview(totalIncome, openingBalance, totalSpent);
 
-  const spendingBudgets = budgets.filter(b => b.categoryId != null && !savingsCategoryIds.has(b.categoryId));
-  const sumCategoryBudgets = spendingBudgets.reduce((sum, b) => sum + b.limitAmount, 0);
+  // Includes auto-suggested amounts, not just budgets you explicitly set, so this stays consistent with what
+  // each category card below is actually showing.
+  const sumCategoryBudgets = spendingCategories.reduce((sum, cat) => sum + getEffectiveBudget(cat).amount, 0);
   const allocationDiff = totalBudget - sumCategoryBudgets;
-  const savingsBudget = budgets.filter(b => b.categoryId != null && savingsCategoryIds.has(b.categoryId)).reduce((sum, b) => sum + b.limitAmount, 0);
+  const savingsBudget = savingsCategories.reduce((sum, cat) => sum + getEffectiveBudget(cat).amount, 0);
 
   const sortedSpendingCategories = [...spendingCategories].sort(
     (a, b) => (expenseAmountByCategory.get(b.id) ?? 0) - (expenseAmountByCategory.get(a.id) ?? 0)
@@ -294,7 +321,8 @@ const Dashboard = () => {
               category={cat}
               transactions={expenseTransactionsByCategory.get(cat.id) ?? []}
               actualAmount={expenseAmountByCategory.get(cat.id) ?? 0}
-              budgetAmount={getBudgetForCategory(cat)?.limitAmount ?? 0}
+              budgetAmount={getEffectiveBudget(cat).amount}
+              isAutoBudget={getEffectiveBudget(cat).isAuto}
               onSetBudget={() => setBudgetCategory(cat)}
               totalForShare={totalSpent}
             />
@@ -309,7 +337,8 @@ const Dashboard = () => {
                   category={cat}
                   transactions={expenseTransactionsByCategory.get(cat.id) ?? []}
                   actualAmount={expenseAmountByCategory.get(cat.id) ?? 0}
-                  budgetAmount={getBudgetForCategory(cat)?.limitAmount ?? 0}
+                  budgetAmount={getEffectiveBudget(cat).amount}
+                  isAutoBudget={getEffectiveBudget(cat).isAuto}
                   onSetBudget={() => setBudgetCategory(cat)}
                   totalForShare={totalSpent}
                 />

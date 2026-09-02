@@ -57,7 +57,7 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isVisible, onClose, category,
   const [deleteBudget, { isLoading: isDeleting }] = useDeleteBudgetMutation();
 
   const methods = useForm<BudgetFormValues>({ defaultValues: { amount: '' } });
-  const { control, handleSubmit, reset: resetForm, setValue } = methods;
+  const { control, handleSubmit, reset: resetForm, setValue, getValues } = methods;
 
   useEffect(() => {
     if (isVisible) resetForm({ amount: currentBudget ? String(currentBudget.limitAmount) : '' });
@@ -75,6 +75,15 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isVisible, onClose, category,
     ? suggestBudgetAmount(history.map(summary => amountForCategoryIds(summary, categoryIds)))
     : { amount: 0, isIrregular: false, peak: 0, hasHistory: false };
   const showSuggestion = shouldFetchHistory && suggestion.amount > 0;
+
+  // Pre-fill with the suggestion once history resolves (it arrives after the reset above, since it's a
+  // separate async fetch) — this is what the Dashboard already shows as the auto budget, so opening the
+  // modal to "confirm" it should show that number, not force the user to retype it. Only while the field is
+  // still untouched, so it never clobbers something the user already typed.
+  useEffect(() => {
+    if (!showSuggestion) return;
+    if (getValues('amount') === '') setValue('amount', String(suggestion.amount));
+  }, [showSuggestion, suggestion.amount, getValues, setValue]);
 
   const onSubmit = async (values: BudgetFormValues) => {
     const parsedAmount = parseAmount(values.amount);
