@@ -176,6 +176,7 @@ const finance = {
     dayOfMonth: 'Dzień miesiąca: {{day}}',
     dayLabel: 'Dzień miesiąca',
     shortMonthHint: 'W krótszych miesiącach pozycja trafi na ostatni dzień miesiąca.',
+    forwardOnlyHint: 'Zmiany obowiązują od przyszłego miesiąca — już utworzone transakcje zachowują dotychczasowe wartości.',
     noteLabel: 'Opis',
     notePlaceholder: 'np. Netflix, czynsz',
     saving: 'Zapisywanie...',
