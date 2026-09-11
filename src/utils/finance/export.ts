@@ -1,5 +1,6 @@
 import { Share } from 'react-native';
-import * as FileSystem from 'expo-file-system';
+// SDK 54 moved this API to /legacy; the root import now only has stubs for these calls that throw.
+import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import { ICategoryBreakdownItem, ITransaction } from '@/contract/finance/finance.contract';
 
@@ -73,18 +74,23 @@ export type FinanceExportFormat = 'json' | 'csv';
 // falls back to the plain text Share API on platforms without expo-sharing support (e.g. web).
 // month is null for a whole-year export (Statistics' year view), which drops it from both the filename and
 // the JSON payload rather than printing a misleading "month: null".
+// periodLabel is for ranges year/month can't describe (History's all-time or custom range): it replaces the
+// period in the filename and, in JSON, the year/month fields with a single `period`.
 export const shareFinanceExport = async (
   rows: Record<string, unknown>[],
   columns: string[],
   year: number,
   month: number | null,
-  format: FinanceExportFormat
+  format: FinanceExportFormat,
+  periodLabel?: string
 ) => {
-  const filenameBase = month != null ? `goodiehabbi-export-${year}-${String(month).padStart(2, '0')}` : `goodiehabbi-export-${year}`;
+  const monthPeriod = month != null ? `${year}-${String(month).padStart(2, '0')}` : String(year);
+  const filenameBase = `goodiehabbi-export-${periodLabel ?? monthPeriod}`;
+  const periodFields = periodLabel != null ? { period: periodLabel } : { year, ...(month != null ? { month } : {}) };
   const isCsv = format === 'csv';
   const content = isCsv
     ? generateCsv(rows, columns)
-    : JSON.stringify({ exportedAt: new Date().toISOString(), year, ...(month != null ? { month } : {}), items: rows }, null, 2);
+    : JSON.stringify({ exportedAt: new Date().toISOString(), ...periodFields, items: rows }, null, 2);
   const filename = `${filenameBase}.${isCsv ? 'csv' : 'json'}`;
   const mimeType = isCsv ? 'text/csv' : 'application/json';
 

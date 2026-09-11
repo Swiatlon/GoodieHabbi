@@ -6,10 +6,11 @@ interface SearchBarProps {
   value: string;
   onChangeText: (value: string) => void;
   placeholder?: string;
+  maxLength?: number;
   testID?: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ value, onChangeText, placeholder, testID }) => (
+const SearchBar: React.FC<SearchBarProps> = ({ value, onChangeText, placeholder, maxLength, testID }) => (
   <View className="flex-1 flex-row items-center bg-white border border-gray-200 rounded-xl px-3">
     <Ionicons name="search-outline" size={16} color="#9ca3af" />
     <TextInput
@@ -17,6 +18,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChangeText, placeholder,
       placeholder={placeholder}
       value={value}
       onChangeText={onChangeText}
+      maxLength={maxLength}
       testID={testID}
     />
     {value.length > 0 && (

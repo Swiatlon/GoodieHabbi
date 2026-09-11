@@ -9,12 +9,13 @@ export const useFinanceExportPrompt = () => {
   const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
 
-  return (transactions: ITransaction[], categoriesById: Map<number, IFinanceCategory>, year: number, month: number) => {
+  // periodLabel: see shareFinanceExport — pass it when the transactions don't come from a single month.
+  return (transactions: ITransaction[], categoriesById: Map<number, IFinanceCategory>, year: number, month: number, periodLabel?: string) => {
     const runExport = async (format: FinanceExportFormat) => {
       try {
         const categoryNameById = new Map<number, string>([...categoriesById].map(([id, cat]) => [id, cat.name]));
         const rows = buildExportRows(transactions, categoryNameById);
-        await shareFinanceExport(rows as unknown as Record<string, unknown>[], TRANSACTION_EXPORT_COLUMNS, year, month, format);
+        await shareFinanceExport(rows as unknown as Record<string, unknown>[], TRANSACTION_EXPORT_COLUMNS, year, month, format, periodLabel);
       } catch {
         showSnackbar({ text: t('finance.export.error'), variant: SnackbarVariantEnum.ERROR });
       }
