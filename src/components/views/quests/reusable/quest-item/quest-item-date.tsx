@@ -1,9 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
-import dayjs from '@/configs/day-js-config';
 import { NullableString } from '@/types/global-types';
-import { safeDateFormat } from '@/utils/utils/utils';
+import { getDaysUntil, safeDateFormat } from '@/utils/utils/utils';
 
 interface QuestItemDateProps {
   startDate: NullableString;
@@ -20,7 +19,7 @@ const QuestItemDate: React.FC<QuestItemDateProps> = ({ startDate, endDate }) => 
   const formattedStartDate = safeDateFormat(startDate);
   const formattedEndDate = safeDateFormat(endDate);
 
-  const daysLeft = endDate ? Math.floor(dayjs(endDate).diff(dayjs(), 'day', true)) : null;
+  const daysLeft = endDate ? getDaysUntil(endDate) : null;
 
   const getDaysLeftBadge = () => {
     if (daysLeft == null) return <Text className="text-sm text-gray-500">{t('quests.reusable.dates.noDeadline')}</Text>;

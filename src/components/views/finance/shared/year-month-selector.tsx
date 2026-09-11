@@ -14,6 +14,8 @@ interface YearMonthSelectorProps {
   onMonthChange: (month: number) => void;
   minYear?: number;
   maxYear?: number;
+  // False when the screen is showing more than one month (e.g. History's whole-year range), so no single chip reads as selected.
+  isMonthActive?: boolean;
   // Rendered on the left/right of the year row, not layered over the month chips — keeps screen-level
   // actions (e.g. Dashboard's hide-numbers/export/recurring buttons) visually separate from date navigation
   // instead of floating on top of the horizontally scrollable chip row where they can read as extra chips.
@@ -28,6 +30,7 @@ const YearMonthSelector: React.FC<YearMonthSelectorProps> = ({
   onMonthChange,
   minYear = 2020,
   maxYear = 2030,
+  isMonthActive = true,
   leftActions,
   rightActions,
 }) => {
@@ -71,7 +74,7 @@ const YearMonthSelector: React.FC<YearMonthSelectorProps> = ({
       >
         {MONTH_KEYS.map((key, index) => {
           const m = index + 1;
-          const active = m === month;
+          const active = isMonthActive && m === month;
           return (
             <TouchableOpacity
               key={m}

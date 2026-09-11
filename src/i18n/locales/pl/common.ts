@@ -13,6 +13,7 @@ const common = {
   descriptionOptional: 'Opis (opcjonalny)',
   addNote: 'Dodaj notatkę...',
   dataLoadError: 'Nie udało się pobrać danych',
+  retry: 'Spróbuj ponownie',
   positions: '{{count}} poz.',
 };
 
