@@ -1,3 +1,4 @@
+import qs from 'qs';
 import {
   FinanceTransactionTypeEnum,
   IAddCorrectionRequest,
@@ -9,6 +10,7 @@ import {
   IBudgetProgressItem,
   IDeleteFinanceCategoriesRequest,
   IFinanceCategory,
+  IGetTransactionsQueryParams,
   IMonthlySummary,
   IRecurringTransaction,
   ITransaction,
@@ -62,14 +64,12 @@ export const FinanceApi = Api.injectEndpoints({
       invalidatesTags: ['financeCategories'],
     }),
 
-    getTransactions: builder.query<
-      ITransactionPagedResult,
-      { from: string; to: string; type?: FinanceTransactionTypeEnum; categoryId?: number; page?: number; pageSize?: number }
-    >({
-      query: ({ from, to, type, categoryId, page = 1, pageSize = 20 }) => ({
-        url: '/finance/transactions',
+    getTransactions: builder.query<ITransactionPagedResult, IGetTransactionsQueryParams>({
+      // The query string is built here rather than via `params`: the global serializer uses bracket arrays
+      // (`categoryIds[]=3`, which ASP.NET doesn't bind) and `encode: false` (which corrupts a search containing `&` or `#`).
+      query: ({ page = 1, pageSize = 20, ...filters }) => ({
+        url: `/finance/transactions?${qs.stringify({ ...filters, page, pageSize }, { arrayFormat: 'repeat', skipNulls: true })}`,
         method: 'GET',
-        params: { from, to, type, categoryId, page, pageSize },
       }),
       providesTags: ['financeTransactions'],
     }),

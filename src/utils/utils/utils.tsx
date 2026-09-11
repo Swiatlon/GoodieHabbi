@@ -15,6 +15,15 @@ export const toIsoDate = (date: DateType): NullableString => {
   return date ? dayjs(date).format('YYYY-MM-DD') : null;
 };
 
+/**
+ * Whole calendar days from today to a date-only value like a quest's `endDate`: 0 on that day itself, 1 the day
+ * before, negative once it has passed. The end date is inclusive — it's the last day to complete the quest — so
+ * this compares days, not instants; measuring from "now" to its midnight would call the day before it the last day.
+ */
+export const getDaysUntil = (date: string): number => {
+  return dayjs(date).startOf('day').diff(dayjs().startOf('day'), 'day');
+};
+
 export const fromUTCToDateObject = (date: NullableString) => {
   return date ? dayjs.utc(date).toDate() : null;
 };

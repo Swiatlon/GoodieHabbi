@@ -100,6 +100,30 @@ export interface ITransactionPagedResult {
   totalPages: number;
 }
 
+/**
+ * Every filter is ANDed and applied server-side before paging, so `totalCount` always describes the narrowed set.
+ * Do not reimplement search or filtering client-side: the client only ever holds one page and can't see
+ * correction notes, which the server does search.
+ *
+ * - `from` / `to`: `YYYY-MM-DD`, both optional — omit for the whole history.
+ * - `categoryIds`: sent as a repeated key (`?categoryIds=3&categoryIds=7`, max 50). A main id also covers its
+ *   sub-categories; a sub's own id narrows to just that sub. Uncategorized rows are excluded while it's non-empty.
+ * - `isPaid`: omit for everything, `false` for still owed, `true` for settled.
+ * - `search`: max 250 chars, blank ignored, case-insensitive substring over the note, the category name and the
+ *   notes of the row's corrections (a matching correction returns its parent). Amount is not searched.
+ * - `page` is 1-based; `pageSize` is 1..100.
+ */
+export interface IGetTransactionsQueryParams {
+  from?: string;
+  to?: string;
+  type?: FinanceTransactionTypeEnum;
+  categoryIds?: number[];
+  isPaid?: boolean;
+  search?: string;
+  page?: number;
+  pageSize?: number;
+}
+
 export interface IBudget {
   id: number;
   categoryId: number | null;
@@ -240,10 +264,18 @@ export interface ICreateRecurringTransactionRequest {
  * `isActive`) is safe and preserves the rest.
  *
  * ⚠️ `note: null` is treated as "leave unchanged", not "clear". To erase a note send an empty string.
+ *
+ * `categoryId` is the one field where `null` *does* clear rather than leave alone — the backend tracks
+ * whether the key was present, so omitting it and sending null mean different things. A sub-category is
+ * as valid here as a main one, but it must match the template's `type`, which is immutable.
+ *
+ * ⚠️ Every edit is forward-only: amount, day, note and category alike apply from the next generated row.
+ * Rows already generated keep the values they were created with.
  */
 export interface IUpdateRecurringTransactionRequest {
   amount?: number;
   note?: string | null;
   dayOfMonth?: number;
   isActive?: boolean;
+  categoryId?: number | null;
 }

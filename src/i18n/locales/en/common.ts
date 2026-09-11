@@ -13,6 +13,7 @@ const common = {
   descriptionOptional: 'Description (optional)',
   addNote: 'Add a note...',
   dataLoadError: 'Failed to load data',
+  retry: 'Try again',
   positions: '{{count}} pos.',
 };
 

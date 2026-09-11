@@ -4,6 +4,7 @@ import { Dayjs } from 'dayjs';
 import dayjs from '@/configs/day-js-config';
 import { PriorityEnum, PriorityEnumType } from '@/contract/quests/base-quests';
 import { NullableString } from '@/types/global-types';
+import { getDaysUntil } from '@/utils/utils/utils';
 
 export const SortOrderEnum = {
   ASC: 'asc',
@@ -132,7 +133,7 @@ const compareNumbers = (aValue: number, bValue: number, sortMultiplier: number) 
 };
 
 const getAdjustedDaysLeft = (endDate: string, sortMultiplier: number) => {
-  const daysLeft = Math.ceil(dayjs(endDate).diff(dayjs(), 'day', true));
+  const daysLeft = getDaysUntil(endDate);
 
   return daysLeft < 0 ? 99999 * sortMultiplier : daysLeft;
 };
