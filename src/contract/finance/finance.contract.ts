@@ -240,10 +240,18 @@ export interface ICreateRecurringTransactionRequest {
  * `isActive`) is safe and preserves the rest.
  *
  * ⚠️ `note: null` is treated as "leave unchanged", not "clear". To erase a note send an empty string.
+ *
+ * `categoryId` is the one field where `null` *does* clear rather than leave alone — the backend tracks
+ * whether the key was present, so omitting it and sending null mean different things. A sub-category is
+ * as valid here as a main one, but it must match the template's `type`, which is immutable.
+ *
+ * ⚠️ Every edit is forward-only: amount, day, note and category alike apply from the next generated row.
+ * Rows already generated keep the values they were created with.
  */
 export interface IUpdateRecurringTransactionRequest {
   amount?: number;
   note?: string | null;
   dayOfMonth?: number;
   isActive?: boolean;
+  categoryId?: number | null;
 }

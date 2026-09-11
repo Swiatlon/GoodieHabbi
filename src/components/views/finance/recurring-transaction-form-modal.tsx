@@ -69,7 +69,8 @@ const RecurringTransactionFormModal: React.FC<RecurringTransactionFormModalProps
 
   const isEditMode = template != null;
   const [type, setType] = useState<FinanceTransactionTypeEnum>(FinanceTransactionTypeEnum.Expense);
-  const [categoryId, setCategoryId] = useState<number | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<number | null>(null);
   const [dayOfMonth, setDayOfMonth] = useState(1);
   const [isDayPickerVisible, setDayPickerVisible] = useState(false);
 
@@ -81,25 +82,61 @@ const RecurringTransactionFormModal: React.FC<RecurringTransactionFormModalProps
   useEffect(() => {
     if (!isVisible) return;
 
+    // Selections are restored by the effect below once the tree has loaded, so a previous open never leaks in.
+    setSelectedCategoryId(null);
+    setSelectedSubcategoryId(null);
+
     if (template) {
       setType(template.type);
-      setCategoryId(template.categoryId);
       setDayOfMonth(template.dayOfMonth);
       resetForm({ amount: String(template.amount), note: template.note ?? '' });
     } else {
       setType(FinanceTransactionTypeEnum.Expense);
-      setCategoryId(null);
       setDayOfMonth(1);
       resetForm({ amount: '', note: '' });
     }
   }, [isVisible, template, resetForm]);
 
+  // The template stores a single id that may be a main or a sub, so map it back onto the two-level picker.
+  useEffect(() => {
+    if (!isVisible || !template || categories.length === 0) return;
+
+    const topLevelMatch = categories.find(c => c.id === template.categoryId && !c.parentCategoryId);
+    if (topLevelMatch) {
+      setSelectedCategoryId(topLevelMatch.id);
+      setSelectedSubcategoryId(null);
+      return;
+    }
+
+    const parentMatch = categories.find(c => (c.subCategories ?? []).some(sub => sub.id === template.categoryId));
+    if (parentMatch) {
+      setSelectedCategoryId(parentMatch.id);
+      setSelectedSubcategoryId(template.categoryId);
+    }
+  }, [isVisible, template, categories]);
+
   const isExpense = type === FinanceTransactionTypeEnum.Expense;
+  const topLevelCategories = categories.filter(c => !c.parentCategoryId);
+  const selectedCategory = topLevelCategories.find(c => c.id === selectedCategoryId) ?? null;
+  const subCategories = selectedCategory?.subCategories ?? [];
+  const finalCategoryId = selectedSubcategoryId ?? selectedCategoryId;
 
   const handleSelectType = (next: FinanceTransactionTypeEnum) => {
     setType(next);
     // Categories are per type, so a category picked for the other one no longer applies.
-    setCategoryId(null);
+    setSelectedCategoryId(null);
+    setSelectedSubcategoryId(null);
+  };
+
+  // Tapping the active main deselects it, since a template may have no category at all.
+  const handleSelectCategory = (categoryId: number) => {
+    setSelectedCategoryId(current => (current === categoryId ? null : categoryId));
+    setSelectedSubcategoryId(null);
+  };
+
+  // Tapping the active sub drops back to just its main.
+  const handleSelectSubcategory = (subcategoryId: number) => {
+    setSelectedSubcategoryId(current => (current === subcategoryId ? null : subcategoryId));
   };
 
   const onSubmit = async (values: RecurringFormValues) => {
@@ -110,12 +147,13 @@ const RecurringTransactionFormModal: React.FC<RecurringTransactionFormModalProps
 
     try {
       if (template) {
-        // Type and category are fixed after creation — the update contract only carries these four.
+        // Type is fixed after creation. Category goes out on every save — `null` clears it here, unlike note —
+        // and like every other field it only affects rows generated from now on.
         // The note goes out as a (possibly empty) string on purpose: the endpoint reads `null` as
         // "leave unchanged", so sending null would silently keep a description the user just erased.
-        await updateRecurring({ id: template.id, data: { amount: parsedAmount, note, dayOfMonth } }).unwrap();
+        await updateRecurring({ id: template.id, data: { amount: parsedAmount, note, dayOfMonth, categoryId: finalCategoryId } }).unwrap();
       } else {
-        await createRecurring({ type, amount: parsedAmount, categoryId, note: note || null, dayOfMonth }).unwrap();
+        await createRecurring({ type, amount: parsedAmount, categoryId: finalCategoryId, note: note || null, dayOfMonth }).unwrap();
       }
       showSnackbar({ text: t('finance.recurring.saved'), variant: SnackbarVariantEnum.SUCCESS });
       onClose();
@@ -144,43 +182,64 @@ const RecurringTransactionFormModal: React.FC<RecurringTransactionFormModalProps
         <View>
           <Text className="text-lg font-bold text-center mb-4">{t(isEditMode ? 'finance.recurring.editTitle' : 'finance.recurring.addTitle')}</Text>
 
-          {/* The backend's update contract has no type or category field, so both are locked once saved. */}
+          {/* The backend treats a template's type as immutable, so the toggle is only offered on create. */}
           {!isEditMode && (
-            <>
-              <View className="flex-row bg-gray-100 rounded-xl p-1 mb-4">
-                <ToggleTab active={isExpense} onPress={() => handleSelectType(FinanceTransactionTypeEnum.Expense)} className="py-2.5">
-                  <Text className={`text-sm font-bold ${isExpense ? 'text-red-500' : 'text-gray-500'}`}>{t('finance.addTransaction.expense')}</Text>
-                </ToggleTab>
-                <ToggleTab active={!isExpense} onPress={() => handleSelectType(FinanceTransactionTypeEnum.Income)} className="py-2.5">
-                  <Text className={`text-sm font-bold ${!isExpense ? 'text-green-600' : 'text-gray-500'}`}>{t('finance.addTransaction.income')}</Text>
-                </ToggleTab>
-              </View>
+            <View className="flex-row bg-gray-100 rounded-xl p-1 mb-4">
+              <ToggleTab active={isExpense} onPress={() => handleSelectType(FinanceTransactionTypeEnum.Expense)} className="py-2.5">
+                <Text className={`text-sm font-bold ${isExpense ? 'text-red-500' : 'text-gray-500'}`}>{t('finance.addTransaction.expense')}</Text>
+              </ToggleTab>
+              <ToggleTab active={!isExpense} onPress={() => handleSelectType(FinanceTransactionTypeEnum.Income)} className="py-2.5">
+                <Text className={`text-sm font-bold ${!isExpense ? 'text-green-600' : 'text-gray-500'}`}>{t('finance.addTransaction.income')}</Text>
+              </ToggleTab>
+            </View>
+          )}
 
-              <Text className="text-sm font-semibold text-gray-600 mb-2">
-                {isExpense ? t('finance.addTransaction.category') : t('finance.addTransaction.source')}
-              </Text>
+          <Text className="text-sm font-semibold text-gray-600 mb-2">
+            {isExpense ? t('finance.addTransaction.category') : t('finance.addTransaction.source')}
+          </Text>
+          <View className="flex-row flex-wrap gap-2 mb-4">
+            {topLevelCategories.map(category => {
+              const active = selectedCategoryId === category.id;
+
+              return (
+                <TouchableOpacity
+                  key={category.id}
+                  onPress={() => handleSelectCategory(category.id)}
+                  className={`flex-row items-center gap-1.5 px-3 py-2 rounded-xl border ${chipClass(active)}`}
+                >
+                  <Ionicons
+                    name={resolveCategoryIcon(category.icon)}
+                    size={14}
+                    color={active ? '#1987EE' : (category.color ?? DEFAULT_CATEGORY_COLOR)}
+                  />
+                  <Text className={`text-xs font-semibold ${chipTextClass(active)}`}>{category.name}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          {subCategories.length > 0 && (
+            <>
+              <Text className="text-sm font-semibold text-gray-600 mb-2">{t('finance.addTransaction.subcategory')}</Text>
               <View className="flex-row flex-wrap gap-2 mb-4">
-                {categories.map(category => {
-                  const active = categoryId === category.id;
+                {subCategories.map(sub => {
+                  const active = selectedSubcategoryId === sub.id;
 
                   return (
                     <TouchableOpacity
-                      key={category.id}
-                      onPress={() => setCategoryId(active ? null : category.id)}
-                      className={`flex-row items-center gap-1.5 px-3 py-2 rounded-xl border ${chipClass(active)}`}
+                      key={sub.id}
+                      onPress={() => handleSelectSubcategory(sub.id)}
+                      className={`px-3 py-2 rounded-xl border ${chipClass(active)}`}
                     >
-                      <Ionicons
-                        name={resolveCategoryIcon(category.icon)}
-                        size={14}
-                        color={active ? '#1987EE' : (category.color ?? DEFAULT_CATEGORY_COLOR)}
-                      />
-                      <Text className={`text-xs font-semibold ${chipTextClass(active)}`}>{category.name}</Text>
+                      <Text className={`text-xs font-semibold ${chipTextClass(active)}`}>{sub.name}</Text>
                     </TouchableOpacity>
                   );
                 })}
               </View>
             </>
           )}
+
+          {isEditMode && <Text className="text-xs text-gray-500 -mt-2 mb-4">{t('finance.recurring.forwardOnlyHint')}</Text>}
 
           <ControlledInput
             name="amount"
