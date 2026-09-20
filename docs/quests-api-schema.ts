@@ -26,8 +26,9 @@
  *   DELETE /api/quests/{questType}/{id}        DELETE /api/quests/{id}
  *   PATCH  /api/quests/{qt}/{id}/completion    POST   /api/quests/{id}/completions
  *
- * `?legacyType=` exists so the current per-type screens keep working unchanged. It is a bridge,
- * deprecated on arrival — see §"Migrating the existing screens" in the PL guide.
+ * `?legacyType=` can reproduce the retired per-type buckets, but the FE decided (2026-09-12) to cut over
+ * in one release instead, so NOTHING SHOULD BE BUILT ON IT — the parameter and the `legacyQuestType`
+ * field are removed together with step 2 of the migration.
  * ═══════════════════════════════════════════════════════════════════════════════════════════
  */
 
@@ -172,7 +173,7 @@ export interface CurrentPeriodDto {
    * False once `target.maxCompletionsPerDay` is used up for today — i.e. the button should be disabled.
    * Computed server-side so you never re-implement the rule, and so the answer survives an app restart.
    */
-  canCompleteToday: boolean;
+  canCompleteToday: boolean;   // also false on a FINISHED one-off (unit "None") — see note below
   /**
    * This period's taps, oldest first. These ids are what `DELETE .../completions/{completionId}` needs:
    * before this existed, undo only worked inside the session that recorded the tap.
@@ -211,7 +212,10 @@ export interface QuestDetailsDto {
   statistics: QuestStatisticsDto | null;
   labels: QuestLabelDto[];
 
-  /** Only populated by GET /api/quests (the list). Bridge for the per-type screens; do not build on it. */
+  /**
+   * Only populated by GET /api/quests (the list), and scheduled for deletion with step 2 of the
+   * migration. Do not build on it.
+   */
   legacyQuestType: LegacyQuestType | null;
 }
 
@@ -325,6 +329,11 @@ export interface QuestCompletionResponse {
  * hide the card entirely.
  *
  * Tick an item by calling the ORDINARY completions endpoint with `completedOn` set to that day.
+ *
+ * `GET /quests/catch-up?includeCompleted=true` also returns periods in the window that are already done,
+ * each with its `completions`. Use it when you want a mistaken catch-up tap to stay undoable after an app
+ * restart: completing a period removes it from the default list, so its id would otherwise be
+ * unreachable. Keep the flag OFF for the card itself, so "empty `days`" still means "hide it".
  */
 export interface GetCatchUpResponse {
   graceDays: number;   // currently 2
@@ -344,7 +353,10 @@ export interface CatchUpQuestDto {
   periodEnd: IsoDate;
   progress: number;
   target: number;
-  outcome: 'Missed' | 'Partial';
+  /** "Completed" only appears when `includeCompleted=true`. */
+  outcome: 'Missed' | 'Partial' | 'Completed';
+  /** That period's taps, with the ids needed to undo one. */
+  completions: PeriodCompletionDto[];
 }
 
 // ───────────────────────────── Analytics ──────────────────────────────────
@@ -493,6 +505,13 @@ export interface GetHabitsOverviewResponse {
 // ─────────────────────────────── Routes ───────────────────────────────────
 
 /**
+ * ⚠️ OVERSHOOTING is deliberate for habits — a third workout in a "twice a week" week is real and gets
+ * recorded (earning nothing extra). It is NOT allowed to look inviting on a one-off: once a `None`-unit
+ * quest is complete, `canCompleteToday` goes false, so you do not need to guard that case yourself.
+ *
+ * ⚠️ UNDOING A COMPLETION DOES NOT UN-ACHIEVE A GOAL, by design — same rule as rewards, which are never
+ * reclaimed. Worth surfacing in the UI if you let users undo from a goal screen.
+ *
  * ⚠️ SEASONAL QUESTS: do NOT set `endDate` on a recurring `Year` quest. The year window IS the
  * recurrence — an `endDate` at the end of the first season kills the quest permanently, which is exactly
  * what the old UI used to do. Leave `endDate` null unless the user genuinely wants the habit to stop.
@@ -519,6 +538,7 @@ export const QUEST_ROUTES = {
   removeCompletion: (id: number, completionId: number) =>
     `/api/quests/${id}/completions/${completionId}`,
 
+  /** Query: `includeCompleted` (default false). */
   catchUp: '/api/quests/catch-up',
 
   /** Query: from?, to? ("YYYY-MM-DD"), granularity? (default "Week"). Repeating quests only. */

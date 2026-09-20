@@ -1,6 +1,9 @@
-# Odpowiedź BE na przegląd kontraktu questów (FE-1 … FE-10)
+# Odpowiedź BE na przegląd kontraktu questów (FE-1 … FE-13)
 
-Data: 12.09.2026 · Dotyczy: „Przegląd kontraktu questów”, FE (Swida)
+Data: 12.09.2026 · Dotyczy: „Przegląd kontraktu questów”, wersja 1 i 2, FE (Swida)
+
+> **Runda 2 (12.09.2026):** FE-11, FE-12 i FE-13 — **wszystkie trzy zrobione**, mimo że żadna nie
+> blokowała. Szczegóły na końcu dokumentu. Kontrakt i swagger zaktualizowane.
 
 **Skrót:** oba blokery były realnymi dziurami w projekcie API, nie nieporozumieniem — **naprawione i
 zweryfikowane na żywym API**. FE-7 zrobione. Reszta to odpowiedzi i uzupełnienia dokumentacji.
@@ -210,3 +213,73 @@ Uczciwie, żeby nie było niespodzianek:
   To pierwsza luka, którą zamkniemy.
 - **`AtMost`** (limity typu „maks. 2 kawy”) — slot w enumie jest, walidator odrzuca. Faza 2.
 - **Pomijanie dni / „streak freeze”** — faza 2.
+
+
+---
+
+# Runda 2 — FE-11, FE-12, FE-13
+
+Żadna z trzech nie blokowała startu prac, ale FE-11 i FE-12 to dziury tej samej klasy co FE-1, więc
+domykamy je teraz zamiast zostawiać połowiczną naprawę.
+
+## FE-11 — cofanie odhaczenia z catch-upu ✅ ZROBIONE
+
+Trafna diagnoza: to jest **dokładnie ten sam mechanizm co FE-1**, tylko w oknie nadrabiania.
+`currentPeriod.completions` z definicji pokrywa bieżący okres, a tapnięcie z karty ląduje we wczorajszym.
+Scenariusz z omyłkowym odhaczeniem jest realny i — co gorsza — samonaprawiający się w złą stronę: okres
+przestaje być `Missed`, więc znika z domyślnej listy i pomyłka zostaje w historii razem z „naprawioną” serią.
+
+Zrobione po Waszej propozycji, w wariancie z flagą:
+
+```
+GET /api/quests/catch-up?includeCompleted=true
+```
+
+Zwraca w oknie także okresy ukończone, z `outcome: 'Completed'` i tablicą `completions` (te same
+`PeriodCompletionDto`, co w `currentPeriod`). **Domyślnie flaga jest wyłączona** — celowo, żeby reguła
+„puste `days` = nie ma o co pytać = ukryj kartę” dalej była prawdziwa. Czyli: karta woła bez flagi,
+a widok „historia nadrabiania / cofnij” woła z flagą.
+
+Zweryfikowane na żywym API: po odhaczeniu wczorajszego dnia quest znika z domyślnej odpowiedzi,
+a z `includeCompleted=true` wraca z `outcome: Completed` i `id` odhaczenia, którym `DELETE` je cofa.
+
+## FE-12 — `canCompleteToday` przy queście jednorazowym ✅ ZROBIONE PO STRONIE BE
+
+Dobre pytanie i słuszna obawa o „obie strony założą, że pilnuje ta druga”. **Bierzemy to na siebie.**
+
+`canCompleteToday` schodzi teraz na `false` również wtedy, gdy quest **nie jest powtarzalny**
+(`unit: 'None'`) i jego okres jest ukończony. Nie musicie nic sprawdzać po swojej stronie.
+
+Rozumowanie: przekraczanie celu jest **cechą** przy nawyku — trzeci trening w tygodniu „2×” jest
+prawdziwy i wart zapisania. Przy czymś, co dzieje się raz, `2 / 1` to po prostu pomyłka. Domena nadal
+przyjmie takie tapnięcie (nie dokładamy twardej reguły, bo „przeczytać 3 rozdziały” jako jednorazowy
+z celem 3 jest legalne) — to DTO zamyka przycisk, i to jest właściwy poziom.
+
+Zweryfikowane: jednorazowy po ukończeniu → `canCompleteToday: false`; nawyk dzienny po ukończeniu →
+`true`, przekraczanie dalej działa.
+
+## FE-13 — nieaktualne §9 i §10 ✅ POPRAWIONE
+
+Słusznie — „ktoś to przeczyta za miesiąc i uwierzy”. Poprawione wszystkie trzy miejsca:
+
+- **§9, checklista** — punkt o `?legacyType=` zamieniony na „zastąpić pięć list **jedną** z `GET /quests`
+  i filtrami po stronie klienta”, z adnotacją, że `legacyType` celowo nie używamy.
+- **§10** — „Pytania do Was” → **„Ustalenia”**, z pięcioma odpowiedziami i podsumowaniem zmian z obu rund.
+- **Nagłówek `quests-api-schema.ts`** — już nie reklamuje `?legacyType=` jako sposobu na „ekrany działają
+  bez zmian”; mówi wprost, że nic nie ma na tym stać i że parametr znika z krokiem 2.
+
+## Wasza uwaga przy FE-4: cofnięcie a zaliczony cel
+
+Potwierdzamy — **zamierzone, dokładnie jak z nagrodami.** Cofnięcie odhaczenia nie cofa zaliczonego celu.
+Powód ten sam: mieszkanie w stanie „zaliczone, ale już nie” kosztuje więcej, niż chroni, a przy dwóch
+użytkownikach nie ma czego pilnować. Dopisane do kontraktu, żeby UI mógł to zakomunikować, jeśli
+pozwolicie cofać z ekranu celu.
+
+## Stan
+
+Wszystkie trzynaście pozycji zamkniętych. Nic po naszej stronie nie czeka na Was — **możecie startować**.
+
+Jedyna rzecz, o której warto pamiętać (i którą sami wypunktowaliście): brak testów relacyjnych na
+`RowVersion` i filtrowanym indeksie. Zgadzamy się z Waszą oceną ryzyka — dwa równoczesne tapnięcia w tym
+samym okresie wymagają dwóch urządzeń naraz, a retry z kolejki i tak jest zdeduplikowany po
+`clientRequestId`. Zamkniemy to przy okazji lokalnej bazy, która i tak jest potrzebna przed krokiem 2.

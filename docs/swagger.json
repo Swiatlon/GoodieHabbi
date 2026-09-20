@@ -3175,6 +3175,16 @@
         "tags": [
           "Quests"
         ],
+        "parameters": [
+          {
+            "name": "includeCompleted",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -6413,6 +6423,13 @@
           },
           "outcome": {
             "type": "string",
+            "nullable": true
+          },
+          "completions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PeriodCompletionDto"
+            },
             "nullable": true
           }
         },

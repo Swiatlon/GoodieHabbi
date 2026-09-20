@@ -1,5 +1,8 @@
-import { IQuestLabel } from './labels/labels-quests';
-import { NullableString } from '@/types/global-types';
+/**
+ * Shared quest vocabulary. What used to live here — `QuestTypesEnum`, the old `IQuest` and
+ * `IRecurringQuestStats` — went with the typed quest model; the quest itself now lives in
+ * `quest.contract.ts`, keyed by schedule and target rather than by type.
+ */
 
 export const PriorityEnum = {
   LOW: 'Low',
@@ -9,14 +12,11 @@ export const PriorityEnum = {
 
 export type PriorityEnumType = (typeof PriorityEnum)[keyof typeof PriorityEnum];
 
-export const RepeatIntervalEnum = {
-  DAILY: 'Daily',
-  WEEKLY: 'Weekly',
-  MONTHLY: 'Monthly',
-} as const;
-
-export type RepeatIntervalEnumType = (typeof RepeatIntervalEnum)[keyof typeof RepeatIntervalEnum];
-
+/**
+ * A UI-only concept. The API has no `season` field — a season is a year window in MMDD form, and the
+ * four presets here are what `SEASON_YEAR_WINDOWS` maps onto. A window outside those bounds is simply
+ * a custom range with no season name.
+ */
 export const SeasonEnum = {
   WINTER: 'Winter',
   SPRING: 'Spring',
@@ -38,16 +38,6 @@ export const WeekdayEnum = {
 
 export type WeekdayEnumType = (typeof WeekdayEnum)[keyof typeof WeekdayEnum];
 
-export const QuestTypesEnum = {
-  ONE_TIME: 'OneTime',
-  SEASONAL: 'Seasonal',
-  MONTHLY: 'Monthly',
-  DAILY: 'Daily',
-  WEEKLY: 'Weekly',
-} as const;
-
-export type QuestTypesEnumType = (typeof QuestTypesEnum)[keyof typeof QuestTypesEnum];
-
 export const DifficultyEnum = {
   EASY: 'Easy',
   MEDIUM: 'Medium',
@@ -56,30 +46,3 @@ export const DifficultyEnum = {
 } as const;
 
 export type DifficultyEnumType = (typeof DifficultyEnum)[keyof typeof DifficultyEnum];
-
-export interface IRecurringQuestStats {
-  completionCount: number;
-  failureCount: number;
-  occurrenceCount: number;
-  currentStreak: number;
-  longestStreak: number;
-}
-
-export interface IQuest {
-  id: number;
-  title: string;
-  description: string | null;
-  /** Calendar date "YYYY-MM-DD" — a day in the user's own calendar, never a UTC instant. */
-  startDate: string | null;
-  /** Calendar date "YYYY-MM-DD", inclusive. */
-  endDate: string | null;
-  /** A real instant ("...Z"), unlike start/end date. */
-  lastCompletedAt: NullableString;
-  priority: PriorityEnumType | null;
-  isCompleted: boolean;
-  emoji: string | null;
-  questType: QuestTypesEnumType;
-  labels: IQuestLabel[];
-  difficulty: DifficultyEnumType | null;
-  scheduledTime: string | null;
-}

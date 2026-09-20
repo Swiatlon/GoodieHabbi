@@ -1,6 +1,7 @@
 import dayjs from '@/configs/day-js-config';
 import {
   IHabitSummary,
+  IQuestAnalyticsSummary,
   IQuestCalendarEntry,
   QuestPeriodOutcomeEnum,
   QuestPeriodOutcomeEnumType,
@@ -18,6 +19,14 @@ export const OUTCOME_COLORS: Record<QuestPeriodOutcomeEnumType, string> = {
   [QuestPeriodOutcomeEnum.COMPLETED]: '#10B981',
   [QuestPeriodOutcomeEnum.MISSED]: '#EF4444',
   [QuestPeriodOutcomeEnum.PENDING]: '#9CA3AF',
+  /**
+   * `Partial` counts as a miss in every rate and streak — amber says "you were short", not "you passed".
+   * It sits between the two on hue so a heatmap still reads as a gradient of effort, but it must never
+   * be drawn in the completed green.
+   */
+  [QuestPeriodOutcomeEnum.PARTIAL]: '#F59E0B',
+  /** Phase 2. Excluded from rates and does not break a streak, so it is deliberately the quietest mark. */
+  [QuestPeriodOutcomeEnum.SKIPPED]: '#D1D5DB',
 };
 
 /** A day the quest was never scheduled on — deliberately not an outcome, and never red. */
@@ -48,6 +57,13 @@ export const toRatePercent = (rate: number | null): number => (rate === null ? 0
  * one seen, which is a lower bound — so the ranking list does not display them. Once the backend
  * aggregates properly, every group holds a single row and this function returns its input unchanged.
  */
+/**
+ * `progressRate` is an average over periods, so merging two groups means weighting each by the number
+ * of periods it covered before averaging again. `null` contributes nothing, which is right: a group
+ * with no evaluated periods should not drag the merged rate toward zero.
+ */
+const weightProgressRate = (summary: IQuestAnalyticsSummary): number => (summary.progressRate ?? 0) * summary.evaluatedPeriods;
+
 export const mergeHabitSummaries = (quests: IHabitSummary[]): IHabitSummary[] => {
   const byQuestId = new Map<number, IHabitSummary>();
 
@@ -64,6 +80,7 @@ export const mergeHabitSummaries = (quests: IHabitSummary[]): IHabitSummary[] =>
     const b = habit.summary;
     const evaluatedPeriods = a.evaluatedPeriods + b.evaluatedPeriods;
     const completedPeriods = a.completedPeriods + b.completedPeriods;
+    const weightedProgress = weightProgressRate(a) + weightProgressRate(b);
 
     byQuestId.set(habit.questId, {
       ...existing,
@@ -71,9 +88,13 @@ export const mergeHabitSummaries = (quests: IHabitSummary[]): IHabitSummary[] =>
         totalPeriods: a.totalPeriods + b.totalPeriods,
         completedPeriods,
         missedPeriods: a.missedPeriods + b.missedPeriods,
+        partialPeriods: a.partialPeriods + b.partialPeriods,
         pendingPeriods: a.pendingPeriods + b.pendingPeriods,
+        skippedPeriods: a.skippedPeriods + b.skippedPeriods,
         evaluatedPeriods,
         completionRate: evaluatedPeriods === 0 ? null : Number((completedPeriods / evaluatedPeriods).toFixed(4)),
+        progressRate: evaluatedPeriods === 0 ? null : Number((weightedProgress / evaluatedPeriods).toFixed(4)),
+        totalCompletions: a.totalCompletions + b.totalCompletions,
         currentStreak: Math.max(a.currentStreak, b.currentStreak),
         longestStreak: Math.max(a.longestStreak, b.longestStreak),
         lastCompletedAtUtc: [a.lastCompletedAtUtc, b.lastCompletedAtUtc].filter(Boolean).sort().pop() ?? null,

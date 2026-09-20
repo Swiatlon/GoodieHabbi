@@ -7,24 +7,29 @@ import Button from '@/components/shared/button/button';
 import FilterModal from '@/components/shared/config-modal/filter-modal';
 import SortModal from '@/components/shared/config-modal/sort-modal';
 import Loader from '@/components/shared/loader/loader';
-import AddAllQuestModal from '@/components/views/quests/all/quest-modals/add-all-quest-modal';
+import CatchUpCard from '@/components/views/quests/catch-up/catch-up-card';
+import { QuestFilterMap } from '@/components/views/quests/list/constants';
+import QuestListItem from '@/components/views/quests/list/quest-list-item';
+import AddQuestModal from '@/components/views/quests/quest-form/add-quest-modal';
 import Header from '@/components/views/quests/reusable/header';
-import { TodayQuestsFilterMap } from '@/components/views/quests/today/constants/constants';
-import TodayQuestItem from '@/components/views/quests/today/list/today-quest-item';
+import { IQuest } from '@/contract/quests/quest.contract';
 import { useTransformFade } from '@/hooks/animations/use-transform-fade-in';
-import { AllQuestsUnion } from '@/hooks/quests/useGetAllQuests';
 import { useFilter } from '@/hooks/use-filter/use-filter';
 import { useSearch } from '@/hooks/use-search/use-search';
 import { useSort, SortOrderEnum } from '@/hooks/use-sort/use-sort';
-import { useGetAllTodayQuestsQuery } from '@/redux/api/quests/today-quests-api';
+import { useGetActiveQuestsQuery } from '@/redux/api/quests/quests-api';
 
+/**
+ * Today's quests. This screen also triggers the backend's daily housekeeping pass, so it stays the one
+ * the app opens on — the API has no scheduler and relies on a read to materialise due periods.
+ */
 const TodayQuests: React.FC = () => {
   const { t } = useTranslation();
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [isAddQuestModalVisible, setIsAddQuestModalVisible] = useState(false);
 
-  const { data: fetchedQuests = [], isLoading } = useGetAllTodayQuestsQuery();
+  const { data: fetchedQuests = [], isLoading } = useGetActiveQuestsQuery();
 
   const buttonsStyle = useTransformFade({ isContentLoading: isLoading, delay: 200 });
 
@@ -44,7 +49,7 @@ const TodayQuests: React.FC = () => {
     data: filteredQuests,
     setFilter,
     actualFilter,
-  } = useFilter<AllQuestsUnion>({
+  } = useFilter<IQuest>({
     secureStorageName: 'FilterTodayQuests',
     data: searchedData,
     initialFilter: {
@@ -75,57 +80,57 @@ const TodayQuests: React.FC = () => {
   }
 
   return (
-    <>
-      <View className="flex-1 p-4" testID="today-quests-screen">
-        <Header
-          title={t('quests.today.title')}
-          isSearchVisible={isSearchVisible}
-          searchQuery={searchQuery}
-          setIsSearchVisible={setIsSearchVisible}
-          setSearchQuery={setSearchQuery}
-          setIsFilterModalVisible={setIsFilterModalVisible}
-          setIsSortModalVisible={setIsSortModalVisible}
+    <View className="flex-1 p-4" testID="today-quests-screen">
+      <Header
+        title={t('quests.today.title')}
+        isSearchVisible={isSearchVisible}
+        searchQuery={searchQuery}
+        setIsSearchVisible={setIsSearchVisible}
+        setSearchQuery={setSearchQuery}
+        setIsFilterModalVisible={setIsFilterModalVisible}
+        setIsSortModalVisible={setIsSortModalVisible}
+      />
+
+      <FlatList
+        data={sortedData}
+        keyExtractor={item => item.id.toString()}
+        /* The recurrence line is redundant here — everything on this screen is due today by definition. */
+        renderItem={({ item }) => <QuestListItem quest={item} withSchedule={false} />}
+        ListHeaderComponent={<CatchUpCard />}
+        ListEmptyComponent={<Text className="text-center text-gray-500">{t('quests.today.noQuestsFound')}</Text>}
+      />
+
+      <Animated.View style={buttonsStyle}>
+        <Button
+          label={t('quests.today.addNewQuest')}
+          onPress={() => setIsAddQuestModalVisible(true)}
+          startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
+          className="mx-auto mt-4"
         />
+      </Animated.View>
 
-        <FlatList
-          data={sortedData}
-          keyExtractor={item => item.id.toString()}
-          renderItem={({ item }) => <TodayQuestItem quest={item} />}
-          ListEmptyComponent={<Text className="text-center text-gray-500">{t('quests.today.noQuestsFound')}</Text>}
-        />
+      <FilterModal<IQuest>
+        isVisible={isFilterModalVisible}
+        setIsVisible={setIsFilterModalVisible}
+        setFilter={setFilter}
+        actualFilterData={actualFilter}
+        filterCategories={QuestFilterMap}
+      />
 
-        <Animated.View style={buttonsStyle}>
-          <Button
-            label={t('quests.today.addNewQuest')}
-            onPress={() => setIsAddQuestModalVisible(true)}
-            startIcon={<Ionicons name="add-circle-outline" size={20} color="#fff" />}
-            className="mx-auto mt-4"
-          />
-        </Animated.View>
+      <SortModal
+        isVisible={isSortModalVisible}
+        setIsVisible={setIsSortModalVisible}
+        actualSortKey={actualSortKey}
+        setActualSortKeys={(key, objKey) => {
+          setSortKey(key);
+          setSortObjKey(objKey);
+        }}
+        actualSortOrder={actualSortOrder}
+        setSortOrder={setSortOrder}
+      />
 
-        <FilterModal<AllQuestsUnion>
-          isVisible={isFilterModalVisible}
-          setIsVisible={setIsFilterModalVisible}
-          setFilter={setFilter}
-          actualFilterData={actualFilter}
-          filterCategories={TodayQuestsFilterMap}
-        />
-
-        <SortModal
-          isVisible={isSortModalVisible}
-          setIsVisible={setIsSortModalVisible}
-          actualSortKey={actualSortKey}
-          setActualSortKeys={(key, objKey) => {
-            setSortKey(key);
-            setSortObjKey(objKey);
-          }}
-          actualSortOrder={actualSortOrder}
-          setSortOrder={setSortOrder}
-        />
-
-        <AddAllQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
-      </View>
-    </>
+      <AddQuestModal isVisible={isAddQuestModalVisible} onClose={handleCloseModal} />
+    </View>
   );
 };
 

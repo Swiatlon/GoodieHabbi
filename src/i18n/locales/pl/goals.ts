@@ -46,7 +46,8 @@ const goals = {
     completeSuccess: 'Cel oznaczony jako zakończony!',
     completeError: 'Nie udało się zakończyć celu. Spróbuj ponownie.',
     confirmTitle: 'Zakończyć zadanie?',
-    confirmMessage: 'Czy na pewno chcesz oznaczyć to zadanie jako zakończone?',
+    /** Undo removes the completion but never un-achieves the goal — same rule as with rewards. */
+    confirmMessage: 'Czy na pewno chcesz oznaczyć to zadanie jako zakończone? Zaliczonego celu nie da się potem cofnąć.',
   },
 };
 

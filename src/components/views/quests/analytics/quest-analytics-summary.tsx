@@ -4,23 +4,33 @@ import { View, Text } from 'react-native';
 import KpiCard from '@/components/shared/kpi-card/kpi-card';
 import RatioBar from '@/components/shared/ratio-bar/ratio-bar';
 import { ILifetimeQuestStats, IQuestAnalyticsSummary, QuestPeriodOutcomeEnum } from '@/contract/quests/analytics/quests-analytics.contract';
+import { PeriodUnitEnumType } from '@/contract/quests/quest.contract';
 import { formatCompletionRate, OUTCOME_COLORS } from '@/utils/quests/analytics';
 
 interface QuestAnalyticsSummaryProps {
   range: IQuestAnalyticsSummary;
   lifetime: ILifetimeQuestStats | null;
+  /** What one unit of the streak counts — "5" on a weekly habit is five weeks, not five days. */
+  streakUnit?: PeriodUnitEnumType;
 }
 
-const QuestAnalyticsSummary: React.FC<QuestAnalyticsSummaryProps> = ({ range, lifetime }) => {
+const QuestAnalyticsSummary: React.FC<QuestAnalyticsSummaryProps> = ({ range, lifetime, streakUnit }) => {
   const { t } = useTranslation();
 
   // Streaks come from `lifetime`: the range figures are clipped to the window, so a 200-day streak
   // would show up as 90 on the default range.
   const currentStreak = lifetime?.currentStreak ?? 0;
   const longestStreak = lifetime?.longestStreak ?? 0;
+  const streakSuffix = streakUnit ? ` ${t(`quests.reusable.statistics.streakUnit.${streakUnit}`)}` : '';
 
+  /*
+   * In a summary `missedPeriods` and `partialPeriods` are disjoint — `evaluatedPeriods` is their sum
+   * plus the completed ones — so both are drawn as they arrive. (A trend bucket counts them the other
+   * way round, with partial folded into missed; the two shapes genuinely differ.)
+   */
   const segments = [
     { label: t('quests.analytics.outcome.completed'), value: range.completedPeriods, color: OUTCOME_COLORS[QuestPeriodOutcomeEnum.COMPLETED] },
+    { label: t('quests.analytics.outcome.partial'), value: range.partialPeriods, color: OUTCOME_COLORS[QuestPeriodOutcomeEnum.PARTIAL] },
     { label: t('quests.analytics.outcome.missed'), value: range.missedPeriods, color: OUTCOME_COLORS[QuestPeriodOutcomeEnum.MISSED] },
     { label: t('quests.analytics.outcome.pending'), value: range.pendingPeriods, color: OUTCOME_COLORS[QuestPeriodOutcomeEnum.PENDING] },
   ].filter(segment => segment.value > 0);
@@ -37,14 +47,14 @@ const QuestAnalyticsSummary: React.FC<QuestAnalyticsSummaryProps> = ({ range, li
         />
         <KpiCard
           label={t('quests.analytics.summary.currentStreak')}
-          value={String(currentStreak)}
+          value={`${currentStreak}${streakSuffix}`}
           delta={t('quests.analytics.summary.allTime')}
           icon="flame-outline"
           color="#F97316"
         />
         <KpiCard
           label={t('quests.analytics.summary.longestStreak')}
-          value={String(longestStreak)}
+          value={`${longestStreak}${streakSuffix}`}
           delta={t('quests.analytics.summary.allTime')}
           icon="trophy-outline"
           color="#8B5CF6"
@@ -58,6 +68,7 @@ const QuestAnalyticsSummary: React.FC<QuestAnalyticsSummaryProps> = ({ range, li
           <Text className="text-[11px] text-gray-400">
             {t('quests.analytics.summary.periodsBreakdown', {
               completed: range.completedPeriods,
+              partial: range.partialPeriods,
               missed: range.missedPeriods,
               pending: range.pendingPeriods,
             })}

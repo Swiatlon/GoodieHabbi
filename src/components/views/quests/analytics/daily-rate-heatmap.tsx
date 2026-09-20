@@ -37,7 +37,9 @@ const DailyRateHeatmap: React.FC<DailyRateHeatmapProps> = ({ dailyCompletionRate
   return (
     <View className="bg-white rounded-2xl shadow-sm p-4">
       <Text className="text-sm font-bold text-gray-800">{t('quests.analytics.overview.dailyRateHeading')}</Text>
-      <Text className="text-[11px] text-gray-400 mb-4">{t('quests.analytics.overview.dailyRateHint')}</Text>
+      {/* Says out loud that weekly and longer targets are counted in their own tile, not here. */}
+      <Text className="text-[11px] text-gray-400">{t('quests.analytics.overview.dailyRateHint')}</Text>
+      <Text className="text-[11px] text-gray-400 mb-4">{t('quests.analytics.overview.dailyOnlyNote')}</Text>
 
       <View className="flex-row">
         <View style={{ gap: CELL_GAP, marginRight: 6 }}>

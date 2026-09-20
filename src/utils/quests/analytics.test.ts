@@ -5,6 +5,7 @@ import {
   IQuestCalendarEntry,
   QuestPeriodOutcomeEnum,
 } from '@/contract/quests/analytics/quests-analytics.contract';
+import { PeriodUnitEnum } from '@/contract/quests/quest.contract';
 
 const MONDAY = '2026-08-03';
 /** 2026-08-05 is a Wednesday — used to prove the grid snaps back to its Monday column. */
@@ -16,6 +17,8 @@ const entry = (overrides: Partial<IQuestCalendarEntry>): IQuestCalendarEntry => 
   periodStart: MONDAY,
   periodEnd: MONDAY,
   outcome: QuestPeriodOutcomeEnum.COMPLETED,
+  progress: 1,
+  target: 1,
   completedAtUtc: null,
   isBackfilled: false,
   ...overrides,
@@ -99,9 +102,13 @@ describe('mergeHabitSummaries', () => {
     totalPeriods: 1,
     completedPeriods: 0,
     missedPeriods: 0,
+    partialPeriods: 0,
     pendingPeriods: 0,
+    skippedPeriods: 0,
     evaluatedPeriods: 0,
     completionRate: null,
+    progressRate: null,
+    totalCompletions: 0,
     currentStreak: 0,
     longestStreak: 0,
     lastCompletedAtUtc: null,
@@ -110,7 +117,7 @@ describe('mergeHabitSummaries', () => {
 
   const habit = (questId: number, title: string, over: Partial<IQuestAnalyticsSummary>): IHabitSummary => ({
     questId,
-    questType: 'Daily',
+    streakUnit: PeriodUnitEnum.DAY,
     title,
     emoji: null,
     summary: summary(over),

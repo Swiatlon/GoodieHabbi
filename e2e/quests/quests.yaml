@@ -1,0 +1,193 @@
+appId: com.wiercik.GoodieHabbi
+---
+# Covers the single Habits list that replaced the five per-type screens: add, view, edit, tick,
+# untick, delete. The quest is created with the default recurrence (every day), so the completion
+# control is the plain checkmark rather than the counter.
+
+# 🚀 Setup & Login
+- clearState
+- launchApp
+- runFlow:
+    file: ../commands/login.yaml
+
+# 📍 Navigate to the Habits screen
+- runFlow:
+    file: ../commands/go-to.yaml
+    env:
+      navigationText: 'Habits'
+
+# 👀 Verify the screen and its empty state
+- extendedWaitUntil:
+    visible:
+      id: 'all-quests-screen'
+    timeout: 7000
+
+- assertVisible:
+    text: 'No quests found.'
+
+- assertVisible:
+    text: 'Add new Quest'
+
+# 🕹 Open the add modal and check it closes on cancel
+- tapOn:
+    text: 'Add new Quest'
+    waitToSettleTimeoutMs: 1000
+
+- extendedWaitUntil:
+    visible:
+      id: 'add-quest-modal'
+    timeout: 5000
+
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'btn-cancel'
+
+- assertNotVisible:
+    id: 'add-quest-modal'
+
+# 🕹 Open it again and fill the form
+- tapOn:
+    text: 'Add new Quest'
+
+- extendedWaitUntil:
+    visible:
+      id: 'add-quest-modal'
+    timeout: 5000
+
+- tapOn:
+    id: 'input-title'
+- inputText: 'My test quest'
+
+- tapOn:
+    id: 'input-description'
+- inputText: 'This is a description for the test quest.'
+
+# ✅ Submit — the default recurrence is "every day", so no extra fields are required
+- tapOn:
+    id: 'btn-add-quest'
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'add-quest-modal'
+    timeout: 10000
+
+- assertVisible:
+    text: 'Quest added.'
+
+# 📋 The row now exists
+- assertVisible:
+    id: 'quest-item-container'
+
+- assertVisible:
+    text: 'My test quest'
+
+# 🔍 Open the details modal
+- tapOn:
+    id: 'quest-item-touchable'
+    waitToSettleTimeoutMs: 1000
+
+- extendedWaitUntil:
+    visible:
+      id: 'show-quest-modal'
+    timeout: 5000
+
+- assertVisible:
+    text: 'My test quest'
+
+- assertVisible:
+    text: 'This is a description for the test quest.'
+
+- assertVisible:
+    id: 'btn-delete-quest'
+
+- assertVisible:
+    id: 'btn-edit-quest'
+
+- assertVisible:
+    id: 'btn-close-quest-modal'
+
+- tapOn:
+    id: 'btn-close-quest-modal'
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'show-quest-modal'
+    timeout: 5000
+
+# ✏️ Edit through the details modal
+- tapOn:
+    id: 'quest-item-touchable'
+
+- extendedWaitUntil:
+    visible:
+      id: 'show-quest-modal'
+    timeout: 5000
+
+- tapOn:
+    id: 'btn-edit-quest'
+
+- extendedWaitUntil:
+    visible:
+      id: 'update-quest-modal'
+    timeout: 5000
+
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'input-title'
+- inputText: ' - Updated'
+
+- tapOn:
+    id: 'btn-update-quest'
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'update-quest-modal'
+    timeout: 10000
+
+- assertVisible:
+    text: 'Quest updated.'
+
+- assertVisible:
+    text: 'My test quest - Updated'
+
+# ✅ Tick it. Completion is recorded, not toggled — the response says the period is now done.
+- tapOn:
+    id: 'quest-item-checkmark'
+    waitToSettleTimeoutMs: 2000
+
+- assertVisible:
+    text: 'Done! 🎉'
+
+# ❌ Untick it. This is a real delete of the completion, which is only possible because the period
+# carries its completion ids — before that, undo stopped working after an app restart.
+- tapOn:
+    id: 'quest-item-checkmark'
+    waitToSettleTimeoutMs: 2000
+
+- assertVisible:
+    text: 'Completion undone.'
+
+# 🗑️ Delete
+- tapOn:
+    id: 'quest-item-touchable'
+
+- extendedWaitUntil:
+    visible:
+      id: 'show-quest-modal'
+    timeout: 5000
+
+- tapOn:
+    id: 'btn-delete-quest'
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'show-quest-modal'
+    timeout: 10000
+
+- assertVisible:
+    text: 'Quest deleted successfully.'
+
+- assertVisible:
+    text: 'No quests found.'

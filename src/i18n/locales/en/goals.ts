@@ -46,7 +46,8 @@ const goals = {
     completeSuccess: 'Goal marked as completed!',
     completeError: 'Failed to complete goal. Please try again.',
     confirmTitle: 'Complete Quest?',
-    confirmMessage: 'Are you sure you want to mark this quest as completed?',
+    /** Undo removes the completion but never un-achieves the goal — same rule as with rewards. */
+    confirmMessage: 'Are you sure you want to mark this quest as completed? An achieved goal cannot be undone afterwards.',
   },
 };
 

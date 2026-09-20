@@ -9,9 +9,8 @@ import GoalQuestSection from '@/components/views/goals/goal-quest-section';
 import GoalSetButton from '@/components/views/goals/goal-set-button';
 import GoalSetModal from '@/components/views/goals/goal-set-modal';
 import GoalTimeSection from '@/components/views/goals/goal-time-section';
-import { useGetAllQuests } from '@/hooks/quests/useGetAllQuests';
-import { SnackbarVariantEnum, useSnackbar } from '@/providers/snackbar/snackbar-context';
-import { useGetActiveGoalQuery, useUpdateActiveGoalMutation } from '@/redux/api/goals/goals-api';
+import { useQuestCompletion } from '@/hooks/quests/use-quest-completion';
+import { useGetActiveGoalQuery } from '@/redux/api/goals/goals-api';
 
 const frequency = 'yearly';
 
@@ -19,10 +18,8 @@ const Yearly = () => {
   const { t } = useTranslation();
   const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
   const [isGoalSetModalVisible, setIsGoalSetModalVisible] = useState(false);
-  const { data: yearlyGoal = null } = useGetActiveGoalQuery(frequency);
-  const { isLoading } = useGetAllQuests();
-  const { showSnackbar } = useSnackbar();
-  const [updateActiveGoal] = useUpdateActiveGoalMutation();
+  const { data: yearlyGoal = null, isLoading } = useGetActiveGoalQuery(frequency);
+  const { complete } = useQuestCompletion();
   const methods = useForm();
 
   const openConfirmModal = () => setIsConfirmModalVisible(true);
@@ -31,22 +28,14 @@ const Yearly = () => {
   const openSetGoalModal = () => setIsGoalSetModalVisible(true);
   const closeSetGoalModal = () => setIsGoalSetModalVisible(false);
 
+  /*
+   * A goal is completed by completing its quest — `PATCH /goals/{id}/completion` is deprecated,
+   * ignores its body and has no undo. The goal is achieved as a consequence, by the first period
+   * that reaches its target inside the goal window.
+   */
   const handleConfirmCompletion = async () => {
-    try {
-      await updateActiveGoal({
-        id: yearlyGoal!.id,
-        isCompleted: !yearlyGoal!.isCompleted,
-      }).unwrap();
-
-      showSnackbar({
-        text: t('goals.screens.completeSuccess'),
-        variant: SnackbarVariantEnum.SUCCESS,
-      });
-    } catch {
-      showSnackbar({
-        text: t('goals.screens.completeError'),
-        variant: SnackbarVariantEnum.ERROR,
-      });
+    if (yearlyGoal) {
+      await complete(yearlyGoal.id);
     }
 
     closeConfirmModal();

@@ -288,7 +288,8 @@ Granice sezonów po stronie BE są dokładnie takie, jak w Waszej tabeli
 - [ ] Blokować przycisk po osiągnięciu `maxCompletionsPerDay` (albo obsłużyć 409).
 - [ ] `currentPeriod === null` → „niezaplanowane”, nie „nieudane”.
 - [ ] Dodać kartę catch-up (`GET /quests/catch-up`), ukrytą gdy `days` puste.
-- [ ] Podmienić listy per-typ na `?legacyType=`.
+- [ ] Zastąpić pięć list per-typ **jedną** listą z `GET /quests` i filtrami po stronie klienta
+      (ustalenie z przeglądu FE — `?legacyType=` celowo nie używamy).
 - [ ] Poprawić `byWeekday` (zmiana kształtu) i rozdzielić `dailyCompletionRate` / `periodic`.
 - [ ] Pokazywać `streakUnit` przy serii.
 - [ ] `Partial` jako częściowy postęp, nie jako sukces.
@@ -297,10 +298,28 @@ Granice sezonów po stronie BE są dokładnie takie, jak w Waszej tabeli
 - [ ] Nie ustawiać `endDate` przy questach sezonowych (§8b).
 - [ ] Cele: przestać czytać `season`/`weekdays`/`type` z `IUserGoal` (§8a).
 
-## 10. Pytania do Was
+## 10. Ustalenia (po przeglądzie FE, 12.09.2026)
 
-1. Czy `?legacyType=` wystarcza, czy potrzebujecie pełnego shimu ze starymi trasami na jedno wydanie?
-2. Czy przy celu > 1 wolicie przycisk „+1”, czy licznik z `+`/`−`?
-3. Czy chcecie oznaczać `isBackfilled` w kalendarzu, czy traktować tak samo jak zwykłe ukończenie?
-4. Czy okno nadrabiania (2 dni) jest OK, czy chcecie dłuższe?
-5. Czy podział ekranów Daily/Weekly/Monthly ma sens w nowym modelu, czy projektujemy to inaczej?
+Pięć pytań z pierwszej wersji ma odpowiedzi i wszystkie zostały przyjęte:
+
+1. **Most `?legacyType=`** — nieużywany. Pełnego shimu nie budujemy; parametr i pole `legacyQuestType`
+   znikają razem z krokiem 2 migracji.
+2. **Przy celu > 1** — „+1” jako główna akcja, „−” jako korekta w szczegółach; przy `target.unit != null`
+   stepper z presetami. Cofanie stoi na `currentPeriod.completions[].id`.
+3. **`isBackfilled`** — oznaczane subtelnie (kropka/obwódka), nie osobnym kolorem.
+4. **Okno nadrabiania** — 2 dni, bez zmian.
+5. **Podział ekranów** — odcinamy się od typów. Docelowo **Dziś · Nawyki · Statystyki · Etykiety**,
+   z chipami filtrów na jednej liście z jednego `GET /quests`.
+
+Uwaga do filtra „zagrożone”: `isAtRisk` jest z założenia `false` dla harmonogramów dziennych, więc ten
+filtr pokaże wyłącznie nawyki tygodniowe i miesięczne.
+
+### Zmiany po przeglądzie
+
+- `currentPeriod.completions[]`, `todayProgress`, `canCompleteToday` (FE-1, FE-2).
+- `byWeekday` z mianownikami `daysInRange` / `daysScheduled` (FE-7).
+- `GET /quests/catch-up?includeCompleted=true` — zwraca też okresy już odhaczone w oknie, żeby dało się
+  cofnąć tapnięcie z karty nadrabiania po restarcie aplikacji (FE-11).
+- `canCompleteToday` jest `false` dla ukończonego questa **jednorazowego** — przekraczanie celu ma sens
+  przy nawyku, nie przy czymś, co dzieje się raz (FE-12). Po Waszej stronie nic nie trzeba pilnować.
+- **Cofnięcie odhaczenia nie cofa zaliczonego celu** — zamierzone, tak samo jak z nagrodami (FE-4).

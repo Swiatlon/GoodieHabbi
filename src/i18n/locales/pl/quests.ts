@@ -15,6 +15,9 @@ const questForm = {
   cancelButton: 'Anuluj',
 };
 
+/** Used by the status filter, the quest status badge and the statistics tile alike. */
+const COMPLETED_LABEL = 'Zakończone';
+
 const showModal = {
   closeButton: 'Zamknij',
   editButton: 'Edytuj',
@@ -24,158 +27,58 @@ const showModal = {
 };
 
 const quests = {
-  daily: {
-    title: 'Zadania dzienne',
-    noQuestsFound: 'Nie znaleziono zadań.',
-    fetchingQuests: 'Wczytywanie zadań...',
-    addNewQuest: 'Dodaj nowe zadanie',
-    form: questForm,
-    addModal: {
-      heading: 'Dodaj nowe zadanie',
-      submitButton: 'Dodaj zadanie',
-      loadingMessage: 'Dodawanie zadania...',
-      addedSuccess: 'Zadanie dodane!',
-      addedError: 'Nie udało się dodać zadania. Spróbuj ponownie.',
-    },
-    updateModal: {
-      heading: 'Edytuj zadanie',
-      submitButton: 'Zapisz zadanie',
-      loadingMessage: 'Zapisywanie zadania...',
-      updatedSuccess: 'Zadanie zaktualizowane!',
-      updatedError: 'Nie udało się zaktualizować zadania. Spróbuj ponownie.',
-      startDateLabel: 'Data początkowa',
-    },
-    showModal,
+  /** „Zrobiłem, ale zapomniałem odhaczyć” — okno 2 dni wstecz. */
+  catchUp: {
+    heading: 'Nieodhaczone z ostatnich dni',
+    summary_one: 'Masz {{count}} nawyk do nadrobienia',
+    summary_other: 'Masz {{count}} nawyki do nadrobienia',
+    summary_many: 'Masz {{count}} nawyków do nadrobienia',
+    today: 'Dziś',
+    yesterday: 'Wczoraj',
+    markDone: 'Zrobione',
+    /** Partial periods land here too, so the row has to be able to say „1 / 2”. */
+    progress: '{{progress}} / {{target}}',
+    dismiss: 'Ukryj',
   },
-  weekly: {
-    title: 'Zadania tygodniowe',
-    noQuestsFound: 'Nie znaleziono zadań.',
-    fetchingQuests: 'Wczytywanie zadań...',
-    addNewQuest: 'Dodaj nowe zadanie',
-    form: questForm,
-    addModal: {
-      heading: 'Dodaj nowe zadanie',
-      submitButton: 'Dodaj zadanie',
-      loadingMessage: 'Dodawanie zadania...',
-      addedSuccess: 'Zadanie dodane!',
-      addedError: 'Nie udało się dodać zadania. Spróbuj ponownie.',
-    },
-    updateModal: {
-      heading: 'Edytuj zadanie',
-      submitButton: 'Zapisz zadanie',
-      loadingMessage: 'Zapisywanie zadania...',
-      updatedSuccess: 'Zadanie zaktualizowane!',
-      updatedError: 'Nie udało się zaktualizować zadania. Spróbuj ponownie.',
-    },
-    showModal,
-    schema: {
-      weekdaysMin: 'Wybierz przynajmniej jeden dzień tygodnia',
-      weekdaysRequired: 'Dni tygodnia są wymagane',
-    },
+  /** The one add/edit form that replaced the five per-type modals. */
+  questForm: {
+    addHeading: 'Nowe zadanie',
+    updateHeading: 'Edytuj zadanie',
+    submitButton: 'Dodaj',
+    updateButton: 'Zapisz',
+    loadingMessage: 'Zapisywanie zadania...',
+    addedSuccess: 'Zadanie dodane.',
+    addedError: 'Nie udało się dodać zadania. Spróbuj ponownie.',
+    updatedSuccess: 'Zadanie zaktualizowane.',
+    updatedError: 'Nie udało się zaktualizować zadania. Spróbuj ponownie.',
+    /** Editing the schedule drops only future, untouched periods — history and streaks survive. */
+    updateScheduleNote: 'Zmiana powtarzalności nie kasuje historii ani serii — przestawia tylko przyszłe okresy.',
   },
-  monthly: {
-    title: 'Zadania miesięczne',
-    noQuestsFound: 'Nie znaleziono zadań.',
-    fetchingQuests: 'Wczytywanie zadań...',
-    addNewQuest: 'Dodaj nowe zadanie',
-    form: {
-      ...questForm,
-      startDayLabel: '🚀 Dzień początkowy:',
-      startDayPlaceholder: 'Wybierz dzień początkowy',
-      endDayLabel: '🏁 Dzień końcowy:',
-      endDayPlaceholder: 'Wybierz dzień końcowy',
-    },
-    addModal: {
-      heading: 'Dodaj nowe zadanie',
-      submitButton: 'Dodaj zadanie',
-      loadingMessage: 'Dodawanie zadania...',
-      addedSuccess: 'Zadanie dodane!',
-      addedError: 'Nie udało się dodać zadania. Spróbuj ponownie.',
-    },
-    updateModal: {
-      heading: 'Edytuj zadanie',
-      submitButton: 'Zapisz zadanie',
-      loadingMessage: 'Zapisywanie zadania...',
-      updatedSuccess: 'Zadanie zaktualizowane!',
-      updatedError: 'Nie udało się zaktualizować zadania. Spróbuj ponownie.',
-      startDateLabel: 'Data początkowa',
-    },
-    showModal,
-    schema: {
-      startDayInteger: 'Dzień początkowy musi być liczbą całkowitą',
-      startDayMin: 'Dzień początkowy musi być co najmniej 1',
-      startDayMax: 'Dzień początkowy nie może być większy niż 31',
-      startDayRequired: 'Dzień początkowy jest wymagany',
-      endDayInteger: 'Dzień końcowy musi być liczbą całkowitą',
-      endDayMin: 'Dzień końcowy musi być co najmniej 1',
-      endDayMax: 'Dzień końcowy nie może być większy niż 31',
-      endDayRequired: 'Dzień końcowy jest wymagany',
-      endDayGreater: 'Dzień końcowy musi być większy lub równy dniowi początkowemu',
-    },
-  },
-  oneTime: {
-    title: 'Zadania jednorazowe',
-    noQuestsFound: 'Nie znaleziono zadań.',
-    fetchingQuests: 'Wczytywanie zadań...',
-    addNewQuest: 'Dodaj nowe zadanie',
-    form: questForm,
-    addModal: {
-      heading: 'Dodaj nowe zadanie',
-      submitButton: 'Dodaj zadanie',
-      loadingMessage: 'Dodawanie zadania...',
-      addedSuccess: 'Zadanie dodane!',
-      addedError: 'Nie udało się dodać zadania. Spróbuj ponownie.',
-    },
-    updateModal: {
-      heading: 'Edytuj zadanie',
-      submitButton: 'Zapisz zadanie',
-      loadingMessage: 'Zapisywanie zadania...',
-      updatedSuccess: 'Zadanie zaktualizowane!',
-      updatedError: 'Nie udało się zaktualizować zadania. Spróbuj ponownie.',
-    },
-    showModal,
-  },
+  /*
+   * Only the season NAMES survive the per-type cleanup. A season is a year window in the API,
+   * not a quest type, and these four labels are what `SEASON_YEAR_WINDOWS` maps onto.
+   */
   seasonal: {
-    title: 'Zadania sezonowe',
-    noQuestsFound: 'Nie znaleziono zadań.',
-    fetchingQuests: 'Wczytywanie zadań...',
-    addNewQuest: 'Dodaj nowe zadanie',
-    form: questForm,
-    addModal: {
-      heading: 'Dodaj nowe zadanie',
-      submitButton: 'Dodaj zadanie',
-      loadingMessage: 'Dodawanie zadania...',
-      addedSuccess: 'Zadanie dodane!',
-      addedError: 'Nie udało się dodać zadania. Spróbuj ponownie.',
-    },
-    updateModal: {
-      heading: 'Edytuj zadanie',
-      submitButton: 'Zapisz zadanie',
-      loadingMessage: 'Zapisywanie zadania...',
-      updatedSuccess: 'Zadanie zaktualizowane!',
-      updatedError: 'Nie udało się zaktualizować zadania. Spróbuj ponownie.',
-      endDateLabel: 'Data końcowa',
-    },
-    showModal,
     seasons: {
       winter: 'Zima',
       spring: 'Wiosna',
       summer: 'Lato',
       autumn: 'Jesień',
     },
-    schema: {
-      seasonRequired: 'Sezon jest wymagany',
-      startDateFuture: 'Data początkowa musi być dzisiejsza lub przyszła',
-      startDateWithinSeason: 'Data początkowa musi znajdować się w zakresie wybranego sezonu',
-      startDateRangeDetail: 'Data początkowa musi być w zakresie sezonu: {{min}} - {{max}}',
-      endDateWithinSeason: 'Data końcowa musi znajdować się w zakresie wybranego sezonu',
-      endDateRangeDetail: 'Data końcowa musi być w zakresie sezonu: {{min}} - {{max}}',
-      endDateAfterStart: 'Data końcowa musi być taka sama lub późniejsza niż data początkowa',
-      endDateAfterStartDetail: 'Data końcowa musi przypadać na dzień daty początkowej lub później: {{startDate}}',
-    },
   },
   all: {
-    title: 'Wszystkie zadania',
+    title: 'Nawyki',
+    /** The chips that replaced the per-type screens. */
+    scopes: {
+      all: 'Wszystkie',
+      repeating: 'Powtarzalne',
+      oneOff: 'Jednorazowe',
+      daily: 'Dzienne',
+      weekly: 'Tygodniowe',
+      monthly: 'Miesięczne',
+      yearly: 'Sezonowe',
+      atRisk: 'Zagrożone',
+    },
     recurringTitle: 'Wszystkie zadania cykliczne',
     noQuestsFound: 'Nie znaleziono zadań.',
     fetchingQuests: 'Wczytywanie zadań...',
@@ -236,7 +139,7 @@ const quests = {
     filters: {
       status: {
         all: 'Wszystkie',
-        completed: 'Zakończone',
+        completed: COMPLETED_LABEL,
         incomplete: 'Niezakończone',
       },
       priority: {
@@ -251,7 +154,51 @@ const quests = {
       incompleteSuccess: 'Zadanie oznaczone jako niezakończone.',
       updateError: 'Nie udało się zaktualizować zadania. Spróbuj ponownie.',
     },
+    period: {
+      /** Only ever shown when the backend says so — never derived from „not done yet”. */
+      atRisk: '⚠️ Jeszcze {{remaining}}, a zostały {{count}} dni',
+      atRisk_one: '⚠️ Jeszcze {{remaining}}, a został {{count}} dzień',
+      periodEnds: 'Okres do {{date}}',
+    },
+    schedule: {
+      once: 'Jednorazowe',
+      daily: 'Codziennie',
+      everyNDays: 'Co {{count}} dni',
+      timesPerWeek: '{{count}}× w tygodniu',
+      timesPerMonth: '{{count}} dni w miesiącu',
+      /** A measured target on a week or month — the number carries a unit, so it is not a day count. */
+      unitsPerWeek: '{{amount}} {{unit}} w tygodniu',
+      unitsPerMonth: '{{amount}} {{unit}} w miesiącu',
+      everyNWeeks: 'co {{count}} tyg.',
+      everyNMonths: 'co {{count}} mies.',
+      everyNYears: 'co {{count}} lata',
+      monthWindow: 'Dni {{start}}–{{end}} miesiąca',
+      /** A year window that is not one of the four season presets. */
+      yearWindow: 'Co roku {{start}} – {{end}}',
+      yearly: 'Co roku',
+      /** Appended to the recurrence when the target carries a unit: „Codziennie · 2 L”. */
+      targetSuffix: '{{amount}} {{unit}}',
+      /** Appended when the target is a plain repeat count: „Codziennie · 2×”. */
+      targetTimes: '{{count}}×',
+    },
+    completion: {
+      /** One tap that did not yet close the period — „2 / 3”. */
+      progressSaved: 'Zapisane: {{progress}}.',
+      periodCompleted: 'Zrobione! 🎉',
+      rewardEarned: 'Zrobione! 🎉 +{{xp}} XP, +{{coins}} monet',
+      undone: 'Cofnięto odhaczenie.',
+      /** The backend rejected a second tap on the same day — the weekly cap did its job. */
+      dailyLimitReached: 'Na dziś już odhaczone. Wróć jutro.',
+      error: 'Nie udało się zapisać. Spróbuj ponownie.',
+      undoError: 'Nie udało się cofnąć. Spróbuj ponownie.',
+      /** Shown instead of a button when the quest simply is not due today. */
+      notScheduledToday: 'Dziś niezaplanowane',
+    },
     form: {
+      /* Title, description, dates, time and tags — they used to be spread into each per-type section. */
+      ...questForm,
+      startDayLabel: '🚀 Dzień początkowy:',
+      endDayLabel: '🏁 Dzień końcowy:',
       difficultyLabel: '⚔️ Trudność:',
       difficultyPlaceholder: 'Wybierz trudność',
       difficulties: {
@@ -272,6 +219,45 @@ const quests = {
       emojiLabel: '😄 Emoji:',
       emojiPlaceholder: 'Kliknij, aby wybrać emoji zadania',
       cancelButton: 'Anuluj',
+      recurrenceLabel: '🔁 Powtarzalność:',
+      recurrencePlaceholder: 'Jak często?',
+      presets: {
+        once: 'Jednorazowo',
+        daily: 'Codziennie',
+        weekdays: 'W wybrane dni tygodnia',
+        everyNDays: 'Co kilka dni',
+        timesPerWeek: 'X razy w tygodniu',
+        timesPerMonth: 'X dni w miesiącu',
+        unitsPerWeek: 'Ile w tygodniu (np. 15 km)',
+        unitsPerMonth: 'Ile w miesiącu (np. 15 km)',
+        monthWindow: 'W oknie miesiąca',
+        seasonal: 'Sezonowo',
+      },
+      intervalLabel: '📆 Co ile dni:',
+      /** The anchor is the start date, so without one the user cannot tell which days land. */
+      intervalHint: 'Odliczane od daty początkowej — ustaw ją, żeby wiedzieć, które dni wypadają.',
+      timesPerWeekLabel: '🎯 Ile razy w tygodniu:',
+      timesPerMonthLabel: '🎯 Ile dni w miesiącu:',
+      /** The API takes `interval` on every unit, so a period longer than a day can repeat every N. */
+      intervalWeeksLabel: '📆 Co ile tygodni:',
+      intervalMonthsLabel: '📆 Co ile miesięcy:',
+      intervalYearsLabel: '📆 Co ile lat:',
+      periodIntervalHint: 'Zostaw 1, żeby okres wracał za każdym razem.',
+      /** `maxCompletionsPerDay: 1` is what makes this preset mean anything. */
+      timesPerPeriodHint: 'Jedno odhaczenie dziennie — nie da się zrobić całego tygodnia w poniedziałek.',
+      targetAmountLabel: '🎯 Cel na jeden okres:',
+      targetUnitLabel: '📏 Jednostka (opcjonalnie):',
+      targetUnitPlaceholder: 'np. L, stron, min',
+      targetHint: 'Np. 2 przy „Codziennie” = zrobić coś dwa razy dziennie. Zostaw 1, jeśli wystarczy zwykłe odhaczenie.',
+      maxPerDayLabel: '🔒 Maks. odhaczeń dziennie:',
+      /** 1 is what stops a weekly target from being finished in one sitting. */
+      maxPerDayHint: 'Zostaw 1, żeby nie dało się zrobić całego tygodnia w jeden dzień.',
+      durationLabel: '⏱️ Ile to zajmuje (min):',
+      durationPlaceholder: 'np. 30',
+      /** Nothing in the app reads it yet — it is there for the planned calendar export. */
+      durationHint: 'Na razie nieużywane w aplikacji — przyda się przy eksporcie do kalendarza.',
+      /** The year window IS the recurrence — an end date would kill the quest after one season. */
+      seasonalEndDateWarning: 'Nie ustawiaj daty końcowej — sezon i tak wraca co roku.',
     },
     schema: {
       titleRequired: 'Tytuł jest wymagany',
@@ -281,6 +267,24 @@ const quests = {
       tagIdRequired: 'Identyfikator tagu jest wymagany',
       tagRequired: 'Tag nie może być pusty',
       tagTooLong: 'Tag jest za długi. Maksymalnie 25 znaków.',
+      recurrenceRequired: 'Wybierz powtarzalność',
+      weekdaysMin: 'Wybierz przynajmniej jeden dzień tygodnia',
+      intervalRange: 'Podaj liczbę dni od 2 do 366',
+      /** Without an anchor „every 2 days” is unpredictable, so the date stops being optional here. */
+      intervalNeedsStartDate: 'Przy „co kilka dni” ustaw datę początkową — od niej liczone są kolejne dni',
+      timesPerWeekRange: 'Podaj liczbę od 1 do 7',
+      timesPerMonthRange: 'Podaj liczbę od 1 do 31',
+      monthDayRange: 'Dzień miesiąca musi być w zakresie 1–31',
+      monthWindowOrder: 'Dzień końcowy nie może być wcześniejszy niż początkowy',
+      seasonRequired: 'Wybierz sezon',
+      /** The year window is the recurrence — an end date would stop it after one season. */
+      seasonalEndDateForbidden: 'Sezonowy quest wraca co roku — zostaw datę końcową pustą',
+      targetAmountRange: 'Cel musi być liczbą od 1 do 100000',
+      targetAmountWhole: 'Bez jednostki cel musi być liczbą całkowitą',
+      targetUnitTooLong: 'Jednostka może mieć maksymalnie 20 znaków',
+      maxPerDayRange: 'Podaj liczbę od 1 do wartości celu',
+      periodIntervalRange: 'Podaj liczbę całkowitą od 1 do 366',
+      durationRange: 'Czas trwania musi być liczbą całkowitą od 1 do 1440 minut',
     },
     difficulty: {
       prefix: 'Trudność:',
@@ -309,7 +313,7 @@ const quests = {
       },
     },
     status: {
-      completedTitle: 'Zakończone',
+      completedTitle: COMPLETED_LABEL,
       completedDescription: 'Świetna robota! To zadanie zostało zakończone.',
       inProgressTitle: 'W trakcie',
       inProgressDescription: 'To zadanie jest obecnie aktywne. Nie przestawaj, aż je zakończysz!',
@@ -320,8 +324,8 @@ const quests = {
       startDateLabel: 'Data początkowa:',
       endDateLabel: 'Data końcowa:',
       timeRemainingLabel: 'Pozostały czas:',
-      noDeadline: '(Brak terminu)',
       expired: '(⏰ Wygasło)',
+      noDeadline: '(Brak terminu)',
       lastDay: '(⚡ Ostatni dzień!)',
       daysLeftUrgent: '(⏳ Pozostało {{count}} dni)',
       daysLeftWarning: '(🕒 Pozostało {{count}} dni)',
@@ -339,11 +343,19 @@ const quests = {
     },
     statistics: {
       heading: 'Statystyki',
-      completed: 'Zakończone',
+      completed: COMPLETED_LABEL,
       occurrences: 'Wystąpienia',
       failures: 'Niepowodzenia',
       streak: 'Seria',
       longest: 'Najdłuższa',
+      /** A streak of 5 on a weekly habit is five weeks — without the unit the number lies. */
+      streakUnit: {
+        Day: 'dni',
+        Week: 'tyg.',
+        Month: 'mies.',
+        Year: 'lat',
+        None: '',
+      },
     },
     days: {
       monday: 'Pon',
@@ -385,6 +397,8 @@ const quests = {
       backfilled: 'Uzupełnione później',
       missed: 'Pominięte',
       pending: 'W trakcie',
+      /** Elapsed with some progress but short of the target — counts as a miss, drawn as partial credit. */
+      partial: 'Częściowo',
       unscheduled: 'Niezaplanowane',
     },
     summary: {
@@ -394,7 +408,9 @@ const quests = {
       inRange: 'w okresie',
       allTime: 'od zawsze',
       periodsHeading: 'Rozkład okresów',
-      periodsBreakdown: 'Zrobione: {{completed}} · Pominięte: {{missed}} · W trakcie: {{pending}}',
+      periodsBreakdown: 'Zrobione: {{completed}} · Częściowo: {{partial}} · Pominięte: {{missed}} · W trakcie: {{pending}}',
+      /** How much of what was asked for actually got done, unlike completionRate which is all-or-nothing. */
+      progressRate: 'Postęp',
     },
     heatmap: {
       heading: 'Kalendarz',
@@ -409,9 +425,20 @@ const quests = {
         month: 'w podziale na miesiące',
       },
     },
+    hour: {
+      heading: 'Pora dnia',
+      hint: 'O której faktycznie to robisz. Wpisy sprzed migracji nie mają godziny i są pomijane.',
+      /** e.g. „7:00–8:00” */
+      hourLabel: '{{hour}}:00',
+    },
     weekday: {
       heading: 'Dni tygodnia',
       hint: 'W które dni najczęściej Ci to ucieka.',
+      /** Used when the schedule pins no weekdays, so „ucieka” has no denominator to be measured against. */
+      hintActivity: 'W które dni faktycznie to robisz.',
+      /** e.g. „9 z 12 poniedziałków” */
+      scheduledRatio: '{{done}} z {{scheduled}}',
+      completionsCount: '{{count}} odhaczeń',
     },
     empty: {
       heading: 'Brak wystąpień w tym okresie',
@@ -419,7 +446,7 @@ const quests = {
     },
     error: {
       heading: 'Nie udało się wczytać statystyk',
-      hint: 'Statystyki są dostępne tylko dla zadań powtarzalnych: dziennych, tygodniowych i miesięcznych.',
+      hint: 'Statystyki są dostępne tylko dla zadań powtarzalnych — jednorazowe nie mają serii ani trendu.',
     },
     overview: {
       title: 'Statystyki nawyków',
@@ -435,7 +462,11 @@ const quests = {
       questMeta: 'Zrobione {{completed}} z {{evaluated}}',
       questNoData: 'Brak ocenionych okresów w tym zakresie',
       emptyHeading: 'Nie masz jeszcze powtarzalnych nawyków',
-      emptyHint: 'Dodaj zadanie dzienne, tygodniowe lub miesięczne, żeby zobaczyć tu statystyki.',
+      emptyHint: 'Dodaj powtarzalne zadanie, żeby zobaczyć tu statystyki.',
+      /** Week/Month/Year periods have no place on a per-day axis, so they get their own tile. */
+      periodicHeading: 'Okresy tygodniowe i dłuższe',
+      periodicHint: 'Cele tygodniowe, miesięczne i roczne liczone osobno — jeden nieudany tydzień nie maluje siedmiu dni na czerwono.',
+      dailyOnlyNote: 'Wykres dzienny pokazuje wyłącznie nawyki dzienne.',
     },
   },
 };

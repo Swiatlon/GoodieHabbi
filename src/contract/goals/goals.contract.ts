@@ -1,28 +1,18 @@
-import { PriorityEnumType, QuestTypesEnumType, SeasonEnumType, WeekdayEnumType } from '../quests/base-quests';
-import { IQuestLabel } from '../quests/labels/labels-quests';
+import { IQuest } from '../quests/quest.contract';
 
-export interface IUserGoal {
-  id: number;
-  title: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  emoji: string;
-  isCompleted: boolean;
-  season?: SeasonEnumType;
-  weekdays?: WeekdayEnumType[];
-  priority: PriorityEnumType;
-  type: QuestTypesEnumType;
-  labels: IQuestLabel[];
-}
+/**
+ * A goal is a quest promoted for a window of time — `GET /goals/active/{goalType}` answers with the
+ * ordinary `QuestDetailsDto`, so there is no separate goal shape to keep in sync any more. The old
+ * `IUserGoal`, with its `season` / `weekdays` / `type` / `startDay` / `endDay`, belonged to the retired
+ * typed quest model.
+ *
+ * The goal type picks the WINDOW, not a requirement on the quest: any quest can back a
+ * Daily / Weekly / Monthly / Yearly goal, and `/quests/eligible-for-goal` has never filtered by type.
+ * A goal is achieved by the first period that reaches its target inside that window.
+ */
+export type IGetActiveGoalResponse = IQuest;
 
 export interface ICreateGoalRequest {
   goalType: string;
   questId: number;
-}
-
-export interface IGetActiveGoalResponse extends IUserGoal {}
-
-export interface IUpdateActiveGoalRequest {
-  goalType: string;
 }

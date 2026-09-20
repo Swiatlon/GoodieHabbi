@@ -14,6 +14,7 @@ const OutcomeLegend: React.FC = () => {
   const items = [
     { key: 'completed', color: OUTCOME_COLORS[QuestPeriodOutcomeEnum.COMPLETED], dot: false },
     { key: 'backfilled', color: OUTCOME_COLORS[QuestPeriodOutcomeEnum.COMPLETED], dot: true },
+    { key: 'partial', color: OUTCOME_COLORS[QuestPeriodOutcomeEnum.PARTIAL], dot: false },
     { key: 'missed', color: OUTCOME_COLORS[QuestPeriodOutcomeEnum.MISSED], dot: false },
     { key: 'pending', color: OUTCOME_COLORS[QuestPeriodOutcomeEnum.PENDING], dot: false },
     { key: 'unscheduled', color: UNSCHEDULED_COLOR, dot: false },

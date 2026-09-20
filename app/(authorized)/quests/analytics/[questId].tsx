@@ -7,6 +7,7 @@ import Loader from '@/components/shared/loader/loader';
 import AnalyticsRangeSelector from '@/components/views/quests/analytics/analytics-range-selector';
 import CompletionHeatmap from '@/components/views/quests/analytics/completion-heatmap';
 import CompletionTrendChart from '@/components/views/quests/analytics/completion-trend-chart';
+import HourBreakdown from '@/components/views/quests/analytics/hour-breakdown';
 import OutcomeLegend from '@/components/views/quests/analytics/outcome-legend';
 import QuestAnalyticsSummary from '@/components/views/quests/analytics/quest-analytics-summary';
 import WeekdayBreakdown from '@/components/views/quests/analytics/weekday-breakdown';
@@ -80,11 +81,12 @@ const QuestAnalytics = () => {
           </View>
         ) : (
           <>
-            <QuestAnalyticsSummary range={analytics.range} lifetime={analytics.lifetime} />
+            <QuestAnalyticsSummary range={analytics.range} lifetime={analytics.lifetime} streakUnit={analytics.streakUnit} />
             <CompletionHeatmap calendar={analytics.calendar} from={analytics.from} to={analytics.to} />
             <OutcomeLegend />
             <CompletionTrendChart trend={analytics.trend} granularity={analytics.granularity} />
             <WeekdayBreakdown byWeekday={analytics.byWeekday} />
+            <HourBreakdown byHourOfDay={analytics.byHourOfDay} />
           </>
         )}
       </ScrollView>
