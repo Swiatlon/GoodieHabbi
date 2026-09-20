@@ -11,17 +11,10 @@ const nav = {
   },
   quests: {
     root: 'Zadania',
-    all: 'Wszystkie zadania',
-    today: 'Dzisiejsze zadania',
-    seasonal: 'Sezonowe zadania',
-    oneTime: 'Jednorazowe zadania',
-    recurring: {
-      root: 'Powtarzające się zadania',
-      all: 'Wszystkie zadania',
-      daily: 'Dzienne zadania',
-      weekly: 'Tygodniowe zadania',
-      monthly: 'Miesięczne zadania',
-    },
+    /** The per-type entries are gone — one list with scope chips replaced the whole subtree. */
+    all: 'Nawyki',
+    today: 'Dzisiaj',
+    tags: 'Tagi',
     analytics: 'Statystyki nawyków',
   },
   workouts: {

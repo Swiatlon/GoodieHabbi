@@ -18,7 +18,9 @@ module.exports = tseslint.config(
     languageOptions: {
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: './tsconfig.json',
+        // Must be the directory the tsconfig lives in, and absolute — a relative path, or the config
+        // file itself, makes every rule that needs type information fail to parse the file at all.
+        tsconfigRootDir: __dirname,
       },
     },
     plugins: {

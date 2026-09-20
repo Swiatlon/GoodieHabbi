@@ -1,6 +1,12 @@
 import { ICreateGoalRequest, IGetActiveGoalResponse } from '@/contract/goals/goals.contract';
 import Api from '@/redux/config/api';
 
+/**
+ * `PATCH /goals/{id}/completion` is gone from here on purpose. The backend kept the route alive for the
+ * migration, but it ignores its body, has no undo path, and just records one completion on the quest.
+ * Goals are completed through the ordinary completions endpoint instead, and the goal is achieved as a
+ * consequence — see `useQuestCompletion`.
+ */
 export const goalSliceAPI = Api.injectEndpoints({
   endpoints: builder => ({
     createGoal: builder.mutation<void, { data: ICreateGoalRequest }>({
@@ -19,28 +25,7 @@ export const goalSliceAPI = Api.injectEndpoints({
       }),
       providesTags: ['goals'],
     }),
-
-    updateActiveGoal: builder.mutation<void, { id: number; isCompleted: boolean }>({
-      query: ({ id, isCompleted }) => ({
-        url: `goals/${id}/completion`,
-        method: 'PATCH',
-        body: {
-          isCompleted,
-        },
-      }),
-      invalidatesTags: [
-        'goals',
-        'statsProfile',
-        'statsExtended',
-        'dailyQuestsGet',
-        'monthlyQuestsGet',
-        'oneTimeQuestsGet',
-        'seasonalQuestsGet',
-        'weeklyQuestsGet',
-        'todayQuestsGet',
-      ],
-    }),
   }),
 });
 
-export const { useCreateGoalMutation, useGetActiveGoalQuery, useUpdateActiveGoalMutation } = goalSliceAPI;
+export const { useCreateGoalMutation, useGetActiveGoalQuery } = goalSliceAPI;

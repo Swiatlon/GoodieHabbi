@@ -3,15 +3,23 @@ import { useTranslation } from 'react-i18next';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { IRecurringQuestStats } from '@/contract/quests/base-quests';
+import { IQuestStatistics, PeriodUnitEnumType } from '@/contract/quests/quest.contract';
 
 interface QuestStatisticsExtendedProps {
-  statistics?: IRecurringQuestStats;
+  statistics?: IQuestStatistics;
   /** Only repeatable quests have analytics — omit to hide the link. */
   questId?: number;
   /** Closes the modal so the analytics screen is not pushed underneath it. */
   onClose?: () => void;
+  /**
+   * What one unit of the streak counts. A streak of 5 on a weekly habit is five weeks, and a bare "5"
+   * next to a flame reads as five days to everyone.
+   */
+  streakUnit?: PeriodUnitEnumType;
 }
+
+/** The two figures that are counted in periods rather than in plain occurrences. */
+const STREAK_KEYS: string[] = ['currentStreak', 'longestStreak'];
 
 const STATISTICS_META = [
   {
@@ -46,7 +54,7 @@ const STATISTICS_META = [
   },
 ] as const;
 
-const QuestStatisticsExtended: React.FC<QuestStatisticsExtendedProps> = ({ statistics, questId, onClose }) => {
+const QuestStatisticsExtended: React.FC<QuestStatisticsExtendedProps> = ({ statistics, questId, onClose, streakUnit }) => {
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -68,7 +76,12 @@ const QuestStatisticsExtended: React.FC<QuestStatisticsExtendedProps> = ({ stati
           <View key={key} className="items-center my-4">
             <Text className={`text-xl ${colorClass}`}>{emoji}</Text>
             <Text className="text-xs text-gray-600 my-2">{t(labelKey)}</Text>
-            <Text className="font-bold text-base">{statistics[key]}</Text>
+            <Text className="font-bold text-base">
+              {statistics[key]}
+              {streakUnit && STREAK_KEYS.includes(key) && (
+                <Text className="text-xs font-normal text-gray-500"> {t(`quests.reusable.statistics.streakUnit.${streakUnit}`)}</Text>
+              )}
+            </Text>
           </View>
         ))}
       </View>

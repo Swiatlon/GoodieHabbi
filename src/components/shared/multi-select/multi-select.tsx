@@ -1,6 +1,7 @@
 import React, { forwardRef, useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, Text, TouchableOpacity, Modal, SafeAreaView, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '../button/button';
 import { Chip, MoreChip, SelectionOption } from './elements/multi-select-elements';

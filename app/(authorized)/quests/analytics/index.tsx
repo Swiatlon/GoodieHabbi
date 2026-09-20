@@ -82,6 +82,28 @@ const HabitsOverview = () => {
 
             <DailyRateHeatmap dailyCompletionRate={overview.dailyCompletionRate} from={overview.from} to={overview.to} />
 
+            {/*
+              The per-day chart is built from Day-schedule periods only. Week, month and year targets
+              have no honest place on a per-day axis — smearing one across every day it covered is what
+              used to paint a whole week red for a single missed weekly target — so they get their own
+              tile instead.
+            */}
+            {overview.periodic.totalPeriods > 0 && (
+              <View className="bg-white rounded-2xl shadow-sm p-4 gap-2">
+                <Text className="text-sm font-bold text-gray-800">{t('quests.analytics.overview.periodicHeading')}</Text>
+                <Text className="text-[11px] text-gray-400">{t('quests.analytics.overview.periodicHint')}</Text>
+                <View className="flex-row items-baseline gap-2 mt-1">
+                  <Text className="text-2xl font-bold text-gray-800">{formatCompletionRate(overview.periodic.completionRate)}</Text>
+                  <Text className="text-xs text-gray-500">
+                    {t('quests.analytics.overview.questMeta', {
+                      completed: overview.periodic.completedPeriods,
+                      evaluated: overview.periodic.evaluatedPeriods,
+                    })}
+                  </Text>
+                </View>
+              </View>
+            )}
+
             <View className="bg-white rounded-2xl shadow-sm px-4 py-2">
               <Text className="text-sm font-bold text-gray-800 mt-2 mb-1">{t('quests.analytics.overview.rankingHeading')}</Text>
               <Text className="text-[11px] text-gray-400 mb-2">{t('quests.analytics.overview.rankingHint')}</Text>

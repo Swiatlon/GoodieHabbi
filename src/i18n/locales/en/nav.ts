@@ -11,17 +11,10 @@ const nav = {
   },
   quests: {
     root: 'Quests',
-    all: 'All Quests',
-    today: 'Today Quests',
-    seasonal: 'Seasonal Quests',
-    oneTime: 'One-Time Quests',
-    recurring: {
-      root: 'Recurring Quests',
-      all: 'All Quests',
-      daily: 'Daily Quests',
-      weekly: 'Weekly Quests',
-      monthly: 'Monthly Quests',
-    },
+    /** The per-type entries are gone — one list with scope chips replaced the whole subtree. */
+    all: 'Habits',
+    today: 'Today',
+    tags: 'Tags',
     analytics: 'Habit Statistics',
   },
   workouts: {

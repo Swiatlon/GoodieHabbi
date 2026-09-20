@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
-import QuestItemDateMonthly from '../quests/reusable/quest-item/quest-item-date-monthly';
-import QuestItemSeason from '../quests/reusable/quest-item/quest-item-season';
-import QuestItemTag from '../quests/reusable/quest-item/quest-item-tag';
-import QuestItemDateWeekly from '../quests/reusable/quest-item/quest-item-weekly';
 import ShowQuestItemModalGoals from './goal-all-quest-item-show-modal';
 import QuestItemContainer from '@/components/views/quests/reusable/quest-item/quest-item-container';
 import QuestItemDate from '@/components/views/quests/reusable/quest-item/quest-item-date';
 import QuestItemEmoji from '@/components/views/quests/reusable/quest-item/quest-item-emoji';
+import QuestItemPeriod from '@/components/views/quests/reusable/quest-item/quest-item-period';
 import QuestItemPriority from '@/components/views/quests/reusable/quest-item/quest-item-priority';
+import QuestItemSchedule from '@/components/views/quests/reusable/quest-item/quest-item-schedule';
+import QuestItemTag from '@/components/views/quests/reusable/quest-item/quest-item-tag';
 import QuestItemTitle from '@/components/views/quests/reusable/quest-item/quest-item-title';
 import { IGetActiveGoalResponse } from '@/contract/goals/goals.contract';
-import { isMonthlyQuest, isSeasonalQuest, isWeeklyQuest } from '@/utils/quests/quests';
 
 interface AllQuestItemProps {
   quest: IGetActiveGoalResponse | null;
 }
 
+/** The quest behind a goal. Same row as everywhere else, minus the completion control — the goal screen
+ * owns that button so it can confirm first. */
 const AllQuestItemGoals: React.FC<AllQuestItemProps> = ({ quest }) => {
   const [isShowQuestModalVisible, setIsShowQuestModalVisible] = useState(false);
 
@@ -34,12 +34,11 @@ const AllQuestItemGoals: React.FC<AllQuestItemProps> = ({ quest }) => {
           <TouchableOpacity className="flex-row items-center gap-2" onPress={openShowModal}>
             <QuestItemEmoji emoji={quest.emoji} />
             <View className="flex-1 gap-2">
-              <QuestItemTitle title={quest.title} description={quest.description} isCompleted={quest.isCompleted} />
+              <QuestItemTitle title={quest.title} isCompleted={quest.isCompleted} />
+              <QuestItemSchedule schedule={quest.schedule} target={quest.target} onPress={openShowModal} />
+              <QuestItemPeriod period={quest.currentPeriod} target={quest.target} />
               <QuestItemPriority priority={quest.priority} />
-              {isSeasonalQuest(quest) && <QuestItemSeason season={quest.season} />}
               <QuestItemDate startDate={quest.startDate} endDate={quest.endDate} />
-              {isWeeklyQuest(quest) && <QuestItemDateWeekly weekdays={quest.weekdays} onPress={openShowModal} />}
-              {isMonthlyQuest(quest) && <QuestItemDateMonthly startDay={quest.startDay} endDay={quest.endDay} />}
               <QuestItemTag tags={quest.labels} onPress={openShowModal} />
             </View>
           </TouchableOpacity>

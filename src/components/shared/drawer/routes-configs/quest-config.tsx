@@ -3,6 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import CustomDrawerItem from '../elements/custom-drawer-item';
 
+/**
+ * Four entries where there used to be nine. The Daily / Weekly / Monthly / Seasonal / One-time split
+ * stopped being a split once a quest could be "twice a week, any days" or "every other day" — neither
+ * had a screen to live on. Those distinctions are now chips on the Habits list.
+ */
 const QuestConfig = () => {
   const { t } = useTranslation();
 
@@ -13,55 +18,24 @@ const QuestConfig = () => {
       defaultOpen
       items={[
         {
-          label: t('nav.quests.all'),
-          icon: <Ionicons name="trophy-outline" />,
-          route: '(authorized)/quests/all',
-        },
-        {
           label: t('nav.quests.today'),
           route: '(authorized)/quests/today',
           icon: <Ionicons name="today-outline" />,
         },
         {
-          label: t('nav.quests.seasonal'),
-          route: '(authorized)/quests/seasonal',
-          icon: <Ionicons name="calendar-outline" />,
-        },
-        {
-          label: t('nav.quests.recurring.root'),
+          label: t('nav.quests.all'),
           icon: <Ionicons name="repeat-outline" />,
-          children: [
-            {
-              label: t('nav.quests.recurring.all'),
-              icon: <Ionicons name="trophy-outline" />,
-              route: '(authorized)/quests/recurring/all',
-            },
-            {
-              label: t('nav.quests.recurring.daily'),
-              route: '(authorized)/quests/recurring/daily',
-              icon: <Ionicons name="sunny-outline" />,
-            },
-            {
-              label: t('nav.quests.recurring.weekly'),
-              route: '(authorized)/quests/recurring/weekly',
-              icon: <Ionicons name="calendar-outline" />,
-            },
-            {
-              label: t('nav.quests.recurring.monthly'),
-              route: '(authorized)/quests/recurring/monthly',
-              icon: <Ionicons name="calendar-number-outline" />,
-            },
-          ],
-        },
-        {
-          label: t('nav.quests.oneTime'),
-          route: '(authorized)/quests/one-time',
-          icon: <Ionicons name="checkmark-done-outline" />,
+          route: '(authorized)/quests/all',
         },
         {
           label: t('nav.quests.analytics'),
           route: '(authorized)/quests/analytics',
           icon: <Ionicons name="stats-chart-outline" />,
+        },
+        {
+          label: t('nav.quests.tags'),
+          route: '(authorized)/quests/tags',
+          icon: <Ionicons name="pricetags-outline" />,
         },
       ]}
     />

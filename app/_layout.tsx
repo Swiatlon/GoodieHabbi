@@ -55,9 +55,16 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <Host>
-        <SnackbarProvider>
-          <Provider store={store}>
+      {/*
+        `Host` must sit INSIDE `Provider`. Every `Modal` renders its children through a `Portal`, which
+        mounts them under the host rather than where they are written — so with the host above the store,
+        any Redux hook inside a modal threw "could not find react-redux context value". It went unnoticed
+        while modals only ever called those hooks in the component that rendered `<Modal>`, never in its
+        children. `SnackbarProvider` moves below the host because its own snackbar is a portal too.
+      */}
+      <Provider store={store}>
+        <Host>
+          <SnackbarProvider>
             <ApiErrorListener />
             <GestureHandlerRootView className="flex-1 bg-white">
               <PersistLoginMiddleware onLoaded={() => handleLoaded('persistLogin')}>
@@ -83,9 +90,9 @@ export default function RootLayout() {
                 </RoutesPermissionMiddleware>
               </PersistLoginMiddleware>
             </GestureHandlerRootView>
-          </Provider>
-        </SnackbarProvider>
-      </Host>
+          </SnackbarProvider>
+        </Host>
+      </Provider>
     </SafeAreaProvider>
   );
 }

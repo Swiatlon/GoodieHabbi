@@ -2,12 +2,9 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithReauth } from './base-query';
 
 export const allTags = [
-  'dailyQuestsGet',
-  'monthlyQuestsGet',
-  'oneTimeQuestsGet',
-  'seasonalQuestsGet',
-  'weeklyQuestsGet',
-  'todayQuestsGet',
+  // One tag for every quest read — list, active, single. The per-type tags went with the per-type routes.
+  'quests',
+  'questCatchUp',
   'questLabelsGet',
   'questAnalytics',
   'habitsOverview',

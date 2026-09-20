@@ -1,22 +1,31 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import QuestItemDate from '../quests/reusable/quest-item/quest-item-date';
 import QuestItemPriority from '../quests/reusable/quest-item/quest-item-priority';
+import QuestItemSchedule from '../quests/reusable/quest-item/quest-item-schedule';
 import Button from '@/components/shared/button/button';
 import Modal from '@/components/shared/modal/modal';
-import { AllQuestsUnion } from '@/hooks/quests/useGetAllQuests';
+import { IQuest } from '@/contract/quests/quest.contract';
 
 interface GoalShowItemModalProps {
-  quest: AllQuestsUnion;
+  quest: IQuest;
   isVisible: boolean;
   onClose: () => void;
 }
 
+const STAT_TILES = [
+  { key: 'completionCount', labelKey: 'goals.questItemModal.completed', icon: 'checkmark-done-circle-outline', color: 'green' },
+  { key: 'occurrenceCount', labelKey: 'goals.questItemModal.occurrences', icon: 'calendar-outline', color: 'blue' },
+  { key: 'failureCount', labelKey: 'goals.questItemModal.failures', icon: 'close-circle-outline', color: 'red' },
+  { key: 'currentStreak', labelKey: 'goals.questItemModal.streak', icon: 'flame-outline', color: 'orange' },
+] as const;
+
 const ShowQuestItemModalGoals: React.FC<GoalShowItemModalProps> = ({ quest, isVisible, onClose }) => {
   const { t } = useTranslation();
+
+  const hasDetails = Boolean(quest.priority || quest.startDate || quest.endDate || quest.description);
 
   return (
     <Modal isVisible={isVisible} onClose={onClose} className="min-h-[200px]">
@@ -26,7 +35,11 @@ const ShowQuestItemModalGoals: React.FC<GoalShowItemModalProps> = ({ quest, isVi
           {quest.emoji && <Text className="text-2xl">{quest.emoji}</Text>}
         </View>
 
-        {(quest.priority || quest.startDate || quest.endDate || quest.description) && (
+        <View className="w-full px-2">
+          <QuestItemSchedule schedule={quest.schedule} target={quest.target} />
+        </View>
+
+        {hasDetails && (
           <View className="flex w-full gap-2 px-2">
             {quest.description && (
               <View className="flex-row items-center gap-1">
@@ -39,28 +52,21 @@ const ShowQuestItemModalGoals: React.FC<GoalShowItemModalProps> = ({ quest, isVi
           </View>
         )}
 
-        {'statistics' in quest && quest.statistics !== null && (
+        {/* A one-off has no statistics row at all — `statistics` is null for quests with no recurrence. */}
+        {quest.statistics && (
           <View className="flex-row justify-evenly gap-6 w-full pt-6 border-t border-gray-200">
-            <View className="items-center">
-              <Ionicons name="checkmark-done-circle-outline" size={28} color="green" />
-              <Text className="text-xs text-gray-600 mt-1">{t('goals.questItemModal.completed')}</Text>
-              <Text className="font-bold text-base">{(quest.statistics as { completionCount: number }).completionCount}</Text>
-            </View>
-            <View className="items-center">
-              <Ionicons name="calendar-outline" size={28} color="blue" />
-              <Text className="text-xs text-gray-600 mt-1">{t('goals.questItemModal.occurrences')}</Text>
-              <Text className="font-bold text-base">{(quest.statistics as { occurrenceCount: number }).occurrenceCount}</Text>
-            </View>
-            <View className="items-center">
-              <Ionicons name="close-circle-outline" size={28} color="red" />
-              <Text className="text-xs text-gray-600 mt-1">{t('goals.questItemModal.failures')}</Text>
-              <Text className="font-bold text-base">{(quest.statistics as { failureCount: number }).failureCount}</Text>
-            </View>
-            <View className="items-center">
-              <Ionicons name="flame-outline" size={28} color="orange" />
-              <Text className="text-xs text-gray-600 mt-1">{t('goals.questItemModal.streak')}</Text>
-              <Text className="font-bold text-base">{(quest.statistics as { currentStreak: number }).currentStreak}</Text>
-            </View>
+            {STAT_TILES.map(({ key, labelKey, icon, color }) => (
+              <View key={key} className="items-center">
+                <Ionicons name={icon} size={28} color={color} />
+                <Text className="text-xs text-gray-600 mt-1">{t(labelKey)}</Text>
+                <Text className="font-bold text-base">
+                  {quest.statistics?.[key]}
+                  {key === 'currentStreak' && (
+                    <Text className="text-xs font-normal text-gray-500"> {t(`quests.reusable.statistics.streakUnit.${quest.schedule.unit}`)}</Text>
+                  )}
+                </Text>
+              </View>
+            ))}
           </View>
         )}
 
