@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { View, TouchableWithoutFeedback, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Portal } from 'react-native-portalize';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring, runOnJS } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { IconButton } from '../icon-button/icon-button';
 import Loader from '../loader/loader';
@@ -21,8 +22,12 @@ interface ModalProps extends IBaseModalProps {
   loadingMessage?: string;
 }
 
+/** Breathing room between the modal and the system bars, on top of the insets themselves. */
+const SYSTEM_BAR_GAP = 16;
+
 const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children, className = '', footer, isLoading, loadingMessage, testID }) => {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.8);
   const translateY = useSharedValue(50);
@@ -64,11 +69,19 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children, className =
 
   return (
     <Portal>
-      <View className="h-full w-full flex justify-center items-center" testID={testID}>
+      {/*
+        The portal spans the whole screen, and on Android edge-to-edge that includes the area under the
+        navigation bar — without the insets the footer buttons land behind it and a tap goes home instead.
+      */}
+      <View
+        className="h-full w-full flex justify-center items-center"
+        style={{ paddingTop: insets.top + SYSTEM_BAR_GAP, paddingBottom: insets.bottom + SYSTEM_BAR_GAP }}
+        testID={testID}
+      >
         <TouchableWithoutFeedback onPress={handleBackdropPress}>
-          <Animated.View className="bg-black/50 absolute top-0 left-0 h-full w-full" style={backdropStyle} />
+          <Animated.View className="bg-black/50 absolute inset-0" style={backdropStyle} />
         </TouchableWithoutFeedback>
-        <Animated.View className={`w-11/12 bg-white rounded-lg shadow-lg max-h-[90vh] m-auto py-6 px-4 ${className}`} style={modalStyle}>
+        <Animated.View className={`w-11/12 bg-white rounded-lg shadow-lg max-h-full m-auto py-6 px-4 ${className}`} style={modalStyle}>
           {isLoading && <Loader size="large" message={loadingMessage || t('common.loading')} fullscreen />}
           <View className="absolute top-[14px] right-2 z-20">
             <IconButton onPress={handleBackdropPress}>

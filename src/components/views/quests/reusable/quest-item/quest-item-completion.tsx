@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { IQuest } from '@/contract/quests/quest.contract';
 import { useQuestCompletion } from '@/hooks/quests/use-quest-completion';
@@ -13,6 +13,27 @@ interface QuestItemCompletionProps {
 const COMPLETED_COLOR = '#4caf50';
 const IDLE_COLOR = '#9e9e9e';
 const DISABLED_COLOR = '#cfd8dc';
+const PENDING_COLOR = '#1987EE';
+
+interface CompletionIconProps {
+  name: React.ComponentProps<typeof Ionicons>['name'];
+  size: number;
+  color: string;
+  /** Swaps the icon for a spinner of the same size while its request is in flight, so the row does not jump. */
+  isPending: boolean;
+}
+
+const CompletionIcon: React.FC<CompletionIconProps> = ({ name, size, color, isPending }) => {
+  if (!isPending) {
+    return <Ionicons name={name} size={size} color={color} />;
+  }
+
+  return (
+    <View style={{ width: size, height: size }} className="items-center justify-center" testID="quest-item-pending">
+      <ActivityIndicator size="small" color={PENDING_COLOR} />
+    </View>
+  );
+};
 
 /**
  * The one control that records and takes back progress, in two shapes.
@@ -30,7 +51,7 @@ const DISABLED_COLOR = '#cfd8dc';
  */
 const QuestItemCompletion: React.FC<QuestItemCompletionProps> = ({ quest }) => {
   const { t } = useTranslation();
-  const { complete, undo, isLoading } = useQuestCompletion();
+  const { complete, undo, isAdding, isRemoving, isLoading } = useQuestCompletion();
 
   const period = quest.currentPeriod;
 
@@ -72,12 +93,14 @@ const QuestItemCompletion: React.FC<QuestItemCompletionProps> = ({ quest }) => {
         disabled={isLoading || (!isDone && !canAdd)}
         className="ml-4"
         accessibilityRole="button"
+        accessibilityState={{ busy: isLoading }}
         testID="quest-item-checkmark"
       >
-        <Ionicons
+        <CompletionIcon
           name={isDone ? 'checkmark-circle' : 'ellipse-outline'}
           size={26}
           color={isDone ? COMPLETED_COLOR : canAdd ? IDLE_COLOR : DISABLED_COLOR}
+          isPending={isLoading}
         />
       </TouchableOpacity>
     );
@@ -91,17 +114,24 @@ const QuestItemCompletion: React.FC<QuestItemCompletionProps> = ({ quest }) => {
           disabled={!canUndo || isLoading}
           accessibilityRole="button"
           accessibilityLabel={t('quests.reusable.completion.undone')}
+          accessibilityState={{ busy: isRemoving }}
           testID="quest-item-undo"
         >
-          <Ionicons name="remove-circle-outline" size={24} color={canUndo ? IDLE_COLOR : DISABLED_COLOR} />
+          <CompletionIcon name="remove-circle-outline" size={24} color={canUndo ? IDLE_COLOR : DISABLED_COLOR} isPending={isRemoving} />
         </TouchableOpacity>
 
         <Text className="text-sm font-bold text-gray-700 min-w-[46px] text-center">
           {formatAmount(period.progress)} / {formatAmount(period.target)}
         </Text>
 
-        <TouchableOpacity onPress={handleComplete} disabled={!canAdd} accessibilityRole="button" testID="quest-item-add">
-          <Ionicons name="add-circle" size={26} color={canAdd ? COMPLETED_COLOR : DISABLED_COLOR} />
+        <TouchableOpacity
+          onPress={handleComplete}
+          disabled={!canAdd}
+          accessibilityRole="button"
+          accessibilityState={{ busy: isAdding }}
+          testID="quest-item-add"
+        >
+          <CompletionIcon name="add-circle" size={26} color={canAdd ? COMPLETED_COLOR : DISABLED_COLOR} isPending={isAdding} />
         </TouchableOpacity>
       </View>
 
