@@ -118,5 +118,5 @@ export const useQuestCompletion = () => {
     }
   };
 
-  return { complete, undo, isLoading: isAdding || isRemoving };
+  return { complete, undo, isAdding, isRemoving, isLoading: isAdding || isRemoving };
 };

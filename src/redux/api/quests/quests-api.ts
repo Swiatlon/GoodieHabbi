@@ -116,6 +116,35 @@ export const questsApi = Api.injectEndpoints({
         body,
       }),
       invalidatesTags: [...QUEST_WRITE_TAGS],
+      /*
+       * The response already carries the quest as it now stands, so write it into the cached lists
+       * straight away. Waiting for the refetch the invalidation starts leaves the row showing its old
+       * state — and an enabled button — for another round trip, which is exactly when users tap again.
+       */
+      async onQueryStarted(_, { dispatch, getState, queryFulfilled }) {
+        let updated: IQuest;
+
+        try {
+          ({ quest: updated } = (await queryFulfilled).data);
+        } catch {
+          return; // The caller reports the failure; there is nothing to patch.
+        }
+
+        const replace = (quests: IQuest[]) => {
+          const index = quests.findIndex(quest => quest.id === updated.id);
+
+          if (index !== -1) {
+            quests[index] = updated;
+          }
+        };
+
+        for (const args of questsApi.util.selectCachedArgsForQuery(getState(), 'getQuests')) {
+          dispatch(questsApi.util.updateQueryData('getQuests', args, replace));
+        }
+
+        dispatch(questsApi.util.updateQueryData('getActiveQuests', undefined, replace));
+        dispatch(questsApi.util.updateQueryData('getQuestById', { id: updated.id }, () => updated));
+      },
     }),
 
     /** Undo. The reward already granted for the period is never reclaimed, and never paid twice. */

@@ -117,19 +117,21 @@ const RecurrencePicker: React.FC = () => {
       */}
       {!isCounted && (
         <View className="gap-3">
-          <ControlledInput
-            name="targetAmount"
-            label={t('quests.reusable.form.targetAmountLabel')}
-            keyboardType="numeric"
-            testID="input-target-amount"
-          />
+          <View className="gap-1">
+            <ControlledInput
+              name="targetAmount"
+              label={t('quests.reusable.form.targetAmountLabel')}
+              keyboardType="numeric"
+              testID="input-target-amount"
+            />
+            <Text className="text-xs text-gray-400">{t('quests.reusable.form.targetHint')}</Text>
+          </View>
           <ControlledInput
             name="targetUnit"
             label={t('quests.reusable.form.targetUnitLabel')}
             placeholder={t('quests.reusable.form.targetUnitPlaceholder')}
             testID="input-target-unit"
           />
-          <Text className="text-xs text-gray-400">{t('quests.reusable.form.targetHint')}</Text>
         </View>
       )}
     </View>

@@ -10,7 +10,7 @@ jest.mock('expo-font', () => ({
 }));
 
 jest.mock('react-native-portalize', () => ({
-  Portal: ({ children }: { children: React.ReactNode }) => children,
+  Portal: ({ children }: { children: React.ReactNode }): React.JSX.Element => <>{children}</>,
 }));
 
 describe('Modal Component', () => {
@@ -45,7 +45,7 @@ describe('Modal Component', () => {
       </Modal>
     );
 
-    const backdrop = getByTestId('modal').findByProps({ className: 'bg-black/50 absolute top-0 left-0 h-full w-full' });
+    const backdrop = getByTestId('modal').findByProps({ className: 'bg-black/50 absolute inset-0' });
 
     if (backdrop.parent) {
       fireEvent.press(backdrop.parent);
@@ -65,7 +65,7 @@ describe('Modal Component', () => {
       </Modal>
     );
 
-    const backdrop = getByTestId('modal').findByProps({ className: 'bg-black/50 absolute top-0 left-0 h-full w-full' });
+    const backdrop = getByTestId('modal').findByProps({ className: 'bg-black/50 absolute inset-0' });
 
     if (backdrop.parent) {
       fireEvent.press(backdrop.parent);

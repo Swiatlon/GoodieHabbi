@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Host } from 'react-native-portalize';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import { useFonts } from 'expo-font';
 import { Drawer } from 'expo-router/drawer';
@@ -23,6 +23,30 @@ import { store } from '@/redux/config/store';
 import '@/configs/day-js-config';
 import '@/i18n/i18n';
 SplashScreen.preventAutoHideAsync();
+
+/**
+ * The header already clears the status bar, but nothing cleared the bottom: on Android edge-to-edge
+ * every screen ran under the navigation bar, so bottom buttons ("Add new Quest", the floating `+`)
+ * sat behind it and a tap went home. Padding the scene lifts each screen's root view — and anything
+ * pinned to its bottom — above the bar in one place. Its own component because the insets are only
+ * readable below `SafeAreaProvider`.
+ */
+const AppDrawer: React.FC = () => {
+  const insets = useSafeAreaInsets();
+
+  return (
+    <Drawer
+      screenOptions={{
+        header: () => <Header />,
+        sceneStyle: {
+          backgroundColor: 'white',
+          paddingBottom: insets.bottom,
+        },
+      }}
+      drawerContent={props => <CustomDrawerContent {...props} />}
+    />
+  );
+};
 
 export default function RootLayout() {
   const [loadingState, setLoadingState] = useState({
@@ -74,15 +98,7 @@ export default function RootLayout() {
                       <FinanceDisplayProvider>
                         <FeatureGroupsProvider>
                           <AchievementOverlay />
-                          <Drawer
-                            screenOptions={{
-                              header: () => <Header />,
-                              sceneStyle: {
-                                backgroundColor: 'white',
-                              },
-                            }}
-                            drawerContent={props => <CustomDrawerContent {...props} />}
-                          />
+                          <AppDrawer />
                         </FeatureGroupsProvider>
                       </FinanceDisplayProvider>
                     </NotificationsProvider>

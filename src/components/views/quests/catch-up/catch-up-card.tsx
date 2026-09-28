@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import dayjs from '@/configs/day-js-config';
 import { ICatchUpQuest, IsoDate } from '@/contract/quests/quest.contract';
@@ -26,6 +26,8 @@ const CatchUpCard: React.FC = () => {
   const { complete, isLoading: isCompleting } = useQuestCompletion();
   const [isDismissed, setIsDismissed] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  /** One hook serves every row, so remember which row was tapped to put the spinner on that one. */
+  const [pendingRowKey, setPendingRowKey] = useState<string | null>(null);
 
   const days = data?.days ?? [];
   const pendingCount = days.reduce((total, day) => total + day.quests.length, 0);
@@ -44,32 +46,52 @@ const CatchUpCard: React.FC = () => {
     return dayjs(date).format('DD.MM');
   };
 
-  const renderQuest = (quest: ICatchUpQuest, date: IsoDate) => (
-    <View key={`${date}-${quest.questId}`} className="flex-row items-center justify-between py-2">
-      <View className="flex-1 flex-row items-center gap-2">
-        {quest.emoji && <Text className="text-base">{quest.emoji}</Text>}
-        <Text className="flex-1 text-sm text-gray-700" numberOfLines={1}>
-          {quest.title}
-        </Text>
-        {/* A partial period is not a fresh start — say how far it already got. */}
-        {quest.progress > 0 && (
-          <Text className="text-[11px] text-amber-600 font-bold">
-            {t('quests.catchUp.progress', { progress: formatAmount(quest.progress), target: formatAmount(quest.target) })}
-          </Text>
-        )}
-      </View>
+  const handleComplete = async (quest: ICatchUpQuest, date: IsoDate, rowKey: string) => {
+    setPendingRowKey(rowKey);
 
-      <TouchableOpacity
-        onPress={async () => complete(quest.questId, { completedOn: date })}
-        disabled={isCompleting}
-        className="flex-row items-center gap-1 px-3 py-1.5 rounded-full bg-primary ml-3"
-        testID={`catch-up-complete-${quest.questId}`}
-      >
-        <Ionicons name="checkmark" size={14} color="#fff" />
-        <Text className="text-white text-xs font-bold">{t('quests.catchUp.markDone')}</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    try {
+      await complete(quest.questId, { completedOn: date });
+    } finally {
+      setPendingRowKey(null);
+    }
+  };
+
+  const renderQuest = (quest: ICatchUpQuest, date: IsoDate) => {
+    const rowKey = `${date}-${quest.questId}`;
+    const isPending = pendingRowKey === rowKey;
+
+    return (
+      <View key={rowKey} className="flex-row items-center justify-between py-2">
+        <View className="flex-1 flex-row items-center gap-2">
+          {quest.emoji && <Text className="text-base">{quest.emoji}</Text>}
+          <Text className="flex-1 text-sm text-gray-700" numberOfLines={1}>
+            {quest.title}
+          </Text>
+          {/* A partial period is not a fresh start — say how far it already got. */}
+          {quest.progress > 0 && (
+            <Text className="text-[11px] text-amber-600 font-bold">
+              {t('quests.catchUp.progress', { progress: formatAmount(quest.progress), target: formatAmount(quest.target) })}
+            </Text>
+          )}
+        </View>
+
+        <TouchableOpacity
+          onPress={async () => handleComplete(quest, date, rowKey)}
+          disabled={isCompleting}
+          accessibilityState={{ busy: isPending }}
+          className={`flex-row items-center gap-1 px-3 py-1.5 rounded-full bg-primary ml-3 ${isCompleting && !isPending ? 'opacity-50' : ''}`}
+          testID={`catch-up-complete-${quest.questId}`}
+        >
+          {isPending ? (
+            <ActivityIndicator size="small" color="#fff" style={{ width: 14, height: 14 }} />
+          ) : (
+            <Ionicons name="checkmark" size={14} color="#fff" />
+          )}
+          <Text className="text-white text-xs font-bold">{t('quests.catchUp.markDone')}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   return (
     <View className="mx-4 mb-4 rounded-2xl bg-amber-50 border border-amber-200 p-4" testID="catch-up-card">
