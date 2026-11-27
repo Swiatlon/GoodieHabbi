@@ -18,7 +18,7 @@ import {
   useUpdateTransactionMutation,
 } from '@/redux/api/finance/finance-api';
 import { DEFAULT_CATEGORY_COLOR, resolveCategoryIcon } from '@/utils/finance/category-helpers';
-import { buildDatePickerClassNames, DATE_FORMAT, parseAmount } from '@/utils/finance/form-helpers';
+import { buildDatePickerClassNames, DATE_FORMAT, getDefaultOccurredOn, parseAmount } from '@/utils/finance/form-helpers';
 
 interface AddTransactionModalProps extends IBaseModalProps {
   recentCategoryIds?: Partial<Record<FinanceTransactionTypeEnum, number[]>>;
@@ -34,14 +34,6 @@ const CHIP_ACTIVE_CLASS = 'border-primary bg-blue-50';
 const CHIP_INACTIVE_CLASS = 'border-gray-200 bg-white';
 const chipClass = (active: boolean) => (active ? CHIP_ACTIVE_CLASS : CHIP_INACTIVE_CLASS);
 const chipTextClass = (active: boolean) => (active ? 'text-primary' : 'text-gray-600');
-const getViewedMonthDefaultDate = (year: number, month: number) => {
-  const monthStart = dayjs()
-    .year(year)
-    .month(month - 1)
-    .date(1);
-  // Always default to the start of the viewed month (so adding in future months works)
-  return monthStart.format(DATE_FORMAT);
-};
 
 interface SubmitButtonProps {
   control: Control<TransactionFormValues>;
@@ -111,7 +103,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
   const [type, setType] = useState<FinanceTransactionTypeEnum>(FinanceTransactionTypeEnum.Expense);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<number | null>(null);
-  const [occurredOn, setOccurredOn] = useState(() => getViewedMonthDefaultDate(viewedYear, viewedMonth));
+  const [occurredOn, setOccurredOn] = useState(() => getDefaultOccurredOn(viewedYear, viewedMonth));
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
   const [isPaidValue, setIsPaidValue] = useState(true);
   const [isRecurring, setIsRecurring] = useState(false);
@@ -132,7 +124,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
       setSelectedCategoryId(null);
       setSelectedSubcategoryId(null);
       resetForm({ amount: '', description: '' });
-      setOccurredOn(getViewedMonthDefaultDate(viewedYear, viewedMonth));
+      setOccurredOn(getDefaultOccurredOn(viewedYear, viewedMonth));
       setIsPaidValue(true);
       setIsRecurring(false);
     }
@@ -172,7 +164,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
     setSelectedCategoryId(null);
     setSelectedSubcategoryId(null);
     resetForm({ amount: '', description: '' });
-    setOccurredOn(getViewedMonthDefaultDate(viewedYear, viewedMonth));
+    setOccurredOn(getDefaultOccurredOn(viewedYear, viewedMonth));
   };
 
   const handleClose = () => {
