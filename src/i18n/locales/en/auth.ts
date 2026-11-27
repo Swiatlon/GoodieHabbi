@@ -9,7 +9,7 @@ const auth = {
     error: 'Failed to login. Please try again.',
     schema: {
       loginRequired: 'Login is required',
-      loginMaxLength: 'Login must be at most 30 characters',
+      loginMaxLength: 'Login must be at most 100 characters',
       passwordRequired: 'Password is required',
       passwordMinLength: 'Password must be at least 6 characters',
       passwordMaxLength: 'Password must be at most 50 characters',

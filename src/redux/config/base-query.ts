@@ -2,7 +2,14 @@ import { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/qu
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import * as SecureStore from 'expo-secure-store';
 import qs from 'qs';
-import { IAuthState, setCredentials } from '../state/auth/auth-state';
+import { accessTokenRefreshed, IAuthState, logOutAsync } from '../state/auth/auth-state';
+import { IPostRefreshResponse } from '@/contract/auth/auth';
+
+const REFRESH_URL = 'auth/refresh-token';
+// A 401 from these means the submitted credentials were refused, not that the access token expired.
+const ANONYMOUS_URLS = ['auth/login', REFRESH_URL, 'register'];
+// How the refresh endpoint says the refresh token is no good. Anything else (offline, 5xx) keeps the session.
+const REJECTED_REFRESH_STATUSES: FetchBaseQueryError['status'][] = [400, 401, 403, 404];
 
 const getUserTimeZone = () => {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -26,39 +33,68 @@ const baseQuery = fetchBaseQuery({
 
     return headers;
   },
+  // Keys stay readable (`ids[]`), values are encoded so that `&`, `#` or `+` in them survive the trip.
   paramsSerializer: params =>
     qs.stringify(params, {
       arrayFormat: 'brackets',
-      encode: false,
+      encodeValuesOnly: true,
     }),
 });
 
-export const baseQueryWithReauth: BaseQueryFn<FetchArgs | string, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
-  let result = await baseQuery(args, api, extraOptions);
+type BaseQueryApiArg = Parameters<typeof baseQuery>[1];
+type ExtraOptionsArg = Parameters<typeof baseQuery>[2];
 
-  if (result.error?.status === 403) {
-    const refreshToken = await SecureStore.getItemAsync('refreshToken');
+const hasSession = (api: BaseQueryApiArg) => Boolean((api.getState() as { authSlice: IAuthState }).authSlice.token);
 
-    if (!refreshToken) {
-      return result;
-    }
+const isAnonymousRequest = (args: FetchArgs | string) => {
+  const url = typeof args === 'string' ? args : args.url;
 
-    const refreshResult = await baseQuery('/auth/refresh', api, {
-      ...extraOptions,
-      body: { refreshToken },
-    });
+  return ANONYMOUS_URLS.includes(url.replace(/^\//, ''));
+};
 
-    if (refreshResult.data) {
-      const { accessToken } = refreshResult.data as { accessToken: string };
+const refreshAccessToken = async (api: BaseQueryApiArg, extraOptions: ExtraOptionsArg): Promise<boolean> => {
+  const refreshToken = await SecureStore.getItemAsync('refreshToken');
 
-      if (accessToken) {
-        api.dispatch(setCredentials({ accessToken }));
-        result = await baseQuery(args, api, extraOptions);
-
-        return result;
-      }
-    }
+  if (!refreshToken) {
+    await api.dispatch(logOutAsync());
+    return false;
   }
 
-  return result;
+  const { data, error } = await baseQuery({ url: REFRESH_URL, method: 'POST', body: { refreshToken } }, api, extraOptions);
+  const accessToken = (data as IPostRefreshResponse | undefined)?.accessToken;
+
+  // The user may have logged out while the request was in flight; a late token must not sign them back in.
+  if (!hasSession(api)) {
+    return false;
+  }
+
+  if (accessToken) {
+    api.dispatch(accessTokenRefreshed({ accessToken }));
+    return true;
+  }
+
+  if (error && REJECTED_REFRESH_STATUSES.includes(error.status)) {
+    await api.dispatch(logOutAsync());
+  }
+
+  return false;
+};
+
+// Requests that expire together share one refresh call.
+let pendingRefresh: Promise<boolean> | null = null;
+
+export const baseQueryWithReauth: BaseQueryFn<FetchArgs | string, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
+  const result = await baseQuery(args, api, extraOptions);
+
+  if (result.error?.status !== 401 || isAnonymousRequest(args) || !hasSession(api)) {
+    return result;
+  }
+
+  pendingRefresh ??= refreshAccessToken(api, extraOptions).finally(() => {
+    pendingRefresh = null;
+  });
+
+  const isRefreshed = await pendingRefresh;
+
+  return isRefreshed ? baseQuery(args, api, extraOptions) : result;
 };

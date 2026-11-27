@@ -10,11 +10,11 @@ interface QuestItemTagProps {
 }
 
 const QuestItemTag: React.FC<QuestItemTagProps> = ({ tags, onPress }) => {
+  const [isScrolling, setIsScrolling] = useState(false);
+
   if (tags.length === 0) {
     return null;
   }
-
-  const [isScrolling, setIsScrolling] = useState(false);
 
   const handleScrollBegin = () => {
     setIsScrolling(true);

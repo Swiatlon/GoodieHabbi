@@ -7,7 +7,7 @@ export const useLoginValidationSchema = () => {
   const { t } = useTranslation();
 
   return Yup.object().shape({
-    login: Yup.string().required(t('auth.login.schema.loginRequired')).max(30, t('auth.login.schema.loginMaxLength')),
+    login: Yup.string().required(t('auth.login.schema.loginRequired')).max(100, t('auth.login.schema.loginMaxLength')),
 
     password: Yup.string()
       .required(t('auth.login.schema.passwordRequired'))

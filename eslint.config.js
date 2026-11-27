@@ -1,7 +1,6 @@
 const eslint = require('@eslint/js');
 const eslintCommentsPlugin = require('eslint-plugin-eslint-comments');
 const importPlugin = require('eslint-plugin-import');
-const jsxA11yPlugin = require('eslint-plugin-jsx-a11y');
 const prettierPlugin = require('eslint-plugin-prettier');
 const reactPlugin = require('eslint-plugin-react');
 const reactHooksPlugin = require('eslint-plugin-react-hooks');
@@ -25,7 +24,6 @@ module.exports = tseslint.config(
     },
     plugins: {
       react: reactPlugin,
-      'jsx-a11y': jsxA11yPlugin,
       security: securityPlugin,
       sonarjs: sonarjsPlugin,
       'unused-imports': unusedImportsPlugin,
@@ -35,6 +33,11 @@ module.exports = tseslint.config(
       prettier: prettierPlugin,
     },
     rules: {
+      ...securityPlugin.configs.recommended.rules,
+      // Fires on nearly every `record[key]` lookup in typed code, which buries the findings that matter.
+      'security/detect-object-injection': 'off',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
       'import/order': [
         'error',
         {

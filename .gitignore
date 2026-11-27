@@ -39,3 +39,6 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+# local tool settings, may hold tokens or passwords
+.claude/settings.local.json

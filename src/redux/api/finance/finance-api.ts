@@ -66,7 +66,7 @@ export const FinanceApi = Api.injectEndpoints({
 
     getTransactions: builder.query<ITransactionPagedResult, IGetTransactionsQueryParams>({
       // The query string is built here rather than via `params`: the global serializer uses bracket arrays
-      // (`categoryIds[]=3`, which ASP.NET doesn't bind) and `encode: false` (which corrupts a search containing `&` or `#`).
+      // (`categoryIds[]=3`, which ASP.NET doesn't bind).
       query: ({ page = 1, pageSize = 20, ...filters }) => ({
         url: `/finance/transactions?${qs.stringify({ ...filters, page, pageSize }, { arrayFormat: 'repeat', skipNulls: true })}`,
         method: 'GET',

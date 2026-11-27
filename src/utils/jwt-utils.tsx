@@ -1,4 +1,3 @@
-import dayjs from '@/configs/day-js-config';
 import { IDecodedJwt } from '@/contract/auth/auth';
 import { useTypedSelector } from '@/hooks/use-store-hooks';
 import { NullableString } from '@/types/global-types';
@@ -14,10 +13,13 @@ export function parseJwt(token: NullableString): IDecodedJwt | undefined {
     return undefined;
   }
 
-  const base64 = base64Url.replace('-', '+').replace('_', '/');
-  const result = JSON.parse(window.atob(base64)) as IDecodedJwt;
+  try {
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
 
-  return result;
+    return JSON.parse(window.atob(base64)) as IDecodedJwt;
+  } catch {
+    return undefined;
+  }
 }
 
 export const useIsCorrectAccessToken = () => {
@@ -35,7 +37,7 @@ export const useIsCorrectAccessToken = () => {
     return { isCorrect: false, accessToken };
   }
 
-  const isExpired = dayjs.unix(decodedToken.exp).isBefore(dayjs());
-
-  return { isCorrect: !isExpired, accessToken };
+  // Expiry is deliberately not checked here. An expired token is still a session: the next request gets a 401,
+  // `baseQueryWithReauth` refreshes it, and only a refused refresh token logs the user out.
+  return { isCorrect: true, accessToken };
 };

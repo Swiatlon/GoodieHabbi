@@ -9,7 +9,7 @@ const auth = {
     error: 'Nie udało się zalogować. Spróbuj ponownie.',
     schema: {
       loginRequired: 'Login jest wymagany',
-      loginMaxLength: 'Login może mieć maksymalnie 30 znaków',
+      loginMaxLength: 'Login może mieć maksymalnie 100 znaków',
       passwordRequired: 'Hasło jest wymagane',
       passwordMinLength: 'Hasło musi mieć co najmniej 6 znaków',
       passwordMaxLength: 'Hasło może mieć maksymalnie 50 znaków',
