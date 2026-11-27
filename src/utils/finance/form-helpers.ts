@@ -8,6 +8,18 @@ export const todayString = () => dayjs().format(DATE_FORMAT);
 
 export const parseAmount = (value: string) => parseFloat(value.replace(',', '.'));
 
+// Today while viewing the current month. For any other month, its first day, so the new transaction lands in the month on screen.
+export const getDefaultOccurredOn = (viewedYear: number, viewedMonth: number) => {
+  const today = dayjs();
+  if (today.year() === viewedYear && today.month() === viewedMonth - 1) return today.format(DATE_FORMAT);
+
+  return today
+    .year(viewedYear)
+    .month(viewedMonth - 1)
+    .date(1)
+    .format(DATE_FORMAT);
+};
+
 // Keeps the same day-of-month, clamped into the target month (e.g. the 31st copied into a 30-day month lands on the 30th).
 export const remapOccurredOnToMonth = (occurredOn: string, targetYear: number, targetMonth: number) => {
   const day = dayjs(occurredOn).date();
