@@ -32,7 +32,7 @@ const extractErrorMessage = (payload: unknown): string => {
   return 'Wystąpił nieoczekiwany błąd.';
 };
 
-// Logs every failed RTK Query call and surfaces failed GET queries as a snackbar via apiErrorOccurred.
+// Logs every failed RTK Query call in development and surfaces failed GET queries as a snackbar via apiErrorOccurred.
 // Mutations are excluded from the snackbar to avoid double-toasting endpoints that already show their own error message.
 export const apiErrorMiddleware: Middleware = storeApi => next => action => {
   if (isRejectedWithValue(action)) {
@@ -41,8 +41,11 @@ export const apiErrorMiddleware: Middleware = storeApi => next => action => {
     const requestType = meta?.arg?.type;
     const message = extractErrorMessage(action.payload);
 
-    // eslint-disable-next-line no-console
-    console.error(`[API] ${requestType ?? 'request'} "${endpointName}" failed:`, action.payload);
+    // The payload can echo back server details and user data, so release builds keep it out of the device log.
+    if (__DEV__) {
+      // eslint-disable-next-line no-console
+      console.error(`[API] ${requestType ?? 'request'} "${endpointName}" failed:`, action.payload);
+    }
 
     if (requestType === 'query') {
       storeApi.dispatch(apiErrorOccurred({ endpointName, message }));

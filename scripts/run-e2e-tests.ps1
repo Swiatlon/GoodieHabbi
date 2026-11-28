@@ -23,7 +23,7 @@ function Load-EnvFile {
 
                 # Store in hashtable for passing to maestro
                 $envVars[$name] = $value
-                Write-Host "Loaded $name = $value" -ForegroundColor Gray
+                Write-Host "Loaded $name" -ForegroundColor Gray
             }
         }
     } else {
@@ -64,7 +64,8 @@ foreach ($testFile in $testFiles) {
     # Run maestro with environment variables using & operator for better argument handling
     $maestroArgs = @("test") + $envArgs + @($testFile.FullName)
 
-    Write-Host "Running: maestro $($maestroArgs -join ' ')" -ForegroundColor Gray
+    # The arguments carry the test credentials, so only the file is printed.
+    Write-Host "Running: maestro test $($testFile.FullName)" -ForegroundColor Gray
 
     & maestro $maestroArgs
 

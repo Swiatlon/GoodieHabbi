@@ -14,27 +14,28 @@ const initialState: IAuthState = {
   accountId: null,
   expDate: null,
 };
+const toAuthState = ({ accessToken }: { accessToken: NullableString }) => {
+  const decoded = parseJwt(accessToken);
+  const expDate = decoded?.exp ? new Date(decoded.exp * 1000).toISOString() : null;
+  const accountId = decoded?.accountId ?? null;
+
+  return { payload: { token: accessToken, expDate, accountId } };
+};
+
+const applyAuthState = (state: IAuthState, { payload }: PayloadAction<IAuthState>) => {
+  state.token = payload.token;
+  state.expDate = payload.expDate;
+  state.accountId = payload.accountId;
+};
+
 const authSlice = createSlice({
   name: 'authSlice',
   initialState,
   reducers: {
-    setCredentials: {
-      prepare: ({ accessToken }: { accessToken: NullableString }) => {
-        const decoded = parseJwt(accessToken);
-        const expDate = decoded?.exp ? new Date(decoded.exp * 1000).toISOString() : null;
-        const accountId = decoded?.accountId ?? null;
-
-        return { payload: { token: accessToken, expDate, accountId } };
-      },
-
-      reducer: (state, action: PayloadAction<IAuthState>) => {
-        const { token, expDate, accountId } = action.payload;
-
-        state.token = token;
-        state.expDate = expDate;
-        state.accountId = accountId;
-      },
-    },
+    // A new session: the store middleware also drops the API cache on this one.
+    setCredentials: { prepare: toAuthState, reducer: applyAuthState },
+    // Same session with a newer token: the cache stays.
+    accessTokenRefreshed: { prepare: toAuthState, reducer: applyAuthState },
   },
 
   selectors: {
@@ -64,6 +65,6 @@ export const handleAuthSuccess = createAsyncThunk(
   }
 );
 
-export const { setCredentials } = authSlice.actions;
+export const { setCredentials, accessTokenRefreshed } = authSlice.actions;
 export const { selectCurrentToken, selectTokenExpirationTime, selectAccountId } = authSlice.selectors;
 export default authSlice.reducer;

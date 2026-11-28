@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
 import dayjs from 'dayjs';
-import _ from 'lodash';
 
 export interface SearchOptions<T> {
   data: T[];
@@ -36,25 +35,25 @@ export const useSearch = <T,>({ data, initialSearchValue = '' }: SearchOptions<T
           return;
         }
 
-        if (_.isObject(obj)) {
+        if (typeof obj === 'string') {
+          processStringValue(obj);
+        } else if (typeof obj === 'number' || typeof obj === 'boolean') {
+          searchableTexts.push(String(obj).toLowerCase());
+        } else if (typeof obj === 'object') {
           if (traversed.has(obj)) {
             return;
           }
 
           traversed.add(obj);
-        }
 
-        if (_.isString(obj)) {
-          processStringValue(obj);
-        } else if (_.isNumber(obj) || _.isBoolean(obj)) {
-          searchableTexts.push(String(obj).toLowerCase());
-        } else if (_.isArray(obj)) {
-          _.forEach(obj, traverse);
-        } else if (_.isObject(obj)) {
-          _.forEach(obj, (value, key) => {
-            searchableTexts.push(key.toLowerCase());
-            traverse(value);
-          });
+          if (Array.isArray(obj)) {
+            obj.forEach(traverse);
+          } else {
+            Object.entries(obj).forEach(([key, value]) => {
+              searchableTexts.push(key.toLowerCase());
+              traverse(value);
+            });
+          }
         }
       };
 

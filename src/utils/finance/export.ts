@@ -9,7 +9,8 @@ export const generateCsv = (rows: Record<string, unknown>[], headers?: string[])
   const cols = headers ?? Object.keys(rows[0]);
   const escape = (v: unknown) => {
     if (v == null) return '';
-    const s = String(v);
+    // Spreadsheets run text starting with these as a formula. Only text is prefixed, so negative amounts stay numbers.
+    const s = typeof v === 'string' && /^[=+\-@\t\r]/.test(v) ? `'${v}` : String(v);
     if (s.includes(',') || s.includes('\n') || s.includes('\r') || s.includes('"')) return `"${s.replace(/"/g, '""')}"`;
     return s;
   };

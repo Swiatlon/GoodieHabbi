@@ -22,7 +22,7 @@ const Inventory = () => {
   const { data: items = [], isLoading, refetch } = useGetInventoryItemsQuery();
   const [equipItem] = useEquipInventoryItemMutation();
   const [unequipItem] = useUnequipInventoryItemMutation();
-  const [useItem] = useUseInventoryItemMutation();
+  const [consumeItem] = useUseInventoryItemMutation();
   const { showSnackbar } = useSnackbar();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const buttonsStyle = useTransformFade({ isContentLoading: isLoading, delay: 200 });
@@ -49,7 +49,7 @@ const Inventory = () => {
 
   const handleUse = async (inventoryId: number) => {
     try {
-      await useItem({ inventoryId }).unwrap();
+      await consumeItem({ inventoryId }).unwrap();
       refetch();
       showSnackbar({ text: t('inventory.usedSuccess'), variant: 'success' });
     } catch {
